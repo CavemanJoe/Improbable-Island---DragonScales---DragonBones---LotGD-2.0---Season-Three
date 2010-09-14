@@ -1,0 +1,238 @@
+
+body {
+	background:#111111;
+	font-family: system, monospace;
+	color:#aaaaaa;
+}
+
+a {
+    color: #CCCCCC;
+    text-decoration: none;
+}
+a:hover { 
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+input, select, submit, textarea {
+    background: #444444;
+    border: 1px solid #666666;
+    color: #ffffff;
+	font-family: system, monospace;
+}
+
+/*Commentary mouseovers*/
+a.commentarymouseoverlink{
+    position:relative;
+    z-index:24;
+    text-decoration:none;
+	border-style: none;
+}
+a:link.commentarymouseoverlink{
+	border-style: none;
+}
+a:visited.commentarymouseoverlink{
+	border-style: none;
+}
+a:active.commentarymouseoverlink{
+	border-style: none;
+}
+a:hover.commentarymouseoverlink{
+	border-style: none;
+}
+a.commentarymouseoverlink span{
+	display: none;
+}
+a.commentarymouseoverlink:hover{
+	z-index:25;
+	background:;
+}
+a.commentarymouseoverlink:hover span.commentarymouseover{
+    display:block;
+    position:absolute;
+    top:-15px; left:15px;
+	padding: 10px;
+	width:200px;
+	background-color: #111111;
+	border:1px dotted #333333;
+	color:#000;
+}
+
+/*Navigation column*/
+
+.navcolumn {
+	float:left;
+	width:200px;
+	padding-top:10px;
+	margin:5px;
+}
+
+.navbox {
+	padding:5px;
+	background: #222222;
+}
+
+.nav {
+	padding-left:5px;
+}
+
+.navhead {
+	padding-top:10px;
+	font-weight:bold;
+	color:#FFFFFF;
+}
+
+a.nav {
+    text-decoration: none;
+    width: 180px;
+    height: auto;
+    padding-left: 8px;
+    float: left; 
+    clear: none;
+}
+a:hover.nav {
+    color: #ffffff;
+}
+
+.navhi {
+    color: #00FF00;
+    text-decoration: underline;
+    font-weight: bold;
+    padding: 1px;
+}
+
+/*Center column and footer*/
+
+.maincolumn {
+	margin-left:210px;
+	margin-right:210px;
+}
+
+a.hotmotd {
+    color:#FF8A00;
+	font-size:larger;
+}
+
+.footer {
+	clear:both;
+}
+
+.license {
+	float:left;
+	width:50%;
+}
+
+.footerinfo {
+	float:right;
+	width:50%;
+	text-align:right;
+}
+
+/*Statistics column*/
+
+.infocolumn {
+	float:right;
+	width:200px;
+	padding-top:10px;
+	margin:5px;
+}
+
+.infobox {
+	padding:5px;
+	background: #222222;
+}
+
+table.charinfo {
+    width: auto;
+}
+td.charhead {
+	padding-top:10px;
+	font-weight:bold;
+	color:#FFFFFF;
+}
+td.charinfo {
+    padding-left: 8px;
+}
+
+/* Table rows */
+
+.trhead  { background-color:#d6d6d6; color:#000000; }
+.trlight { background-color:#333333; color:#FFFFFF; }
+.trdark  { background-color:#111111; color:#FFFFFF; }
+.trhilight { background-color: #999999; color: #FFFFFF}
+
+/* Text colours */
+
+.colDkBlue    { color: #2080ff; }
+.colDkGreen   { color: #009900; }
+.colDkCyan    { color: #009999; }
+.colDkRed     { color: #aa0000; }
+.colDkMagenta { color: #990099; }
+.colDkYellow  { color: #999900; }
+.colDkWhite   { color: #cccccc; }
+.colLtBlue    { color: #74abdf; }
+.colLtGreen   { color: #00ee00; }
+.colLtCyan    { color: #00eeee; }
+.colLtRed     { color: #ee0000; }
+.colLtMagenta { color: #ee00ee; }
+.colLtYellow  { color: #eeee00; }
+.colLtWhite   { color: #ffffff; }
+.colLtBlack   { color: #999999; }
+.colDkOrange  { color: #994400; }
+.colLtOrange  { color: #ff9900; }
+.colBlue  	{ color: #0070FF; }
+.colLime  	{ color: #DDFFBB; }
+.colBlack  	{ color: #777777; }
+.colRose 	{ color: #EEBBEE; }
+.colblueviolet 	{ color: #9A5BEE; }
+.coliceviolet	{ color: #AABBEE; }
+.colLtBrown 	{ color: #F8DB83; }
+.colDkBrown 	{ color: #6b563f; }
+.colXLtGreen	{ color: #aaff99; }
+.colAttention 	{ background-color: #00FF00; color: #FF0000; }
+.colWhiteBlack 	{ background-color: #FFFFFF; color: #000000; }
+.colbeige  { color: #F5F5DC; }
+.colkhaki  { color: #F0E68C; }
+.coldarkkhaki  { color: #BDB76B; }
+.colaquamarine  { color: #7FFFD4; }
+.coldarkseagreen  { color: #8FBC8F; }
+.collightsalmon  { color: #FFA07A; }
+.colsalmon  { color: #FA8072; }
+.colwheat  { color: #F5DEB3; }
+.coltan  { color: #D2B48C; }
+.colBack  	{ background-color: #00FFFF; color: #000000; }
+.colLtLinkBlue { color: #0099FF; }
+.colDkLinkBlue { color: #006BB3; }
+.colDkRust { color: #8D6060; }
+.colLtRust { color: #B07878; }
+.colMdBlue { color: #0000F0; }
+.colMdGrey { color: #DDDDDD; }
+.colburlywood { color: #DEB887; }
+
+/* Admin - Translator tool links */
+
+a.t { 
+    width: 8px;
+    border: 1px dotted #0000ee;
+    color: #330000;
+    text-decoration: none;
+    padding-left: 1px;
+    padding-right: 1px;
+}
+a.thot { 
+    width: 8px;
+    border: 1px solid #ee0000;
+    color: #330000;
+    text-decoration: none;
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+/* Admin - Debugging */
+
+div.debug {
+    color: #ffffff;
+    border: 1px dotted #000099;
+    width: auto;
+    height: auto;
+}

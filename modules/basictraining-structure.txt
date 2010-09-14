@@ -1,0 +1,85 @@
+
+
+
+UNWRITTEN CASES
+travel
+
+
+
+
+
+Corporal Punishment's Basic Training
+
+The Objective
+	The Improbability Drive
+		-> Levelling Up
+		-> Combat
+
+Statistics, Stamina, Hitpoints and Currency
+	Hitpoints
+		-> Combat
+		-> Levelling Up
+		-> Healing
+		-> Finding and Using Items
+	Stamina
+		-> Combat
+		-> Travel
+		Food
+			-> Currency
+		-> New Days
+	Currency
+		Requisition
+		Cigarettes
+		-> Finding and Using Items
+	New Days
+
+Combat
+	Weapons and Armour
+		-> Finding and Using Items
+	Levelling Up
+	Healing
+		-> Finding and Using Items
+	Buffs
+	The FailBoat
+		The Watcher
+		-> New Days
+	Implants and Special Abilities
+	-> Stamina
+	-> Finding and Using Items
+	-> Mounts
+	-> Companions
+
+Travel
+	Mounts
+	Outposts
+	-> Stamina
+	-> Races
+
+People
+	Chat
+		Etiquette
+		Emotes
+		Colour Codes
+		Roleplaying
+		-> Outposts
+	Clans
+	-> Races
+
+Races
+	Human
+	Zombie
+	KittyMorph
+	Midget
+	Mutant
+	Robot
+	GoBot
+	Joker
+	-> Outposts
+	-> Implants and Special Abilities
+
+The Game
+	Legend of the Green Dragon
+	Caveman Joe
+	The Hunter's Lodge
+	
+	

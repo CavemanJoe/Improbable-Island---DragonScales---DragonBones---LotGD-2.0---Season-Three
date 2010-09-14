@@ -1,0 +1,362 @@
+/* CSS Document for the Improbable Island LoGD skin, based loosely on the LoGD ailean skin by Ben Wong, 
+   based on a concept by Ailean */
+
+/*  --------------------------------------------------------------------
+**  General Tag Defaults
+*/
+
+.pagebackground {
+    background:url(/templates/classic/page.jpg);
+}
+.pagebackground-homepage {
+    background:url(/templates/classic/page.jpg);
+	width:1000px;
+}
+.homepage-inner {
+	padding:10px;
+}
+/** tables **/
+table {
+}
+td {
+    font-family: "Georgia", "Times New Roman", "Helvetica", "Arial", sans-serif;
+    font-size: 12px;
+}
+
+/*Commentary mouseovers*/
+a.commentarymouseoverlink{
+    position:relative;
+    z-index:24;
+    text-decoration:none;
+	border-style: none;
+}
+a:link.commentarymouseoverlink{
+	border-style: none;
+}
+a:visited.commentarymouseoverlink{
+	border-style: none;
+}
+a:active.commentarymouseoverlink{
+	border-style: none;
+}
+a:hover.commentarymouseoverlink{
+	border-style: none;
+}
+a.commentarymouseoverlink span{
+	display: none;
+}
+a.commentarymouseoverlink:hover{
+	z-index:25;
+	background:;
+}
+a.commentarymouseoverlink:hover span.commentarymouseover{
+    display:block;
+    position:absolute;
+    top:-15px; left:15px;
+	padding: 10px;
+	width:200px;
+	background-color: #C9B18B;
+	border:1px dotted #333333;
+	color:#000;
+}
+
+/** links **/
+a {
+    color: #330000;
+    text-decoration: none;
+}
+a:hover { 
+    color: #767676;
+    text-decoration: none;
+}
+
+/** input fields (e.g. village chats) **/
+input {
+    background-color: #EBEBE4;
+    border: 1px solid #454545;
+    color: #000000;
+}
+
+/** select boxes (e.g. user preference drop-downs) **/
+select {
+    background-color: #EBEBE4;
+    border: 1px solid #454545;
+    color: #000000;
+}
+
+fieldset { 
+    border:none;
+}
+legend {
+    padding: 3px; 
+    color: #000000; 
+    font-weight: bold; 
+    margin-top: 0px; 
+    margin-right: 0px;  
+    margin-left: 0px;
+}
+
+/*  --------------------------------------------------------------------
+**  Global Classes
+*/
+
+/** the main page heading (e.g. "Degolburg, the Capital City", "LoGD News") **/
+.pagetitle {
+    font-family: "Trebuchet MS", "Verdana", "Helvetica", "Arial", sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    font-style: normal;
+}
+
+/** nav menu categories (e.g. City Gates, Store Street, Info) **/
+.navhead {
+    text-decoration: none;
+    width: 175px;
+    height: auto;
+    padding-left: 5px;
+    line-height: 20px;
+    float: left;
+    clear: none;
+    font-weight: bold;
+    text-align: left;
+    color: #000000;
+}
+
+/** help for nav menu categories **/
+.navhelp {
+    text-decoration: none;
+    width: 175px;
+    height: auto;
+    padding-left: 5px;
+    float: left;
+    clear: none;
+}
+
+/** nav hot keys (e.g. [F]orest, [T]ravel) **/
+.navhi {
+    color: #aa0000;
+    text-decoration: underline;
+    font-weight: bold;
+    padding: 1px;
+}
+
+/** input fields (e.g. the textarea in YOMs) **/
+.input {
+    background-color: #EBEBE4;
+    border: 1px solid #454545;
+    color: #000000;
+}
+
+/** input buttons (e.g. Submit, Search, Add) **/
+.button {
+    font-family: "Trebuchet MS", "Verdana", "Helvetica", "Arial", sans-serif;
+    font-size: 12px;  
+    color: #000000;
+    background-color: #EBEBE4;
+    border: 1px solid #454545;
+}
+
+.block { 
+    padding: 3px; 
+    margin-right: 0px;  
+    margin-left: 0px; 
+    margin-bottom: 2px; 
+    line-height: 120%;
+}
+
+/** text colours **/
+.colDkBlue    { color: #000030; }
+.colDkGreen   { color: #004300; }
+.colDkCyan    { color: #006060; }
+.colDkRed     { color: #500000; }
+.colDkMagenta { color: #600060; }
+.colDkYellow  { color: #60630e; }
+.colDkWhite   { color: #303030; }
+.colLtBlue    { color: #000080; }
+.colLtGreen   { color: #007100; }
+.colLtCyan    { color: #008080; }
+.colLtRed     { color: #900000; }
+.colLtMagenta { color: #950095; }
+.colLtYellow  { color: #888d0b; }
+.colLtWhite   { color: #505050; }
+.colLtBlack   { color: #222222; }
+.colDkOrange  { color: #4a2100; }
+.colLtOrange  { color: #994400; }
+.colBlue  	{ color: #0070FF; }
+.colLime  	{ color: #DDFFBB; }
+.colBlack  	{ color: #000000; }
+.colRose 	{ color: #EEBBEE; }
+.colblueviolet 	{ color: #9A5BEE; }
+.coliceviolet	{ color: #AABBEE; }
+.colLtBrown 	{ color: #F8DB83; }
+.colDkBrown 	{ color: #6b563f; }
+.colXLtGreen	{ color: #aaff99; }
+.colAttention 	{ background-color: #00FF00; color: #FF0000; }
+.colWhiteBlack 	{ background-color: #FFFFFF; color: #000000; }
+.colbeige  { color: #F5F5DC; }
+.colkhaki  { color: #F0E68C; }
+.coldarkkhaki  { color: #BDB76B; }
+.colaquamarine  { color: #7FFFD4; }
+.coldarkseagreen  { color: #8FBC8F; }
+.collightsalmon  { color: #FFA07A; }
+.colsalmon  { color: #FA8072; }
+.colwheat  { color: #F5DEB3; }
+.coltan  { color: #D2B48C; }.colBack  	{ background-color: #00FFFF; color: #000000; }
+.colLtLinkBlue { color: #0099FF; }
+.colDkLinkBlue { color: #006BB3; }
+.colDkRust { color: #8D6060; }
+.colLtRust { color: #B07878; }
+.colMdBlue { color: #0000F0; }
+.colMdGrey { color: #DDDDDD; }
+.colburlywood { color: #DEB887; }
+/** table rows (e.g. Game Setup Info, Hall o' Fame) **/
+.trhead  { background-color:#d6d6d6; color:#000000; }
+.trlight { background-color:#f2eadd; color:#000000; }
+.trdark  { background-color:#ecdac6; color:#000000; }
+.trhilight { background-color: #303030; color: #d0a700}
+
+
+/*  --------------------------------------------------------------------
+**  Specific Tags and Classes
+*/
+
+/** links - navigation **/
+a.nav { /* nav link (e.g. Forest, Quit, Travel) */
+    text-decoration: none;
+    width: 176px;
+    height: auto;
+    padding-left: 8px;
+    float: left; 
+    clear: none;
+    color: #3F0000;
+}
+a:hover.nav { /* nav link on mouseover */
+    color: #ff0000;
+}
+
+/** for adding things to the bottom of the nav table */
+div.nav { 
+    text-decoration: none;
+    width: 170px;
+    height: auto;
+    padding: 1px 1px 1px 4px;
+    float: left; 
+    clear: none;
+    border-left: 1px solid #707070;
+    border-right: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    margin-left: 2px;
+}
+
+
+/** links - motd **/
+a.motd { /* for motd, yom, and petition */
+    text-decoration: none;
+    text-align: center;
+    width: auto;
+    height: auto;
+    clear: none;
+}
+a:hover.motd { /* mouseover for motd, yom, and petition */
+    height: auto;
+    width: auto;
+    color: #767676;
+}
+a.hotmotd { /* when a new motd or yom is available */
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    color:#ff0000;
+    width: auto;
+    height: auto;
+    clear: none;
+}
+
+/** links - translator tool **/
+a.t { 
+    width: 8px;
+    height: 11px;
+    border: 1px dotted #0000ee;
+    color: #330000;
+    font-size: 11px;
+    text-decoration: none;
+    padding-left: 1px;
+    padding-right: 1px;
+}
+a.thot { 
+    width: 8px;
+    height: 11px;
+    border: 1px solid #ee0000;
+    color: #330000;
+    font-size: 11px;
+    text-decoration: none;
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+/** tables - navigation **/
+table.nav {
+    width: 175px;
+}
+td.nav a.thot {
+    position: absolute;
+    left: 0px;
+    height: auto;
+}
+td.nav a.t {
+    position: absolute;
+    left: 0px;
+    height: auto;
+}
+
+/** tables - character stats (i.e. "vital info") **/
+table.vitalinfo { /* the whole vital info 'wrapper' table */
+    border: none;
+    width: auto;
+}
+table.charinfo { /* the sub-table with the data */
+    width: auto;
+
+}
+td.charhead { /* vital info category heading */
+    padding-left: 2px;
+    cursor: default;
+    font-weight: bold;
+    color: #000000;
+}
+td.charinfo { /* vital info data */
+    padding-left: 8px;
+    cursor: default;
+}
+
+/** tables - main page **/
+td.pageheader { /* heading for the main page */
+}
+
+/** tables - popups **/
+td.popupheader { /* heading in a popup (e.g. motd, yom)*/
+    height: 64px;
+}
+
+/** tables - footers **/
+table.noborder { /* table in the footer */
+    border: none;
+    
+}
+table.withborder { /* table in the footer */
+}
+td.footer { /* data for a footer */
+}
+td.noborder { /* borderless data in the footer */
+    border: none;
+}
+
+/** debugging **/
+div.debug {
+    color: #000000;
+    border: 1px dotted #707070;
+    width: auto;
+    height: auto;
+    font-size: 11px;
+}
+
