@@ -205,8 +205,6 @@ function staminafood_run(){
 						output("With a warm smile, the waitress takes your meat and hands back twelve Requisition tokens.`n`n");
 					} else {
 						for ($i=1;$i<=$pmeat3;$i++){
-							debug($i);
-							debug($pmeat3);
 							delete_item(has_item("meat_high"));
 							$session['user']['gold']+=12;
 						}

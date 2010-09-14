@@ -47,7 +47,6 @@ function items_weightpenalty_dohook($hookname,$args){
 					}
 				}
 			}
-			//debug($args);
 		break;
 	}
 	return $args;
