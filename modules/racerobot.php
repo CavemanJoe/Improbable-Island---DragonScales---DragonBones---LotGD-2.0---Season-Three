@@ -38,7 +38,7 @@ function racerobot_install(){
 	module_addhook("worldnav",false,$ifrace);
 	module_addhook("startofround",false,$ifrace);
 	module_addhook("charstats",false,$ifrace);
-	module_addhook("iitems-inventory-intercept",false,$ifrace);
+	module_addhook("load_inventory",false,$ifrace);
 	module_addhook("potion",false,$ifrace);
 	return true;
 }
@@ -64,6 +64,16 @@ function racerobot_dohook($hookname,$args){
 	$city = "Cyber City 404";
 	$race = "Robot";
 	switch($hookname){
+	case "load_inventory":
+		if ($session['user']['race']==$race){
+			$inv = $args;
+			foreach ($inv AS $itemid => $prefs){
+				if ($prefs['blockrobot']){
+					$prefs['blockuse'] = true;
+				}
+			}
+		}
+	break;
 	case "racenames":
 		$args[$race] = $race;
 		break;
@@ -457,15 +467,6 @@ function racerobot_dohook($hookname,$args){
 		tlschema("mounts");
 		$args[$city]=sprintf_translate("%s", $city);
 		tlschema();
-		break;
-	case "iitems-inventory-intercept":
-		if ($session['user']['race']==$race){
-			//Block anything with "blockrobot" set to true
-			if ($args['master']['blockrobot']){
-				$args['player']['blockuse']=1;
-				output("Robots cannot use this item.`n");
-			}
-		}
 		break;
 	case "startofround":
 		if ($session['user']['race']==$race && $session['user']['alive']==1){

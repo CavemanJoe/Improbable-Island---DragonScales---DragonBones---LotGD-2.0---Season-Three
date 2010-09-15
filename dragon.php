@@ -246,6 +246,7 @@ if ($op==""){
 	debuglog("slew the dragon and starts with {$session['user']['gold']} gold and {$session['user']['gems']} gems");
 
 	// Moved this hear to make some things easier.
+	items_dragonkill();
 	modulehook("dragonkill", array());
 	invalidatedatacache("list.php-warsonline");
 }

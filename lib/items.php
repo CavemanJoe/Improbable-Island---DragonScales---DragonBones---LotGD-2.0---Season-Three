@@ -63,6 +63,40 @@ Inventory
 =============================================
 */
 
+function items_delete_character($acctid){
+	$sql1 = "SELECT id FROM ".db_prefix("items_player")." WHERE owner = '$acctid'";
+	$result = db_query($sql1);
+	$ids = array();
+	while ($row = db_fetch_assoc($result)){
+		$ids[] = $row['id'];
+	}
+	$sqlp = "DELETE FROM ".db_prefix("items_prefs")." WHERE id IN (";
+	
+	foreach($ids AS $id){
+		$sqlp .= $id.",";
+	}
+	$sqlp = substr_replace($sqlp,"",-1);
+	$sqlp .= ")";
+	
+	$sqli = "DELETE FROM ".db_prefix("items_player")." WHERE owner = '$acctid'";
+	db_query($sqli);
+	db_query($sqlp);
+}
+
+function items_dragonkill($acctid=false){
+	//this could be done better, but right now I just want it released damn it
+	global $session, $itemprefs, $itemsettings, $inventory;
+	if (!isset($inventory)){
+		load_inventory();
+	}
+	
+	foreach($inventory AS $itemid => $prefs){
+		if (!$prefs['dkpersist']){
+			delete_item($itemid);
+		}
+	}
+}
+
 function get_player_items($acctid){
 	global $session;
 	$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE owner='$acctid'";
@@ -175,6 +209,9 @@ function load_inventory($acctid=false,$npcflag=false){
 		}
 		modulehook("items_weights",$weights);
 	}
+	
+	$inventory = modulehook("load_inventory",$inventory);
+	
 	return $inventory;
 }
 
@@ -633,7 +670,7 @@ function show_item_fightnavs($script){
 	$gr = group_items($inventory);
 	foreach($gr AS $itemid => $vals){
 		addnav("Use Fight Items");
-		if ($vals['context_fight'] && $vals['inventorylocation']=="fight"){
+		if ($vals['context_fight'] && $vals['inventorylocation']=="fight" && !$vals['blockuse']){
 			if ($vals['quantity'] > 1){
 				addnav(array("%s (%s)",$vals['verbosename'],$vals['quantity']),$script."op=fight&items_useitem=$itemid");
 			} else {

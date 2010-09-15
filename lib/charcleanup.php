@@ -10,8 +10,12 @@ function char_cleanup($id, $type)
 			
 	if(!$return['dodel']) return false;
 
+	//erase the player's items
+	require_once "lib/items.php";
+	items_delete_character($id);
+	
 	// delete the output field from the accounts_output table introduced in 1.1.1
-
+	
 	db_query("DELETE FROM " . db_prefix("accounts_output") . " WHERE acctid=$id;");
 
 	// delete the comments the user posted, necessary to have the systemcomments with acctid 0 working

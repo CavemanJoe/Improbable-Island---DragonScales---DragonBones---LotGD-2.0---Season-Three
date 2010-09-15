@@ -28,8 +28,8 @@ function hunterslodge_customarmour_permanent_define_item(){
 	set_item_setting("lodge_cost","1000","hunterslodge_customarmour_permanent");
 	set_item_setting("lodge_longdesc","This Deluxe Armour Customisation Kit (consisting of a can of paint, some tinfoil and a large hammer, all cunningly disguised so nobody will ever know) will allow you to set the name of your armour to anything you like. You get 25 characters to play about with, and other players will be able to see your custom armour in commentary mouseover areas. If you're roleplaying a character with an unusual taste in clothing which to which Sheila's Shack doesn't cater, then this is the item for you. Once you set your custom armour, buying new armour will only change your stats and buffs; the name will always reflect what you chose when you customised your armour.`n`nThis item lets you customise your armour as many times as you like without having to buy it again, but remember - `4if you're buying this as a present, remember not to use it! Only new, unused items can be gifted to other players!`0`n`nYou can use this item from any Hunter's Lodge.","hunterslodge_customarmour_permanent");
 	set_item_setting("verbosename","Deluxe Custom Armour Kit","hunterslodge_customarmour_permanent");
-	set_item_setting("require_file","hunterslodge_customarmour.php","hunterslodge_customarmour");
-	set_item_setting("call_function","hunterslodge_customarmour_permanent_use","hunterslodge_customarmour");
+	set_item_setting("require_file","hunterslodge_customarmour.php","hunterslodge_customarmour_permanent");
+	set_item_setting("call_function","hunterslodge_customarmour_permanent_use","hunterslodge_customarmour_permanent");
 	
 }
 
