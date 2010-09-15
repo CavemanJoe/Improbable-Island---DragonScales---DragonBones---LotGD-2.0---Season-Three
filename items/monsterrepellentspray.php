@@ -44,7 +44,6 @@ function monsterrepellentspray_use($args){
 		set_item_pref("encounterchance",50,"worldmapen");
 		output("You liberally douse yourself with an entire can of Monster Repellent Spray.  For the rest of this game day, your chances of encountering a monster on the Island Map have been halved, and monsters you do encounter will be reluctant to attack you as hard.`n`n");
 	}
-	delete_item($args['id']);
 }
 
 ?>

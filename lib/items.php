@@ -541,13 +541,13 @@ function get_items_with_prefs($properties,$eval=false,$gt=false){
 				}
 			} else if (!$gt){
 				foreach($properties AS $setting => $value){
-					if ($prefs[$setting]==$value)){
+					if ($prefs[$setting]==$value){
 						$ret[$id]=$prefs;
 					}
 				}
 			} else {
 				foreach($properties AS $setting => $value){
-					if ($prefs[$setting]>=$value)){
+					if ($prefs[$setting]>=$value){
 						$ret[$id]=$prefs;
 					}
 				}
@@ -568,6 +568,7 @@ function get_items_with_prefs($properties,$eval=false,$gt=false){
 }
 
 function get_items_with_settings($searchsettings){
+	//returns all defined items with these settings
 	//use a single property, or an array of properties
 	global $itemsettings;
 	if (!isset($itemsettings)){

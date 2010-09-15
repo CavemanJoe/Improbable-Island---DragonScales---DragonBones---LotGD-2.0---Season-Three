@@ -1,6 +1,6 @@
 <?php
 
-//BANG GRENADEz
+//BANG GRENADE
 
 function banggrenade_define_item(){
 	set_item_setting("allowtransfer","fight","banggrenade");
@@ -26,7 +26,6 @@ function banggrenade_use($args){
 		"effectmsg"=>"`4The grenade explodes close enough to {badguy}`4 to do `^{damage}`4 damage!",
 		"schema"=>"iitems-catcher"
 	));
-	delete_item($args['id']);
 }
 
 ?>
