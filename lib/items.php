@@ -362,10 +362,14 @@ function delete_item($itemid){
 	load_inventory();
 }
 
-function delete_all_items_of_type($item){
+function delete_all_items_of_type($item,$acctid=false){
 	//returns number of items deleted
+	global $session;
+	if (!$acctid){
+		$acctid = $session['user']['acctid'];
+	}
 	//first get all the prefs for the items of this type
-	$sql1 = "SELECT id FROM ".db_prefix("items_player")." WHERE item = '$item'";
+	$sql1 = "SELECT id FROM ".db_prefix("items_player")." WHERE item = '$item' AND owner = '$acctid'";
 	$result = db_query($sql1);
 	$ids = array();
 	while ($row = db_fetch_assoc($result)){
@@ -382,7 +386,7 @@ function delete_all_items_of_type($item){
 	$sqlp .= ")";
 	
 	
-	$sqli = "DELETE FROM ".db_prefix("items_player")." WHERE item = '$item'";
+	$sqli = "DELETE FROM ".db_prefix("items_player")." WHERE item = '$item' AND owner = '$acctid'";
 	db_query($sqli);
 	db_query($sqlp);
 	//reload inventory

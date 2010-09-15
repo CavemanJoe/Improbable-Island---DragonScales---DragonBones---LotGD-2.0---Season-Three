@@ -70,8 +70,6 @@ if (!httpget('r')){
 	addnav("LoGD Net","logdnet.php?op=list&r=".$r);
 }
 
-debug($session,true);
-
 modulehook("index", array());
 
 // if (abs(getsetting("OnlineCountLast",0) - strtotime("now")) > 60){

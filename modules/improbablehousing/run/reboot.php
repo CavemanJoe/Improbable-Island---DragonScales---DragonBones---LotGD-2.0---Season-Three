@@ -68,8 +68,7 @@ invalidatedatacache("housing/housing_location_".$loc);
 $loc = get_module_pref("worldXYZ","worldmapen");
 
 output("Dwelling rebooted.  Dwelling reconstructor item granted.");
-require_once "modules/iitems/lib/lib.php";
-iitems_give_item("dwelling_reconstructor");
+give_item("dwelling_reconstructor");
 	
 addnav("Exit");
 addnav("Back to the World Map","runmodule.php?module=worldmapen&op=continue");

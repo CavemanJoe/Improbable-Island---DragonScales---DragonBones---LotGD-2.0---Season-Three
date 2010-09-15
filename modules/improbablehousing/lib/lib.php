@@ -149,8 +149,7 @@ addnav("M?Back to the Island Map","runmodule.php?module=improbablehousing&op=exi
 //Is a particular location stakeable?  That is, are there fewer than four houses already here, and is the terrain suitable?
 function improbablehousing_stakeable($loc){
 	global $session;
-	require_once "modules/iitems/lib/lib.php";
-	if (iitems_has_item('housing_stake')){
+	if (has_item('housing_stake')){
 		//debug("Has Stake");
 		list($worldmapX, $worldmapY, $worldmapZ) = explode(",", $loc);
 		require_once "modules/worldmapen/lib.php";
@@ -425,8 +424,7 @@ function improbablehousing_show_decorating_management_navs($house){
 function improbablehousing_show_decorating_jobs($house){
 	//This shows links to help decorate a room
 	require_once "modules/staminasystem/lib/lib.php";
-	require_once "modules/iitems/lib/lib.php";
-	if (iitems_has_item('toolbox_decorating')){
+	if (has_item('toolbox_decorating')){
 		$hasitem = 1;
 	}
 	if (get_stamina()==100){
@@ -493,7 +491,6 @@ function improbablehousing_show_build_jobs($house){
 	//run through the build jobs and show percentage to completion, along with navs to use the relevant item and its associated Stamina cost.
 	//For easyness, don't allow the player to build if they're in Amber stamina
 	$jobs = $house['data']['buildjobs'];
-	require_once "modules/iitems/lib/lib.php";
 	require_once "modules/staminasystem/lib/lib.php";
 	$storestock = $house['data']['store'];
 	$displayjobs=array();
@@ -502,7 +499,6 @@ function improbablehousing_show_build_jobs($house){
 			if (!isset($displayjobs[$vals['name']])){
 				addnav(array("%s",$vals['name']));
 				foreach($vals['jobs'] AS $skey=>$svals){
-					$itemsrequired = array();
 					$cando=1;
 					$displayjobs[$vals['name']][$svals['name']]['req']=$svals['req'];
 					$displayjobs[$vals['name']][$svals['name']]['done']=$svals['done'];
@@ -520,12 +516,10 @@ function improbablehousing_show_build_jobs($house){
 					$player = array();
 					foreach($svals['iitems'] AS $ikey=>$iitem){
 						$store[$ikey] = $house['data']['store'][$ikey];
-						$itemsrequired[$ikey]=iitems_get_item($ikey);
-						if (iitems_has_item($ikey)){
+						if (has_item($ikey)){
 							$player[$ikey] = 1;
 						}
 					}
-					//debug($itemsrequired);
 					//check that each item required is present in either the store or the player's inventory... this could be neater...
 					$svals['useplayer'] = true;
 					foreach($svals['iitems'] AS $ikey=>$iitem){

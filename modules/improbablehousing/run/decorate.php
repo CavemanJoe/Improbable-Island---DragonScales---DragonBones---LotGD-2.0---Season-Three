@@ -4,7 +4,6 @@ $hid = httpget('hid');
 $rid = httpget('rid');
 
 require_once "modules/improbablehousing/lib/lib.php";
-require_once "modules/iitems/lib/lib.php";
 require_once "modules/staminasystem/lib/lib.php";
 $house=improbablehousing_gethousedata($hid);
 $room=$house['data']['rooms'][$rid];

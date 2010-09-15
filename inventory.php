@@ -131,7 +131,7 @@ foreach($dinv AS $carrier => $cvals){
 			//links to use/discard/transfer items
 			//do the use link first
 			$divide=false;
-			if ($prefs['context_'.$context]) {
+			if ($prefs['context_'.$context] && !$prefs['blockuse']) {
 				$divide = true;
 				rawoutput("<a href=\"inventory.php?items_useitem=$itemid&items_context=$context&items_sort=$sort\">Use</a>");
 				addnav("","inventory.php?items_useitem=$itemid&items_context=$context&items_sort=$sort");

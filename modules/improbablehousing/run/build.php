@@ -8,7 +8,6 @@ $store = httpget('store');
 page_header("Let's build!");
 
 require_once "modules/improbablehousing/lib/lib.php";
-require_once "modules/iitems/lib/lib.php";
 require_once "modules/staminasystem/lib/lib.php";
 $house=improbablehousing_gethousedata($hid);
 
@@ -23,7 +22,6 @@ if (!$jobtoperform){
 	$actions = $jobtoperform['actions'];
 
 	foreach($iitems AS $iitem=>$qty){
-		$iitemsrequired[$iitem] = iitems_get_item($iitem);
 		for ($i=0; $i<$qty; $i++){
 			if ($store && $iitem!="toolbox_masonry" && $iitem!="toolbox_carpentry" && $iitem!="toolbox_decorating"){
 				//use iitems from the Dwelling's storeroom
@@ -42,13 +40,13 @@ if (!$jobtoperform){
 				}
 			} else {
 				//determine iitems to use, and use them - assume we're using iitems from the Main inventory
-				iitems_use_item($iitem,false,"main");
+				use_item($iitem);
 				if ($iitem != "toolbox_carpentry" && $iitem != "toolbox_masonry"){
-					$qleft = $iitemsrequired[$iitem]['player']['quantity']-1;
+					$qleft = has_item_quantity($item);
 					if ($qleft == 1){
-						$iname = $iitemsrequired[$iitem]['master']['verbosename'];
+						$iname = get_item_setting("verbosename",$iitem);
 					} else {
-						$iname = $iitemsrequired[$iitem]['master']['plural'];
+						$iname = get_item_setting("plural",$iitem);
 					}
 					if (!$qleft){
 						$qleft = "no";

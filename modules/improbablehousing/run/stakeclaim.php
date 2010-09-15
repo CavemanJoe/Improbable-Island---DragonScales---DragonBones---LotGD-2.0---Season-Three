@@ -2,7 +2,6 @@
 
 page_header("Stake a Claim");
 
-require_once "modules/iitems/lib/lib.php";
 require_once "modules/improbablehousing/lib/lib.php";
 global $session;
 
@@ -13,7 +12,7 @@ $nlist = count($list);
 $maxhousespersquare = 4;
 	if ($nlist<$maxhousespersquare){
 	//get rid of the stake - make sure it's set to destroy itself after a single use
-	iitems_use_item("housing_stake",false,"main");
+	use_item("housing_stake");
 
 	//now make a house with a size of zero, set the owner, and so on and so forth
 	$ownedby = $session['user']['acctid'];
