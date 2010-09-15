@@ -74,31 +74,15 @@ function iitems_meatsystem_dohook($hookname,$args){
 				set_module_pref("hooks-since-last",0);
 			break;
 			case "newday":
-				require_once "modules/iitems/lib/lib.php";
-				$pinventory = iitems_get_player_inventory();
-				$m1key = iitems_has_item("meat_low");
-				$m2key = iitems_has_item("meat_medium");
-				$m3key = iitems_has_item("meat_high");
-				$msg=0;
-				if ($m1key || $m1key===0){
-					unset($pinventory[$m1key]);
-					$msg=1;
-				}
-				if ($m2key || $m2key===0){
-					unset($pinventory[$m2key]);
-					$msg=1;
-				}
-				if ($m3key || $m3key===0){
-					unset($pinventory[$m3key]);
-					$msg=1;
-				}
-				if ($msg){
+				$msg = delete_all_items_of_type("meat_high");
+				$msg += delete_all_items_of_type("meat_medium");
+				$msg += delete_all_items_of_type("meat_low");
+				if ($msg > 0){
 					output("Your Meat, exposed to the harsh tropical climate and various Improbable bacteria, is crawling away from you on a bed of maggots.  You consider chasing it, but soon decide that neither you nor anybody else would want to eat it in its current state.  With a heavy heart you wave goodbye as it slowly disappears into the jungle.`n`n");
 				}
 				$blank = array();
 				set_module_pref("carcasses", $blank);
 				set_module_pref("hooks-since-last",0);
-				set_module_pref("items", serialize($pinventory), "iitems");
 			break;
 			case "battle-victory":
 				if ($args['type'] == "forest" || $args['type'] == "world"){
@@ -128,15 +112,21 @@ function iitems_meatsystem_dohook($hookname,$args){
 					addnav("MmmeeeEEEaaat");
 				}
 				if (count($carcasses) > 0){
-					addnav("Clean Carcasses","runmodule.php?module=iitems_meatsystem&from=world");
+					foreach ($carcasses as $carcassnum => $creatureid){
+						$sql = "SELECT creaturename FROM " . db_prefix("creatures") . " WHERE creatureid = " . $creatureid . " ";
+						$result = db_query_cached($sql,"creaturename-".$creatureid,86400);
+						$creature = db_fetch_assoc($result);
+						$cleancost = stamina_getdisplaycost("Cleaning the Carcass");
+						addnav(array("Clean the carcass of %s (`Q%s%%`0)", $creature['creaturename'], $cleancost), "runmodule.php?module=iitems_meatsystem&op=clean&creatureid=".$creatureid."&carcass=".$carcassnum."&from=world");
+					}
 					//Zombie devouring compatibility
 					if ($session['user']['race']=="Zombie" && get_module_pref("fullness","staminafood") < 100) addnav("Devour Carcasses","runmodule.php?module=iitems_meatsystem&op=devour&from=world");
 				}
 				require_once "modules/iitems/lib/lib.php";
-				$pmeat1 = iitems_has_item("meat_low");
-				$pmeat2 = iitems_has_item("meat_medium");
-				$pmeat3 = iitems_has_item("meat_high");
-				if ($pmeat1 || $pmeat1===0 || $pmeat2 || $pmeat2===0 || $pmeat3 || $pmeat3===0){
+				$pmeat1 = has_item("meat_low");
+				$pmeat2 = has_item("meat_medium");
+				$pmeat3 = has_item("meat_high");
+				if ($pmeat1 || $pmeat2 || $pmeat3){
 					if (get_module_pref("fullness","staminafood") < 100){
 						$cookcost = stamina_getdisplaycost("Cooking");
 						addnav(array("Cook up some meat (`Q%s%%`0)", $cookcost),"runmodule.php?module=iitems_meatsystem&op=cook&from=world");
@@ -158,14 +148,19 @@ function iitems_meatsystem_dohook($hookname,$args){
 				addnav("MmmeeeEEEaaat");
 				}
 				if (count($carcasses) > 0){
-					addnav("Clean Carcasses","runmodule.php?module=iitems_meatsystem&from=forest");
+					foreach ($carcasses as $carcassnum => $creatureid){
+						$sql = "SELECT creaturename FROM " . db_prefix("creatures") . " WHERE creatureid = " . $creatureid . " ";
+						$result = db_query_cached($sql,"creaturename-".$creatureid,86400);
+						$creature = db_fetch_assoc($result);
+						$cleancost = stamina_getdisplaycost("Cleaning the Carcass");
+						addnav(array("Clean the carcass of %s (`Q%s%%`0)", $creature['creaturename'], $cleancost), "runmodule.php?module=iitems_meatsystem&op=clean&creatureid=".$creatureid."&carcass=".$carcassnum."&from=forest");
+					}
 					if ($session['user']['race']=="Zombie" && get_module_pref("fullness","staminafood") < 100) addnav("Devour Carcasses","runmodule.php?module=iitems_meatsystem&op=devour&from=forest");
 				}
-				require_once "modules/iitems/lib/lib.php";
-				$pmeat1 = iitems_has_item("meat_low");
-				$pmeat2 = iitems_has_item("meat_medium");
-				$pmeat3 = iitems_has_item("meat_high");
-				if ($pmeat1 || $pmeat1===0 || $pmeat2 || $pmeat2===0 || $pmeat3 || $pmeat3===0){
+				$pmeat1 = has_item("meat_low");
+				$pmeat2 = has_item("meat_medium");
+				$pmeat3 = has_item("meat_high");
+				if ($pmeat1 || $pmeat2 || $pmeat3){
 					if (get_module_pref("fullness","staminafood") < 100){
 						$cookcost = stamina_getdisplaycost("Cooking");
 						addnav(array("Cook up some meat (`Q%s%%`0)", $cookcost),"runmodule.php?module=iitems_meatsystem&op=cook&from=forest");
@@ -180,7 +175,6 @@ function iitems_meatsystem_dohook($hookname,$args){
 function iitems_meatsystem_run(){
 	global $session;
 	require_once "modules/staminasystem/lib/lib.php";
-	require_once "modules/iitems/lib/lib.php";
 
 	page_header("Meat!");
 	addnav("Meat Skills");
@@ -265,7 +259,7 @@ function iitems_meatsystem_run(){
 				output("`4You sit down to clean the carcass.  Your exhausted, clumsy incisions make a mockery of the choicest cuts - what is left over can only be described as Crap Meat.  %s bite's-worth, to be precise.  It looks like it was hacked into chunks by a blind woodsman.",$meat1);
 				//todo
 				for ($i=0; $i < $meat1; $i++){
-					iitems_give_item("meat_low");
+					give_item("meat_low");
 				}
 				$carcasses = unserialize(get_module_pref("carcasses"));
 				unset($carcasses[$carcass]);
@@ -285,23 +279,22 @@ function iitems_meatsystem_run(){
 				}
 				//todo
 				for ($i=0; $i < $meat1; $i++){
-					iitems_give_item("meat_low");
+					give_item("meat_low");
 				}
 				for ($i=0; $i < $meat2; $i++){
-					iitems_give_item("meat_medium");
+					give_item("meat_medium");
 				}
 				for ($i=0; $i < $meat3; $i++){
-					iitems_give_item("meat_high");
+					give_item("meat_high");
 				}
 				$carcasses = unserialize(get_module_pref("carcasses"));
 				unset($carcasses[$carcass]);
 				$carcasses = array_values($carcasses);
 				set_module_pref("carcasses", serialize($carcasses));
-				//todo
-				$pmeat1 = iitems_has_item("meat_low");
-				$pmeat2 = iitems_has_item("meat_medium");
-				$pmeat3 = iitems_has_item("meat_high");
-				if ($pmeat1 || $pmeat1===0 || $pmeat2 || $pmeat2===0 || $pmeat3 || $pmeat3===0){
+				$pmeat1 = has_item("meat_low");
+				$pmeat2 = has_item("meat_medium");
+				$pmeat3 = has_item("meat_high");
+				if ($pmeat1 || $pmeat2 || $pmeat3){
 					if (get_module_pref("fullness","staminafood") < 100){
 						$cookcost = stamina_getdisplaycost("Cooking");
 						addnav(array("Cook up some meat (`Q%s%%`0)", $cookcost),"runmodule.php?module=iitems_meatsystem&op=cook&from=".$from);
@@ -312,22 +305,9 @@ function iitems_meatsystem_run(){
 			}
 		break;
 		case "cook":
-			$inv = iitems_get_player_inventory();
-			if (iitems_has_item("meat_low",$inv) || iitems_has_item("meat_low",$inv) === 0){
-				$pmeat1loc = iitems_has_item("meat_low",$inv);
-				$pmeat1qty = $inv[$pmeat1loc]['quantity'];
-			}
-			if (iitems_has_item("meat_medium",$inv) || iitems_has_item("meat_medium",$inv) === 0){
-				$pmeat2loc = iitems_has_item("meat_medium",$inv);
-				$pmeat2qty = $inv[$pmeat2loc]['quantity'];
-			}
-			if (iitems_has_item("meat_high",$inv) || iitems_has_item("meat_high",$inv) === 0){
-				$pmeat3loc = iitems_has_item("meat_high",$inv);
-				$pmeat3qty = $inv[$pmeat3loc]['quantity'];
-			}
-			if (!$pmeat1qty) $pmeat1qty = 0;
-			if (!$pmeat2qty) $pmeat2qty = 0;
-			if (!$pmeat3qty) $pmeat3qty = 0;
+			$pmeat1 = has_item_quantity("meat_low");
+			$pmeat2 = has_item_quantity("meat_medium");
+			$pmeat3 = has_item_quantity("meat_high");
 			output("You whip out your camping stove.  It's time to cook!`n`nWhat will you put in the pan?  You can fit up to 20 bite's-worth of meat in there.  Right now you have %s bite's-worth of Crap Meat, %s bite's-worth of Half-Decent Meat, and %s bite's-worth of Tasty Meat.`n`n",$pmeat1qty,$pmeat2qty,$pmeat3qty);
 			rawoutput("<form action='runmodule.php?module=iitems_meatsystem&op=cookfinal&from=".$from."' method='POST'>");
 			rawoutput("Put in <input name='meat1' width='2' value='0'> bite's-worth of Crap Meat.<br />");
@@ -338,36 +318,27 @@ function iitems_meatsystem_run(){
 			addnav("", "runmodule.php?module=iitems_meatsystem&op=cookfinal&from=".$from);
 		break;
 		case "cookfinal":
-			$inv = iitems_get_player_inventory();
-			$pmeat1loc = iitems_has_item("meat_low",$inv);
-			$pmeat2loc = iitems_has_item("meat_medium",$inv);
-			$pmeat3loc = iitems_has_item("meat_high",$inv);
-			$pmeat1qty = 0;
-			$pmeat2qty = 0;
-			$pmeat3qty = 0;
-			$pmeat1qty += $inv[$pmeat1loc]['quantity'];
-			$pmeat2qty += $inv[$pmeat2loc]['quantity'];
-			$pmeat3qty += $inv[$pmeat3loc]['quantity'];
+			$pmeat1qty = has_item_quantity("meat_low");
+			$pmeat2qty = has_item_quantity("meat_medium");
+			$pmeat3qty = has_item_quantity("meat_high");
 			
 			$meat1 = httppost("meat1");
 			$meat2 = httppost("meat2");
 			$meat3 = httppost("meat3");
 			
-			debug("Now cooking:");
-			debug($meat1);
-			debug($meat2);
-			debug($meat3);
-			
 			//check for the dumbass player cooking meat that they don't have
 			if ($meat1 > $pmeat1qty || $meat2 > $pmeat2qty || $meat3 > $pmeat3qty){
 				output("You don't `ihave`i that much meat!`n`n");
+				addnav("Whoops");
 				addnav("Sorry, I forgot how to count for a second there.  Let's try this again.","runmodule.php?module=iitems_meatsystem&op=cook&from=".$from);
 				break;
 			}
 			
 			//check for the dumbass player inputting a negative number
 			if ($meat1 < 0 || $meat2 < 0 || $meat3 < 0){
+				page_header("Either taking vegetarianism to whole new levels, or trying to grow meat from an empty pan");
 				output("You want to cook `inegative`i meat?  How very Zen of you.`n`n");
+				addnav("You sneaky bugger");
 				addnav("Abandon your efforts to produce the opposite of meat and try again, pretending that you weren't just trying to cheat.","runmodule.php?module=iitems_meatsystem&op=cook&from=".$from);
 				break;
 			}
@@ -376,6 +347,7 @@ function iitems_meatsystem_run(){
 			$totalmeat = ($meat1 + $meat2 + $meat3);
 			if ($totalmeat > 20){
 				output("Your pan can't hold that much meat, pal.`n`n");
+				addnav("Whoops");
 				addnav("Try again, without filling the pan up so much","runmodule.php?module=iitems_meatsystem&op=cook&from=".$from);
 				break;
 			}
@@ -384,6 +356,7 @@ function iitems_meatsystem_run(){
 			$totalmeat = ($meat1 + $meat2 + $meat3);
 			if ($totalmeat == 0){
 				output("You start the process of cooking up your tasty meat.  After a few minutes of poking around in your pan, growing hungrier by the second, you realise that you've forgotten something.`n`n");
+				addnav("Whoops");
 				addnav("Try again, with meat this time","runmodule.php?module=iitems_meatsystem&op=cook&from=".$from);
 				break;
 			}
@@ -400,15 +373,15 @@ function iitems_meatsystem_run(){
 			if ($failchance > $amber){
 				output("`4You put your meat into the pan, and sit down to stir-fry it.  The hypnotic motion and white-noise sizzling, combined with your tiredness, sends you staring into space.  While your concentration is impaired, the meat bursts into flames.  You jerk back into awareness, and look down sadly at the flaming chunks.  Bummer.");
 				for ($i = 0; $i < $meat1; $i++){
-					iitems_discard_item($pmeat1loc);
+					delete_item(has_item("meat_low"));
 				}
 				
 				for ($i = 0; $i < $meat2; $i++){
-					iitems_discard_item($pmeat2loc);
+					delete_item(has_item("meat_medium"));
 				}
 				
 				for ($i = 0; $i < $meat3; $i++){
-					iitems_discard_item($pmeat3loc);
+					delete_item(has_item("meat_high"));
 				}
 				break;
 			}
@@ -419,7 +392,7 @@ function iitems_meatsystem_run(){
 				increment_module_pref("nutrition",1,"staminafood");
 				increment_module_pref("fat",3,"staminafood");
 				increment_module_pref("fullness",1,"staminafood");
-				iitems_discard_item($pmeat1loc);
+				delete_item(has_item("meat_low"));
 				addstamina(1000);
 			}
 			
@@ -427,7 +400,7 @@ function iitems_meatsystem_run(){
 				increment_module_pref("nutrition",2,"staminafood");
 				increment_module_pref("fat",2,"staminafood");
 				increment_module_pref("fullness",1,"staminafood");
-				iitems_discard_item($pmeat2loc);
+				delete_item(has_item("meat_medium"));
 				addstamina(2000);
 			}
 			
@@ -435,7 +408,7 @@ function iitems_meatsystem_run(){
 				increment_module_pref("nutrition",3,"staminafood");
 				increment_module_pref("fat",1,"staminafood");
 				increment_module_pref("fullness",1,"staminafood");
-				iitems_discard_item($pmeat3loc);
+				delete_item(has_item("meat_high"));
 				addstamina(5000);
 			}
 			
@@ -448,7 +421,7 @@ function iitems_meatsystem_run(){
 		$carcasses = array();
 	}
 	if (count($carcasses) > 0){
-	output("You look at the spoils of your most recent battle.  They lie bloodied and broken on the ground.  What will you do with them?");
+		output("You look at the spoils of your most recent battle.  They lie bloodied and broken on the ground.  What will you do with them?");
 		foreach ($carcasses as $carcassnum => $creatureid){
 			$sql = "SELECT creaturename FROM " . db_prefix("creatures") . " WHERE creatureid = " . $creatureid . " ";
 			$result = db_query_cached($sql,"creaturename-".$creatureid,86400);

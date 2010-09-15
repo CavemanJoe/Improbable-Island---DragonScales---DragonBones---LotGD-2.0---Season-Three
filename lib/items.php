@@ -459,6 +459,38 @@ function has_item($item, $prefs=false, $acctid=false){
 	return false;
 }
 
+//returns the quantity of items that the player holds
+function has_item_quantity($item, $prefs=false, $acctid=false){
+	if (!$acctid){
+		global $session, $inventory;
+		if (!isset($inventory)){
+			load_inventory();
+		}
+	} else {
+		$inventory = load_inventory($acctid,true);
+	}
+	$quantity = 0;
+	foreach($inventory AS $id => $vals){
+		if ($vals['item']==$item){
+			//we have a match - do the prefs line up?
+			if (is_array($prefs)){
+				$unsuitable = false;
+				foreach($prefs AS $setting => $value){
+					if ($vals[$setting]!=$value){
+						$unsuitable = true;
+					}
+					if (!$unsuitable){
+						$quantity++;
+					}
+				}
+			} else {
+				$quantity++;
+			}
+		}
+	}
+	return $quantity;
+}
+
 function get_item_with_quantities($item){
 	global $session, $inventory;
 	if (!isset($inventory)){

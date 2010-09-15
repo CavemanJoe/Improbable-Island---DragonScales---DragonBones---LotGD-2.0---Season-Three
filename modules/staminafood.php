@@ -162,9 +162,9 @@ function staminafood_dohook($hookname,$args){
 
 function staminafood_run(){
 	global $session;
-	$pmeat1 = get_items_with_quantities("meat_low");
-	$pmeat2 = get_items_with_quantities("meat_medium");
-	$pmeat3 = get_items_with_quantities("meat_high");
+	$pmeat1 = has_item_quantity("meat_low");
+	$pmeat2 = has_item_quantity("meat_medium");
+	$pmeat3 = has_item_quantity("meat_high");
 	addnav("Eat");
 	switch (httpget("op")){
 		case "sellmeat":

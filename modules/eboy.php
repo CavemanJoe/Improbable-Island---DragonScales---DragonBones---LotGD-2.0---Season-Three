@@ -2,10 +2,10 @@
 
 function eboy_getmoduleinfo(){
 	$info=array(
-		"name"=>"IItems - eBoy's Trading Station",
+		"name"=>"eBoy's Trading Station",
 		"version"=>"2009-10-01",
 		"author"=>"Dan Hall, aka Caveman Joe, improbableisland.com",
-		"category"=>"IItems",
+		"category"=>"Improbable",
 		"download"=>"",
 	);
 	return $info;
