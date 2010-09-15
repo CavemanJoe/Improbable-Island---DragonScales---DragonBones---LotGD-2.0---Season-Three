@@ -4,7 +4,7 @@ function meatsystem_getmoduleinfo(){
 	$info = array(
 		"name"=>"Meat System",
 		"author"=>"Dan Hall AKA CavemanJoe, ImprobableIsland.com",
-		"version"=>"2009-06-13",
+		"version"=>"2010-09-15",
 		"category"=>"Improbable",
 		"download"=>"",
 		"prefs-creatures"=>array(

@@ -507,25 +507,56 @@ function get_item_with_quantities($item){
 	return $ret;
 }
 
-function get_items_with_prefs($properties){
-	//use a single property, or an array of properties
+function get_items_with_prefs($properties,$eval=false,$gt=false){
+	//use a single property, or an array of properties, or an array of properties and values
+	//example usage:
+	/*
+	
+	//gets player's hats
+	$hats = get_items_with_prefs("ishat");
+	//gets player's hats with bells on
+	$hatswithbells_prefs = array("ishat","hasbells");
+	$hatswithbells = get_items_with_prefs($hatswithbells_prefs);
+	//gets player's hats that have bells and are red
+	$redhats_prefs = array("colour"=>"red","ishat"=>true);
+	$redhats = get_items_with_prefs($redhats_prefs,true);
+	//gets player's hats that are red, have bells, and are of size two or more
+	$bigredhatswithbells_prefs = array("colour"=>"red","ishat"=>true,"hasbells"=>true,"hatsize"=>2);
+	$bigredhatswithbells = get_items_with_prefs($bigredhatswithbells_prefs,true,true);
+	
+	*/
+	
 	global $session, $inventory;
 	if (!isset($inventory)){
 		load_inventory();
 	}
 	$ret = array();
 	if (is_array($properties)){
-		foreach($inventory AS $id => $vals){
-			foreach($properties AS $property){
-				if (isset($vals[$property])){
-					$ret[$id]=$vals;
+		foreach($inventory AS $id => $prefs){
+			if (!$eval){
+				foreach($properties AS $property){
+					if (isset($prefs[$property])){
+						$ret[$id]=$prefs;
+					}
+				}
+			} else if (!$gt){
+				foreach($properties AS $setting => $value){
+					if ($prefs[$setting]==$value)){
+						$ret[$id]=$prefs;
+					}
+				}
+			} else {
+				foreach($properties AS $setting => $value){
+					if ($prefs[$setting]>=$value)){
+						$ret[$id]=$prefs;
+					}
 				}
 			}
 		}
 	} else {
-		foreach($inventory AS $id => $vals){
-			if (isset($vals[$properties])){
-				$ret[$id]=$vals;
+		foreach($inventory AS $id => $prefs){
+			if (isset($prefs[$properties])){
+				$ret[$id]=$prefs;
 			}
 		}
 	}
