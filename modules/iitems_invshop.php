@@ -39,7 +39,7 @@ function iitems_invshop_run(){
 	page_header("The Luggage Hut");
 	
 	$backpackprefs = array(
-		"carrieritem"=>"main";
+		"carrieritem"=>"main",
 	);
 	$backpack = get_items_with_prefs($backpackprefs);
 	
@@ -49,7 +49,7 @@ function iitems_invshop_run(){
 	}
 	
 	$bandolierprefs = array(
-		"carrieritem"=>"fight";
+		"carrieritem"=>"fight",
 	);
 	$bandolier = get_items_with_prefs($bandolierprefs);
 	
