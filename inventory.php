@@ -156,10 +156,9 @@ foreach($dinv AS $carrier => $cvals){
 							if (!$prefs['blocktransfer'] || $prefs['allowtransfer']==$carrier){ //the item is not blocked from being transferred completely OR the item is allowed to be transferred to only this carrier
 								$cvname = $cprefs['verbosename'];
 								//check hard weight limits
-								if ($carrier['wlimit_hardlimit']){
-									//debug($carrier." has hard weight limit");
+								if ($cprefs['wlimit_hardlimit']){
 									//check weight
-									if ($carrier['weight_max'] < ($carrier['weight_current'] + $prefs['weight'])){
+									if ($cprefs['weight_max'] < ($cprefs['weight_current'] + $prefs['weight'])){
 										//rawoutput("This item won't fit in your $cvname<br />");
 										continue;
 									}

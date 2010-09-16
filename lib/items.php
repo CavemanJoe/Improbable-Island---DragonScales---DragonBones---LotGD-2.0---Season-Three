@@ -100,11 +100,15 @@ function items_dragonkill($acctid=false){
 function get_player_items($acctid){
 	global $session;
 	$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE owner='$acctid'";
-	//debug($sql);
 	$result = db_query($sql);
 	$items = array();
 	while ($row = db_fetch_assoc($result)){
 		$items[$row['id']]['item'] = $row['item'];
+	}
+	if (!count($items)){
+		//assign starting items
+		give_item("bandolier1");
+		give_item("backpack1");
 	}
 	return $items;
 }

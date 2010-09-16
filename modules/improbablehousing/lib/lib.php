@@ -15,7 +15,7 @@ function improbablehousing_getkeytype($house,$rid,$acctid=false){
 	}
 }
 
-function improbablehousing_getnearbyhouses_new($loc){
+function improbablehousing_getnearbyhouses($loc){
 	global $session;
 	//$sql = "SELECT hid,ownedby FROM " . db_prefix("buildings") . " WHERE location = '$loc'";
 	$sql = "SELECT * FROM ".db_prefix("buildings")." WHERE location = '$loc'";
@@ -38,30 +38,30 @@ function improbablehousing_getnearbyhouses_new($loc){
 	return $r;
 }
 
-function improbablehousing_getnearbyhouses($loc){
-	global $session;
-	$sql = "SELECT id,ownedby,data FROM " . db_prefix("improbabledwellings") . " WHERE location = '$loc'";
-	$result = db_query_cached($sql,"housing/housing_location_".$loc);
-	//todo: cache this query, or rather, invalidate the cache properly after staking a claim
-	//$result = db_query($sql);
-	$n = db_num_rows($result);
+// function improbablehousing_getnearbyhouses($loc){
+	// global $session;
+	// $sql = "SELECT id,ownedby,data FROM " . db_prefix("improbabledwellings") . " WHERE location = '$loc'";
+	// $result = db_query_cached($sql,"housing/housing_location_".$loc);
+	// //todo: cache this query, or rather, invalidate the cache properly after staking a claim
+	// //$result = db_query($sql);
+	// $n = db_num_rows($result);
 	
-	if (!$n){
-		return null;
-	} else {
-		$r = array();
-		for ($i=0;$i<$n;$i++){
-			$row=db_fetch_assoc($result);
-			$house = array(
-				"id"=>$row['id'],
-				"ownedby"=>$row['ownedby'],
-				"data"=>unserialize($row['data']),
-			);
-			$r[]=$house;
-		}
-	}
-	return $r;
-}
+	// if (!$n){
+		// return null;
+	// } else {
+		// $r = array();
+		// for ($i=0;$i<$n;$i++){
+			// $row=db_fetch_assoc($result);
+			// $house = array(
+				// "id"=>$row['id'],
+				// "ownedby"=>$row['ownedby'],
+				// "data"=>unserialize($row['data']),
+			// );
+			// $r[]=$house;
+		// }
+	// }
+	// return $r;
+// }
 
 function improbablehousing_shownearbyhouses($loc){
 	global $session;
@@ -172,22 +172,22 @@ function improbablehousing_stakeable($loc){
 	}
 }
 
-function improbablehousing_gethousedata($houseid){
-	$sql = "SELECT ownedby,data,location FROM " . db_prefix("improbabledwellings") . " WHERE id = '$houseid'";
-	$result = db_query($sql);
-	$row=db_fetch_assoc($result);
-	$data=$row['data'];
-	$data=stripslashes($data);
-	$data=unserialize($data);
-	$ret = array(
-		"ownedby"=>$row['ownedby'],
-		"id"=>$houseid,
-		"data"=>$data,
-		"location"=>$row['location'],
-	);
-	//debug($ret);
-	return $ret;
-}
+// function improbablehousing_gethousedata($houseid){
+	// $sql = "SELECT ownedby,data,location FROM " . db_prefix("improbabledwellings") . " WHERE id = '$houseid'";
+	// $result = db_query($sql);
+	// $row=db_fetch_assoc($result);
+	// $data=$row['data'];
+	// $data=stripslashes($data);
+	// $data=unserialize($data);
+	// $ret = array(
+		// "ownedby"=>$row['ownedby'],
+		// "id"=>$houseid,
+		// "data"=>$data,
+		// "location"=>$row['location'],
+	// );
+	// //debug($ret);
+	// return $ret;
+// }
 
 // function improbablehousing_sethousedata_old($house){
 	// // debug("Setting house data: ");
@@ -232,7 +232,7 @@ function improbablehousing_gethousedata($houseid){
 	// }
 // }
 
-function improbablehousing_gethousedata_new($houseid){
+function improbablehousing_gethousedata($houseid){
 	//query our four tables: buildings, building_prefs, rooms, room_prefs - and bring them all together in an array
 	
 	//NEW VERSION
@@ -296,44 +296,44 @@ function improbablehousing_sethousedata($house){
 	//================================OLD VERSION==============================
 	// debug("Setting house data: ");
 	// debug($house);
-	$id = $house['id'];
-	$data = $house['data'];
-	if (!isset($house['data']['rooms'][0]['size']) && $house['data']['buildjobs'][0]['name']!="Initial Dwelling Construction"){
-		redirect("runmodule.php?module=improbablehousing&op=error&sub=manualfix&hid=".$id);
-		return false;
-	}
+	// $id = $house['id'];
+	// $data = $house['data'];
+	// if (!isset($house['data']['rooms'][0]['size']) && $house['data']['buildjobs'][0]['name']!="Initial Dwelling Construction"){
+		// redirect("runmodule.php?module=improbablehousing&op=error&sub=manualfix&hid=".$id);
+		// return false;
+	// }
 
-	$data = serialize($data);
-	$data = addslashes($data);
+	// $data = serialize($data);
+	// $data = addslashes($data);
 	
-	//check the data can be unserialized
-	$test = stripslashes($data);
-	$test = unserialize($test);
-	if (!isset($test['name'])){
-		redirect("runmodule.php?module=improbablehousing&op=error&sub=unzip&hid=".$id);
-		return false;
-	}
+	// //check the data can be unserialized
+	// $test = stripslashes($data);
+	// $test = unserialize($test);
+	// if (!isset($test['name'])){
+		// redirect("runmodule.php?module=improbablehousing&op=error&sub=unzip&hid=".$id);
+		// return false;
+	// }
 	
-	if (strlen($data)>15000000){
-		redirect("runmodule.php?module=improbablehousing&op=error&sub=overflow&hid=".$id);
-		return false;
-	} else {
-		$sql = "UPDATE ".db_prefix("improbabledwellings")." SET data='$data' WHERE id='$id'";
-		db_query($sql);
-		//now check that the data can be read again
-		$csql = "SELECT data FROM " . db_prefix("improbabledwellings") . " WHERE id = '$id'";
-		//TODO: Cache and properly invalidate this query
-		$cresult = db_query($csql);
-		$crow=db_fetch_assoc($cresult);
-		$cdata=$crow['data'];
-		$errmarg = strlen(stripslashes($cdata)) - strlen(stripslashes($data));
-		// debug($errmarg);
-		if ($errmarg > 10 || $errmarg < -10){
-			require_once("lib/systemmail.php");
-			systemmail(1,"Dwelling error!","HouseID: ".$house['id']." Old Data: ".$data." - New Data: ".$cdata);
-			mail("cavemanjoe@gmail.com","Dwelling error plaintext!","HouseID: ".$house['id']." Old Data: ".$data." - New Data: ".$cdata,"From: ".getsetting("gameadminemail","postmaster@localhost"));
-		}
-	}
+	// if (strlen($data)>15000000){
+		// redirect("runmodule.php?module=improbablehousing&op=error&sub=overflow&hid=".$id);
+		// return false;
+	// } else {
+		// $sql = "UPDATE ".db_prefix("improbabledwellings")." SET data='$data' WHERE id='$id'";
+		// db_query($sql);
+		// //now check that the data can be read again
+		// $csql = "SELECT data FROM " . db_prefix("improbabledwellings") . " WHERE id = '$id'";
+		// //TODO: Cache and properly invalidate this query
+		// $cresult = db_query($csql);
+		// $crow=db_fetch_assoc($cresult);
+		// $cdata=$crow['data'];
+		// $errmarg = strlen(stripslashes($cdata)) - strlen(stripslashes($data));
+		// // debug($errmarg);
+		// if ($errmarg > 10 || $errmarg < -10){
+			// require_once("lib/systemmail.php");
+			// systemmail(1,"Dwelling error!","HouseID: ".$house['id']." Old Data: ".$data." - New Data: ".$cdata);
+			// mail("cavemanjoe@gmail.com","Dwelling error plaintext!","HouseID: ".$house['id']." Old Data: ".$data." - New Data: ".$cdata,"From: ".getsetting("gameadminemail","postmaster@localhost"));
+		// }
+	// }
 	//================================NEW VERSION==============================
 	// debug("Setting house data: ");
 	// debug($house);
