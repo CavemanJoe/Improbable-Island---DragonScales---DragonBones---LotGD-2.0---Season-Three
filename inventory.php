@@ -18,7 +18,7 @@ if (!isset($inventory)){
 
 //handle moving, using, discarding, and contexts
 if ($items_transferitem && $items_transferto){
-	set_item_pref("inventorylocation",$items_transferto,$items_transferitem);
+	move_item($items_transferitem,$items_transferto);
 }
 
 if ($items_useitem){
@@ -94,6 +94,7 @@ foreach($carriers AS $carrier => $vals){
 //debug($dinv);
 
 foreach($dinv AS $carrier => $cvals){
+	//debug($cvals);
 	rawoutput("<a name=\"$carrier\"></a><table width=100% style='border: dotted 1px #000000'><tr><td>");
 	if ($cvals['carrier']['image']) rawoutput("<table width=100% cellpadding=0 cellspacing=0><tr><td>");
 	output_notl("`b%s`b`n",$cvals['carrier']['verbosename']);

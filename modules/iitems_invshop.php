@@ -41,7 +41,8 @@ function iitems_invshop_run(){
 	$backpackprefs = array(
 		"carrieritem"=>"main",
 	);
-	$backpack = get_items_with_prefs($backpackprefs);
+	$backpack = get_items_with_prefs($backpackprefs,true);
+	debug($backpack);
 	
 	foreach($backpack AS $key => $prefs){
 		$currentbackpack = $prefs;
@@ -51,12 +52,15 @@ function iitems_invshop_run(){
 	$bandolierprefs = array(
 		"carrieritem"=>"fight",
 	);
-	$bandolier = get_items_with_prefs($bandolierprefs);
-	
+	$bandolier = get_items_with_prefs($bandolierprefs,true);
+	debug($bandolier);
 	foreach($bandolier AS $key => $prefs){
 		$currentbandolier = $prefs;
 		$currentbandolierid = $key;
 	}
+	
+	global $inventory;
+	debug($inventory);
 	
 	$tradein_main = round($currentbackpack['invshop_price'] * 0.6);
 	$tradein_fight = round($currentbandolier['invshop_price'] * 0.6);
@@ -74,14 +78,15 @@ function iitems_invshop_run(){
 				$invloc = "fight";
 				$tradein = $tradein_fight;
 			}
-			$price = get_item_setting("price",$item);
+			$price = get_item_setting("invshop_price",$item);
+			debug($price);
 			
 			if ($price > ($session['user']['gems'] + $tradein)){
 				//todo
 				output("Sharon shakes her head, her mullet swaying back and forth.  \"`2Sorry love - even with the trade-in, that's just not going to be enough.`0\"`n`nYou don't actually `ihave`i that many cigarettes.  Shame.");
 			} else {
 				$has = has_item($item);
-				if ($has || $has===0){
+				if ($has){
 					output("Sharon smiles as she takes your cigarettes.  She pauses when she sees your old equipment.`n`n\"`2Uh, mate...  That's `iexactly`i the same as the one you're buying.  I'm not gonna take your cigs and then give you something that's no different to what you've already got - I'm not Sheila, you know?`0\"`n`nEmbarrassed, you nod, and take back your cigarettes.");
 				} else {
 					output("Sharon smiles as you hand over your cigarettes and your old equipment.  \"`2Great stuff.  Here you go, one lovely new shiny piece of luggage!  Treat it well, now!`0\"");

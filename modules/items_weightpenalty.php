@@ -32,7 +32,6 @@ function items_weightpenalty_dohook($hookname,$args){
 					$mult = $prefs['weight_current'] / $prefs['weight_max'];
 					$sbuffid = "wlimit_".$carrier;
 					if ($mult>1){
-						debug("applying overweight buff");
 						apply_stamina_buff($sbuffid, array(
 							"name"=>$prefs['wlimit_sbuff_name'],
 							"action"=>"global",

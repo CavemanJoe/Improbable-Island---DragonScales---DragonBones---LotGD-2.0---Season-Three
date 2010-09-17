@@ -105,11 +105,6 @@ function get_player_items($acctid){
 	while ($row = db_fetch_assoc($result)){
 		$items[$row['id']]['item'] = $row['item'];
 	}
-	if (!count($items)){
-		//assign starting items
-		give_item("bandolier1");
-		give_item("backpack1");
-	}
 	return $items;
 }
 
@@ -142,17 +137,18 @@ function load_item_settings(){
 	$ssql = "SELECT * FROM ".db_prefix("items_settings");
 	$sresult = db_query($ssql);
 	while ($srow = db_fetch_assoc($sresult)){
-		$itemsettings[$srow['item']][$srow['setting']] = $srow['value'];
+		$itemsettings[$srow['item']][$srow['setting']] = stripslashes($srow['value']);
 	}
 }
 
 function load_item_prefs($items){
-	global $session, $itemprefs;
+	global $session, $itemprefs, $updated_itemprefs;
 	//load prefs for all items specified in $items, put them into $itemprefs
 	
 	if (!is_array($itemprefs)){
 		$itemprefs = array();
 	}
+	
 	if (is_array($items)){
 		$psql = "SELECT * FROM ".db_prefix("items_prefs")." WHERE id IN (";
 		foreach($items AS $id => $item){
@@ -165,8 +161,13 @@ function load_item_prefs($items){
 	}
 	$presult = db_query($psql);
 	while ($prow = db_fetch_assoc($presult)){
-		$itemprefs[$prow['id']][$prow['setting']]=$prow['value'];
+		$itemprefs[$prow['id']][$prow['setting']] = stripslashes($prow['value']);
 	}
+	
+	if (is_array($updated_itemprefs)){
+		$itemprefs = array_merge($itemprefs,$updated_itemprefs);
+	}
+	
 }
 
 function load_inventory($acctid=false,$npcflag=false){
@@ -181,7 +182,11 @@ function load_inventory($acctid=false,$npcflag=false){
 	$items = get_player_items($acctid);
 	if (!is_array($items) || !count($items)){
 		debug("No items found!");
-		return array();
+		debug("ASSIGNING STARTER ITEMS");
+		//assign starting items
+		give_item("bandolier1",false,$acctid);
+		give_item("backpack1",false,$acctid);
+		$items = get_player_items($acctid);
 	}
 	load_item_prefs($items);
 	load_item_settings();
@@ -195,31 +200,66 @@ function load_inventory($acctid=false,$npcflag=false){
 		if (!$npcflag){
 			//put items that don't have a carrier into the "main" inventory
 			if (!isset($inventory[$id]['inventorylocation'])) $inventory[$id]['inventorylocation'] = "main";
-			//add a "weight_current" pref to all container items - no game setting for this, we'll just assume that if the gamemaster is adding weights to their items then they want to use weights
-			if ($inventory[$id]['carrieritem']){
-				$weights[$inventory[$id]['carrieritem']] = $inventory[$id];
-				$weights[$inventory[$id]['carrieritem']]['id'] = $id;
-			}
-			$weights[$inventory[$id]['inventorylocation']]['weight_current'] += $inventory[$id]['weight'];
 		}
 	}
-	
-	if (count($weights)>0 && !$npcflag){
-		foreach($weights AS $carrier => $vals){
-			$inventory[$vals['id']]['weight_current'] = $vals['weight_current'];
-			if ($inventory[$vals['id']]['weight_current'] > $inventory[$vals['id']]['weight_max']){
-				$runweighthook = true;
-			}
-		}
-		modulehook("items_weights",$weights);
-	}
-	
+	calculate_weights();
 	$inventory = modulehook("load_inventory",$inventory);
 	
 	return $inventory;
 }
 
-function set_item_pref($setting,$value,$itemid){
+function clear_weights(){
+	global $inventory;
+	if (!isset($inventory)){
+		return false;
+	}
+	
+	foreach($inventory AS $itemid => $prefs){
+		if (isset($prefs['weight_current'])){
+			unset($inventory[$itemid]['weight_current']);
+		}
+	}
+}
+
+function move_item($itemid, $to){
+	//function to move items around in players' Inventories
+	global $inventory;
+	if (!isset($inventory)){
+		load_inventory();
+	}
+	set_item_pref("inventorylocation",$to,$itemid);
+	clear_weights();
+	calculate_weights();
+}
+
+function calculate_weights(){
+	global $inventory;
+	if (!isset($inventory)){
+		load_inventory();
+	}
+	
+	$weights = array();
+	$carriers = array();
+	foreach($inventory AS $itemid => $prefs){
+		if ($prefs['carrieritem']){
+			$carriers[$prefs['carrieritem']] = $itemid;
+		} else {
+			$weights[$prefs['inventorylocation']] += $prefs['weight'];
+		}
+	}
+	
+	$hookweights = array();
+	foreach ($weights AS $location => $weight){
+		$itemid = $carriers[$location];
+		$inventory[$itemid]['weight_current'] = $weight;
+		$hookweights[$location] = $inventory[$itemid];
+		$hookweights[$location]['weight_current'] = $weight;
+	}
+	
+	modulehook("items_weights",$hookweights);
+}
+
+function set_item_pref($setting,$value,$itemid,$reloadinventory = false){
 	global $session, $itemprefs, $updated_itemprefs, $inventory;
 
 	if ($itemprefs[$itemid][$setting] == $value) return;
@@ -231,6 +271,10 @@ function set_item_pref($setting,$value,$itemid){
 	}
 
 	$updated_itemprefs[$itemid][$setting] = $value;
+	
+	if ($reloadinventory){
+		load_inventory();
+	}
 }
 
 function clear_item_pref($setting,$itemid){
@@ -312,6 +356,7 @@ function get_item_settings($item){
 function set_item_setting($setting,$value,$item){
 	global $session, $itemsettings;
 	$itemsettings[$item][$setting] = $value;
+	$value = addslashes($value);
 	$sql = "INSERT INTO ".db_prefix("items_settings")." (item,setting,value) VALUES ('$item','$setting','$value') ON DUPLICATE KEY UPDATE value = VALUES(value)";
 	db_query($sql);
 	return $value;
@@ -456,7 +501,7 @@ function use_item($item,$context="default"){
 			return false;
 		}
 		if ($useitem['usetext']){
-			output("`0%s`n`n",stripslashes($useitem['usetext']));
+			output("`0%s`n`n",$useitem['usetext']);
 		}
 		if ($useitem['require_file']){
 			require_once "items/".$useitem['require_file'];
