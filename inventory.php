@@ -35,34 +35,28 @@ $hook = array(
 );
 $hook = modulehook("inventory-predisplay",$hook);
 
-$gr = group_items($inventory);
-//debug($gr);
 addnav("Sort by...");
 addnav("Recently Acquired","inventory.php?items_sort=key&items_context=$context");
 addnav("Alphabetical","inventory.php?items_sort=alpha&items_context=$context");
 addnav("Quantity","inventory.php?items_sort=qty&items_context=$context");
 
 $sort = httpget("items_sort");
-switch ($sort){
-	case "key":
-		arsort($gr);
-	break;
-	case "alpha":
-		usort($gr,'alphacompare');
-	break;
-	case "qty":
-		usort($gr,'qtycompare');
-	break;
-}
-//debug($gr);
-
-function alphacompare($a, $b){
-	return strnatcmp($a['verbosename'], $b['verbosename']);
-}
-
-function qtycompare($a, $b){
-	return strnatcmp($b['quantity'], $a['quantity']);
-}
+$gr = group_items($inventory,$sort);
+// switch ($sort){
+	// case "key":
+		// arsort($gr);
+		// usort($gr, 'sortcarriers');
+	// break;
+	// case "alpha":
+		// usort($gr,'alphacompare');
+		// usort($gr, 'sortcarriers');
+	// break;
+	// case "qty":
+		// usort($gr,'qtycompare');
+		// usort($gr, 'sortcarriers');
+	// break;
+// }
+// //debug($gr);
 
 $hook = array(
 	'inventory' => $gr,
@@ -91,8 +85,6 @@ foreach($carriers AS $carrier => $vals){
 	rawoutput("<a href=\"#".$carrier."\">".$vals['verbosename']."</a> | ");
 }
 
-//debug($dinv);
-
 foreach($dinv AS $carrier => $cvals){
 	//debug($cvals);
 	rawoutput("<a name=\"$carrier\"></a><table width=100% style='border: dotted 1px #000000'><tr><td>");
@@ -111,7 +103,8 @@ foreach($dinv AS $carrier => $cvals){
 	// debug($cvals);
 	if (is_array($cvals['items']) && count($cvals['items'])){
 		rawoutput("<table width=100% style='border: dotted 1px #000000; margin-left:10px; padding-right:-10px;'>");
-		foreach($cvals['items'] AS $itemid => $prefs){
+		foreach($cvals['items'] AS $sortid => $prefs){
+			$itemid = $prefs['itemid'];
 			$classcount+=1;
 			$class=($classcount%2?"trdark":"trlight");
 			rawoutput("<tr class='$class'><td>");

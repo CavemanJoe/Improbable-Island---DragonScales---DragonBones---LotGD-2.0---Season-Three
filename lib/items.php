@@ -687,7 +687,25 @@ function get_items_with_settings($searchsettings){
 	}
 }
 
-function group_items($items){
+function sortcarriers($a, $b){
+	return strnatcmp($a['carrier_sort'], $b['carrier_sort']);
+}
+
+function sortitems($a, $b){
+	return strnatcmp($a['item_sort'], $b['item_sort']);
+}
+
+function alphacompare($a, $b){
+	// debug($a.",".$b." = ".strnatcmp($a['verbosename'], $b['verbosename']));
+	return strnatcmp($a['verbosename'], $b['verbosename']);
+}
+
+function qtycompare($a, $b){
+	// debug($a.",".$b." = ".strnatcmp($b['quantity'], $a['quantity']));
+	return strnatcmp($b['quantity'], $a['quantity']);
+}
+
+function group_items($items,$sort=false){
 	$uni = array();
 	foreach($items AS $itemid => $vals){
 		$sitem = serialize($vals);
@@ -701,11 +719,42 @@ function group_items($items){
 	}
 	//debug($uni);
 	$ret = array();
+	$carriers = array();
+	$items = array();
 	foreach($uni AS $sarray => $data){
 		//debug($data);
 		$ret[$data['data']['itemid']] = $data['data'];
+		if ($data['data']['carrieritem']){
+			$carriers[$data['data']['itemid']] = $data['data'];
+		} else {
+			$items[$data['data']['itemid']] = $data['data'];
+		}
 	}
-	//debug($ret);
+	
+	usort($carriers, 'sortcarriers');
+	
+	switch ($sort){
+		case "qty":
+			usort($items,'qtycompare');
+		break;
+		case "alpha":
+			usort($items,'alphacompare');
+		break;
+		case "key":
+			asort($items);
+		break;
+		case "admin":
+			usort($items,'sortitems');
+		break;
+	}
+		
+	if ($sort){
+		$ret = $carriers;
+		foreach($items AS $key => $vals){
+			$ret[] = $vals;
+		}
+	}
+		
 	return $ret;
 }
 
@@ -717,7 +766,8 @@ function show_item_fightnavs($script){
 	}
 	
 	$gr = group_items($inventory);
-	foreach($gr AS $itemid => $vals){
+	foreach($gr AS $sortid => $vals){
+		$itemid = $vals['itemid'];
 		addnav("Use Fight Items");
 		if ($vals['context_fight'] && $vals['inventorylocation']=="fight" && !$vals['blockuse']){
 			if ($vals['quantity'] > 1){
