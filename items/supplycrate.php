@@ -45,8 +45,9 @@ function supplycrate_use($args){
 	$giveitems = array();
 	$numitems = e_rand(get_module_setting("minitems","supplycrates"),get_module_setting("maxitems","supplycrates"));
 	$chosenitems = array_rand($randompool,$numitems);
-
-	foreach($chosenitems AS $key => $item){
+		
+	foreach($chosenitems AS $key => $poolkey){
+		$item = $randompool[$poolkey];
 		$name = $crateables[$item]['verbosename'];
 		output("You find a %s!`n",$name);
 		give_item($item);

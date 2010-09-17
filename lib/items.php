@@ -180,7 +180,7 @@ function load_inventory($acctid=false,$npcflag=false){
 		global $itemprefs, $itemsettings;
 	}
 	$items = get_player_items($acctid);
-	if (!is_array($items) || !count($items)){
+	if ((!is_array($items) || !count($items)) && !$npcflag){
 		debug("No items found!");
 		debug("ASSIGNING STARTER ITEMS");
 		//assign starting items
@@ -748,11 +748,9 @@ function group_items($items,$sort=false){
 		break;
 	}
 		
-	if ($sort){
-		$ret = $carriers;
-		foreach($items AS $key => $vals){
-			$ret[] = $vals;
-		}
+	$ret = $carriers;
+	foreach($items AS $key => $vals){
+		$ret[] = $vals;
 	}
 		
 	return $ret;

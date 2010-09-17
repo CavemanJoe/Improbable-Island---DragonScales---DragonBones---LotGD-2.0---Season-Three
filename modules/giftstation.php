@@ -30,10 +30,11 @@ function giftstation_dohook($hookname,$args){
 		case "newday":
 			$gifts = load_inventory("giftstation_".$session['user']['acctid'],true);
 			if (count($gifts)>0){
+				debug($gifts);
 				foreach($gifts AS $boxid => $prefs){
 					change_item_owner($boxid,$session['user']['acctid']);
 				}
-				output("`5`bThere's a present here!`b  How awesome!  You pick it up and put it in your Backpack.`0`n`n");
+				output("`5`b`nThere's a present here!`b  How awesome!  You pick it up and put it in your Backpack.`0`n`n");
 			}
 			break;
 	}

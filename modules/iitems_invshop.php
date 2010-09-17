@@ -42,7 +42,7 @@ function iitems_invshop_run(){
 		"carrieritem"=>"main",
 	);
 	$backpack = get_items_with_prefs($backpackprefs,true);
-	debug($backpack);
+	// debug($backpack);
 	
 	foreach($backpack AS $key => $prefs){
 		$currentbackpack = $prefs;
@@ -53,14 +53,14 @@ function iitems_invshop_run(){
 		"carrieritem"=>"fight",
 	);
 	$bandolier = get_items_with_prefs($bandolierprefs,true);
-	debug($bandolier);
+	// debug($bandolier);
 	foreach($bandolier AS $key => $prefs){
 		$currentbandolier = $prefs;
 		$currentbandolierid = $key;
 	}
 	
 	global $inventory;
-	debug($inventory);
+	// debug($inventory);
 	
 	$tradein_main = round($currentbackpack['invshop_price'] * 0.6);
 	$tradein_fight = round($currentbandolier['invshop_price'] * 0.6);
@@ -79,7 +79,7 @@ function iitems_invshop_run(){
 				$tradein = $tradein_fight;
 			}
 			$price = get_item_setting("invshop_price",$item);
-			debug($price);
+			//debug($price);
 			
 			if ($price > ($session['user']['gems'] + $tradein)){
 				//todo

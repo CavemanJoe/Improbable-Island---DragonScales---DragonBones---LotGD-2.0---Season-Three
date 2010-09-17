@@ -51,6 +51,7 @@ function worldmap_items_dohook($hookname,$args){
 		case "worldnav":
 			$ploc = implode(",",$args);
 			$squarestuff = load_inventory("worldmap_".$ploc, true);
+			//debug($squarestuff);
 			//$squarestuff = worldmap_items_getsquare($ploc);
 			//debug($squarestuff);
 			$itemid = httpget('item-pickup');
@@ -86,6 +87,7 @@ function worldmap_items_dohook($hookname,$args){
 			}
 			
 			$squarestuff = group_items($squarestuff);
+			//debug($squarestuff);
 			
 			foreach($squarestuff AS $itemid => $prefs){
 				$showmsg = true;

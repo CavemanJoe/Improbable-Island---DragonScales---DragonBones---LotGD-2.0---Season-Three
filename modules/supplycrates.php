@@ -22,6 +22,9 @@ function supplycrates_getmoduleinfo(){
 
 function supplycrates_install(){
 	module_addhook("donation");
+	set_item_setting("context_forest",true,"supplycrate");
+	set_item_setting("context_village",true,"supplycrate");
+	set_item_setting("context_worldmap",true,"supplycrate");
 	set_item_setting("description","A large crate filled with... well, who knows what?","supplycrate");
 	set_item_setting("destroyafteruse",true,"supplycrate");
 	set_item_setting("dropworldmap",true,"supplycrate");
