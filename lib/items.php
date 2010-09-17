@@ -496,7 +496,7 @@ function use_item($item,$context="default"){
 		$useitem['id'] = $item;
 		$useitem['context'] = $context;
 		$useitem = modulehook("use_item",$useitem);
-		debug($useitem);
+		//debug($useitem);
 		if ($useitem['break_use_operation']){
 			return false;
 		}

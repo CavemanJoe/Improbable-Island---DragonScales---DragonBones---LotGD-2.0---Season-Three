@@ -169,8 +169,13 @@ function eboy_run(){
 		}
 		rawoutput("<table width=100%><tr><td width=50%>");
 		output("`bStock:`b %s",$stock);
+		if ($settings['eboy_stock_'.$cid] < 3){
+			$buy = round($settings['eboy_price_'.$cid]*0.5);
+		} else {
+			$buy = round($settings['eboy_price_'.$cid]*0.7);
+		}
 		if ($settings['eboy_price_'.$cid] > 0){
-			output("`n`7Buying at: %s Requisition",number_format($settings['eboy_price_'.$cid]));
+			output("`n`7Buying at: %s Requisition",number_format($buy));
 		} else {
 			output("`nNot Buying");
 		}

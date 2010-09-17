@@ -60,9 +60,7 @@ function worldmap_items_dohook($hookname,$args){
 				//Pick up iitems
 				if (httpget('pickupall')){
 					//Pick up all iitems
-					//$squarestuff = worldmap_items_getsquare($ploc,false);
 					$itemtype = $squarestuff[$itemid]['item'];
-					//debug($itemtype);
 					$pickup = array();
 					foreach($squarestuff AS $sqitemid => $sqprefs){
 						//debug($sqprefs);
@@ -89,7 +87,8 @@ function worldmap_items_dohook($hookname,$args){
 			$squarestuff = group_items($squarestuff);
 			//debug($squarestuff);
 			
-			foreach($squarestuff AS $itemid => $prefs){
+			foreach($squarestuff AS $sortid => $prefs){
+				$itemid = $prefs['itemid'];
 				$showmsg = true;
 				if ($prefs['quantity'] > 1){
 					addnav("Pick up items");
