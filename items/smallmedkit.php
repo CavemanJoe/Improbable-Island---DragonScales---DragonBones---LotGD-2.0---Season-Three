@@ -21,6 +21,7 @@ function smallmedkit_define_item(){
 }
 
 function smallmedkit_use($args){
+	global $session;
 	$session['user']['hitpoints'] += 20;
 }
 
