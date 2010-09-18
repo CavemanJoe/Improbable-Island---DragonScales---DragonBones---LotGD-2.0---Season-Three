@@ -145,25 +145,27 @@ foreach($dinv AS $carrier => $cvals){
 			$divide=false;
 			
 			//now handle moving items from one carrier to another
-			foreach($carriers AS $carrier => $cprefs){
-				if ($divide) output_notl(" | ");
-				$divide=false;
-				if (!$cprefs['blocktransfer'] || $prefs['allowtransfer']==$carrier){ //the carrier doesn't block transfers in OR this item is specifically allowed in
-					if ($prefs['inventorylocation']!=$carrier){ //the item is not already in the carrier
-						if (!$prefs['blockcarrier_'.$carrier]){ //the item is not blocked from being in this carrier
-							if (!$prefs['blocktransfer'] || $prefs['allowtransfer']==$carrier){ //the item is not blocked from being transferred completely OR the item is allowed to be transferred to only this carrier
-								$cvname = $cprefs['verbosename'];
-								//check hard weight limits
-								if ($cprefs['wlimit_hardlimit']){
-									//check weight
-									if ($cprefs['weight_max'] < ($cprefs['weight_current'] + $prefs['weight'])){
-										//rawoutput("This item won't fit in your $cvname<br />");
-										continue;
+			if (!$cvals['carrier']['blocktransferout']){
+				foreach($carriers AS $carrier => $cprefs){
+					if ($divide) output_notl(" | ");
+					$divide=false;
+					if (!$cprefs['blocktransfer'] || $prefs['allowtransfer']==$carrier){ //the carrier doesn't block transfers in OR this item is specifically allowed in
+						if ($prefs['inventorylocation']!=$carrier){ //the item is not already in the carrier
+							if (!$prefs['blockcarrier_'.$carrier]){ //the item is not blocked from being in this carrier
+								if (!$prefs['blocktransfer'] || $prefs['allowtransfer']==$carrier){ //the item is not blocked from being transferred completely OR the item is allowed to be transferred to only this carrier
+									$cvname = $cprefs['verbosename'];
+									//check hard weight limits
+									if ($cprefs['wlimit_hardlimit']){
+										//check weight
+										if ($cprefs['weight_max'] < ($cprefs['weight_current'] + $prefs['weight'])){
+											//rawoutput("This item won't fit in your $cvname<br />");
+											continue;
+										}
 									}
+									$divide = true;
+									rawoutput("<a href=\"inventory.php?items_transferitem=$itemid&items_transferto=$carrier&items_context=$context&items_sort=$sort\">Transfer to your $cvname</a>");
+									addnav("","inventory.php?items_transferitem=$itemid&items_transferto=$carrier&items_context=$context&items_sort=$sort");
 								}
-								$divide = true;
-								rawoutput("<a href=\"inventory.php?items_transferitem=$itemid&items_transferto=$carrier&items_context=$context&items_sort=$sort\">Transfer to your $cvname</a>");
-								addnav("","inventory.php?items_transferitem=$itemid&items_transferto=$carrier&items_context=$context&items_sort=$sort");
 							}
 						}
 					}
