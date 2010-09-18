@@ -1,11 +1,10 @@
 <?php
-require_once("modules/worldmapen.php");
 
 function supplycrates_getmoduleinfo(){
 	$info = array(
-		"name"=>"IItems - Crates on World Map",
+		"name"=>"Supply Crates",
 		"author"=>"Dan Hall",
-		"version"=>"2009-09-27",
+		"version"=>"2010-09-17",
 		"category"=>"Iitems",
 		"download"=>"",
 		"settings"=>array(
@@ -22,19 +21,6 @@ function supplycrates_getmoduleinfo(){
 
 function supplycrates_install(){
 	module_addhook("donation");
-	set_item_setting("context_forest",true,"supplycrate");
-	set_item_setting("context_village",true,"supplycrate");
-	set_item_setting("context_worldmap",true,"supplycrate");
-	set_item_setting("description","A large crate filled with... well, who knows what?","supplycrate");
-	set_item_setting("destroyafteruse",true,"supplycrate");
-	set_item_setting("dropworldmap",true,"supplycrate");
-	set_item_setting("giftable",true,"supplycrate");
-	set_item_setting("image","supplycrate.png","supplycrate");
-	set_item_setting("plural","Supply Crates","supplycrate");
-	set_item_setting("verbosename","Supply Crate","supplycrate");
-	set_item_setting("weight","20","supplycrate");
-	set_item_setting("require_file","supplycrate.php","supplycrate");
-	set_item_setting("call_function","supplycrate_use","supplycrate");
 	return true;
 }
 

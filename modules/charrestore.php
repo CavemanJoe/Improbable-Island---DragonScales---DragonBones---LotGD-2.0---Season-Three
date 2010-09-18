@@ -52,7 +52,8 @@ function charrestore_dohook($hookname,$args){
 		if ($args['deltype']==CHAR_DELETE_PERMADEATH &&
 				!get_module_setting("permadeath_snapshot")) return $args;
 		//time to create a snapshot.
-		$sql = "SELECT * FROM ".db_prefix("accounts")." WHERE acctid='{$args['acctid']}'";
+		foreach($args['ids'] AS $acctid){
+		$sql = "SELECT * FROM ".db_prefix("accounts")." WHERE acctid='$acctid'";
 		$result = db_query($sql);
 		if (db_num_rows($result) > 0){
 			$row = db_fetch_assoc($result);
@@ -78,7 +79,7 @@ function charrestore_dohook($hookname,$args){
 			}
 
 			//set up the user's module preferences
-			$sql = "SELECT * FROM ".db_prefix("module_userprefs")." WHERE userid='{$args['acctid']}'";
+			$sql = "SELECT * FROM ".db_prefix("module_userprefs")." WHERE userid='$acctid'";
 			$prefs = db_query($sql);
 			while ($row = db_fetch_assoc($prefs)){
 				if (!isset($user['prefs'][$row['modulename']])){
@@ -100,6 +101,7 @@ function charrestore_dohook($hookname,$args){
 				}
 				fclose($fp);
 			}
+		}
 		}
 	}
 	return $args;

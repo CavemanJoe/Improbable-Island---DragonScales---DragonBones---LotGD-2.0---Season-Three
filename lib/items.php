@@ -259,7 +259,7 @@ function calculate_weights(){
 	modulehook("items_weights",$hookweights);
 }
 
-function set_item_pref($setting,$value,$itemid,$reloadinventory = false){
+function set_item_pref($setting,$value,$itemid,$reloadinventory=false){
 	global $session, $itemprefs, $updated_itemprefs, $inventory;
 
 	if ($itemprefs[$itemid][$setting] == $value) return;
@@ -392,16 +392,14 @@ function change_item_owner($itemids,$newowner){
 	if (is_array($itemids)){
 		$sql = "UPDATE ".db_prefix("items_player")." SET owner='$newowner' WHERE id IN (";
 		foreach($itemids AS $id){
-			// if (isset($inventory[$id])) unset($inventory[$id]);
-			// if (isset($itemprefs[$id])) unset($itemprefs[$id]);
 			$sql .= $id.",";
+			set_item_pref("inventorylocation","main",$id);
 		}
 		$sql = substr_replace($sql,"",-1);
 		$sql .= ")";
 	} else {
 		$sql = "UPDATE ".db_prefix("items_player")." SET owner='$newowner' WHERE id='$itemids'";
-		// if (isset($inventory[$itemids])) unset($inventory[$itemids]);
-		// if (isset($itemprefs[$itemids])) unset($itemprefs[$itemids]);
+		set_item_pref("inventorylocation","main",$itemids);
 	}
 	if ($itemids){
 		//debug($sql);
@@ -420,13 +418,24 @@ function give_item($item, $prefs=false, $acctid=false){
 	if (!$acctid){
 		$acctid = $session['user']['acctid'];
 	}
+	
+	if (get_item_setting("unique",$item)){
+		//check for duplicate items
+		$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE item = '$item' AND owner = '$acctid'";
+		$result = db_query($sql);
+		if (db_num_rows($result)){
+			output("`c`b`4HORRIBLE HORRIBLE ITEM SYSTEM ERROR`nSomething has gone wrong, and the item system has tried to give you an item of which you should have only one.  Like a backpack or something.  Please report this, and tell us exactly what you did!`0`b`c`n`n");
+			return false;
+		}
+	}
+	
 	$sql = "INSERT INTO ".db_prefix("items_player")." (item, owner) VALUES ('$item','$acctid')";
 	db_query($sql);
 	
+	//get the id of the last item entered
 	$key = mysql_insert_id();
 	
 	if (is_array($prefs)){
-		//get the id of the last item entered
 		foreach ($prefs AS $setting=>$value){
 			set_item_pref($setting,$value,$key);
 		}

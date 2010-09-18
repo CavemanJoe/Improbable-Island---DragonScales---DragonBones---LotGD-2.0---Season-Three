@@ -24,9 +24,16 @@ function hunterslodge_permanentaccount_dohook($hookname,$args){
 	global $session;
 	switch($hookname){
 	case "delete_character":
-		if (has_item("hunterslodge_permanentaccount",$args['acctid'])){
-			$args['dodel']=false;
+		$acctids = $args['ids'];
+		$joined = join($acctids,",");
+		$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE acctid IN ($joined) AND item = 'hunterslodge_permanentaccount'";
+		$result = db_query($sql);
+		
+		while ($row = db_fetch_assoc($result)){
+			unset($acctids[$row['acctid']]);
 		}
+		
+		$args['ids'] = $acctids;
 		break;
 	}
 	return $args;

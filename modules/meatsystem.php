@@ -87,6 +87,7 @@ function meatsystem_dohook($hookname,$args){
 					}
 					set_module_pref("carcasses", serialize($carcasses));
 					set_module_pref("hooks-since-last",0);
+					debug($carcasses);
 				}
 			break;
 			case "worldnav":
@@ -129,6 +130,7 @@ function meatsystem_dohook($hookname,$args){
 				if (!is_array($carcasses)) {
 					$carcasses = array();
 				}
+				debug($carcasses);
 				if (get_module_pref("hooks-since-last") > 1){
 					$carcasses = array();
 					set_module_pref("carcasses",$carcasses);

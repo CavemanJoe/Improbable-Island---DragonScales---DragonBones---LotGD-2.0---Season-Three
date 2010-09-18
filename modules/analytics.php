@@ -37,14 +37,16 @@ function analytics_dohook($hookname,$args){
 		addnav("Analytics","runmodule.php?module=analytics&op=start");
 		break;
 	case "delete_character":
-		$sql = "SELECT * FROM ".db_prefix("accounts")." WHERE acctid='{$args['acctid']}'";
-		$result = db_query($sql);
-		if (db_num_rows($result) > 0){
-			$row = db_fetch_assoc($result);
-			debug($row);
-			$sql = "INSERT INTO ".db_prefix("expchars")." (acctid,dateexpired,datecreated,donation) VALUES ('" . $row['acctid'] . "','" . date("Y-m-d") . "','" . $row['regdate'] . "','" . $row['donation'] . "')";
-			debug($sql);
-			db_query($sql);
+		foreach($args['ids'] AS $acctid){
+			$sql = "SELECT * FROM ".db_prefix("accounts")." WHERE acctid='$acctid'";
+			$result = db_query($sql);
+			if (db_num_rows($result) > 0){
+				$row = db_fetch_assoc($result);
+				debug($row);
+				$sql = "INSERT INTO ".db_prefix("expchars")." (acctid,dateexpired,datecreated,donation) VALUES ('" . $row['acctid'] . "','" . date("Y-m-d") . "','" . $row['regdate'] . "','" . $row['donation'] . "')";
+				debug($sql);
+				db_query($sql);
+			}
 		}
 		break;
 	}

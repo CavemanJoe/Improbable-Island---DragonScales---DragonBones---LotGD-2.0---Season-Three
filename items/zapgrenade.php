@@ -18,6 +18,7 @@ function zapgrenade_define_item(){
 }
 
 function zapgrenade_use($args){
+	global $session;
 	debug("Applying Zap Grenade buff");
 	apply_buff('zapgrenade', array(
 		"startmsg"=>"`#You pull the pin on your grenade and toss it at {badguy}`#, shielding your eyes.  After a blinding flash, your foe is left dazed and confused!",

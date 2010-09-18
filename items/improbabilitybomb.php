@@ -18,6 +18,7 @@ function improbabilitybomb_define_item(){
 }
 
 function improbabilitybomb_use($args){
+	global $session;
 	$effect = e_rand(1,8);
 	if (has_buff("ibomb7a") && $effect == 7){
 		$effect = 3;

@@ -24,6 +24,9 @@ function largemedkit_define_item(){
 function largemedkit_use($args){
 	global $session;
 	$session['user']['hitpoints'] += 60;
+	if ($session['user']['hitpoints'] > $session['user']['maxhitpoints']){
+		$session['user']['hitpoints'] = $session['user']['maxhitpoints']
+	}
 }
 
 ?>
