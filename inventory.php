@@ -92,11 +92,13 @@ foreach($dinv AS $carrier => $cvals){
 	if ($cvals['carrier']['image']) rawoutput("<table width=100% cellpadding=0 cellspacing=0><tr><td>");
 	output_notl("`b%s`b`n",$cvals['carrier']['verbosename']);
 	output_notl("`0%s`n",$cvals['carrier']['description']);
+	$cun = "kg";
+	if ($cvals['carrier']['units']) $cun = $cvals['carrier']['units'];
 	if ($cvals['carrier']['weight_max']){
 		require_once "lib/bars.php";
 		$bar = flexibar($cvals['carrier']['weight_current'],$cvals['carrier']['weight_max'],$cvals['carrier']['weight_max']*5);
 		rawoutput("<table><tr><td>".$bar."</td><td>");
-		output_notl("%s / %s kg`n",$cvals['carrier']['weight_current'],$cvals['carrier']['weight_max']);
+		output_notl("%s / %s %s`n",$cvals['carrier']['weight_current'],$cvals['carrier']['weight_max'],$cun);
 		rawoutput("</td></tr></table>");
 	}
 	if ($cvals['carrier']['image']) rawoutput("</td><td align=right width=100px><img src=\"images/items/".$cvals['carrier']['image']."\"></td></tr></table>");
@@ -116,10 +118,12 @@ foreach($dinv AS $carrier => $cvals){
 				output_notl("Quantity: `b%s`b | ",$prefs['quantity']);
 			}
 			if ($prefs['weight']){
+				$un = "kg";
+				if ($prefs['units']) $un = $prefs['units'];
 				if ($prefs['quantity'] > 1){
-					output_notl("Weight: %s kg each, %s kg total | ",$prefs['weight'],$prefs['weight']*$prefs['quantity']);
+					output_notl("Weight: %s %s each, %s %s total | ",$prefs['weight'],$un,$prefs['weight']*$prefs['quantity'],$un);
 				} else {
-					output_notl("Weight: %s kg | ",$prefs['weight']);
+					output_notl("Weight: %s %s | ",$prefs['weight'],$un);
 				}
 			}
 			// debug($prefs);
@@ -142,25 +146,27 @@ foreach($dinv AS $carrier => $cvals){
 			$divide=false;
 			
 			//now handle moving items from one carrier to another
-			foreach($carriers AS $carrier => $cprefs){
-				if ($divide) output_notl(" | ");
-				$divide=false;
-				if (!$cprefs['blocktransfer'] || $prefs['allowtransfer']==$carrier){ //the carrier doesn't block transfers in OR this item is specifically allowed in
-					if ($prefs['inventorylocation']!=$carrier){ //the item is not already in the carrier
-						if (!$prefs['blockcarrier_'.$carrier]){ //the item is not blocked from being in this carrier
-							if (!$prefs['blocktransfer'] || $prefs['allowtransfer']==$carrier){ //the item is not blocked from being transferred completely OR the item is allowed to be transferred to only this carrier
-								$cvname = $cprefs['verbosename'];
-								//check hard weight limits
-								if ($cprefs['wlimit_hardlimit']){
-									//check weight
-									if ($cprefs['weight_max'] < ($cprefs['weight_current'] + $prefs['weight'])){
-										//rawoutput("This item won't fit in your $cvname<br />");
-										continue;
+			if (!$cvals['carrier']['blocktransferout']){
+				foreach($carriers AS $carrier => $cprefs){
+					if ($divide) output_notl(" | ");
+					$divide=false;
+					if (!$cprefs['blocktransfer'] || $prefs['allowtransfer']==$carrier){ //the carrier doesn't block transfers in OR this item is specifically allowed in
+						if ($prefs['inventorylocation']!=$carrier){ //the item is not already in the carrier
+							if (!$prefs['blockcarrier_'.$carrier]){ //the item is not blocked from being in this carrier
+								if (!$prefs['blocktransfer'] || $prefs['allowtransfer']==$carrier){ //the item is not blocked from being transferred completely OR the item is allowed to be transferred to only this carrier
+									$cvname = $cprefs['verbosename'];
+									//check hard weight limits
+									if ($cprefs['wlimit_hardlimit']){
+										//check weight
+										if ($cprefs['weight_max'] < ($cprefs['weight_current'] + $prefs['weight'])){
+											//rawoutput("This item won't fit in your $cvname<br />");
+											continue;
+										}
 									}
+									$divide = true;
+									rawoutput("<a href=\"inventory.php?items_transferitem=$itemid&items_transferto=$carrier&items_context=$context&items_sort=$sort\">Transfer to your $cvname</a>");
+									addnav("","inventory.php?items_transferitem=$itemid&items_transferto=$carrier&items_context=$context&items_sort=$sort");
 								}
-								$divide = true;
-								rawoutput("<a href=\"inventory.php?items_transferitem=$itemid&items_transferto=$carrier&items_context=$context&items_sort=$sort\">Transfer to your $cvname</a>");
-								addnav("","inventory.php?items_transferitem=$itemid&items_transferto=$carrier&items_context=$context&items_sort=$sort");
 							}
 						}
 					}
