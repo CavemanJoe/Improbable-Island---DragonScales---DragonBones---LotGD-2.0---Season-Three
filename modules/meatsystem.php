@@ -252,8 +252,9 @@ function meatsystem_run(){
 				output("`4You sit down to clean the carcass.  Your exhausted, clumsy incisions make a mockery of the choicest cuts - what is left over can only be described as Crap Meat.  %s bite's-worth, to be precise.  It looks like it was hacked into chunks by a blind woodsman.",$meat1);
 				//todo
 				for ($i=0; $i < $meat1; $i++){
-					give_item("meat_low");
+					give_item("meat_low",false,false,true);
 				}
+				load_inventory();
 				$carcasses = unserialize(get_module_pref("carcasses"));
 				unset($carcasses[$carcass]);
 				$carcasses = array_values($carcasses);
@@ -272,14 +273,15 @@ function meatsystem_run(){
 				}
 				//todo
 				for ($i=0; $i < $meat1; $i++){
-					give_item("meat_low");
+					give_item("meat_low",false,false,true);
 				}
 				for ($i=0; $i < $meat2; $i++){
-					give_item("meat_medium");
+					give_item("meat_medium",false,false,true);
 				}
 				for ($i=0; $i < $meat3; $i++){
-					give_item("meat_high");
+					give_item("meat_high",false,false,true);
 				}
+				load_inventory();
 				$carcasses = unserialize(get_module_pref("carcasses"));
 				unset($carcasses[$carcass]);
 				$carcasses = array_values($carcasses);
@@ -298,9 +300,9 @@ function meatsystem_run(){
 			}
 		break;
 		case "cook":
-			$pmeat1 = has_item_quantity("meat_low");
-			$pmeat2 = has_item_quantity("meat_medium");
-			$pmeat3 = has_item_quantity("meat_high");
+			$pmeat1qty = has_item_quantity("meat_low");
+			$pmeat2qty = has_item_quantity("meat_medium");
+			$pmeat3qty = has_item_quantity("meat_high");
 			output("You whip out your camping stove.  It's time to cook!`n`nWhat will you put in the pan?  You can fit up to 20 bite's-worth of meat in there.  Right now you have %s bite's-worth of Crap Meat, %s bite's-worth of Half-Decent Meat, and %s bite's-worth of Tasty Meat.`n`n",$pmeat1qty,$pmeat2qty,$pmeat3qty);
 			rawoutput("<form action='runmodule.php?module=meatsystem&op=cookfinal&from=".$from."' method='POST'>");
 			rawoutput("Put in <input name='meat1' width='2' value='0'> bite's-worth of Crap Meat.<br />");

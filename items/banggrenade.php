@@ -17,6 +17,7 @@ function banggrenade_define_item(){
 }
 
 function banggrenade_use($args){
+	global $session;
 	apply_buff('banggrenade', array(
 		"rounds"=>1,
 		"minioncount"=>1,

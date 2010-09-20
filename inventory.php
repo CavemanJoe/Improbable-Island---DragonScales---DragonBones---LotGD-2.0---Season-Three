@@ -22,7 +22,7 @@ if ($items_transferitem && $items_transferto){
 }
 
 if ($items_useitem){
-	use_item($items_useitem,$items_context);
+	use_item($items_useitem,$context);
 }
 
 if ($items_discarditem){
@@ -61,6 +61,7 @@ $gr = group_items($inventory,$sort);
 $hook = array(
 	'inventory' => $gr,
 	'context' => $context,
+	'sort' => $sort,
 );
 $hook = modulehook("inventory",$hook);
 

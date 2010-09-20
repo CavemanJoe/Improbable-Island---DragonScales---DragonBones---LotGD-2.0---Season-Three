@@ -5,7 +5,7 @@ function worldmap_items_getmoduleinfo(){
 		"name"=>"Items on World Map",
 		"version"=>"2010-09-10",
 		"author"=>"Dan Hall",
-		"category"=>"Map",
+		"category"=>"Items",
 		"download"=>"",
 	);
 	return $info;
@@ -26,13 +26,20 @@ function worldmap_items_dohook($hookname,$args){
 	global $session, $itemprefs;
 	switch($hookname){
 		case "inventory":
+			//debug($args);
 			if ($args['context']=="worldmap"){
 				$inv = $args['inventory'];
+				$sort = $args['sort'];
 				foreach($inv AS $itemid => $prefs){
+					//debug($prefs);
 					if ($prefs['dropworldmap']){
 //						debug("Found something!");
-						addnav("","inventory.php?items_context=".$args['context']."&items_mapdrop=".$itemid);
-						$args['inventory'][$itemid]['inventoryactions'].="<a href=\"inventory.php?items_context=".$args['context']."&items_mapdrop=".$itemid."\">Drop this item on the Map</a> | ";
+						addnav("","inventory.php?items_context=".$args['context']."&items_mapdrop=".$prefs['itemid']."&items_sort=$sort");
+						$args['inventory'][$itemid]['inventoryactions'].="<a href=\"inventory.php?items_context=".$args['context']."&items_mapdrop=".$prefs['itemid']."&items_sort=$sort\">Drop this item on the Map</a> | ";
+						if ($args['inventory'][$itemid]['quantity'] > 1){
+							addnav("","inventory.php?items_context=".$args['context']."&items_mapdrop=".$prefs['itemid']."&items_sort=$sort&dropall=true");
+							$args['inventory'][$itemid]['inventoryactions'].="<a href=\"inventory.php?items_context=".$args['context']."&items_mapdrop=".$prefs['itemid']."&items_sort=$sort&dropall=true\">Drop all</a> | ";
+						}
 						$args['inventory'][$itemid]['cannotdiscard']=true;
 					}
 				}
@@ -43,8 +50,16 @@ function worldmap_items_dohook($hookname,$args){
 				$drop = httpget("items_mapdrop");
 				if ($drop){
 					$loc = get_module_pref("worldXYZ","worldmapen");
-					//set_item_pref("worldmap_location",$loc,$drop);
-					change_item_owner($drop,"worldmap_".$loc);
+					if (httpget("dropall")){
+						$todrop = get_all_items($drop);
+						$dropids = array();
+						foreach($todrop AS $id => $vals){
+							$dropids[]=$id;
+						}
+						change_item_owner($dropids,"worldmap_".$loc);
+					} else {
+						change_item_owner($drop,"worldmap_".$loc);
+					}
 				}
 			}
 		break;

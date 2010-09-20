@@ -134,7 +134,9 @@ function improbablehousing_furnitureshop_run(){
 			output("You hand over your hard-won currency to Cadfael, who grins and says \"`3Ah, much obliged!  Pleasure doin' business... with...`0\" he stops, bemused.  \"`3Are... are you trying to fit that into a `ibackpack?`i`0\"`n`nAfter several minutes of grunting and sweating, your backpack now resembles a... well, a barely-held-together layer of canvas stretched drum-tight into the shape of a %s.  With a very small %s bent double underneath.  Cadfael shakes his head and mutters something about it taking all sorts.`n`n",$name,$session['user']['race']);
 		break;
 		case "drop":
+			page_header("");
 			$itemid = httpget('item');
+			debug($itemid);
 			$hid = httpget('hid');
 			require_once "modules/improbablehousing/lib/lib.php";
 			$house = improbablehousing_gethousedata($hid);

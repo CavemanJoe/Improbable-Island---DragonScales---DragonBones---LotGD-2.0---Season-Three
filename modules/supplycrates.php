@@ -5,7 +5,7 @@ function supplycrates_getmoduleinfo(){
 		"name"=>"Supply Crates",
 		"author"=>"Dan Hall",
 		"version"=>"2010-09-17",
-		"category"=>"Iitems",
+		"category"=>"Items",
 		"download"=>"",
 		"settings"=>array(
 			"donationaddition"=>"Add one crate for this many donator points in a single transaction,int|100",

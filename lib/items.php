@@ -312,13 +312,18 @@ function get_item_pref($setting,$itemid){
 		return $itemprefs[$itemid][$setting];
 	}
 	
+	//debug("Unable to find pref ".$setting." for item number ".$itemid." - now checking settings");
+	
 	//still not defined... we must figure out what sort of item this is, and obtain its settings
 	$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE id = '$itemid'";
 	$result = db_query($sql);
 	$row = db_fetch_assoc($result);
 	$item = $row['item'];
 	
-	$setting = get_item_setting($setting, $item);
+	$set = get_item_setting($setting, $item);
+	if ($set){
+		return $set;
+	}
 	
 	return false;
 }
@@ -329,12 +334,17 @@ function get_item_setting($setting,$item){
 		return $itemsettings[$item][$setting];
 	}
 	
+	//debug("Item setting ".$setting." for item ".$item." not found, loading item settings");
 	load_item_settings();
 	if (isset($itemsettings[$item][$setting])){
 		return $itemsettings[$item][$setting];
 	}
 	
-	debug("Item setting (or pref) not found, returning false");
+	//debug($itemsettings);
+	
+	debug("Item setting ".$setting." for item ".$item." not found, returning false");
+	$itemsettings[$item][$setting] = false;
+	
 	return false;
 }
 
@@ -413,7 +423,8 @@ function change_item_owner($itemids,$newowner){
 //EOF basic storage/retrieval functionality - begin in-game usage section
 //=======================================================================
 
-function give_item($item, $prefs=false, $acctid=false){
+function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
+	//To maximise performance when giving items inside a loop, set $skipreload to true and then call load_inventory() immediately afterwards.  Unless of course you don't need to set prefs for the items, in which case just use give_multiple_items instead.
 	global $session, $inventory;
 	if (!$acctid){
 		$acctid = $session['user']['acctid'];
@@ -441,11 +452,29 @@ function give_item($item, $prefs=false, $acctid=false){
 		}
 	}
 	
-	if ($acctid == $session['user']['acctid']){
+	if ($acctid == $session['user']['acctid'] && !$skipreload){
 		//reload inventory
 		load_inventory();
 	}
 	return $key;
+}
+
+function give_multiple_items($item,$quantity,$acctid=false){
+	//setting prefs with items not supported in this function
+	global $session, $inventory;
+	if (!$acctid){
+		$acctid = $session['user']['acctid'];
+	}
+	$sql = "INSERT INTO ".db_prefix("items_player")." (item, owner) VALUES ";
+	for ($i=0; $i<$quantity; $i++){
+		$sql .= "('$item','$acctid'),";
+	}
+	$sql = substr_replace($sql,"",-1);
+	db_query($sql);
+	if ($acctid == $session['user']['acctid']){
+		//reload inventory
+		load_inventory();
+	}
 }
 
 function delete_item($itemid){
@@ -505,7 +534,6 @@ function use_item($item,$context="default"){
 		$useitem['id'] = $item;
 		$useitem['context'] = $context;
 		$useitem = modulehook("use_item",$useitem);
-		//debug($useitem);
 		if ($useitem['break_use_operation']){
 			return false;
 		}
@@ -525,6 +553,38 @@ function use_item($item,$context="default"){
 		debug("No such item exists in this player's inventory (looked for ".$item.")");
 		return false;
 	}
+}
+
+//returns all the id's of a given item
+function get_all_items($item,$acctid=false){
+	if (!$acctid){
+		global $session, $inventory;
+		if (!isset($inventory)){
+			load_inventory();
+		}
+	} else {
+		$inventory = load_inventory($acctid,true);
+	}
+	
+	if (is_numeric($item)){
+		$item = itemid_to_item($item);
+	}
+	
+	$ret = array();
+	foreach($inventory AS $id => $vals){
+		if ($vals['item'] == $item){
+			$ret[$id] = $vals;
+		}
+	}
+	return $ret;
+}
+
+//gets an item type from an item id
+function itemid_to_item($itemid){
+	$sql = "SELECT item FROM ".db_prefix("items_player")." WHERE id = '$itemid'";
+	$result = db_query($sql);
+	$row = db_fetch_assoc($result);
+	return $row['item'];
 }
 
 //returns either the first suitable item's id, or false.

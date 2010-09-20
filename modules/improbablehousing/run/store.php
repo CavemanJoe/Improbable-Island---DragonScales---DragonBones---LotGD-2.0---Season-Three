@@ -30,17 +30,20 @@ if ($giveitem){
 		output("You drop the item in the Dwelling's storehold.  The item that you dropped can now only be used for building, or taken out by the owner or someone with a Master Key.`n`n");
 	} else {
 		//give all iitems
-		$q = delete_all_items($giveitem);
+		$q = delete_all_items_of_type($giveitem);
 		$house['data']['store'][$giveitem]+=$q;
 	}
 	improbablehousing_sethousedata($house);
 } else if ($takeitem){
 	if ($takeall){
 		$q = $house['data']['store'][$takeitem];
-		for ($i=0; $i<$q; $i++){
-			give_item($takeitem);
-			$house['data']['store'][$takeitem]-=1;
-		}
+		// for ($i=0; $i<$q; $i++){
+			// give_item($takeitem,false,false,true);
+			// $house['data']['store'][$takeitem]-=1;
+		// }
+		give_multiple_items($takeitem,$q);
+		$house['data']['store'][$takeitem]-=$q;
+		load_inventory();
 		output("Okay.  You pick up every single one, and stuff them all into your Backpack.`n`n");
 	} else {
 		give_item($takeitem);
