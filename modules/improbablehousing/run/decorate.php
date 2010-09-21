@@ -56,6 +56,8 @@ switch(httpget('subop')){
 			output("The decorating job is completed!  You step back and admire your work.  Pretty nice!`n`n");
 			$house['data']['desc_exterior']=$house['data']['dec']['desc'];
 			unset($house['data']['dec']);
+			$erasedec = "DELETE FROM ".db_prefix("building_prefs")." WHERE pref = 'dec' AND hid = '$hid'";
+			db_query($erasedec);
 			$loc = $house['location'];
 			invalidatedatacache("housing/housing_location_".$loc);
 		} else {
@@ -120,6 +122,8 @@ switch(httpget('subop')){
 			output("The decorating job is completed!  You step back and admire your work.  Pretty nice!`n`n");
 			$house['data']['rooms'][$rid]['desc']=$house['data']['rooms'][$rid]['dec']['desc'];
 			unset($house['data']['rooms'][$rid]['dec']);
+			$eraseroomdec = "DELETE FROM ".db_prefix("room_prefs")." WHERE pref = 'dec' AND hid = '$hid' AND rid = '$rid'";
+			db_query($eraseroomdec);
 		} else {
 			output("You set about painting and decorating.  Before too long, the room is one step closer to being fully decorated.`n`n");
 			require_once "lib/bars.php";

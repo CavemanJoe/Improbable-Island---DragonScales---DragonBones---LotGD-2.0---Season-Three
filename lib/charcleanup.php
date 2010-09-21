@@ -71,6 +71,7 @@ function char_cleanup_allinone($ids,$type){
 	
 	//finally, delete the acctids themselves
 	$eraseaccounts = "DELETE FROM ".db_prefix("accounts")." WHERE acctid IN ($joined)";
+	db_query($eraseaccounts);
 }
 
 function char_cleanup($id, $type)

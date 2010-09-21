@@ -29,7 +29,7 @@ function items_weightpenalty_dohook($hookname,$args){
 			require_once "modules/staminasystem/lib/lib.php";
 			//debug($args);
 			foreach($args AS $carrier=>$prefs){
-				if ($prefs['weight_current'] && $prefs['weight_max']){
+				if ($prefs['weight_current'] && $prefs['weight_max'] && $prefs['wlimit_uses_buff']){
 					$mult = $prefs['weight_current'] / $prefs['weight_max'];
 					$sbuffid = "wlimit_".$carrier;
 					if ($mult>1){

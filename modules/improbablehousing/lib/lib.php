@@ -376,6 +376,12 @@ function improbablehousing_sethousedata($house){
 			$bpsql .= "('$hid','$pref','$val'),";
 		}
 	}
+	
+	if (!isset($house['data']['dec'])){
+		$erasedec = "DELETE FROM ".db_prefix("building_prefs")." WHERE pref = 'buildjobs' AND hid = '$hid'";
+		db_query($erasedec);
+	}
+	
 	$bpsql = substr_replace($bpsql,"",-1);
 	$bpsql .= " ON DUPLICATE KEY UPDATE value = VALUES(value)";
 	db_query($bpsql);

@@ -130,6 +130,8 @@ if (!$jobtoperform){
 			//are all build jobs done?  Then unset the $buildjobs array completely
 			if (count($house['data']['buildjobs'])==0){
 				unset($house['data']['buildjobs']);
+				$erasebuildjobs = "DELETE FROM ".db_prefix("building_prefs")." WHERE pref = 'buildjobs' AND hid = '$hid'";
+				db_query($erasebuildjobs);
 			}
 		}
 	} else {
