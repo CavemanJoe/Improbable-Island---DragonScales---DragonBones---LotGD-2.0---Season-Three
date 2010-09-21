@@ -219,6 +219,14 @@ function racejoker_dohook($hookname,$args){
 			
 			//new Joker grenade -> improbabombs routine
 			
+			$bandolier = 0;
+			$blprefs = array(
+				"inventorylocation" => "fight",
+			);
+			$bandolier += has_item_quantity("banggrenade",$blprefs);
+			$bandolier += has_item_quantity("whoomphgrenade",$blprefs);
+			$bandolier += has_item_quantity("zapgrenade",$blprefs);
+			
 			$count = 0;
 			$count += delete_all_items_of_type("banggrenade");
 			$count += delete_all_items_of_type("whoomphgrenade");
@@ -226,8 +234,12 @@ function racejoker_dohook($hookname,$args){
 			
 			if ($count){
 				output("`0All of your Grenades have turned into Improbability Bombs overnight.  Well, that's what happens when you store explosives around such high levels of Improbability.`n");
-				for ($i=0; $i<$count; $i++){
+				$backpack = $count - $bandolier;
+				for ($i=0; $i<$backpack; $i++){
 					give_item("improbabilitybomb");
+				}
+				for ($i=0; $i<$bandolier; $i++){
+					give_item("improbabilitybomb",$blprefs);
 				}
 			}
 			
