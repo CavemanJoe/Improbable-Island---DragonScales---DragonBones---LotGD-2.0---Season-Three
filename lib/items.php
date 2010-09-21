@@ -342,7 +342,7 @@ function get_item_setting($setting,$item){
 	
 	//debug($itemsettings);
 	
-	debug("Item setting ".$setting." for item ".$item." not found, returning false");
+	//debug("Item setting ".$setting." for item ".$item." not found, returning false");
 	$itemsettings[$item][$setting] = false;
 	
 	return false;

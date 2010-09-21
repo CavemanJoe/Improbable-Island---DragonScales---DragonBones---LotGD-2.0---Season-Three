@@ -35,9 +35,12 @@ function supplycrates_dohook($hookname,$args){
 			$amt = $args['amt'];
 			$donationbonus = floor($args['amt']/get_module_setting("donationaddition"));
 			
+			$xmax = get_module_setting("worldmapsizeX","worldmapen");
+			$ymax = get_module_setting("worldmapsizeY","worldmapen");
+			
 			for ($i=0; $i<$donationbonus; $i++){
-				$x = e_rand(1,get_module_setting("worldmapsizeX","worldmapen"));
-				$y = e_rand(1,get_module_setting("worldmapsizeY","worldmapen"));
+				$x = e_rand(1,$xmax);
+				$y = e_rand(1,$ymax);
 				$owner = "worldmap_".$x.",".$y.",1";
 				give_item("supplycrate",false,$owner);
 			}

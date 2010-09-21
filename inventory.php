@@ -23,6 +23,7 @@ if ($items_transferitem && $items_transferto){
 
 if ($items_useitem){
 	use_item($items_useitem,$context);
+	load_inventory();
 }
 
 if ($items_discarditem){
