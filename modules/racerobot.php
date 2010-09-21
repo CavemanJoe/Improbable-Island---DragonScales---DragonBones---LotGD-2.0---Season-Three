@@ -66,10 +66,9 @@ function racerobot_dohook($hookname,$args){
 	switch($hookname){
 	case "load_inventory":
 		if ($session['user']['race']==$race){
-			$inv = $args;
-			foreach ($inv AS $itemid => $prefs){
+			foreach ($args AS $itemid => $prefs){
 				if ($prefs['blockrobot']){
-					$prefs['blockuse'] = true;
+					$args[$itemid]['blockuse'] = true;
 				}
 			}
 		}

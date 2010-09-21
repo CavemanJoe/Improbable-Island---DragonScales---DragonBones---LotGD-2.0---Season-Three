@@ -32,27 +32,25 @@ function staminafood_dohook($hookname,$args){
 	global $session;
 	switch($hookname){
 		case "village":
-			if ($session['user']['race']!="Robot"){
-				tlschema($args['schemas']['marketnav']);
-				addnav($args['marketnav']);
-				tlschema();
-				switch($session['user']['location']){
-					case "NewHome":
-						addnav("Joe's Diner","runmodule.php?module=staminafood&op=start&location=nh");
-						break;
-					case "Kittania":
-						addnav("Cool Springs Cafe","runmodule.php?module=staminafood&op=start&location=ki");
-						break;
-					case "New Pittsburgh":
-						addnav("BRAAAAAINS","runmodule.php?module=staminafood&op=start&location=np");
-						break;
-					case "Squat Hole":
-						addnav("Kebabs 'n' Shite","runmodule.php?module=staminafood&op=start&location=sq");
-						break;
-					case "Pleasantville":
-						addnav("Mutated Munchies","runmodule.php?module=staminafood&op=start&location=pl");
-						break;
-				}
+			tlschema($args['schemas']['marketnav']);
+			addnav($args['marketnav']);
+			tlschema();
+			switch($session['user']['location']){
+				case "NewHome":
+					addnav("Joe's Diner","runmodule.php?module=staminafood&op=start&location=nh");
+					break;
+				case "Kittania":
+					addnav("Cool Springs Cafe","runmodule.php?module=staminafood&op=start&location=ki");
+					break;
+				case "New Pittsburgh":
+					addnav("BRAAAAAINS","runmodule.php?module=staminafood&op=start&location=np");
+					break;
+				case "Squat Hole":
+					addnav("Kebabs 'n' Shite","runmodule.php?module=staminafood&op=start&location=sq");
+					break;
+				case "Pleasantville":
+					addnav("Mutated Munchies","runmodule.php?module=staminafood&op=start&location=pl");
+					break;
 			}
 			break;
 		case "stamina-newday-intercept":
@@ -232,28 +230,30 @@ function staminafood_run(){
 				case "nh":
 					page_header("Joe's Diner");
 					output("`0You head into what presents itself as a 1950's-style diner.  Plastic red and white gingham patterns cover every available surface.  Tomato-shaped ketchup bottles are dotted on tables here and there, dried gunge crusting their nozzles.  Behind the bar can be seen Joe, the owner, who is keeping himself busy wiping down the counter tops with a rag, redistributing the half-inch-thick layer of grease into a more uniform level.  A sign above the counter reads \"`2WE BUY MEAT.  WE PAY 5 REQ PER 120 GRAM'S.`0\"`n`n");
-					output("The smell of fried onions does its wicked work, and you glance up at the menu.`n`n");
-					if (get_module_pref("fullness")<=100){
-						if ($session['user']['gold']>=10){
-							addnav("Crisps (10 Req)","runmodule.php?module=staminafood&op=buy&bought=1");
+					if ($session['user']['race']!="Robot"){
+						output("The smell of fried onions does its wicked work, and you glance up at the menu.`n`n");
+						if (get_module_pref("fullness")<=100){
+							if ($session['user']['gold']>=10){
+								addnav("Crisps (10 Req)","runmodule.php?module=staminafood&op=buy&bought=1");
+							} else {
+								output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
+							}
+							if ($session['user']['gold']>=40){
+								addnav("Garden Salad (40 Req)","runmodule.php?module=staminafood&op=buy&bought=2");
+							}
+							if ($session['user']['gold']>=50){
+								addnav("Plate of Chips (50 Req)","runmodule.php?module=staminafood&op=buy&bought=3");
+								addnav("Coffee (50 Req)","runmodule.php?module=staminafood&op=buy&bought=4");
+							}
+							if ($session['user']['gold']>=150){
+								addnav("Bangers & Mash (150 Req)","runmodule.php?module=staminafood&op=buy&bought=5");
+							}
+							if ($session['user']['gold']>=300){
+								addnav("Cheeseburger (300 Req)","runmodule.php?module=staminafood&op=buy&bought=6");
+							}
 						} else {
-							output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
+							output("You are far too full to eat any more today.`n`n");
 						}
-						if ($session['user']['gold']>=40){
-							addnav("Garden Salad (40 Req)","runmodule.php?module=staminafood&op=buy&bought=2");
-						}
-						if ($session['user']['gold']>=50){
-							addnav("Plate of Chips (50 Req)","runmodule.php?module=staminafood&op=buy&bought=3");
-							addnav("Coffee (50 Req)","runmodule.php?module=staminafood&op=buy&bought=4");
-						}
-						if ($session['user']['gold']>=150){
-							addnav("Bangers & Mash (150 Req)","runmodule.php?module=staminafood&op=buy&bought=5");
-						}
-						if ($session['user']['gold']>=300){
-							addnav("Cheeseburger (300 Req)","runmodule.php?module=staminafood&op=buy&bought=6");
-						}
-					} else {
-						output("You are far too full to eat any more today.`n`n");
 					}
 					if ($pmeat2){
 						output("You remember that Maiko told you that the NewHome diner will only buy middling-quality meat.  You have %s pieces of average-quality meat to sell.  All of them, quite conveniently - perhaps a little TOO conveniently - weigh exactly a hundred and twenty grams each.`n`n",$pmeat2);
@@ -267,27 +267,29 @@ function staminafood_run(){
 				case "ki":
 					page_header("Cool Springs Cafe");
 					output("You head into what at first appears to be a little hut.  As you work down the stairs into the rock underneath Kittania, you realise that this place is so much more.`n`nStrings of fairy lights illuminate the cavern, and soft trickling sounds can be heard against the laughter and conversation of KittyMorphs around you.`n`nYou take a seat and a white-furred KittyMorph approaches, a menu in her hand.  \"Welcome to the Cool Springs Cafe,\" she says with a smile.  \"We try to tread on Mother Earth as lightly as we can, in here; all of our produce is locally-grown, you'll find a wonderful selection of vegetarian and vegan meals, and the various waters come from the three springs that run through this very cavern.  Now, what can I get you?\"`n`nYou peruse the menu, your eyes lingering on the last entry, detailing a rare, dripping, bloody steak.  The KittyMorph follows your gaze, and laughs sheepishly.  \"Like I said, we `itry`i,\" she giggles, elongated canines peeking out.  \"We `iare`i carnivores, you know.  Oh, on that note, I should mention that we also buy meat, if you've got any of the good stuff to sell.  We pay twelve Requisition per slice.\"`n`n");
-					if (get_module_pref("fullness")<=100){
-						if ($session['user']['gold']>=50){
-							addnav("Hot Chocolate (50 Req)","runmodule.php?module=staminafood&op=buy&bought=7");
-							addnav("White Spring Water (50 Req)","runmodule.php?module=staminafood&op=buy&bought=8");
+					if ($session['user']['race']!="Robot"){
+						if (get_module_pref("fullness")<=100){
+							if ($session['user']['gold']>=50){
+								addnav("Hot Chocolate (50 Req)","runmodule.php?module=staminafood&op=buy&bought=7");
+								addnav("White Spring Water (50 Req)","runmodule.php?module=staminafood&op=buy&bought=8");
+							} else {
+								output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
+							}
+							if ($session['user']['gold']>=100){
+								addnav("Nut and Berry Salad (100 Req)","runmodule.php?module=staminafood&op=buy&bought=9");
+							}
+							if ($session['user']['gold']>=175){
+								addnav("Turquoise Spring Water (175 Req)","runmodule.php?module=staminafood&op=buy&bought=10");
+							}
+							if ($session['user']['gold']>=250){
+								addnav("Red Spring Water (250 Req)","runmodule.php?module=staminafood&op=buy&bought=11");
+							}
+							if ($session['user']['gold']>=500){
+								addnav("Still-Twitching Steak (500 Req)","runmodule.php?module=staminafood&op=buy&bought=12");
+							}
 						} else {
-							output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
+							output("You are far too full to eat any more today.`n`n");
 						}
-						if ($session['user']['gold']>=100){
-							addnav("Nut and Berry Salad (100 Req)","runmodule.php?module=staminafood&op=buy&bought=9");
-						}
-						if ($session['user']['gold']>=175){
-							addnav("Turquoise Spring Water (175 Req)","runmodule.php?module=staminafood&op=buy&bought=10");
-						}
-						if ($session['user']['gold']>=250){
-							addnav("Red Spring Water (250 Req)","runmodule.php?module=staminafood&op=buy&bought=11");
-						}
-						if ($session['user']['gold']>=500){
-							addnav("Still-Twitching Steak (500 Req)","runmodule.php?module=staminafood&op=buy&bought=12");
-						}
-					} else {
-						output("You are far too full to eat any more today.`n`n");
 					}
 					if ($pmeat3){
 						output("You remember that Maiko told you that the Kittania cafe will only buy the best-quality meat.  You have %s pieces of high-quality meat to sell.`n`n",$pmeat3);
@@ -301,29 +303,31 @@ function staminafood_run(){
 				case "np":
 					page_header("BRAAAAAINS");
 					output("You head into the local cafe, imaginatively titled \"BRAAAAAINS\".  A waiter comes shuffling over to you, green skin peeling from his face.  \"BRAAAAAINS?\" he asks, holding out a menu.`n`nA sign above the counter says \"We are only too happy to buy your surplus meat.  We pay 6 Requisition tokens per 120 grams.\"`n`n");
-					if (get_module_pref("fullness")<=100){
-						if ($session['user']['gold']>=50){
-							addnav("Egg and Brains (50 Req)","runmodule.php?module=staminafood&op=buy&bought=13");
+					if ($session['user']['race']!="Robot"){
+						if (get_module_pref("fullness")<=100){
+							if ($session['user']['gold']>=50){
+								addnav("Egg and Brains (50 Req)","runmodule.php?module=staminafood&op=buy&bought=13");
+							} else {
+								output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
+							}
+							if ($session['user']['gold']>=100){
+								addnav("Sausage and Brains (100 Req)","runmodule.php?module=staminafood&op=buy&bought=14");
+							}
+							if ($session['user']['gold']>=150){
+								addnav("Spam and Brains (150 Req)","runmodule.php?module=staminafood&op=buy&bought=15");
+							}
+							if ($session['user']['gold']>=200){
+								addnav("Egg, Brains, Sausage and Brains (200 Req)","runmodule.php?module=staminafood&op=buy&bought=16");
+							}
+							if ($session['user']['gold']>=250){
+								addnav("Brains, Spam, Brains, Sausage and Brains (250 Req)","runmodule.php?module=staminafood&op=buy&bought=17");
+							}
+							if ($session['user']['gold']>=300){
+								addnav("Brains, Brains, Brains, Brains and Spam (300 Req)","runmodule.php?module=staminafood&op=buy&bought=18");
+							}
 						} else {
-							output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
+							output("You are far too full to eat any more today.`n`n");
 						}
-						if ($session['user']['gold']>=100){
-							addnav("Sausage and Brains (100 Req)","runmodule.php?module=staminafood&op=buy&bought=14");
-						}
-						if ($session['user']['gold']>=150){
-							addnav("Spam and Brains (150 Req)","runmodule.php?module=staminafood&op=buy&bought=15");
-						}
-						if ($session['user']['gold']>=200){
-							addnav("Egg, Brains, Sausage and Brains (200 Req)","runmodule.php?module=staminafood&op=buy&bought=16");
-						}
-						if ($session['user']['gold']>=250){
-							addnav("Brains, Spam, Brains, Sausage and Brains (250 Req)","runmodule.php?module=staminafood&op=buy&bought=17");
-						}
-						if ($session['user']['gold']>=300){
-							addnav("Brains, Brains, Brains, Brains and Spam (300 Req)","runmodule.php?module=staminafood&op=buy&bought=18");
-						}
-					} else {
-						output("You are far too full to eat any more today.`n`n");
 					}
 					if ($pmeat2){
 						output("You remember that Maiko told you that the New Pittsburgh diner will only buy middling-quality meat.  You have %s pieces of average-quality meat to sell.  All of them, quite conveniently - perhaps a little TOO conveniently - weigh a hundred and twenty grams each.`n`n",$pmeat2);
@@ -337,27 +341,29 @@ function staminafood_run(){
 				case "sq":
 					page_header("Kebabs 'N' Shite");
 					output("You head into the local kebab house.  As you're studying the menu, a Midget brushes past you, dragging a six-foot blue plastic bag with the words \"INCINERATE ONLY\" stencilled on the side.  He stops, glares up at you, and mutters \"Yer din't see `inuffink.`i\"  Then he resumes his journey, dragging the bag into the back of the shop.  You're sure you saw a bit of steering wheel poking out.`n`nA sign above the counter reads \"WE BY MEET 2 REK PER BIT\"`n`n");
-					if (get_module_pref("fullness")<=100){
-						if ($session['user']['gold']>=20){
-							addnav("Crisps (20 Req)","runmodule.php?module=staminafood&op=buy&bought=25");
+					if ($session['user']['race']!="Robot"){
+						if (get_module_pref("fullness")<=100){
+							if ($session['user']['gold']>=20){
+								addnav("Crisps (20 Req)","runmodule.php?module=staminafood&op=buy&bought=25");
+							} else {
+								output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
+							}
+							if ($session['user']['gold']>=50){
+								addnav("Skinheads on a Raft (50 Req)","runmodule.php?module=staminafood&op=buy&bought=26");
+							}
+							if ($session['user']['gold']>=75){
+								addnav("Doner Kebab (75 Req)","runmodule.php?module=staminafood&op=buy&bought=27");
+								addnav("Crimson Pitbull (75 Req)","runmodule.php?module=staminafood&op=buy&bought=28");
+							}
+							if ($session['user']['gold']>=150){
+								addnav("Cock Nuggets (150 Req)","runmodule.php?module=staminafood&op=buy&bought=29");
+							}
+							if ($session['user']['gold']>=200){
+								addnav("Sausage Feast Pizza (200 Req)","runmodule.php?module=staminafood&op=buy&bought=30");
+							}
 						} else {
-							output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
+							output("You are far too full to eat any more today.`n`n");
 						}
-						if ($session['user']['gold']>=50){
-							addnav("Skinheads on a Raft (50 Req)","runmodule.php?module=staminafood&op=buy&bought=26");
-						}
-						if ($session['user']['gold']>=75){
-							addnav("Doner Kebab (75 Req)","runmodule.php?module=staminafood&op=buy&bought=27");
-							addnav("Crimson Pitbull (75 Req)","runmodule.php?module=staminafood&op=buy&bought=28");
-						}
-						if ($session['user']['gold']>=150){
-							addnav("Cock Nuggets (150 Req)","runmodule.php?module=staminafood&op=buy&bought=29");
-						}
-						if ($session['user']['gold']>=200){
-							addnav("Sausage Feast Pizza (200 Req)","runmodule.php?module=staminafood&op=buy&bought=30");
-						}
-					} else {
-						output("You are far too full to eat any more today.`n`n");
 					}
 					if ($pmeat1){
 						output("You remember that Maiko told you that the Squat Hole kebab shop only buys the sort of meat that the dog food factory would throw away.  You have %s wobbling chunks of Crap Meat to sell.`n`n",$pmeat1);
@@ -370,30 +376,34 @@ function staminafood_run(){
 					break;
 				case "pl":
 					page_header("Mutated Munchies");
-					output("You head into the local cafe.  The stench of vomit and disinfectant hangs in the air.  Bravely, you sit down at a table and peruse the menu.`n`n");
-					if (get_module_pref("fullness")<=100){
-						if ($session['user']['gold']>=100){
-							addnav("Wriggly Biscuits (100 Req)","runmodule.php?module=staminafood&op=buy&bought=19");
+					if ($session['user']['race']!="Robot"){
+						output("You head into the local cafe.  The stench of vomit and disinfectant hangs in the air.  Bravely, you sit down at a table and peruse the menu.`n`n");
+						if (get_module_pref("fullness")<=100){
+							if ($session['user']['gold']>=100){
+								addnav("Wriggly Biscuits (100 Req)","runmodule.php?module=staminafood&op=buy&bought=19");
+							} else {
+								output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
+							}
+							if ($session['user']['gold']>=200){
+								addnav("Phallic Nuts (200 Req)","runmodule.php?module=staminafood&op=buy&bought=20");
+							}
+							if ($session['user']['gold']>=300){
+								addnav("Noodly Noodles (300 Req)","runmodule.php?module=staminafood&op=buy&bought=21");
+							}
+							if ($session['user']['gold']>=400){
+								addnav("Three-Eyed Fish (400 Req)","runmodule.php?module=staminafood&op=buy&bought=22");
+							}
+							if ($session['user']['gold']>=500){
+								addnav("Magical Mystery Meatloaf (500 Req)","runmodule.php?module=staminafood&op=buy&bought=23");
+							}
+							if ($session['user']['gold']>=750){
+								addnav("Mutant Steak (750 Req)","runmodule.php?module=staminafood&op=buy&bought=24");
+							}
 						} else {
-							output("After a careful read of the menu, you realise that you can't afford a single thing on it.  Bah.");
-						}
-						if ($session['user']['gold']>=200){
-							addnav("Phallic Nuts (200 Req)","runmodule.php?module=staminafood&op=buy&bought=20");
-						}
-						if ($session['user']['gold']>=300){
-							addnav("Noodly Noodles (300 Req)","runmodule.php?module=staminafood&op=buy&bought=21");
-						}
-						if ($session['user']['gold']>=400){
-							addnav("Three-Eyed Fish (400 Req)","runmodule.php?module=staminafood&op=buy&bought=22");
-						}
-						if ($session['user']['gold']>=500){
-							addnav("Magical Mystery Meatloaf (500 Req)","runmodule.php?module=staminafood&op=buy&bought=23");
-						}
-						if ($session['user']['gold']>=750){
-							addnav("Mutant Steak (750 Req)","runmodule.php?module=staminafood&op=buy&bought=24");
+							output("You are far too full to eat any more today.`n`n");
 						}
 					} else {
-						output("You are far too full to eat any more today.`n`n");
+						output("You are a robot, and this place doesn't buy meat.  You have no business here.  Out with you!`n`n");
 					}
 					break;
 			}
