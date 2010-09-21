@@ -21,6 +21,13 @@ function energydrink_define_item(){
 
 function energydrink_use($args){
 	require_once "modules/staminasystem/lib/lib.php";
+	$full = get_module_pref("fullness","staminafood");
+	if ($full >= 100){
+		output("You eye the bottle critically.  Then, you put it right back where it was.  You're `ifar`i too full to imbibe anything more for now.`n`n");
+		unset($args['destroyafteruse']);
+		unset($args['usetext']);
+		return $args;
+	}
 	addstamina(50000);
 	increment_module_pref("fullness",5,"staminafood");
 	$full = get_module_pref("fullness","staminafood");
@@ -36,6 +43,7 @@ function energydrink_use($args){
 	if ($full >= 100){
 		output("You're stuffed!  You feel as though you can't possibly eat anything more today.`n`n");
 	}
+	return $args;
 }
 
 ?>

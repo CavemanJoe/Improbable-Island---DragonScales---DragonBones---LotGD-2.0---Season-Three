@@ -56,6 +56,7 @@ function cratesniffer_use($args){
 	
 	output("It displays, weakly, the number `\$`b%s`b`0 in dull red LED's before its radio module catches fire.`n`n",$count);
 	delete_item($args['id']);
+	return $args;
 }
 
 ?>

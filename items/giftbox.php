@@ -87,8 +87,17 @@ function giftbox_use($args){
 	debug($args);
 	$cname = get_item_pref("verbosename",$args['giftbox_contains']);
 	output("`0You open up the box to find a %s!`0`n`n",$cname);
+	
+	if (get_item_pref("inventorylocation",$args['giftbox_contains']) == "lodgebag"){
+		if (!has_item("lodgebag")){
+			give_item("lodgebag");
+		}
+	} else {
+		clear_item_pref("inventorylocation",$args['giftbox_contains']);
+	}
+	
 	change_item_owner($args['giftbox_contains'],$session['user']['acctid']);
-	set_item_pref("inventorylocation","main",$args['giftbox_contains']);
+	return $args;
 }
 
 ?>

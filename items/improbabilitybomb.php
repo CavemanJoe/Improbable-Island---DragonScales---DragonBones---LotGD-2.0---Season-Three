@@ -128,7 +128,7 @@ function improbabilitybomb_use($args){
 			));
 		break;
 	}
-
+	return $args;
 }
 
 ?>

@@ -58,6 +58,8 @@ function giftstation_run(){
 				$free = httpget('free');
 				
 				$boxid = give_item($box,false,"giftstation_".$player);
+				debug($boxid);
+				debug($itemid);
 				change_item_owner($itemid,$boxid);
 				set_item_pref("giftbox_contains",$itemid,$boxid);
 				
@@ -121,19 +123,26 @@ function giftstation_run(){
 			output("The KittyMorph reaches below his counter and brings up a clipboard on which he writes down the name of your nominated contestant.  \"`1Okay, I've got the name - now, what would you like to send?`0\"`n`n");
 
 			$giftables = get_items_with_prefs("giftable");
-			$giftables = group_items($giftables);
-			foreach($giftables AS $itemid => $prefs){
-				if ($prefs['freegift']){
-					addnav("Send for free");
-					addnav(array("%s (%s available)",$prefs['verbosename'],$prefs['quantity']),"runmodule.php?module=giftstation&op=choosewrapping&item=$itemid&player=$player&free=true");
-				} else {
-					addnav("Send for one Supporter Point");
-					addnav(array("%s (%s available)",$prefs['verbosename'],$prefs['quantity']),"runmodule.php?module=giftstation&op=choosewrapping&item=$itemid&player=$player&free=false");
+			if ($giftables){
+				$giftables = group_items($giftables);
+				foreach($giftables AS $sortid => $prefs){
+					$itemid = $prefs['itemid'];
+					if ($prefs['freegift']){
+						addnav("Send for free");
+						addnav(array("%s (%s available)",$prefs['verbosename'],$prefs['quantity']),"runmodule.php?module=giftstation&op=choosewrapping&item=$itemid&player=$player&free=true");
+					} else {
+						addnav("Send for one Supporter Point");
+						addnav(array("%s (%s available)",$prefs['verbosename'],$prefs['quantity']),"runmodule.php?module=giftstation&op=choosewrapping&item=$itemid&player=$player&free=false");
+					}
 				}
+				addnav("Cancel?");
+				addnav("Wait, I've changed my mind.  Let's back up a step.","runmodule.php?module=giftstation&op=start&subop=searchagain");
+				addnav("Actually, forget the whole thing.","gardens.php");
+			} else {
+				output("You realise that you have nothing that you can give away.  You shrug your shoulders and give the KittyMorph a big, silly grin.`n`n");
+				addnav("This is awkward.");
+				addnav("Run out of the shop.  Just run.","gardens.php");
 			}
-			addnav("Cancel?");
-			addnav("Wait, I've changed my mind.  Let's back up a step.","runmodule.php?module=giftstation&op=start&subop=searchagain");
-			addnav("Actually, forget the whole thing.","gardens.php");
 			break;
 		case "choosewrapping":
 			$player = httpget('player');

@@ -21,12 +21,19 @@ function rationpack_define_item(){
 }
 
 function rationpack_use($args){
+	$full = get_module_pref("fullness","staminafood");
+	if ($full >= 100){
+		output("You pick up the ration pack, and eye it for a moment.  Then, you put it right back where it was.  You're `ifar`i too full to eat anything more for now.`n`n");
+		unset($args['destroyafteruse']);
+		unset($args['usetext']);
+		return $args;
+	}
+	//debug($args);
 	require_once "modules/staminasystem/lib/lib.php";
 	addstamina(100000);
 	increment_module_pref("fullness",40,"staminafood");
 	increment_module_pref("fat",40,"staminafood");
 	increment_module_pref("nutrition",30,"staminafood");
-	$full = get_module_pref("fullness","staminafood");
 	if ($full < 0){
 		output("You still feel as though you haven't eaten in days.`n`n");
 	}
@@ -39,6 +46,7 @@ function rationpack_use($args){
 	if ($full >= 100){
 		output("You're stuffed!  You feel as though you can't possibly eat anything more today.`n`n");
 	}
+	return $args;
 }
 
 ?>

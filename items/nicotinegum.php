@@ -29,6 +29,7 @@ function nicotinegum_use($args){
 		"rounds"=>-1,
 		"schema"=>"module-smoking",
 	));
+	return $args;
 }
 
 ?>

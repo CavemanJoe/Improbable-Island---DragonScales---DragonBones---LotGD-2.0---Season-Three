@@ -52,6 +52,7 @@ function supplycrate_use($args){
 		output("You find a %s!`n",$name);
 		give_item($item);
 	}
+	return $args;
 }
 
 ?>

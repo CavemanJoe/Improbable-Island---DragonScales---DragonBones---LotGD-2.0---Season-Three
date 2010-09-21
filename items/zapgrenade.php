@@ -31,6 +31,7 @@ function zapgrenade_use($args){
 		"expireafterfight"=>1,
 		"schema"=>"iitems-catcher"
 	));
+	return $args;
 }
 
 ?>

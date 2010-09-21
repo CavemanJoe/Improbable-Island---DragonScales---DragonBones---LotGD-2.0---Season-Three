@@ -60,18 +60,21 @@ function hunterslodge_specialcomments_large_use($args){
 	increment_module_pref("commentsleft",60,"specialcomments");
 	$left = get_module_pref("commentsleft","specialcomments");
 	output("`0You now have `b%s`b Special Comments left to use.`n`n",$left);
+	return $args;
 }
 
 function hunterslodge_specialcomments_medium_use($args){
 	increment_module_pref("commentsleft",25,"specialcomments");
 	$left = get_module_pref("commentsleft","specialcomments");
 	output("`0You now have `b%s`b Special Comments left to use.`n`n",$left);
+	return $args;
 }
 
 function hunterslodge_specialcomments_small_use($args){
 	increment_module_pref("commentsleft",4,"specialcomments");
 	$left = get_module_pref("commentsleft","specialcomments");
 	output("`0You now have `b%s`b Special Comments left to use.`n`n",$left);
+	return $args;
 }
 
 ?>

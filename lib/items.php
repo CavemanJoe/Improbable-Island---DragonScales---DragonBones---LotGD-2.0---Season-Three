@@ -323,11 +323,11 @@ function get_item_pref($setting,$itemid){
 		return $itemprefs[$itemid][$setting];
 	}
 	
-	//debug("Unable to find pref ".$setting." for item number ".$itemid." - now checking settings");
+	debug("Unable to find pref ".$setting." for item number ".$itemid." - now checking settings");
 	
 	//still not defined... we must figure out what sort of item this is, and obtain its settings
 	$item = itemid_to_item($itemid);
-	$item = $row['item'];
+	//$item = $row['item'];
 	
 	$set = get_item_setting($setting, $item);
 	if ($set){
@@ -348,7 +348,7 @@ function get_item_setting($setting,$item){
 		return $itemsettings[$item][$setting];
 	}
 	
-	//debug("Item setting ".$setting." for item ".$item." not found, returning false");
+	debug("Item setting ".$setting." for item ".$item." not found, returning false");
 	$itemsettings[$item][$setting] = false;
 	
 	return false;
@@ -420,13 +420,13 @@ function change_item_owner($itemids,$newowner){
 		$sql = "UPDATE ".db_prefix("items_player")." SET owner='$newowner' WHERE id IN (";
 		foreach($itemids AS $id){
 			$sql .= $id.",";
-			set_item_pref("inventorylocation","main",$id);
+			//set_item_pref("inventorylocation","main",$id);
 		}
 		$sql = substr_replace($sql,"",-1);
 		$sql .= ")";
 	} else {
 		$sql = "UPDATE ".db_prefix("items_player")." SET owner='$newowner' WHERE id='$itemids'";
-		set_item_pref("inventorylocation","main",$itemids);
+		//set_item_pref("inventorylocation","main",$itemids);
 	}
 	if ($itemids){
 		//debug($sql);
@@ -563,14 +563,14 @@ function use_item($item,$context="default"){
 		if ($useitem['break_use_operation']){
 			return false;
 		}
-		if ($useitem['usetext']){
-			output("`0%s`n`n",$useitem['usetext']);
-		}
 		if ($useitem['require_file']){
 			require_once "items/".$useitem['require_file'];
 		}
 		if ($useitem['call_function']){
-			call_user_func($useitem['call_function'],$useitem);
+			$useitem = call_user_func($useitem['call_function'],$useitem);
+		}
+		if ($useitem['usetext']){
+			output("`0%s`n`n",$useitem['usetext']);
 		}
 		if ($useitem['destroyafteruse']){
 			delete_item($useitem['id']);
@@ -611,11 +611,15 @@ function itemid_to_item($itemid){
 	if (isset($idstoitems[$itemid])){
 		return $idstoitems[$itemid];
 	}
+	debug("item type not in memory, looking up item ".$itemid." from db");
 	
 	$sql = "SELECT item FROM ".db_prefix("items_player")." WHERE id = '$itemid'";
 	$result = db_query($sql);
 	$row = db_fetch_assoc($result);
+	debug($row);
 	$idstoitems[$itemid] = $row['item'];
+	
+	debug($idstoitems[$itemid]);
 	
 	return $idstoitems[$itemid];
 }

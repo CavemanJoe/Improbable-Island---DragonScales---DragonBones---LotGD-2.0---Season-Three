@@ -28,6 +28,7 @@ function whoomphgrenade_use($args){
 		"effectmsg"=>"`^Your enemy beats at the flames, but it's still on fire! `^{damage}`^ damage has been done in this round!",
 		"schema"=>"iitems-catcher"
 	));
+	return $args;
 }
 
 ?>

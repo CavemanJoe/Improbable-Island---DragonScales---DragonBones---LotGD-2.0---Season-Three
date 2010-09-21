@@ -40,6 +40,7 @@ addnav("Quantity","inventory.php?items_sort=qty&items_context=$context");
 
 $sort = httpget("items_sort");
 $gr = group_items($inventory,$sort);
+
 // switch ($sort){
 	// case "key":
 		// arsort($gr);
