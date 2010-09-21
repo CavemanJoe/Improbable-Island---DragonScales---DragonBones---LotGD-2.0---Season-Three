@@ -98,17 +98,20 @@ function items_dragonkill($acctid=false){
 }
 
 function get_player_items($acctid){
-	global $session;
+	global $session, $idstoitems;
 	$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE owner='$acctid'";
 	$result = db_query($sql);
 	$items = array();
 	while ($row = db_fetch_assoc($result)){
 		$items[$row['id']]['item'] = $row['item'];
+		$idstoitems[$row['id']] = $row['item'];
 	}
+	//debug("Loading player items from database");
 	return $items;
 }
 
 function get_items_by_id($ids){
+	global $idstoitems;
 	if (is_array($ids)){
 		$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE id IN (";
 		foreach($ids AS $id){
@@ -120,9 +123,11 @@ function get_items_by_id($ids){
 		$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE id = '$ids'";
 	}
 	$result = db_query($sql);
+	//debug("Loading items by ID from database");
 	$items = array();
 	while ($row = db_fetch_assoc($result)){
 		$items[$row['id']]['item'] = $row['item'];
+		$idstoitems[$row['id']] = $row['item'];
 	}
 	return $items;
 }
@@ -136,6 +141,7 @@ function load_item_settings(){
 	}
 	$ssql = "SELECT * FROM ".db_prefix("items_settings");
 	$sresult = db_query($ssql);
+	//debug("Loading item settings from database");
 	while ($srow = db_fetch_assoc($sresult)){
 		$itemsettings[$srow['item']][$srow['setting']] = stripslashes($srow['value']);
 	}
@@ -159,18 +165,22 @@ function load_item_prefs($items){
 	} else {
 		$psql = "SELECT * FROM ".db_prefix("items_prefs")." WHERE id = '$items'";
 	}
+	//debug("Loading item prefs from database");
 	$presult = db_query($psql);
 	while ($prow = db_fetch_assoc($presult)){
 		$itemprefs[$prow['id']][$prow['setting']] = stripslashes($prow['value']);
 	}
 	
+	// debug($itemprefs);
 	if (is_array($updated_itemprefs)){
-		$itemprefs = array_merge($itemprefs,$updated_itemprefs);
+		foreach($updated_itemprefs AS $updateditem => $updatedprefs){
+			$itemprefs[$updateditem] = array_merge($itemprefs[$updateditem],$updatedprefs);
+		}
 	}
-	
 }
 
 function load_inventory($acctid=false,$npcflag=false){
+	//debug("Loading inventory");
 	if (!$npcflag){
 		global $session, $itemprefs, $itemsettings, $inventory;
 		if (!$acctid){
@@ -197,6 +207,7 @@ function load_inventory($acctid=false,$npcflag=false){
 	foreach ($inventory AS $id => $vals){
 		if (is_array($itemsettings[$vals['item']])) $inventory[$id] = array_merge($vals,$itemsettings[$vals['item']]);
 		if (is_array($itemprefs[$id])) $inventory[$id] = array_merge($inventory[$id],$itemprefs[$id]);
+		if (is_array($updated_itemprefs[$id])) $inventory[$id] = array_merge($inventory[$id],$updated_itemprefs[$id]);
 		if (!$npcflag){
 			//put items that don't have a carrier into the "main" inventory
 			if (!isset($inventory[$id]['inventorylocation'])) $inventory[$id]['inventorylocation'] = "main";
@@ -315,9 +326,7 @@ function get_item_pref($setting,$itemid){
 	//debug("Unable to find pref ".$setting." for item number ".$itemid." - now checking settings");
 	
 	//still not defined... we must figure out what sort of item this is, and obtain its settings
-	$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE id = '$itemid'";
-	$result = db_query($sql);
-	$row = db_fetch_assoc($result);
+	$item = itemid_to_item($itemid);
 	$item = $row['item'];
 	
 	$set = get_item_setting($setting, $item);
@@ -330,22 +339,30 @@ function get_item_pref($setting,$itemid){
 
 function get_item_setting($setting,$item){
 	global $session, $itemsettings;
+	
+	if (!is_array($itemsettings)){
+		load_item_settings();
+	}
+	
 	if (isset($itemsettings[$item][$setting])){
 		return $itemsettings[$item][$setting];
 	}
-	
-	//debug("Item setting ".$setting." for item ".$item." not found, loading item settings");
-	load_item_settings();
-	if (isset($itemsettings[$item][$setting])){
-		return $itemsettings[$item][$setting];
-	}
-	
-	//debug($itemsettings);
 	
 	//debug("Item setting ".$setting." for item ".$item." not found, returning false");
 	$itemsettings[$item][$setting] = false;
 	
 	return false;
+}
+
+function get_item_prefs($itemid){
+	global $session, $itemprefs;
+	if (isset($itemprefs[$itemid])){
+		return $itemprefs[$itemid];
+	}
+	load_item_prefs($itemid);
+	if (isset($itemprefs[$itemid])){
+		return $itemprefs[$itemid];
+	}
 }
 
 function get_item_settings($item){
@@ -425,7 +442,7 @@ function change_item_owner($itemids,$newowner){
 
 function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
 	//To maximise performance when giving items inside a loop, set $skipreload to true and then call load_inventory() immediately afterwards.  Unless of course you don't need to set prefs for the items, in which case just use give_multiple_items instead.
-	global $session, $inventory;
+	global $session, $inventory, $itemsettings;
 	if (!$acctid){
 		$acctid = $session['user']['acctid'];
 	}
@@ -452,9 +469,12 @@ function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
 		}
 	}
 	
-	if ($acctid == $session['user']['acctid'] && !$skipreload){
-		//reload inventory
-		load_inventory();
+	if ($acctid == $session['user']['acctid']){
+		if (!is_array($itemsettings)){
+			load_item_settings();
+		}
+		//insert the relevant values into the player's Inventory - don't bust a nut trying to sort this, they'll be pulled from the db as needed.  Doing it like this rather than reloading the inventory saves us a little time.
+		$inventory[$key] = $itemsettings[$item];
 	}
 	return $key;
 }
@@ -472,18 +492,20 @@ function give_multiple_items($item,$quantity,$acctid=false){
 	$sql = substr_replace($sql,"",-1);
 	db_query($sql);
 	if ($acctid == $session['user']['acctid']){
-		//reload inventory
+		//reload inventory - we can't really get around it
 		load_inventory();
 	}
 }
 
 function delete_item($itemid){
+	global $inventory;
 	$sqli = "DELETE FROM ".db_prefix("items_player")." WHERE id = '$itemid'";
 	$sqlp = "DELETE FROM ".db_prefix("items_prefs")." WHERE id = '$itemid'";
 	db_query($sqli);
 	db_query($sqlp);
-	//reload inventory
-	load_inventory();
+	if (isset($inventory[$itemid])){
+		unset($inventory[$itemid]);
+	}
 }
 
 function delete_all_items_of_type($item,$acctid=false){
@@ -524,11 +546,11 @@ function use_item($item,$context="default"){
 	if (!isset($inventory)){
 		load_inventory();
 	}
-
+	
 	if (!is_numeric($item)){
 		$item = has_item($item);
 	}
-
+	
 	if ($item){
 		$useitem = $inventory[$item];
 		$useitem['id'] = $item;
@@ -581,10 +603,17 @@ function get_all_items($item,$acctid=false){
 
 //gets an item type from an item id
 function itemid_to_item($itemid){
+	global $idstoitems;
+	if (isset($idstoitems[$itemid])){
+		return $idstoitems[$itemid];
+	}
+	
 	$sql = "SELECT item FROM ".db_prefix("items_player")." WHERE id = '$itemid'";
 	$result = db_query($sql);
 	$row = db_fetch_assoc($result);
-	return $row['item'];
+	$idstoitems[$itemid] = $row['item'];
+	
+	return $idstoitems[$itemid];
 }
 
 //returns either the first suitable item's id, or false.
@@ -765,12 +794,10 @@ function sortitems($a, $b){
 }
 
 function alphacompare($a, $b){
-	// debug($a.",".$b." = ".strnatcmp($a['verbosename'], $b['verbosename']));
 	return strnatcmp($a['verbosename'], $b['verbosename']);
 }
 
 function qtycompare($a, $b){
-	// debug($a.",".$b." = ".strnatcmp($b['quantity'], $a['quantity']));
 	return strnatcmp($b['quantity'], $a['quantity']);
 }
 
@@ -786,12 +813,10 @@ function group_items($items,$sort=false){
 		$uni[$sitem]['data']['itemid'] = $itemid;
 		$uni[$sitem]['data'] = array_merge($uni[$sitem]['data'],$vals);
 	}
-	//debug($uni);
 	$ret = array();
 	$carriers = array();
 	$items = array();
 	foreach($uni AS $sarray => $data){
-		//debug($data);
 		$ret[$data['data']['itemid']] = $data['data'];
 		if ($data['data']['carrieritem']){
 			$carriers[$data['data']['itemid']] = $data['data'];
@@ -853,8 +878,8 @@ function items_return_link($context,$script=false){
 		'village' => "village.php",
 	);
 	$returnlinks = modulehook("items-returnlinks",$returnlinks);
-	debug($returnlinks);
-	debug($context);
+	// debug($returnlinks);
+	// debug($context);
 	return $returnlinks[$context];
 }
 

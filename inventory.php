@@ -12,10 +12,6 @@ $items_transferitem = httpget("items_transferitem");
 $items_transferto = httpget("items_transferto");
 $context = httpget("items_context");
 
-if (!isset($inventory)){
-	load_inventory();
-}
-
 //handle moving, using, discarding, and contexts
 if ($items_transferitem && $items_transferto){
 	move_item($items_transferitem,$items_transferto);
@@ -23,12 +19,13 @@ if ($items_transferitem && $items_transferto){
 
 if ($items_useitem){
 	use_item($items_useitem,$context);
-	load_inventory();
 }
 
 if ($items_discarditem){
 	delete_item($items_discarditem);
 }
+
+load_inventory();
 
 $hook = array(
 	'inventory' => $inventory,

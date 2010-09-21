@@ -20,6 +20,7 @@ function monsterrepellentspray_define_item(){
 }
 
 function monsterrepellentspray_use($args){
+	global $session;
 	if ($args['context']=="fight"){
 		apply_buff('rspray_fight', array(
 			"startmsg"=>"`#You pull out a can of Monster Repellent Spray, and spray it liberally on the enemy!`n",
