@@ -1,6 +1,5 @@
 <?php
 
-	require_once "modules/iitems/lib/lib.php";
 	require_once "modules/improbablehousing/lib/lib.php";
 	require_once "modules/rail/lib.php";
 
@@ -106,7 +105,7 @@ function rail_collector_dohook($hookname,$args){
 			if (!$val['firstclass'] && $val['value'] > 0){
 				// no Joker, so give them however many regular rail passes they are entitled to:
 				for ($i=0; $i<$val['value']; $i++){
-					iitems_give_item("railpass");
+					give_item("railpass");
 				}
 				// empty their hand (and if they had more than 5 cards, well... tough.)
 				$qty = rail_collector_emptyhand();
@@ -121,7 +120,7 @@ function rail_collector_dohook($hookname,$args){
 
 		case "iitems_tradables-top":
 			// remove any rail-feature tradables (ie, cards) if recipient has no card case.
-			if (iitems_has_item("cardcase",false,$args['tradewith']['acctid'],"cardcase") === false){
+			if (has_item("cardcase",false,$args['tradewith']['acctid']) === false){
 				$playerhascards = false;
 				if (is_array($args['tradables'])){
 					foreach ($args['tradables'] AS $tkey => $tdetails){
@@ -190,6 +189,9 @@ function rail_collector_runevent($type,$link){
 		if (rail_collector_findcard()){
 			output("`2Half-hidden in damp leaves under a bush you notice a smudged, battered old playing card. Who knows, perhaps it might be worth something to a collector. Carefully you wipe it off and tuck it away in your fine leather card case.`0`n`n");
 		} else {
+			// The event was triggered, but they didn't qualify for a card. Have to do something...
+			// this is a bad message, but they're still going to get a 'Something Improbable!' page.
+			// Leave as is for now. To-do: change this some other card-related event.
 			output("`2Preoccupied with more important matters, you fail to notice a smudged, battered old playing card half-hidden in the damp leaves under a bush.`0`n`n");
 		}
 	} else {

@@ -1,6 +1,5 @@
 <?php
 
-	require_once "modules/iitems/lib/lib.php";
 	require_once "modules/improbablehousing/lib/lib.php";
 	require_once "modules/rail/lib.php";
 	require_once "lib/commentary.php";
@@ -85,6 +84,7 @@ function rail_ironhorse_dohook($hookname,$args){
 
 				// stationmaster interaction
 				$val = rail_collector_valuehand();
+//				debug($val);
 				if ($val['firstclass'] && $val['value'] > 0){
 					output("`2Ah! You seem to be in luck. The busy stationmaster is here today.`0`n`n");
 					addnav("Stationmaster");
@@ -287,7 +287,7 @@ function rail_ironhorse_run(){
 			page_header("The Stationmaster");
 			$val = rail_collector_valuehand();
 			for ($i=0; $i<$val['value']; $i++){
-				iitems_give_item("railpassfirst");
+				give_item("railpassfirst");
 			}
 			$qty = rail_collector_emptyhand();
 			output("`2The Stationmaster thanks you, and the two of you make the exchange to your mutual satisfaction. What on earth the Company `iwants`i with all those old playing cards... well. You've naturally wondered about that from time to time, but they're not saying.`0`n`n");

@@ -28,19 +28,20 @@
 function rail_peddler_getloc(){
 	// Live Location, uncomment for live game
 	// Grand Concourse East, map square 14,11
+	/*
 	$loc = array(	
 		"peddlerhid"=>257,
 		"peddlerrid"=>0,
 	);
-
-	/*
+	*/
+	
 	// Test Location, comment out for live game
 	// Grand Concourse East, map square 14,11	
 	$loc = array(
 		"peddlerhid"=>251,
 		"peddlerrid"=>0,
 	);
-	*/
+	
 	return $loc;
 }
 
@@ -66,7 +67,7 @@ function rail_ironhorse_getlocs(){
 	//   PV (13,23) - Pleasantville Station: Waiting Room
 	//   SH ( 8,17) - West Skronky Siding: Waiting Room
 	//   WA (21,19) - Abandoned Waystation: Derelict Train Yard
-
+/*
 	"AH" => array( 18, 4, "Lucky Dip", "AceHigh",
 	"The back door of the Lucky Dip is painted green. The air here is cool and fresh, fragrant with pine, and faintly... could that be a small hint of iced cookies, lingering yet? Perhaps it is only the sweet smell of cake wafting from nearby -- or death. It might be death."),
 	"CC" => array( 81, 3, "The Terminus", "Cyber City 404",
@@ -88,7 +89,8 @@ function rail_ironhorse_getlocs(){
 	"DB" => array ( 57,64, "The Subway Station", " ",
 	"Wait, what happened? What is this place? This isn't where you meant to get off!"),
 	);
-	/*
+	*/
+	
 	// TEST STOPS
 	"AH" => array ( 47, 0, "Twisted Spoon", "AceHigh",					// 13,11
 	"The back door of the Lucky Dip is painted green. The air here is cool and fresh, fragrant with pine, and faintly... could that be a small hint of iced cookies, lingering yet? Perhaps it is only the sweet smell of cake wafting from nearby -- or death. It might be death."),
@@ -110,7 +112,7 @@ function rail_ironhorse_getlocs(){
 	"Wait, what happened? What is this place? This isn't where you meant to get off!"),
 	
 	);		// end of $locs array assignment
-	*/
+	
 	return $locs;
 }
 
@@ -125,7 +127,7 @@ function rail_collector_getlocs(){
 	//
 	$locs = array(
 	
-
+/*
 	// LIVE GAME card-finding locations
 	"foilwench" => array(193,0,"half-buried in the litter box"),
 	"blueberry" => array(294,0,"wind-blown into the branches"),
@@ -165,14 +167,14 @@ function rail_collector_getlocs(){
 	"tardis" => array(138,20,"on the glassy floor"),
 	"pirate" => array(128,2,"pinned by a dirk to the main mast"),
 	"library" => array(41,0,"in the tiny clutching paws of a wide-eyed gremlin. You offer an H you defeated in the Jungle, and soon complete the trade"),
-
-	/*
+*/
+	
 	// TEST card-finding locations
 	"games" => array(217,4,"under one leg of a card table"),
 	"kitchen" => array(217,3,"right out on the kitchen counter"),
 	"workshop" => array(250,0,"behind a pile of tools"),
 	"library" => array(41,0,"tucked between the pages of a book"),
-	*/
+	
 	);
 	return $locs;
 }
@@ -181,56 +183,30 @@ function rail_collector_getlocs(){
 // GENERAL FUNCTIONS - used throughout the feature
 //
 
-function rail_hascard($searchitem){
+function rail_hascard($search){
 	// this function is here because often all we want is a simple: yes or no, does player have x?
 	require_once("modules/iitems/lib/lib.php");
-	if ((iitems_has_item($searchitem,false,false,"cardcase") === false)){
+	if ((has_item($search) === false)){
 		return false;
 	} else {
 		return true;
 	}
 }
 
-function rail_discard_item($search,$invloc=false){
-	// we need this because iitems_discard_item takes a numeric key, and we want to discard by name
-	require_once("modules/iitems/lib/lib.php");
-	global $session;
-	$inventory = iitems_get_player_inventory();
-	if (!$invloc){
-		$masteritem = iitems_get_item_details($search);
-		if (isset($masteritem['inventorylocation'])){
-			$invloc = $masteritem['inventorylocation'];
-		} else {
-			$invloc = "main";
-		}
+function rail_discard_item($search){
+	// we need this because delete_item takes a numeric key, and we want to delete by name
+	// this will delete the first one found
+	global $session, $inventory;
+	if (!isset($inventory)){
+		load_inventory();
 	}
 	
-	$key = false;
-	foreach($inventory AS $item => $details){
-		if (($details['itemid']==$search) && ($details['inventorylocation']==$invloc)){
-			$key = $item;
-		}
-	}
-	if ($key === false){
-		// didn't find the item
+	$found = has_item($search);
+
+	if ($found === false){
 		return false;
 	} else {
-		$loc = $inventory[$key]['inventorylocation'];
-		$type = $inventory[$key]['type'];
-		if ($type=="inventory"){
-			foreach ($inventory AS $item => $details){
-				if ($details['inventorylocation'] == $loc){
-					$details['inventorylocation'] = "main";
-				}
-			}
-		}
-	
-		if ($inventory[$key]['quantity'] > 1){
-			$inventory[$key]['quantity']--;
-		} else {
-			unset($inventory[$key]);
-		}
-		iitems_set_player_inventory($inventory);
+		delete_item($found);
 		return true;
 	}
 }
@@ -252,10 +228,9 @@ function rail_ironhorse_canboard(){
 
 function rail_ironhorse_activatepass($pass){
 	// remove railpass or railpassfirst, and replace with railpass_active or railpassfirst_active
-	require_once("modules/iitems/lib/lib.php");
 	$activepass = $pass."_active";
 	rail_discard_item($pass);
-	iitems_give_item($activepass);
+	give_item($activepass);
 	return true;
 }
 
@@ -301,14 +276,19 @@ function rail_ironhorse_cleanup($hid){
 function rail_collector_valuehand(){
 	// returns an array with 'value' equal to the number of rail passes the hand is worth
 	// and 'firstclass' indicating which kind of pass they'd get
-	global $session;
+	global $session, $inventory;
 	$handvalue = array();
-	require_once("modules/iitems/lib/lib.php");
-	$inventory = iitems_get_player_inventory();
+	if (!isset($inventory)){
+		load_inventory();
+	}
+	$items = group_items($inventory);
+//	debug($items);
 	$passcount = 0;
 	$cardcount = 0;
-	foreach ($inventory AS $item => $details){
-		$pos = strpos($details['itemid'],"railcard");
+	foreach ($items AS $ptr => $details){
+//		debug($ptr);
+//		debug($details);
+		$pos = strpos($details['item'],"railcard");
 		if ($pos === 0){		// Boolean false if not found; pos 0 if found in, eg, "railcard01"
 			$passcount += ($details['quantity'] - 1);
 			$cardcount += $details['quantity'];
@@ -333,14 +313,17 @@ function rail_collector_valuehand(){
 
 function rail_collector_emptyhand(){
 	// returns the number of cards that have been removed
-	global $session;
-	require_once("modules/iitems/lib/lib.php");
-	$inventory = iitems_get_player_inventory();
+	global $session, $inventory;
+	if (!isset($inventory)){
+		load_inventory();
+	}
+	$items = group_items($inventory);
 	$qty = 0;
-	foreach ($inventory AS $item => $details){
-		$pos = strpos($details['itemid'],"railcard");
+	foreach ($items AS $ptr => $details){
+		$itemname = $details['item'];
+		$pos = strpos($itemname,"railcard");
 		if ($pos === 0){		// Boolean false if not found; pos 0 if found in, eg, "railcard01"
-			$qty = $qty + iitems_discard_all_items($item);
+			$qty = $qty + delete_all_items_of_type($itemname);
 		}
 	}
 	return $qty;
@@ -355,16 +338,19 @@ function rail_collector_findcard(){
 		$cardstoday = get_module_pref("cardstoday","rail_collector");
 		if ($cardstoday < get_module_pref("cardluck","rail_collector")){
 			$jokerchance = get_module_setting("jokerchance","rail_collector");
-			require_once("modules/iitems/lib/lib.php");
-			if (e_rand(1,$jokerchance) == 1){
+			$joke = false;
+			if (rail_hascard("railcard50")){
+				$joke = true;
+			}
+			if (!$joke && (e_rand(1,$jokerchance) == 1)){
 				// card is a joker
-				iitems_give_item("railcard50");
+				give_item("railcard50");
 			} else {
 				// pick a card, any card!
 				$suit = e_rand(0,4);
 				$pips = e_rand(0,9);
 				$cardgiven = "railcard".$suit.$pips;
-				iitems_give_item($cardgiven);
+				give_item($cardgiven);
 			}
 			$cardstoday = $cardstoday + 1;
 			

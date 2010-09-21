@@ -66,7 +66,7 @@ function rail_peddler_dohook($hookname,$args){
 }
 
 function rail_peddler_run(){
-	global $session;
+	global $session, $inventory;
 	$op = httpget("op");
 	$loc = rail_peddler_getloc();
 	$hid = $loc["peddlerhid"];
@@ -82,12 +82,12 @@ function rail_peddler_run(){
 	switch($op){
 		case "buy":
 			output("The scruffy vendor's eyes gleam. Was that a fla`gs`0h of green, or no? \"`2Verra wise, %s. Ye willna be sorry!`0\"`n`n",translate_inline($session['user']['sex']?'lass':'lad'));
-			$success = iitems_give_item("cardcase");
-			if (!$success){
-				output("Then -- a frown. \"`2Wait, no, I canna sell t'ye. Ye'd better petition the Big Boss, tell 'im t'see what's gaen wrong wiv all dis.`0\"`n`n");
-			} else {
-				output("You have a fine leather card case. Pleased, you admire its soft texture. What an excellent purchase you have made!`n`n");
-			}
+			give_item("cardcase");
+//			if (!$success){
+//				output("Then -- a frown. \"`2Wait, no, I canna sell t'ye. Ye'd better petition the Big Boss, tell 'im t'see what's gaen wrong wiv all dis.`0\"`n`n");
+//			} else {
+			output("You have a fine leather card case. Pleased, you admire its soft texture. What an excellent purchase you have made!`n`n");
+//			}
 			$session['user']['gems']-=$price;
 			break;
 		case "pass":
