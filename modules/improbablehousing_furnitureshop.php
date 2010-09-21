@@ -56,6 +56,10 @@ function improbablehousing_furnitureshop_dohook($hookname,$args){
 	return $args;
 }
 
+function sortbyprice($a, $b){
+	return strnatcmp($a['goldcost'], $b['goldcost']);
+}
+
 function improbablehousing_furnitureshop_run(){
 	global $session;
 	page_header("Cadfael's Furniture");
@@ -68,8 +72,11 @@ function improbablehousing_furnitureshop_run(){
 			$furniture = get_items_with_settings("furniture");
 			//debug($furniture);
 			
+			usort($furniture,'sortbyprice');
+			
 			rawoutput("<table width=100% style='border: dotted 1px #000000;'>");
-			foreach($furniture AS $key=>$vals){
+			foreach($furniture AS $sort=>$vals){
+				$key = $vals['item'];
 				$classcount+=1;
 				$class=($classcount%2?"trdark":"trlight");
 				rawoutput("<tr class='$class'><td>");

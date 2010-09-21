@@ -776,6 +776,7 @@ function get_items_with_settings($searchsettings){
 		foreach($itemsettings AS $item => $settings){
 			foreach($searchsettings AS $searchsetting){
 				if (isset($settings[$searchsetting])){
+					$settings['item']=$item;
 					$ret[$item]=$settings;
 				}
 			}
@@ -783,6 +784,7 @@ function get_items_with_settings($searchsettings){
 	} else {
 		foreach($itemsettings AS $item => $settings){
 			if (isset($settings[$searchsettings])){
+				$settings['item']=$item;
 				$ret[$item]=$settings;
 			}
 		}
