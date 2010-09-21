@@ -470,11 +470,15 @@ function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
 	}
 	
 	if ($acctid == $session['user']['acctid']){
-		if (!is_array($itemsettings)){
-			load_item_settings();
+		//saves a query over loading the inventory every time
+		if (!is_array($inventory)){
+			load_inventory();
+		} else {
+			if (!is_array($itemsettings)){
+				load_item_settings();
+			}
+			$inventory[$key] = $itemsettings[$item];
 		}
-		//insert the relevant values into the player's Inventory - don't bust a nut trying to sort this, they'll be pulled from the db as needed.  Doing it like this rather than reloading the inventory saves us a little time.
-		$inventory[$key] = $itemsettings[$item];
 	}
 	return $key;
 }
@@ -626,6 +630,7 @@ function has_item($item, $prefs=false, $acctid=false){
 	} else {
 		$inventory = load_inventory($acctid,true);
 	}
+	//debug($inventory);
 	foreach($inventory AS $id => $vals){
 		if ($vals['item']==$item){
 			//we have a match - do the prefs line up?
