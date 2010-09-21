@@ -5,7 +5,7 @@ function giftstation_getmoduleinfo(){
 		"name"=>"Item Gifting Station",
 		"version"=>"2010-09-14",
 		"author"=>"Dan Hall, aka Caveman Joe, improbableisland.com",
-		"category"=>"Item Gifting",
+		"category"=>"Items",
 		"download"=>"",
 	);
 	return $info;

@@ -5,7 +5,7 @@ function eboy_getmoduleinfo(){
 		"name"=>"eBoy's Trading Station",
 		"version"=>"2009-10-01",
 		"author"=>"Dan Hall, aka Caveman Joe, improbableisland.com",
-		"category"=>"Improbable",
+		"category"=>"Items",
 		"download"=>"",
 	);
 	return $info;
