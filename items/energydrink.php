@@ -23,6 +23,19 @@ function energydrink_use($args){
 	require_once "modules/staminasystem/lib/lib.php";
 	addstamina(50000);
 	increment_module_pref("fullness",5,"staminafood");
+	$full = get_module_pref("fullness","staminafood");
+	if ($full < 0){
+		output("You still feel as though you haven't eaten in days.`n`n");
+	}
+	if ($full >= 0 && $full < 50){
+		output("You feel a little less hungry.`n`n");
+	}
+	if ($full >= 50 && $full < 100){
+		output("You still feel as though you've got room for more!`n`n");
+	}
+	if ($full >= 100){
+		output("You're stuffed!  You feel as though you can't possibly eat anything more today.`n`n");
+	}
 }
 
 ?>

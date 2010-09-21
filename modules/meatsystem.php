@@ -408,6 +408,19 @@ function meatsystem_run(){
 			}
 			
 			output("You fry up your lovely meaty loveliness, and sit down to eat.  You gain some Stamina!`n`n");
+			$full = get_module_pref("fullness","staminafood");
+			if ($full < 0){
+				output("You still feel as though you haven't eaten in days.`n`n");
+			}
+			if ($full >= 0 && $full < 50){
+				output("You feel a little less hungry.`n`n");
+			}
+			if ($full >= 50 && $full < 100){
+				output("You still feel as though you've got room for more!`n`n");
+			}
+			if ($full >= 100){
+				output("You're stuffed!  You feel as though you can't possibly eat anything more today.`n`n");
+			}
 		break;
 	}
 
