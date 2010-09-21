@@ -26,6 +26,7 @@ if ($items_discarditem){
 }
 
 load_inventory();
+//debug($inventory);
 
 $hook = array(
 	'inventory' => $inventory,
@@ -40,6 +41,7 @@ addnav("Quantity","inventory.php?items_sort=qty&items_context=$context");
 
 $sort = httpget("items_sort");
 $gr = group_items($inventory,$sort);
+//debug($gr);
 
 // switch ($sort){
 	// case "key":
@@ -94,6 +96,9 @@ foreach($dinv AS $carrier => $cvals){
 	$cun = "kg";
 	if ($cvals['carrier']['units']) $cun = $cvals['carrier']['units'];
 	if ($cvals['carrier']['weight_max']){
+		if (!isset($cvals['carrier']['weight_current'])){
+			$cvals['carrier']['weight_current'] = 0;
+		}
 		require_once "lib/bars.php";
 		$bar = flexibar($cvals['carrier']['weight_current'],$cvals['carrier']['weight_max'],$cvals['carrier']['weight_max']*5);
 		rawoutput("<table><tr><td>".$bar."</td><td>");
