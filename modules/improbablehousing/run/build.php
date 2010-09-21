@@ -42,7 +42,7 @@ if (!$jobtoperform){
 				//determine iitems to use, and use them - assume we're using iitems from the Main inventory
 				use_item($iitem);
 				if ($iitem != "toolbox_carpentry" && $iitem != "toolbox_masonry"){
-					$qleft = has_item_quantity($item);
+					$qleft = has_item_quantity($iitem);
 					if ($qleft == 1){
 						$iname = get_item_setting("verbosename",$iitem);
 					} else {
