@@ -50,9 +50,9 @@ function eboy_dohook($hookname,$args){
 				foreach($eboyitems AS $item => $settings){
 					//Advance Multiplier
 					if ($settings['eboy_multiplier_'.$cid]){
-						if ($settings['stock'] < ($numplayers/10)){
+						if ($settings['eboy_stock_'.$cid] < ($numplayers/10)){
 							increment_item_setting("eboy_multiplier_".$cid,0.1,$item);
-						} else if ($settings['stock'] > ($numplayers/5)){
+						} else if ($settings['stock_'.$cid] > ($numplayers/5)){
 							increment_item_setting("eboy_multiplier_".$cid,-0.1,$item);
 						}
 						//stop prices staying ridiculously low
@@ -62,10 +62,10 @@ function eboy_dohook($hookname,$args){
 					} else {
 						set_item_setting("eboy_multiplier_".$cid,1,$item);
 					}
-					if (!isset($settings['stock'])){
+					if (!isset($settings['eboy_stock_'.$cid])){
 						set_item_setting("eboy_stock_".$cid,1,$item);
 					}
-					increment_item_setting("eboy_multiplier_".$cid,$settings['eboy_dailyadd'],$item);
+					increment_item_setting("eboy_stock_".$cid,$settings['eboy_dailyadd'],$item);
 				}
 			}
 			break;

@@ -184,6 +184,7 @@ function injectrawcomment($section, $author, $comment, $name=false, $info=false)
 	$name = addslashes($name);
 	$sql = "INSERT INTO " . db_prefix("commentary") . " (postdate,section,author,comment,name,info) VALUES ('".date("Y-m-d H:i:s")."','$section',$author,\"$comment\",\"$name\",\"$info\")";
 	db_query($sql);
+	invalidatedatacache("latestcommentary_".$section);
 }
 
 function injectcommentary($section, $talkline, $comment) {
