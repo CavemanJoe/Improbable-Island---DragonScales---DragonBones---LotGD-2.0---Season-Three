@@ -144,6 +144,7 @@ function stamina_calculate_buffed_cost($action, $userid=false){
 	global $session;
 	if ($userid === false) $userid = $session['user']['acctid'];
 	$active_action_buffs = stamina_get_active_buffs($action, $userid);
+	debug($active_action_buffs,true);
 	$actiondetails = get_player_action($action, $userid);
 	//debug($actiondetails);
 	$naturalcost = $actiondetails['naturalcost'];

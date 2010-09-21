@@ -87,7 +87,7 @@ function meatsystem_dohook($hookname,$args){
 					}
 					set_module_pref("carcasses", serialize($carcasses));
 					set_module_pref("hooks-since-last",0);
-					debug($carcasses);
+					//debug($carcasses);
 				}
 			break;
 			case "worldnav":

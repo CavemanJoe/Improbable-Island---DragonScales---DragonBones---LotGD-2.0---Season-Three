@@ -30,7 +30,12 @@ function cratesniffer_use($args){
 	$y = -3;
 	$cont = true;
 	while ($cont){
-		$potentialowners[] = "worldmap_".$px+$x.",".$py+$y.",1";
+		$ox = $px+$x;
+		$oy = $py+$y;
+		$owner = "worldmap_$ox,$oy,1";
+		//debug($owner);
+		$potentialowners[] = $owner;
+		
 		if ($x==3 && $y==3){
 			$cont = false;
 			break;
@@ -42,13 +47,16 @@ function cratesniffer_use($args){
 			$y++;
 		}
 	}
+	//debug($potentialowners);
 	
 	$sql = "SELECT count(item) AS c FROM ".db_prefix("items_player")." WHERE item='supplycrate' AND owner IN (";
 	foreach($potentialowners AS $owner){
-		$sql .= $owner.",";
+		$sql .= "'".$owner."',";
 	}
 	$sql = substr_replace($sql,"",-1);
 	$sql .= ")";
+	
+	//debug($sql);
 	
 	$result = db_query($sql);
 	$row = db_fetch_assoc($result);
