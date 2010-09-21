@@ -1,5 +1,4 @@
 <?php
-require_once "modules/iitems/lib/lib.php";
 require_once "modules/rail/lib.php";
 require_once "common.php";
 
@@ -133,22 +132,31 @@ function rail_surprise_run(){
 			$hid = httpget("hid");
 			$rid = httpget("rid");
 			$cardname = httppost("cardname");
+			global $itemsettings;
+			if (!isset($itemsettings)){
+				load_item_settings();
+			}
 			page_header("Ask the peddler");
 			$askagain = 0;
 			if ($cardname == ""){
 				output("The peddler says, \"`2Wot? Yer'll hafter speak up, mate, I dint get a single word o' dat.`0\"`n`n");
 				$askagain = 1;
 			} else {
-				$masters = iitems_get_all_item_details();
-				$mfound = 0;
-				foreach ($masters AS $mkey => $mdetails){
-					if ($mdetails['verbosename'] == $cardname){
-						$mfound = 1;
-						$item = $mdetails;
-						break;
+				// find out if a card exists with this verbosename
+				$itemfound = 0;
+				$item = array();
+				$itemname = "";
+				foreach ($itemsettings AS $ikey => $itemdetails){
+					foreach ($itemdetails AS $setting => $value){
+						if (($setting == "verbosename") && ($value == $cardname)){
+							$itemfound = 1;
+							$item = $itemdetails;
+							$itemname = $ikey;
+							break;
+						}
 					}
 				}
-				if ($mfound === 0){
+				if ($itemfound === 0){
 					output("The peddler says, \"`2Yer've got bloody marbles fer teef, mate. %s? Dat ain't nuffink I heard of.`0\"`n`n",$cardname);
 					$askagain = 1;
 				} else {
@@ -157,7 +165,7 @@ function rail_surprise_run(){
 						$askagain = 1;
 						} else {
 							if ($item['feature'] <> "rail"){
-								output("The peddler shrugs. \"`2%s? Wud'n know nuffink 'bout dem fings, mate. Not zactly my trade.`0\"`n`n",$cardname);
+								output("The peddler shrugs. \"`2%s? Wouldn' know nuffink abaht dat, mate. Not zactly my trade.`0\"`n`n",$cardname);
 								$askagain = 1;
 						}
 					}
@@ -176,12 +184,15 @@ function rail_surprise_run(){
 				addnav("Move on your way","runmodule.php?module=improbablehousing&op=interior&hid=$hid&rid=$rid");
 			} else {
 				// Okay, so we have a request. Is there someone who has this card?
-				$sql = "SELECT userid FROM ".db_prefix(module_userprefs)." WHERE modulename = 'iitems' AND setting = 'items'"." AND value LIKE '%".$cardname."%' AND userid != '".$session['user']['acctid']."' ORDER BY RAND() LIMIT 1";
+				// This was the old way, finding it in the midst of a serialized array with LIKE:
+				// $sql = "SELECT userid FROM ".db_prefix(module_userprefs)." WHERE modulename = 'iitems' AND setting = 'items'"." AND value LIKE '%".$cardname."%' AND userid != '".$session['user']['acctid']."' ORDER BY RAND() LIMIT 1";
+				// The new way is easier:
+				$sql = "SELECT * from ".db_prefix(items_player)." WHERE item = '".$itemname."' AND owner != '".$session['user']['acctid']."' ORDER BY RAND() LIMIT 1";
 				// whether they get an answer or not, they only get to ask this question once a day
 				set_module_pref("peddlertoday",1);
 				$result = db_query($sql);
 				$row = db_fetch_assoc($result);
-				$rumor = $row['userid'];
+				$rumor = $row['owner'];
 				// Now let's see if the peddler knows, or will admit to knowing, anything about it.
 				if (db_num_rows($result) && (e_rand(1,2) == 1) && ($session['user']['gems'] >= 1)){
 					output("The peddler gets a knowing look. \"`2Well now, I might have a name fer yer, mate, but it'll cost yer.`0\" There's a meaningful glance at your tobacco pouch.`n`n");

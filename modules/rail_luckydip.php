@@ -8,7 +8,6 @@
 /* adapted for use with Improbable Island Railway by Sylvia Li */
 /* 16th June 2010 */
 
-require_once "modules/iitems/lib/lib.php";
 require_once "modules/rail/lib.php";
 require_once "common.php";
 
@@ -100,6 +99,7 @@ function rail_luckydip_run() {
 			}
 		break;
 		case "small":
+			$binsize = "small";
 		case "large":
 			if ($trytoday>=$tryallowed){
 				output("`2Much as you'd like to play again, Elias only gives you a friendly nod and turns to the child beside you.`0`n`n");
