@@ -28,20 +28,20 @@
 function rail_peddler_getloc(){
 	// Live Location, uncomment for live game
 	// Grand Concourse East, map square 14,11
-	/*
+	
 	$loc = array(	
 		"peddlerhid"=>257,
 		"peddlerrid"=>0,
 	);
-	*/
 	
+	/*
 	// Test Location, comment out for live game
 	// Grand Concourse East, map square 14,11	
 	$loc = array(
 		"peddlerhid"=>251,
 		"peddlerrid"=>0,
 	);
-	
+	*/
 	return $loc;
 }
 
@@ -67,7 +67,7 @@ function rail_ironhorse_getlocs(){
 	//   PV (13,23) - Pleasantville Station: Waiting Room
 	//   SH ( 8,17) - West Skronky Siding: Waiting Room
 	//   WA (21,19) - Abandoned Waystation: Derelict Train Yard
-/*
+
 	"AH" => array( 18, 4, "Lucky Dip", "AceHigh",
 	"The back door of the Lucky Dip is painted green. The air here is cool and fresh, fragrant with pine, and faintly... could that be a small hint of iced cookies, lingering yet? Perhaps it is only the sweet smell of cake wafting from nearby -- or death. It might be death."),
 	"CC" => array( 81, 3, "The Terminus", "Cyber City 404",
@@ -89,8 +89,8 @@ function rail_ironhorse_getlocs(){
 	"DB" => array ( 57,64, "The Subway Station", " ",
 	"Wait, what happened? What is this place? This isn't where you meant to get off!"),
 	);
-	*/
 	
+	/*
 	// TEST STOPS
 	"AH" => array ( 47, 0, "Twisted Spoon", "AceHigh",					// 13,11
 	"The back door of the Lucky Dip is painted green. The air here is cool and fresh, fragrant with pine, and faintly... could that be a small hint of iced cookies, lingering yet? Perhaps it is only the sweet smell of cake wafting from nearby -- or death. It might be death."),
@@ -112,7 +112,7 @@ function rail_ironhorse_getlocs(){
 	"Wait, what happened? What is this place? This isn't where you meant to get off!"),
 	
 	);		// end of $locs array assignment
-	
+	*/
 	return $locs;
 }
 
@@ -127,7 +127,7 @@ function rail_collector_getlocs(){
 	//
 	$locs = array(
 	
-/*
+
 	// LIVE GAME card-finding locations
 	"foilwench" => array(193,0,"half-buried in the litter box"),
 	"blueberry" => array(294,0,"wind-blown into the branches"),
@@ -167,14 +167,14 @@ function rail_collector_getlocs(){
 	"tardis" => array(138,20,"on the glassy floor"),
 	"pirate" => array(128,2,"pinned by a dirk to the main mast"),
 	"library" => array(41,0,"in the tiny clutching paws of a wide-eyed gremlin. You offer an H you defeated in the Jungle, and soon complete the trade"),
-*/
-	
+
+	/*
 	// TEST card-finding locations
 	"games" => array(217,4,"under one leg of a card table"),
 	"kitchen" => array(217,3,"right out on the kitchen counter"),
 	"workshop" => array(250,0,"behind a pile of tools"),
 	"library" => array(41,0,"tucked between the pages of a book"),
-	
+	*/
 	);
 	return $locs;
 }
