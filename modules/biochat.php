@@ -64,13 +64,13 @@ function biochat_dohook($hookname,$args){
 				$link = "bio.php?char=".$session['user']['acctid'] ."&ret=".URLEncode($_SERVER['REQUEST_URI']);
 				$total = get_module_pref("total");
 				$seen = get_module_pref("seen");
-				output("`n`n<a href=\"$link\">View my Bio</a>",true);
+				output("<a href=\"$link\">View my Bio</a> ",true);
 				if ($seen != $total){
 					$new = $total-$seen;
 					if ($new==1){
-						output("(1 unread Natter)");
+						output("(1 unread Natter) ");
 					} else {
-						output("(%s unread Natters)", $new);
+						output("(%s unread Natters) ", $new);
 					}
 				}
 				addnav("",$link);
