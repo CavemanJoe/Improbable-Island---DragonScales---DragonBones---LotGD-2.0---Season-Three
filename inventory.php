@@ -119,15 +119,15 @@ foreach($dinv AS $carrier => $cvals){
 			if ($prefs['image']) rawoutput("<table width=100% cellpadding=0 cellspacing=0><tr><td width=100px align=center><img src=\"images/items/".$prefs['image']."\"></td><td>");
 			output_notl("`0`b%s`b`n",$prefs['verbosename']);
 			if ($prefs['quantity'] > 1){
-				output_notl("Quantity: `b%s`b | ",$prefs['quantity']);
+				output_notl("Quantity: `b`J%s`0`b | ",$prefs['quantity']);
 			}
 			if ($prefs['weight']){
 				$un = "kg";
 				if ($prefs['units']) $un = $prefs['units'];
 				if ($prefs['quantity'] > 1){
-					output_notl("Weight: %s %s each, %s %s total | ",$prefs['weight'],$un,$prefs['weight']*$prefs['quantity'],$un);
+					output_notl("Weight: %s %s each, `@`b%s`b`0 %s total | ",$prefs['weight'],$un,$prefs['weight']*$prefs['quantity'],$un);
 				} else {
-					output_notl("Weight: %s %s | ",$prefs['weight'],$un);
+					output_notl("Weight: `@`b%s`b`0 %s | ",$prefs['weight'],$un);
 				}
 			}
 			// debug($prefs);
