@@ -7,7 +7,7 @@ $items_player = array(
 	'id'=>array('name'=>'id', 'type'=>'int(11) unsigned', 'extra'=>'auto_increment'),
 	'item'=>array('name'=>'item', 'type'=>'varchar(255)'),
 	'owner'=>array('name'=>'owner', 'type'=>'varchar(255)'),
-	'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'id'),
+	'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'id,owner'),
 );
 
 //why is the owner a varchar column rather than an int?
@@ -136,7 +136,7 @@ function load_item_settings(){
 	//load settings for all items, put them in $itemsettings
 	//todo: cache this
 	global $itemsettings;
-	if (!is_array($itemsettings)){
+	if (!isset($itemsettings) || !is_array($itemsettings)){
 		$itemsettings = array();
 	}
 	$ssql = "SELECT * FROM ".db_prefix("items_settings");
@@ -151,7 +151,7 @@ function load_item_prefs($items){
 	global $session, $itemprefs, $updated_itemprefs;
 	//load prefs for all items specified in $items, put them into $itemprefs
 	
-	if (!is_array($itemprefs)){
+	if (!isset($itemprefs) || !is_array($itemprefs)){
 		$itemprefs = array();
 	}
 	
@@ -172,7 +172,7 @@ function load_item_prefs($items){
 	}
 	
 	// debug($itemprefs);
-	if (is_array($updated_itemprefs)){
+	if (isset ($updated_itemprefs) && is_array($updated_itemprefs)){
 		foreach($updated_itemprefs AS $updateditem => $updatedprefs){
 			$itemprefs[$updateditem] = array_merge($itemprefs[$updateditem],$updatedprefs);
 		}
@@ -190,7 +190,7 @@ function load_inventory($acctid=false,$npcflag=false){
 		global $itemprefs, $itemsettings;
 	}
 	$items = get_player_items($acctid);
-	if ((!is_array($items) || !count($items)) && !$npcflag){
+	if ((!count($items) || !is_array($items)) && !$npcflag){
 		debug("No items found!");
 		debug("ASSIGNING STARTER ITEMS");
 		//assign starting items
@@ -199,7 +199,10 @@ function load_inventory($acctid=false,$npcflag=false){
 		$items = get_player_items($acctid);
 	}
 	load_item_prefs($items);
-	load_item_settings();
+	
+	if (!isset($itemsettings) || !is_array($itemsettings)){
+		load_item_settings();
+	}
 	
 	$inventory = $items;
 	$weights = array();
@@ -340,7 +343,7 @@ function get_item_pref($setting,$itemid){
 function get_item_setting($setting,$item){
 	global $session, $itemsettings;
 	
-	if (!is_array($itemsettings)){
+	if (!isset($itemsettings) || !is_array($itemsettings)){
 		load_item_settings();
 	}
 	
@@ -471,10 +474,10 @@ function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
 	
 	if ($acctid == $session['user']['acctid']){
 		//saves a query over loading the inventory every time
-		if (!is_array($inventory)){
+		if (!isset($inventory) || !is_array($inventory)){
 			load_inventory();
 		} else {
-			if (!is_array($itemsettings)){
+			if (!isset($itemsettings) || !is_array($itemsettings)){
 				load_item_settings();
 			}
 			$inventory[$key] = $itemsettings[$item];

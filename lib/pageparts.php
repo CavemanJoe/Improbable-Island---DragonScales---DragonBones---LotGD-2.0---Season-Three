@@ -382,18 +382,16 @@ function page_footer($saveuser=true){
 
 	tlschema();
 
-	// global $allqueries;
-	// debug($allqueries);
-	// global $cachedqueries;
-	// debug($cachedqueries);
-	// global $module_prefs;
-	// debug($module_prefs);
-	// global $moduleperformance;
-	// debug($moduleperformance);
-	// global $allqueriesbyfile;
-	// debug($allqueriesbyfile);
-	// global $output_time;
-	// debug($output_time);
+	global $allqueries;
+	debug($allqueries);
+	global $cachedqueries;
+	debug($cachedqueries);
+	global $module_prefs;
+	debug($module_prefs);
+	global $moduleperformance;
+	debug($moduleperformance);
+	global $allqueriesbyfile;
+	debug($allqueriesbyfile);
 	//clean up spare {fields}s from header and footer (in case they're not used)
 	$footer = preg_replace("/{[^} \t\n\r]*}/i","",$footer);
 	$header = preg_replace("/{[^} \t\n\r]*}/i","",$header);

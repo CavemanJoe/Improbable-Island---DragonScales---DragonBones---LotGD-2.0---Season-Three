@@ -47,7 +47,7 @@ function homepage_dohook($hookname,$args){
 				$newplayer = getsetting("newestplayer", "");
 				if ($newplayer != 0) {
 					$sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$newplayer'";
-					$result = db_query_cached($sql, "newest", 600);
+					$result = db_query_cached($sql, "newest", 120);
 					$row = db_fetch_assoc($result);
 					$name = $row['name'];
 				} else {
@@ -60,7 +60,7 @@ function homepage_dohook($hookname,$args){
 						
 			//Output online characters list
 			$sql="SELECT name,alive,location,sex,level,laston,loggedin,lastip,uniqueid FROM " . db_prefix("accounts") . " WHERE locked=0 AND loggedin=1 AND laston>'".date("Y-m-d H:i:s",strtotime("-".getsetting("LOGINTIMEOUT",900)." seconds"))."' ORDER BY level DESC";
-			$result = db_query_cached($sql, "allonlineplayers", 300);
+			$result = db_query_cached($sql, "charlisthomepage", 300);
 			$args['list'].=appoencode(sprintf(translate_inline("`bOnline Characters (%s players):`b`n"),db_num_rows($result)));
 			while ($row = db_fetch_assoc($result)) {
 				$args['list'].=appoencode("`^{$row['name']}`n");

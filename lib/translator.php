@@ -51,8 +51,8 @@ function translate($indata,$namespace=FALSE){
 		if ($namespace != "notranslate") {
 			if (isset($translation_table[$namespace][$indata])) {
 				//tweak to keep track of most commonly-used translations, for removal and reassignment
-				$sql = "UPDATE ".db_prefix("translations")." SET version = 'dragonbones' WHERE uri = '$namespace' AND intext='$indata' AND intext != outtext AND version != 'dragonbones'";
-				db_query($sql);				
+				//$sql = "UPDATE ".db_prefix("translations")." SET version = 'dragonbones' WHERE uri = '$namespace' AND intext='$indata' AND intext != outtext AND version != 'dragonbones'";
+				//db_query($sql);				
 				$outdata = $translation_table[$namespace][$indata];
 				$foundtranslation = true;
 			} elseif (getsetting("collecttexts", false)) {

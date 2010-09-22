@@ -130,8 +130,6 @@ function output_fight_special($text){
  *
  */
 function output(){
-	global $output_time;
-	$start = getmicrotime(true);
 	global $block_new_output;
 	if ($block_new_output) return;
 	$args = func_get_args();
@@ -143,9 +141,6 @@ function output(){
 		$args[0] = translate($args[0]);
 	}
 	call_user_func_array("output_notl",$args);
-	$end = getmicrotime(true);
-	$total = $end - $start;
-	$output_time += $total;
 }
 
 /**

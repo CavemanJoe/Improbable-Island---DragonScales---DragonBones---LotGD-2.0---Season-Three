@@ -118,7 +118,7 @@ function meatsystem_dohook($hookname,$args){
 				$pmeat1 = has_item("meat_low");
 				$pmeat2 = has_item("meat_medium");
 				$pmeat3 = has_item("meat_high");
-				if ($pmeat1 || $pmeat2 || $pmeat3 && $session['user']['race']!="Robot"){
+				if (($pmeat1 || $pmeat2 || $pmeat3) && $session['user']['race']!="Robot"){
 					if (get_module_pref("fullness","staminafood") < 100){
 						$cookcost = stamina_getdisplaycost("Cooking");
 						addnav(array("Cook up some meat (`Q%s%%`0)", $cookcost),"runmodule.php?module=meatsystem&op=cook&from=world");
@@ -153,7 +153,7 @@ function meatsystem_dohook($hookname,$args){
 				$pmeat1 = has_item("meat_low");
 				$pmeat2 = has_item("meat_medium");
 				$pmeat3 = has_item("meat_high");
-				if ($pmeat1 || $pmeat2 || $pmeat3 && $session['user']['race']!="Robot"){
+				if (($pmeat1 || $pmeat2 || $pmeat3) && $session['user']['race']!="Robot"){
 					if (get_module_pref("fullness","staminafood") < 100){
 						$cookcost = stamina_getdisplaycost("Cooking");
 						addnav(array("Cook up some meat (`Q%s%%`0)", $cookcost),"runmodule.php?module=meatsystem&op=cook&from=forest");
@@ -289,7 +289,7 @@ function meatsystem_run(){
 				$pmeat1 = has_item("meat_low");
 				$pmeat2 = has_item("meat_medium");
 				$pmeat3 = has_item("meat_high");
-				if ($pmeat1 || $pmeat2 || $pmeat3 && $session['user']['race']!="Robot"){
+				if (($pmeat1 || $pmeat2 || $pmeat3) && $session['user']['race']!="Robot"){
 					if (get_module_pref("fullness","staminafood") < 100){
 						$cookcost = stamina_getdisplaycost("Cooking");
 						addnav(array("Cook up some meat (`Q%s%%`0)", $cookcost),"runmodule.php?module=meatsystem&op=cook&from=".$from);
@@ -438,7 +438,7 @@ function meatsystem_run(){
 			addnav(array("Clean the carcass of %s (`Q%s%%`0)", $creature['creaturename'], $cleancost), "runmodule.php?module=meatsystem&op=clean&creatureid=".$creatureid."&carcass=".$carcassnum."&from=".$from);
 		}
 	} else if (httpget('op') != "cook" && httpget('op') != "cookfinal"){
-		output("Now only bloody bones lie strewn around the area.  May as well go back, unless you're getting hungry.");
+		output("Now only bloody bones lie strewn around the area.`n`n");
 	}
 	
 	addnav("Ah, screw it.");

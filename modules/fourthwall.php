@@ -45,7 +45,7 @@ function fourthwall_run(){
 
 	require_once("lib/commentary.php");
 	addcommentary();
-	viewcommentary("fourthwall","Chatty Chat Chat",5);
+	viewcommentary("fourthwall","Chatty Chat Chat");
 	
 	addnav("Return");
 	addnav("Back to the Outpost","village.php");

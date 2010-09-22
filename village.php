@@ -296,7 +296,11 @@ if (!isset($args['block']) || $args['block'] != 'yes') {
 		tlschema($schemas['talk']);
 		output($texts['talk']);
 		tlschema();
+		$start = microtime(true);
 		dualcommentary($texts['section'],"Speak",25,$texts['sayline'], $schemas['sayline']);
+		$end = microtime(true);
+		$tot = $end - $start;
+		debug($tot);
 }
 
 module_display_events("village", "village.php");
