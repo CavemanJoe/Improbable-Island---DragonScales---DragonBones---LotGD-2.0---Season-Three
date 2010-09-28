@@ -747,7 +747,7 @@ function viewcommentary($section,$message="Interject your own commentary?",$limi
 			commentaryfooter($section,$message,$limit,$talkline,$schema);
 		}
 	} else {
-		debug($rowcount);
+//		output("There are no comments in this area.");
 	}
 	
 	if (!$skiprecentupdate){
@@ -808,7 +808,7 @@ function commentaryfooter($section,$message="Interject your own commentary?",$li
 	}
 	
 	addnav("",$nlink);
-	output("`n`n`0Jump to commentary page:");
+	output("`n`n`0Jump to commentary page: ");
 	for ($i=$val; $i>=0; $i--){
 		$nlink = buildcommentarylink("&comscroll=".$i."&refresh=1");
 		$ndisp = 1+$val-$i;
@@ -819,9 +819,9 @@ function commentaryfooter($section,$message="Interject your own commentary?",$li
 			output_notl("`@$ndisp`0 ",true);
 		}
 	}
-	output_notl("`n`n");
+	output_notl("`n");
 	if ($moderating){
-		output("`bLast Comment ID shown on this page: %s`b`n",number_format($bottomcid));
+//		output("`bLast Comment ID shown on this page: %s`b`n",number_format($bottomcid));
 	} else {
 		modulehook("commentaryoptions");
 	}
