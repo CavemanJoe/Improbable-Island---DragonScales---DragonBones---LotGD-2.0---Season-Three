@@ -236,6 +236,9 @@ function rail_ironhorse_run(){
 			page_header("First Class has its privileges!");
 			$x = httppost("stopX");
 			$y = httppost("stopY");
+			// strip out any non-numeric characters that got entered by mistake
+			$x = ereg_replace("[^0-9]", "", $x); 
+			$y = ereg_replace("[^0-9]", "", $y); 
 			// make sure they entered values that are in range for the size of the map.
 			$sizeX = get_module_setting("worldmapsizeX","worldmapen");
 			$sizeY = get_module_setting("worldmapsizeY","worldmapen");

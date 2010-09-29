@@ -95,17 +95,10 @@ switch ($op){
 	case "":
 	foreach ($cities AS $area=>$citydet){
 		output("`b");
-		rawoutput("<a href=\"moderate.php?op=sect&area=$area\">".$citydet['name']."</a>");
-		output("`b`n`0");
-		addnav("","moderate.php?op=sect&area=$area");
-		viewcommentary($area,"X",25);
-		rawoutput("<hr style=\"border-bottom: 1px dotted #333333; border-top: 0; border-left: 0; border-right: 0;\" />");
-		$auxarea = $citydet['auxarea'];
-		output("`b");
-		rawoutput("<a href=\"moderate.php?op=dual&area=$area\">".$citydet['name']." Banter</a>");
+		rawoutput("<a href=\"moderate.php?op=dual&area=$area\">".$citydet['name']."</a>");
 		output("`b`n`0");
 		addnav("","moderate.php?op=dual&area=$area");
-		viewcommentary($area,"X",25);
+		dualcommentary($area,"X",25);
 		rawoutput("<hr style=\"border-bottom: 1px dotted #333333; border-top: 0; border-left: 0; border-right: 0;\" />");
 	}
 
@@ -211,8 +204,6 @@ switch ($op){
 					$house = improbablehousing_canenter_house($house);
 					if ($house['canenter']){
 						// assemble dwelling code here
-//						rawoutput("<a href=\"moderate.php?op=dwellchat\">"."link"."</a>");
-//						addnav("","moderate.php?op=dwellchat");
 						$nrooms = count($house['data']['rooms']);
 						if ($nrooms){
 							output("`n%s`0 (owner: %s)`n",$house['data']['name'], moderate_getlogin($house['ownedby']));
