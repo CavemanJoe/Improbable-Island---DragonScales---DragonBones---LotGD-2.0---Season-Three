@@ -153,6 +153,8 @@ switch ($op){
 		$x = httppost("mapX");
 		$y = httppost("mapY");
 //		$z = httppost("mapZ");
+		$x = ereg_replace("[^0-9]", "", $x); 
+		$y = ereg_replace("[^0-9]", "", $y); 
 		// make sure they entered values that are in range for the size of the map.
 		$sizeX = get_module_setting("worldmapsizeX","worldmapen");
 		$sizeY = get_module_setting("worldmapsizeY","worldmapen");
@@ -237,6 +239,8 @@ switch ($op){
 		$x = httppost("mapX");
 		$y = httppost("mapY");
 //		$z = httppost("mapZ");
+		$x = ereg_replace("[^0-9]", "", $x); 
+		$y = ereg_replace("[^0-9]", "", $y); 
 		// make sure they entered values that are in range for the size of the map.
 		$sizeX = get_module_setting("worldmapsizeX","worldmapen");
 		$sizeY = get_module_setting("worldmapsizeY","worldmapen");
