@@ -52,7 +52,7 @@ function smoking_dohook($hookname,$args){
 		set_module_pref("betweensmokes", $betweensmokes);
 		break;
 	case "forest":
-		addnav("Have a Smoke","runmodule.php?module=smoking&from=jungle");
+		addnav("!?Have a Smoke","runmodule.php?module=smoking&from=jungle");
 		if (has_buff("smoking")){
 		break;
 		}
@@ -78,7 +78,7 @@ function smoking_dohook($hookname,$args){
 		break;
 	case "village":
 		addnav($args["gatenav"]);
-		addnav("Have a Smoke","runmodule.php?module=smoking&from=outpost");
+		addnav("!?Have a Smoke","runmodule.php?module=smoking&from=outpost");
 		if (has_buff("smoking")){
 		break;
 		}
@@ -145,6 +145,7 @@ function smoking_run(){
 			);
 		}
 	}
+	addnav("Return");
 	if ($cigarettes==0){
 		output("You sit down to have a quick smoke, but quickly realise that you don't actually have any cigarettes.`n`nYou feel `7a little bit silly!`0");
 	}

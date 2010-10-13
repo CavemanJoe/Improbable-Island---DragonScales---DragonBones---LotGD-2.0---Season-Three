@@ -57,12 +57,12 @@ while (list($key,$module)=each($modules)){
 		activate_module($module);
 		$op="";
 		httpset('op', "");
-		invalidatedatacache("inject-$module");
+		invalidatedatacache("injections/inject_$module");
 	}elseif($op=="deactivate"){
 		deactivate_module($module);
 		$op="";
 		httpset('op', "");
-		invalidatedatacache("inject-$module");
+		invalidatedatacache("injections/inject_$module");
 	}elseif($op=="reinstall"){
 		$sql = "UPDATE " . db_prefix("modules") . " SET filemoddate='0000-00-00 00:00:00' WHERE modulename='$module'";
 		db_query($sql);
@@ -70,7 +70,7 @@ while (list($key,$module)=each($modules)){
 		injectmodule($module, true);
 		$op="";
 		httpset('op', "");
-		invalidatedatacache("inject-$module");
+		invalidatedatacache("injections/inject_$module");
 	}
 }
 

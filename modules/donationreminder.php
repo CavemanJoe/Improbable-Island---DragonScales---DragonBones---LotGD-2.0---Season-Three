@@ -25,7 +25,7 @@ function donationreminder_dohook($hookname,$args){
 	switch($hookname){
 		case "village":
 			if ($session['user']['donation'] == 0 && $session['user']['gentimecount'] > 3000 && !get_module_pref("seenmsg")){
-				redirect("runmodule.php?module=donationreminder");
+				redirect("runmodule.php?module=donationreminder","Donation Reminder module kicking in");
 			}
 			break;
 		}

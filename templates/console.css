@@ -3,6 +3,11 @@ body {
 	background:#111111;
 	font-family: system, monospace;
 	color:#aaaaaa;
+	font-size:smaller;
+}
+
+td {
+	font-size:smaller;
 }
 
 a {
@@ -110,7 +115,6 @@ a:hover.nav {
 
 a.hotmotd {
     color:#FF8A00;
-	font-size:larger;
 }
 
 .footer {
@@ -135,6 +139,7 @@ a.hotmotd {
 	width:200px;
 	padding-top:10px;
 	margin:5px;
+	font-size:smaller;
 }
 
 .infobox {

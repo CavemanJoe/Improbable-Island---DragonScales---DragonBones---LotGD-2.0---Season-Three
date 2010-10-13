@@ -16,7 +16,7 @@ function supplycrate_define_item(){
 }
 
 function supplycrate_use($args){
-	increment_module_pref("cratesopened","supplycrates");
+	increment_module_pref("cratesopened",1,"supplycrates");
 	$found = get_module_pref("cratesopened","supplycrates");
 	if (is_module_active("medals")){
 		if ($found>250){

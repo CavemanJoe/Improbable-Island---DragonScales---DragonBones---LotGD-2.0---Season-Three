@@ -505,7 +505,7 @@ function worldmapen_determinenav(){
 			$session['user']['location']=$loc;
 			set_module_pref("lastCity", "");
 			addnav("Outpost Area");
-			addnav(array("V?Enter %s", $loc), "village.php");
+			addnav(array("O?Enter %s", $loc), "village.php");
 			addnav("Enter Forest","forest.php");
 			$campingAllowed = 0;
 		}

@@ -61,21 +61,21 @@ set_item_setting("call_function","hunterslodge_cigarettes_small_use","hunterslod
 function hunterslodge_cigarettes_large_use($args){
 	global $session;
 	$session['user']['gems'] += 75;
-	output("You pull the cigarettes out of the box and stuff them into your tobacco pouch.`n`n");
+	debug($session['user']['gems']);
 	return $args;
 }
 
 function hunterslodge_cigarettes_medium_use($args){
 	global $session;
 	$session['user']['gems'] += 30;
-	output("You pull the cigarettes out of the box and stuff them into your tobacco pouch.`n`n");
+	debug($session['user']['gems']);
 	return $args;
 }
 
 function hunterslodge_cigarettes_small_use($args){
 	global $session;
 	$session['user']['gems'] += 5;
-	output("You pull the cigarettes out of the box and stuff them into your tobacco pouch.`n`n");
+	debug($session['user']['gems']);
 	return $args;
 }
 

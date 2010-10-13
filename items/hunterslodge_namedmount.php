@@ -33,7 +33,7 @@ function hunterslodge_namedmount_permanent_define_item(){
 }
 
 function hunterslodge_namedmount_use($args){
-	global $playermount;
+	global $session, $playermount;
 	if (count($playermount)==0){
 		output("`0You don't have a Mount to name!`n");
 	} else {
@@ -42,6 +42,7 @@ function hunterslodge_namedmount_use($args){
 }
 
 function hunterslodge_namedmount_permanent_use($args){
+	global $session, $playermount;
 	if (count($playermount)==0){
 		output("`0You don't have a Mount to name!`n");
 	} else {

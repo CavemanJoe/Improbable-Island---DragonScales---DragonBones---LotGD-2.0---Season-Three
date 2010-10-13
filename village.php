@@ -121,7 +121,7 @@ if ($session['user']['slaydragon'] == 1) {
 
 
 if ($session['user']['alive']){ }else{
-	redirect("shades.php");
+	redirect("shades.php","Player in village but not alive");
 }
 
 if (getsetting("automaster",1) && $session['user']['seenmaster']!=1){
@@ -131,7 +131,7 @@ if (getsetting("automaster",1) && $session['user']['seenmaster']!=1){
 	$expreqd = exp_for_next_level($level, $dks);
 	if ($session['user']['experience']>$expreqd &&
 			$session['user']['level']<15){
-		redirect("train.php?op=autochallenge");
+		redirect("train.php?op=autochallenge","Master auto-challenge");
 	}
 }
 
@@ -296,11 +296,11 @@ if (!isset($args['block']) || $args['block'] != 'yes') {
 		tlschema($schemas['talk']);
 		output($texts['talk']);
 		tlschema();
-		$start = microtime(true);
+		// $start = microtime(true);
 		dualcommentary($texts['section'],"Speak",25,$texts['sayline'], $schemas['sayline']);
-		$end = microtime(true);
-		$tot = $end - $start;
-		debug($tot);
+		// $end = microtime(true);
+		// $tot = $end - $start;
+		// debug($tot);
 }
 
 module_display_events("village", "village.php");

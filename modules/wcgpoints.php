@@ -45,6 +45,10 @@ function wcgpoints_dohook($hookname,$args){
 			if (get_module_pref("wcgid")){
 				$newpoints = wcgpoints_updatepoints(true);
 				if ($newpoints > 1){
+					$args = array();
+					$args['newpoints'] = $newpoints;
+					$args = modulehook("wcgpoints_increased",$args);
+					$newpoints = $args['newpoints'];
 					output("`0You find a letter from Jake the Hippy.  It tells you that, by whatever obscure cosmic algorithms Jake uses to decide these things, you've got an extra %s cobblestones waiting for you at Cobblestone Cottage.`n`n",number_format($newpoints));
 				} else if (get_module_pref("fail")){
 					output("`0You find a letter from Jake the Hippy.  It seems Jake has had some trouble reaching the cosmos.  You may need to update your Verification Code via your Preferences - the menu is available from every Outpost.");
@@ -67,7 +71,7 @@ function wcgpoints_run(){
 	switch (httpget('op')){
 		case "enter":
 			$uid_ok = get_module_pref("uidok");
-			output("`4`bWARNING: Cobblestone Cottage is currently in BETA.  Don't expect it to work properly.`b  Please don't send Petitions about this feature - use the chat area below, or the Enquirer.`0`n`n");
+			output("`4`bWARNING: Cobblestone Cottage is currently in BETA, and a little shaky.`b  Please don't send Petitions about this feature - use the chat area below, or the Enquirer.`0`n`n");
 			if (get_module_pref("wcgid") && $uid_ok){
 				if (!get_module_pref("fail")){
 					$points = wcgpoints_getpoints();

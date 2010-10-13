@@ -62,16 +62,19 @@ function hunterslodge_requisition_define_item(){
 }
 
 function hunterslodge_requisition_large_use($args){
+	global $session;
 	$session['user']['gold'] += 25000;
 	return $args;
 }
 
 function hunterslodge_requisition_medium_use($args){
+	global $session;
 	$session['user']['gold'] += 12000;
 	return $args;
 }
 
 function hunterslodge_requisition_small_use($args){
+	global $session;
 	$session['user']['gold'] += 2000;
 	return $args;
 }

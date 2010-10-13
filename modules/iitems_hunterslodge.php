@@ -166,7 +166,7 @@ function iitems_hunterslodge_run(){
 					$sdisp = $vals['lodge_cost']." Points";
 					output("Price: %s`n",$disp);
 					if ($vals['lodge_limited']){
-						output("`4Limited Item`0 - %s available`n",$vals['lodge_stock']);
+						output("`4Limited Item`0: %s available`n",$vals['lodge_stock']);
 					}
 				}
 				

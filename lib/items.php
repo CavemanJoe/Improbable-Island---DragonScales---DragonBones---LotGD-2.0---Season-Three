@@ -179,6 +179,78 @@ function load_item_prefs($items){
 	}
 }
 
+function load_inventory_optimized($acctid=false,$npcflag=false){
+	//debug("Loading inventory");
+	if (!$npcflag){
+		global $session, $itemprefs, $itemsettings, $inventory;
+		if (!$acctid){
+			$acctid = $session['user']['acctid'];
+		}
+	} else {
+		global $itemprefs, $itemsettings;
+	}
+	$items = get_player_items($acctid);
+	if ((!count($items) || !is_array($items)) && !$npcflag){
+		debug("No items found!");
+		debug("ASSIGNING STARTER ITEMS");
+		//assign starting items
+		give_item("bandolier1",false,$acctid);
+		give_item("backpack1",false,$acctid);
+		$items = get_player_items($acctid);
+	}
+	load_item_prefs($items);
+	
+	if (!isset($itemsettings) || !is_array($itemsettings)){
+		load_item_settings();
+	}
+	
+	$inventory = $items;
+	$weights = array();
+	//now take settings and prefs, apply them to the item in question
+	
+	$ikeys = array_keys($inventory);
+	$isize = sizeOf($ikeys);
+	for ($i=0; $i<$isize; $i++){
+		if (isset($itemsettings[$inventory[$ikeys[$i]]['item']]) && is_array($itemsettings[$inventory[$ikeys[$i]]['item']])) $inventory[$ikeys[$i]] = array_merge($inventory[$ikeys[$i]],$itemsettings[$inventory[$ikeys[$i]]['item']]);
+		if (isset($itemprefs[$ikeys[$i]]) && is_array($itemprefs[$ikeys[$i]])) $inventory[$ikeys[$i]] = array_merge($inventory[$ikeys[$i]],$itemprefs[$ikeys[$i]]);
+		if (isset($updated_itemprefs[$ikeys[$i]]) && is_array($updated_itemprefs[$ikeys[$i]])) $inventory[$ikeys[$i]] = array_merge($inventory[$ikeys[$i]],$updated_itemprefs[$$ikeys[$i]]);
+		if (!$npcflag){
+			//put items that don't have a carrier into the "main" inventory
+			if (!isset($inventory[$ikeys[$i]]['inventorylocation'])) $inventory[$ikeys[$i]]['inventorylocation'] = "main";
+		}
+	}
+	calculate_weights();
+	$inventory = modulehook("load_inventory",$inventory);
+	
+	return $inventory;
+}
+
+function load_inventory_doubleoptimized($acctid=false,$npcflag=false){
+	if (!$npcflag){
+		global $session, $itemprefs, $itemsettings, $inventory;
+		if (!$acctid){
+			$acctid = $session['user']['acctid'];
+		}
+	} else {
+		global $itemprefs, $itemsettings;
+	}
+	$sql = "SELECT itemstable.owner AS owner, itemstable.item AS item, itemstable.id AS id, prefstable.setting AS pref, prefstable.value AS prefval, settingstable.setting AS setting, settingstable.value AS settingval FROM ".db_prefix("items_player")." AS itemstable JOIN ".db_prefix("items_settings")." AS settingstable ON itemstable.item = settingstable.item JOIN ".db_prefix("items_prefs")." AS prefstable ON itemstable.id = prefstable.id WHERE itemstable.owner = 1";
+	$result = db_query($sql);
+	while ($row = db_fetch_assoc($result)){
+		//debug($row);
+		$itemprefs[$row['id']][$row['pref']]=$row['prefval'];
+		$itemsettings[$row['item']][$row['setting']]=$row['settingval'];
+		if (!isset($itemprefs[$row['id']][$row['setting']])){
+			$inventory[$row['id']][$row['setting']] = $row['settingval'];
+		}
+		$inventory[$row['id']][$row['pref']] = $row['prefval'];
+		$inventory[$row['id']]['item'] = $row['item'];
+	}
+	calculate_weights();
+	$inventory = modulehook("load_inventory",$inventory);
+	return $inventory;
+}
+
 function load_inventory($acctid=false,$npcflag=false){
 	//debug("Loading inventory");
 	if (!$npcflag){

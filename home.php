@@ -18,7 +18,7 @@ require_once("lib/http.php");
 
 if (!isset($session['loggedin'])) $session['loggedin']=false;
 if ($session['loggedin']){
-	redirect("badnav.php");
+	redirect("badnav.php","User is logged in - redirecting to badnav.php from home.php");
 }
 
 tlschema("home");

@@ -74,7 +74,7 @@ function giftstation_run(){
 				addnav("Actually, forget the whole thing.","gardens.php");
 			} else {
 				output("`0You head into the Gift Exchange.  A black-furred KittyMorph stands behind a counter.`n`n\"`1Hey there!`0\" he says.  \"`1As part of our continued diplomatic efforts, we provide a gift-wrapping service for items you'd like to send to your fellow contestants.  Interested?`0\"`n`n");
-				output("It costs one Supporter Point to gift-wrap and transfer (nearly) any item to any player.  You currently have %s Supporter Points.`n`n",number_format($points));
+				output("It costs one Supporter Point to gift-wrap and transfer (nearly) any item to any player.  Some items can be transferred for free.  You currently have %s Supporter Points.`n`n",number_format($points));
 				addnav("No thanks.","gardens.php");
 			}
 			if ($points > 0){

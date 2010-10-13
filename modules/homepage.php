@@ -186,7 +186,7 @@ function homepage_run(){
 				setcookie("template",$skin ,strtotime("+45 days"));
 				$_COOKIE['template']=$skin;
 			}
-			redirect("index.php?r=$r");
+			redirect("index.php?r=$r","Home page module changing skin");
 			break;
 		case "gamecredits":
 			page_header("Game Credits");

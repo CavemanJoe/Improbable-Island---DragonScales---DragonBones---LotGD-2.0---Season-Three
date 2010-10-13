@@ -382,16 +382,16 @@ function page_footer($saveuser=true){
 
 	tlschema();
 
-	global $allqueries;
-	debug($allqueries);
-	global $cachedqueries;
-	debug($cachedqueries);
-	global $module_prefs;
-	debug($module_prefs);
-	global $moduleperformance;
-	debug($moduleperformance);
-	global $allqueriesbyfile;
-	debug($allqueriesbyfile);
+	// global $allqueries;
+	// debug($allqueries);
+	// global $cachedqueries;
+	// debug($cachedqueries);
+	// global $module_prefs;
+	// debug($module_prefs);
+	// global $moduleperformance;
+	// debug($moduleperformance);
+	// global $allqueriesbyfile;
+	// debug($allqueriesbyfile);
 	//clean up spare {fields}s from header and footer (in case they're not used)
 	$footer = preg_replace("/{[^} \t\n\r]*}/i","",$footer);
 	$header = preg_replace("/{[^} \t\n\r]*}/i","",$header);
@@ -739,11 +739,11 @@ function charstats(){
 		}
 		addcharstat("Personal Info");
 		if ($u['alive']) {
-			addcharstat("Gold", number_format($u['gold'].check_temp_stat("gold",1)));
-			addcharstat("Gems", number_format($u['gems'].check_temp_stat("gems",1)));
+			addcharstat("Requisition", number_format($u['gold'].check_temp_stat("gold",1)));
+			addcharstat("Cigarettes", number_format($u['gems'].check_temp_stat("gems",1)));
 		} else {
 			addcharstat("Cage Fights", $u['gravefights'].check_temp_stat("gravefights",1));
-			addcharstat("Favor", number_format($u['deathpower'].check_temp_stat("deathpower",1)));
+			addcharstat("Favour", number_format($u['deathpower'].check_temp_stat("deathpower",1)));
 		}
 
 		if ($u['alive']){
@@ -865,9 +865,9 @@ function maillink(){
 	$row['seencount']=(int)$row['seencount'];
 	$row['notseen']=(int)$row['notseen'];
 	if ($row['notseen']>0){
-		return sprintf("<a href='mail.php' target='_blank' onClick=\"".popup("mail.php").";return false;\" class='hotmotd'>".translate_inline("Ye Olde Mail: %s new, %s old", 'common')."</a>",$row['notseen'],$row['seencount']);
+		return sprintf("<a href='mail.php' target='_blank' onClick=\"".popup("mail.php").";return false;\" class='hotmotd'>Distractions: %s new, %s old</a>",$row['notseen'],$row['seencount']);
 	}else{
-		return sprintf("<a href='mail.php' target='_blank' onClick=\"".popup("mail.php").";return false;\" class='motd'>".translate_inline("Ye Olde Mail: %s new, %s old", 'common')."</a>",$row['notseen'],$row['seencount']);
+		return sprintf("<a href='mail.php' target='_blank' onClick=\"".popup("mail.php").";return false;\" class='motd'>Distractions: %s new, %s old</a>",$row['notseen'],$row['seencount']);
 	}
 }
 

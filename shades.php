@@ -12,7 +12,7 @@ page_header("The FailBoat");
 addcommentary();
 checkday();
 
-if ($session['user']['alive']) redirect("village.php");
+if ($session['user']['alive']) redirect("village.php","Player is not dead!");
 
 output("`0The FailBoat bobs a couple of miles offshore.  In the distance, Improbable Island stares back at you.  It seems to mock you, as much as an island can.`n`nYou wander around the upper deck, wearing a simple set of grey overalls marked with reddish-brown stains, your regular armour confiscated along with your weapon, backpack, bandolier and just about everything else, pride included.`n`nA pair of heavy steel doors lead to the lower decks, which contain the Retraining Pits and... `\$Her.`0  A few contestants are clustered together around the doors, talking in the fast-and-slow-and-fast-again tones of people running entirely on adrenaline.  They're bandaged, and traumatized, and uncertain.  Like you.`n`nThey cast occasional worried glances at the doors to the Retraining Pits, knowing that their best chances at rejoining their friends lie inside - but they're unsure of themselves.  After all, they've already been beaten up once today.`n`n");
 

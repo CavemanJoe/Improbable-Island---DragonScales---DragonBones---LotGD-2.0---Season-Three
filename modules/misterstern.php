@@ -44,7 +44,7 @@ function misterstern_dohook($hookname,$args){
 			//The player has seen enough exhibits, let's start the subplot!
 			if (get_module_pref("insubplot")==0 && get_module_pref("subplotcomplete")==0){
 				set_module_pref("insubplot",1);
-				redirect("runmodule.php?module=misterstern&op=start");
+				redirect("runmodule.php?module=misterstern&op=start","Stern Tea");
 			}
 			//The player initially turned down Stern's offer of tea
 			if (get_module_pref("hadtea")==0 && get_module_pref("subplotcomplete")==0){

@@ -52,7 +52,7 @@ function db_query($sql, $die=true){
 //since it's possible this array is large, we'll save ourselves
 //the overhead of duplicating the array, then destroying the old
 //one by returning a reference instead.
-function &db_query_cached($sql,$name,$duration=86400,$dir=false){
+function &db_query_cached($sql,$name,$duration=900,$dir=false){
 	//this function takes advantage of the data caching library to make
 	//all of the other db_functions act just like MySQL queries but rely
 	//instead on disk cached data.

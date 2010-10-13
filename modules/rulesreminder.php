@@ -31,7 +31,7 @@ function rulesreminder_dohook($hookname,$args){
 	case "forest":
 		if (get_module_pref("seenrules")==0 || get_module_pref("reminduser")==1){
 			addnav("","runmodule.php?module=rulesreminder");
-			redirect("runmodule.php?module=rulesreminder");
+			redirect("runmodule.php?module=rulesreminder","Rules Reminder module");
 			return $args;
 		}
 		break;

@@ -157,8 +157,8 @@ function translate_loadnamespace($namespace,$language=false){
 	if (!getsetting("cachetranslations",0)) {
 		$result = db_query($sql);
 	} else {
-		$result = db_query_cached($sql,"translations/translations-".$namespace."-".$language,86400);
-		//store it for 10 Minutes, normally you don't need to refresh this often
+		$result = db_query_cached($sql,"translations/translations-".$namespace."-".$language,1200);
+		//store it for 20 Minutes, normally you don't need to refresh this often
 	}
 	$out = array();
 	while ($row = db_fetch_assoc($result)){

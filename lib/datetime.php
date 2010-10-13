@@ -102,7 +102,8 @@ function checkday() {
 			$session['user']['restorepage']=$REQUEST_URI;
 			$session['allowednavs']=array();
 			addnav("","newday.php");
-			redirect("newday.php","New Day");
+			$trace = debug_backtrace();
+			redirect("newday.php","New Day, checkday called from ".$trace[0]['file'].", line ".$trace[0]['line']);
 		}
 	}
 }
