@@ -25,6 +25,7 @@ function onslaught_getmoduleinfo(){
 		),
 		"prefs"=>array(
 			"info"=>"Player's Onslaught Info array,text|array()",
+			"justresurrected"=>"Player was just resurrected, and shouldn't be dumped into a village with an active onslaught,bool|0",
 			"user_optin"=>"You are safe from the effects of Outpost invasions until you pass level ten in your first Drive Kill.  Would you like to opt-in anyway?,bool|0",
 		),
 	);
@@ -35,7 +36,8 @@ function onslaught_install(){
 	module_addhook("newday");
 	module_addhook("newday-runonce");
 	module_addhook("battle-victory");
-	module_addhook("news-intercept");
+	module_addhook("alternativeresurrect");
+	module_addhook("worldnav");
 	require_once("modules/staminasystem/lib/lib.php");
 	install_action("Reinforcement",array(
 		"maxcost"=>5000,
@@ -53,18 +55,16 @@ function onslaught_uninstall(){
 function onslaught_dohook($hookname,$args){
 	global $session;
 	switch($hookname){
-		case "news-intercept":
-			//avoids dumping players from the failboat straight into towns under Breach
-			$num = onslaught_nummonsters();
-			$def = onslaught_checkwalls();
-			if ($def < $num){
-				redirect("runmodule.php?module=worldmapen&op=beginjourney","Redirected to avoid putting freshly-resurrected player back into an Outpost under Breach");
-			}
+		case "alternativeresurrect":
+			set_module_pref('justresurrected',1);
 		break;
 		case "newday-runonce":
 			$newspawnrate = e_rand(1,200);
 			set_module_setting("spawnrate",$newspawnrate);
 			onslaught_shuffleoutposts();
+		break;
+		case "worldnav":
+			if (get_module_pref('justresurrected') == 1) set_module_pref('justresurrected',0);
 		break;
 		case "newday":
 			$info = @unserialize(get_module_pref("info"));
@@ -72,6 +72,7 @@ function onslaught_dohook($hookname,$args){
 				unset($info['companions_this_onslaught']);
 				set_module_pref("info",$info);
 			}
+			set_module_pref('justresurrected',1);
 		break;
 		case "village":
 			onslaught_spawn();
@@ -86,8 +87,14 @@ function onslaught_dohook($hookname,$args){
 				addnav($args["gatenav"]);
 				addnav("Reinforce the Defences","runmodule.php?module=onslaught&op=reinforce");
 				if ($lv>100 && $def<$num && !$skipeffects){
-					redirect("runmodule.php?module=onslaught&op=start&nodesc=1","Onslaught internal redirect while reinforcing");
+					if (get_module_pref('justresurrected')==1) {
+						set_module_pref('justresurrected',0);
+						redirect("runmodule.php?module=worldmapen&op=beginjourney","Redirected to avoid putting freshly-resurrected player back into an Outpost under Breach");
+					} else {
+						redirect("runmodule.php?module=onslaught&op=start&nodesc=1","Onslaught internal redirect while reinforcing");
+					}
 				} else {
+					if (get_module_pref('justresurrected') == 1) set_module_pref('justresurrected',0);
 					$info = @unserialize(get_module_pref("info"));
 					$info['companions_this_onslaught']=array();
 					set_module_pref("info",serialize($info));
@@ -657,7 +664,7 @@ function onslaught_run(){
 			}
 		} elseif ($defeat){
 			require_once("lib/forestoutcomes.php");
-			forestdefeat($badguy,"in an Outpost");
+			forestdefeat(array($badguy),"in an Outpost");
 		} else {
 			require_once("lib/fightnav.php");
 			fightnav(true,true,"runmodule.php?module=onslaught&nodesc=1");
