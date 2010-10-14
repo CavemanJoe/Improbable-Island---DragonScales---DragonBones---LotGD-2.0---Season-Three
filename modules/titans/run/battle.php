@@ -23,7 +23,7 @@ if ($battle){
 		titans_show_comrades($titan);
 		titans_leave_battle_ko($titan);
 		require_once("lib/forestoutcomes.php");
-		forestdefeat($badguy,", a Titan");
+		forestdefeat(array($badguy),", a Titan");
 		//set the player's Location properly so they don't get bumped back to IC
 		$session['user']['location'] = get_module_pref("lastCity","worldmapen");
 	} else {
