@@ -64,11 +64,11 @@ function clatter_run(){
 			$lit = array();
 			$lit[1] = 0;
 			$lit[2] = 0;
-			$lit[1] = 0;
-			$lit[4] = 0;
 			$lit[3] = 0;
+			$lit[4] = 0;
+			$lit[5] = 0;
 			$lit[6] = 0;
-			$lit[2] = 0;
+			$lit[7] = 0;
 		}
 		$coinsinplay=1;
 		$totalcoinsplayed=0;
@@ -112,32 +112,32 @@ function clatter_run(){
 				if ($i==3 && ($coinposition==3 || $coinposition==11)){
 					$bonus=1;
 					$msg.="passing through the first target and closing the switch.  ";
-					if ($lit[1]){
+					if ($lit[3]){
 						$msg.="A relay clicks open and turns off the lamp, while incrementing a counter.  `n";
 						$coinsinplay+=1;
-						if (!$lit[3]){
+						if (!$lit[7]){
 							$msg.="The lamp behind the centre target turns on.`n";
 						}
-						$lit[3]=1;
-						$lit[1]=0;
+						$lit[7]=1;
+						$lit[3]=0;
 					} else {
 						$msg.="A relay clicks closed and the lamps behind the top set of targets switch on.  The next time a coin goes across either of these targets, a bonus coin will be awarded.`n";
-						$lit[1]=1;
+						$lit[3]=1;
 					}
 				} else if (($i==5 && $coinposition==7)){
 					$bonus=1;
 					$msg.="passing through the centre target and closing the switch.  ";
-					if ($lit[3]){
+					if ($lit[5]){
 						$msg.="A relay clicks open and turns off the lamp, and three clicks from deep inside the machine suggests a counter is incrementing.`n";
 						$coinsinplay+=3;
-						if (!$lit[2]){
+						if (!$lit[7]){
 							$msg.="The lamps behind the lower targets turn on.`n";
 						}
-						$lit[2]=1;
-						$lit[3]=0;
+						$lit[5]=0;
+						$lit[7]=1;
 					} else {
 						$msg.="A relay clicks closed and the lamp behind the center target turns on.  The next time a coin goes across this target, three bonus coins will be awarded.`n";
-						$lit[3]=1;
+						$lit[5]=1;
 					}
 				} else if (($i==7 && ($coinposition==1 || $coinposition==13))){
 					if (!$bonus){
@@ -146,17 +146,17 @@ function clatter_run(){
 						$msg.="As a further awesomeness, the coin then drops down one of the side channels.  ";
 					}
 					$bonus=1;
-					if ($lit[2]){
+					if ($lit[7]){
 						$msg.="A relay clicks open and turns off the lamp, and two clicks from deep inside the machine suggests a counter is incrementing.`n";
 						$coinsinplay+=2;
-						if (!$lit[1]){
+						if (!$lit[5]){
 							$msg.="The lamp behind the center target turns on.`n";
 						}
-						$lit[1]=1;
-						$lit[2]=0;
+						$lit[7]=0;
+						$lit[5]=1;
 					} else {
 						$msg.="A relay clicks closed and the lamps behind the bottom set of targets switch on.  The next time a coin goes across either of these targets, two bonus coins will be awarded.`n";
-						$lit[2]=1;
+						$lit[7]=1;
 					}
 				}
 				//output image
@@ -197,7 +197,7 @@ function clatter_run(){
 	addnav("Clatter");
 	if ($session['user']['gold']>=20){
 		addnav("Play Clatter","runmodule.php?module=clatter&op=play");
-		addnav("Play Flash version","runmodule.php?module=clatterflash&op=play");
+		//addnav("Play Flash version","runmodule.php?module=clatterflash&op=play");
 	} else {
 		addnav("You can't afford to gamble right now.","");
 	}

@@ -9,9 +9,9 @@ require_once("lib/villagenav.php");
 tlschema("badnav");
 
 if ($session['user']['loggedin'] && $session['loggedin']){
-	if (strpos($session['output'],"<!--CheckNewDay()-->")){
-		checkday();
-	}
+	// if (strpos($session['output'],"<!--CheckNewDay()-->")){
+		// checkday();
+	// }
 	while (list($key,$val)=each($session['allowednavs'])){
 		//hack-tastic.
 		if (

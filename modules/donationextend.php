@@ -88,11 +88,19 @@ function donationextend_dohook($hookname,$args){
 			if ($newkitty > $ext1){
 				$ext2 = get_module_setting("extend2cost");
 				if ($newkitty > $ext2){
-					$top = $ext2*2;
-					$bar = simplebar($newkitty,$top,70,5,"AA00AA","FFFFFF");
 					$over = $newkitty - $ext2;
+					$bar = simplebar($over,$ext2,70,5,"AA00AA","FFFFFF");
 					$overdisp = number_format($over/100, 2);
-					$out .= "<strong>Special Extend active!</strong><br />".$bar."\$".$overdisp." surplus - thank you for your support!  Last donation by ".$player." (anonymous donations available, check your Preferences) <a href='runmodule.php?module=donationextend' target='_blank' onclick=\"".popup("runmodule.php?module=donationextend").";return false;\">(what's a Special Extend?)</a>";
+					
+					//represent as time left to end of Special Extend period
+					$droppersec =  get_module_setting("extend1cost")/86400;
+					$secsleft = round($over/$droppersec);
+					$expirationtime = time() + $secsleft;
+					
+					require_once "lib/datetime.php";
+					$expirein = reltime($expirationtime,false);
+					
+					$out .= "<strong>Special Extend active!</strong><br />".$bar."Thank you for your support!  Special Extend expires in ".$expirein."<br />Last donation by ".$player." (anonymous donations available, check your Preferences) <a href='runmodule.php?module=donationextend' target='_blank' onclick=\"".popup("runmodule.php?module=donationextend").";return false;\">(what's a Special Extend?)</a>";
 				} else {
 					$moreneeded = $ext2 - $newkitty;
 					$bar = simplebar($newkitty-$ext1,$ext2-$ext1,70,5,"00FF00","AA00AA");
