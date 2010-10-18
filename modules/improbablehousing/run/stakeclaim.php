@@ -75,7 +75,7 @@ $maxhousespersquare = 4;
 		"desc_exterior"=>"You see a sign indicating that a plot of land has been reserved for ".$session['user']['name'],
 	);
 	
-	$bsql = "INSERT INTO ".db_prefix("buildings")." (ownedby,location) VALUES ('ownedby','$loc')";
+	$bsql = "INSERT INTO ".db_prefix("buildings")." (ownedby,location) VALUES ('$ownedby','$loc')";
 	db_query($bsql);
 	$key = mysql_insert_id();
 	
