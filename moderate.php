@@ -251,7 +251,7 @@ switch ($op){
 			output("You entered: x = %s, y = %s.`n", $x, $y);
 			output("Valid map coordinates are: x = 1 to %s, and y = 1 to %s. Please try again.", $sizeX, $sizeY);
 		}else{
-			$square = "worldmap-".$x.",".$y.",1";
+			$square = "mapchat-".$x.",".$y.",1";
 			addnav("","moderate.php?op=mapreload&area=$square");
 			redirect("moderate.php?op=mapreload&area=$square");
 		}

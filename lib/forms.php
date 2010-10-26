@@ -37,8 +37,8 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 	}
 	if ($showcharsleft == true) {
 		rawoutput("	if (x!=0) {
-						if (max.maxLength!=200) max.maxLength=200;
-						l=200;
+						if (max.maxLength!=255) max.maxLength=255;
+						l=255;
 					} else {
 						max.maxLength=l;
 					}
@@ -118,8 +118,6 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 									out += '</span><span class=\\'colBlack\\'>';
 								}else if (z=='j'){
 									out += '</span><span class=\\'colMdGrey\\'>';
-								}else if (z=='J'){
-									out += '</span><span class=\\'colMdBlue\\'>';
 								}else if (z=='e'){
 									out += '</span><span class=\\'colDkRust\\'>';
 								}else if (z=='E'){
@@ -173,15 +171,15 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 	}
 	if (!is_array($info)) {
 		if ($default) {
-			rawoutput("<input name='$name' id='input$nid' maxlength='255' onKeyUp='previewtext$nid(document.getElementById(\"input$nid\").value,200);' value='$default'>");
+			rawoutput("<input name='$name' id='input$nid' maxlength='255' onKeyUp='previewtext$nid(document.getElementById(\"input$nid\").value,255);' value='$default'>");
 		} else {
-			rawoutput("<input name='$name' id='input$nid' maxlength='255' onKeyUp='previewtext$nid(document.getElementById(\"input$nid\").value,200);'>");
+			rawoutput("<input name='$name' id='input$nid' maxlength='255' onKeyUp='previewtext$nid(document.getElementById(\"input$nid\").value,255);'>");
 		}
 	} else {
 		if (isset($info['maxlength'])) {
 			$l = $info['maxlength'];
 		} else {
-			$l=200;
+			$l=255;
 		}
 		if (isset($info['type']) && $info['type'] == 'textarea') {
 			rawoutput("<textarea name='$name' id='input$nid' onKeyUp='previewtext$nid(document.getElementById(\"input$nid\").value,$l);' ");

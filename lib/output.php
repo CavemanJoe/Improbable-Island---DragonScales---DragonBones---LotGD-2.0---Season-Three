@@ -177,83 +177,6 @@ function debug($text, $force=false){
  * @return string An output (HTML) formatted string
  */
 
-/*
-New appoencode function is used like this:
-output("This is [01]a [02]TEST!");
-If there are not enough closing braces to match opening braces, the function returns false.
-*/
-
-function newappoencode($data,$priv=false){
-	global $session;
-	// $start = 0;
-	$out="";
-	if( ($pos = strpos($data, "[")) !== false) {
-		$numstart = substr_count($data,"[");
-		$numend = substr_count($data,"]");
-		if ($numstart == $numend){
-			$out = $data;
-			$out = str_replace("[","<span class='app-",$out);
-			$out = str_replace("]","'>",$out);
-			$out = str_replace("`n","<br />",$out);
-		} else {
-			return false;
-		}
-	}
-	if (strpos($data, "[*]") == (strlen($data)-3)) {
-		$endtags = substr_count($out,"<span class='app-");
-		$close="";
-		for ($i=1; $i<$endtags; $i++){
-			$close.="</span>";
-		}
-		$out = str_replace("<span class='app-*'>",$close,$out);
-	}
-	// if ($priv === false){
-		// $out = HTMLEntities($out, ENT_COMPAT, getsetting("charset", "ISO-8859-1"));
-	// } else {
-		// $out = substr($data, $start);
-	// }
-	return $out;
-}
-
-function extended_appoencode($data,$priv=false){
-	global $nestedtags,$session;
-	$start = 0;
-	$out="";
-	if( ($pos = strpos($data, "`")) !== false) {
-		global $nestedtags;
-		if (!isset($nestedtags['font'])) $nestedtags['font']=false;
-		if (!isset($nestedtags['div'])) $nestedtags['div']=false;
-		if (!isset($nestedtags['i'])) $nestedtags['i']=false;
-		if (!isset($nestedtags['b'])) $nestedtags['b']=false;
-		if (!isset($nestedtags['<'])) $nestedtags['<']=false;
-		if (!isset($nestedtags['>'])) $nestedtags['>']=false;
-		if (!isset($nestedtags['h'])) $nestedtags['h']=false;
-		
-		do {
-			++$pos;
-			//pos is the position at which the ` character occurs
-			debug("Start: ".$start." - Pos: ".$pos);
-			if ($priv === false){
-				$out .= HTMLEntities(substr($data, $start, $pos - $start - 1), ENT_COMPAT, getsetting("charset", "ISO-8859-1"));
-				//debug($out);
-			} else {
-				$out .= substr($data, $start, $pos - $start - 1);
-			}
-			$code = substr($data, $pos, 2);
-			$start = $pos + 2;
-			$out.="<span class='ac-".$code."'>";
-			//debug($code);
-		} while( ($pos = strpos($data, "`", $pos)) !== false);
-	}
-	if ($priv === false){
-		$out .= HTMLEntities(substr($data, $start), ENT_COMPAT, getsetting("charset", "ISO-8859-1"));
-	} else {
-		$out .= substr($data, $start);
-	}
-	
-	return $out;
-}
-
 function final_appoencode($data,$priv=false){
 	global $nestedtags,$session;
 	$start = 0;
@@ -924,11 +847,11 @@ function buildnavs(){
 			}//end while
 
 			// Generate the enclosing collapsable section footer
-			if ($tkey > "" && (!array_key_exists($tkey,$navnocollapse) || !$navnocollapse[$tkey])) {
-				// $args = modulehook("}collapse-nav");
-				if (isset($args['content']))
-					$collapsefooter = $args['content'];
-			}
+			// if ($tkey > "" && (!array_key_exists($tkey,$navnocollapse) || !$navnocollapse[$tkey])) {
+				// // $args = modulehook("}collapse-nav");
+				// if (isset($args['content']))
+					// $collapsefooter = $args['content'];
+			// }
 
 			switch ($style) {
 			case "classic":

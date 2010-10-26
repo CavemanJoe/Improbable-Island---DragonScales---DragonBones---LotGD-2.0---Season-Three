@@ -9,9 +9,9 @@ require_once("lib/villagenav.php");
 tlschema("badnav");
 
 if ($session['user']['loggedin'] && $session['loggedin']){
-	// if (strpos($session['output'],"<!--CheckNewDay()-->")){
-		// checkday();
-	// }
+	if (strpos($session['output'],"<!--CheckNewDay()-->")){
+		checkday();
+	}
 	while (list($key,$val)=each($session['allowednavs'])){
 		//hack-tastic.
 		if (
@@ -24,8 +24,7 @@ if ($session['user']['loggedin'] && $session['loggedin']){
 	$sql="SELECT output FROM ".db_prefix("accounts_output")." WHERE acctid={$session['user']['acctid']};";
 	$result=db_query($sql);
 	$row=db_fetch_assoc($result);
-	if (!is_array($session['allowednavs']) ||
-			count($session['allowednavs'])==0 || $row['output']=="") {
+	if (!is_array($session['allowednavs']) || count($session['allowednavs'])==0 || $row['output']=="") {
 		$session['allowednavs']=array();
 		page_header("Your Navs Are Corrupted");
 		if ($session['user']['alive']) {
@@ -40,9 +39,12 @@ if ($session['user']['loggedin'] && $session['loggedin']){
 	}
 	// echo "BADNAV OUTPUT!<br><br>";
 	// var_dump($session);
+	$badnavbox = "<div style=\"background-color:#ffffff; color:#000000;\"><strong>This page isn't live.</strong>  This is an outdated page that we're showing to you because we think it's the last thing you saw.".$session['badnav']."</div>";
+	echo $badnavbox;
 	echo $row['output'];
 	$session['debug']="";
 	$session['user']['allowednavs']=$session['allowednavs'];
+	$session['badnav']+=1;
 	saveuser();
 }else{
 	$session=array();

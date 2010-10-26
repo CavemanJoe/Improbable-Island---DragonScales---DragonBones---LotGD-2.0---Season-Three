@@ -21,7 +21,7 @@ function color_sanitize($in){
 function comment_sanitize($in) {
 	// to keep the regexp from boinging this, we need to make sure
 	// that we're not replacing in with the ` mark.
-	$out=preg_replace("/[`](?=[^1234567890!@#\$%^&)~QqRVvGgTteEjJlLxXyYkKpPmM?*AasSdDfFi;:\[\{\]\}])/", chr(1).chr(1), $in);
+	$out=preg_replace("/[`](?=[^1234567890!@#\$%^&)~QqRVvGgTteEjlLxXyYkKpPmM?*AasSdDfFi;:\[\{\]\}])/", chr(1).chr(1), $in);
 	$out = str_replace(chr(1),"`",$out);
 	return $out;
 }

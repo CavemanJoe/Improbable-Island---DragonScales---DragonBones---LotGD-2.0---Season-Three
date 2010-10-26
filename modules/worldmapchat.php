@@ -11,7 +11,8 @@ function worldmapchat_getmoduleinfo(){
 	return $info;
 }
 function worldmapchat_install(){
-	module_addhook_priority("worldnav",20);
+	//module_addhook_priority("worldnav",20);
+	module_addhook("worldmap_belowmap");
 	return true;
 }
 function worldmapchat_uninstall(){
@@ -20,9 +21,13 @@ function worldmapchat_uninstall(){
 function worldmapchat_dohook($hookname,$args){
 	global $session;
 	switch($hookname){
-		case "worldnav":
-			addnav("Lonely?");
-			addnav("Look around for other people","runmodule.php?module=worldmapchat");
+		case "worldmap_belowmap":
+			// addnav("Lonely?");
+			// addnav("Look around for other people","runmodule.php?module=worldmapchat");
+			require_once("lib/commentary.php");
+			addcommentary();
+			$loc = get_module_pref("worldXYZ","worldmapen");
+			viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
 			break;
 		}
 	return $args;
