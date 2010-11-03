@@ -317,8 +317,8 @@ function worldmapen_viewsmallmap(){
 	if (get_module_pref("user_blindoutput","worldmapen")){
 		output_notl("%s",$blindoutput);
 	}
-	modulehook("worldmap_belowmap");
-	worldmapen_viewmapkey(true, false);
+	//modulehook("worldmap_belowmap");
+	//worldmapen_viewmapkey(true, false);
 }
 
 

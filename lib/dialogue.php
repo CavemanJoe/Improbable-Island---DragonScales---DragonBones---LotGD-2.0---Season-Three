@@ -78,15 +78,20 @@ function speakify($number){
 }
 
 function vagueify($val){
-	$chars = strlen($val);
+	debug($val);
+	$chars = strlen(round($val));
 	$div=1;
 	for ($i=1; $i<$chars; $i++){
 		$div=$div*10;
 	}
+	debug($div);
 	$ret=array();
 	$low = (floor($val/$div))*$div;
 	$high = (ceil($val/$div))*$div;
 	$mid = (($low/$div) + 0.5)*$div;
+	debug($low);
+	debug($mid);
+	debug($high);
 	if ($val>$mid){
 		$ret['low']=$mid;
 		$ret['high']=$high;

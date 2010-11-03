@@ -22,12 +22,14 @@ function worldmapchat_dohook($hookname,$args){
 	global $session;
 	switch($hookname){
 		case "worldmap_belowmap":
-			// addnav("Lonely?");
-			// addnav("Look around for other people","runmodule.php?module=worldmapchat");
-			require_once("lib/commentary.php");
-			addcommentary();
-			$loc = get_module_pref("worldXYZ","worldmapen");
-			viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+			if (httpget('op')=="move" || httpget('op')=="beginjourney" || httpget){
+				// addnav("Lonely?");
+				// addnav("Look around for other people","runmodule.php?module=worldmapchat");
+				// require_once("lib/commentary.php");
+				// addcommentary();
+				// $loc = get_module_pref("worldXYZ","worldmapen");
+				// viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+			}
 			break;
 		}
 	return $args;

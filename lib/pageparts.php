@@ -407,6 +407,7 @@ function page_footer($saveuser=true){
 	//this somehow allows some frames to load before the user's navs say it can
 	//session_write_close();
 	echo $output;
+        $session['badnav']=0;
 	exit();
 }
 
@@ -783,7 +784,7 @@ function charstats(){
 		}
 		require_once("lib/datetime.php");
 		$gt = gametimedetails();
-		addcharstat("Time");
+		addcharstat("Game State");
 		addcharstat("Game Time", gmdate("g:i a",$gt['gametime']));
 		addcharstat("New day in:", date("H:i:s",secondstonextgameday()));
 		modulehook("charstats");
