@@ -3,8 +3,8 @@
 function counciloffices_getmoduleinfo(){
 	$info = array(
 		"name"=>"Council Offices",
-		"author"=>"Cousjava, with base by Dan Hall",
-		"version"=>"2010-11-26",
+		"author"=>"Cousjava",
+		"version"=>"2010-11-29",
 		"category"=>"Council Offices",
 		"download"=>"",
 	);
@@ -91,16 +91,16 @@ function counciloffices_run(){
 					output("The zombie smiles at you. \"`1There are about %s BRAAAAIIIINS waiting to be eaten out there.`0\"`n`n",e_rand($localmonsters*0.9,$localmonsters*1.1));
 					break;
 				case "Squat Hole":
-					output("\"`1Why shud I care?`0\" come the answer. \"`1Mi' be 'round %s, chuck.`n`n",e_rand($localmonsters*0.8,$localmonsters*1.2));
+					output("\"`1Why shud I care?`0\" come the answer. \"`1Mi' be 'round %s, dick'ead.`n`n",e_rand($localmonsters*0.8,$localmonsters*1.2));
 					break;
 				case "Pleasantville":
 					output("The mutant sighs. \"`1There are %s monsters out there. It proves once and for all we're doomed, all doomed.`0\"`n`n",e_rand($localmonsters*0.9,$localmonsters*1.1));
 					break;
 				case "Cyber City 404":
-					output("The robot checks a scanner.\"`1There are %s monsters in this area, with a margin of 5%`0\"`n`n",e_rand($localmonsters*0.95,$localmonsters*1.05));
+					output("The robot checks a scanner.\"`1There are %s monsters in this area, with a margin of 5 per cent`0\"`n`n",e_rand($localmonsters*0.95,$localmonsters*1.05));
 					break;
 				case "AceHigh":
-					output("The joker nods in response to your question, and vanishes in a puff of green smoke. You think you perhaps should leave, but a moment later she reappears. There is some blood on here which you are `isure`i wasn't there before.\"`1There are %s monsters herabouts,`0\" she says.\"`1Currently.\"`n`n",e_rand($localmonsters*0.9,$localmonsters*1.1));
+					output("The joker nods in response to your question, and `gvanishes`0 in a puff of green smoke. You think you perhaps should leave, but a moment later she reappears. There is some blood on here which you are `isure`i wasn't there before.\"`1There are %s monsters herabouts,`0\" she says.\"`1Currently.\"`n`n",e_rand($localmonsters*0.9,$localmonsters*1.1));
 					break;
 				case "Improbable Central":
 					output("The man sighs, folds up his newspaper and disappears through a door benind the desk. A moment later he comes out again, and gives the answer.\"`1There are about %s monsters out there. Okay?`0\" He sits down again and reopens the newspaper, which you notice is last week's `iEnquirer`i, in which he seems to be doing the crossword.`n`n",e_rand($localmonsters*0.9,$localmonsters*1.1));
@@ -109,7 +109,7 @@ function counciloffices_run(){
 			addnav("Okay");
 			addnav("Stay in offices","runmodule.php?module=counciloffices&councilop=stay");
 			addnav("Return to outpost","village.php");
-			addnav("Where's worst off?","runmodule.php?module=counciloffices&councilop=maxmonsters");
+			//addnav("Where's worst off?","runmodule.php?module=counciloffices&councilop=maxmonsters");
 			break;
 		case "stay":
 			addnav("What now?");
@@ -123,39 +123,37 @@ function counciloffices_run(){
 			addnav("Return to Outpost","village.php");
 			$maxn = counciloffices_maxmonsters();
 			$maxcity = $maxn["city"];
-			$maxmonsters = $man["monsters"];
+			$maxmonsters = e_rand($maxn["monsters"]*0.9,$maxn["monsters"]*1.1);
 			
-			output("\"`1Oh dear, %s seems to be in quite a bit of trouble, there are %s monsters there.`0\"`n`n",$maxn["city"],$maxn["monsters"]);
+			
 			switch ($session['user']['location']){
 				case "NewHome":					
-					output("The man looks down at one of the many sheets of paper on his desk. His brow creases in a worried frown. \"`1%s is in quite a bit a danger,`0\" he says. \"`1There are %s monsters out there.`n`n",$maxcity,$maxmonsters);
+					output("The man looks down at one of the many sheets of paper on his desk. His brow creases in a worried frown. \"`1%s is in quite a bit a danger,`0\" he says. \"`1There are %s monsters out there. It would be useful if you went and helped out, if you feel able to travel.`n`n",$maxcity,$maxmonsters);
 					break;
 				case "Kittania":
 					output("The kittymorph looks at you. \"`1I've heard that %s is in a bit of trouble,`0\" she says. \"`1What with so many monsters around. I've heard there are %s out there!`0\" `n`n",$maxcity,$maxmonsters);
 					break;
 				case "New Pittsburgh":
-					output("\"`1There are %s BRAAIINS waiting ot be eaten outside %s,`0\" the xombie says with a hint of bitterness.`n`n",$maxmonsters,$maxcity);
+					output("\"`1There are %s BRAAIINS waiting ot be eaten outside %s,`0\" the zombie says with a hint of bitterness.`n`n",$maxmonsters,$maxcity);
 					break;
 				case "Squat Hole":
-					output("\"`1Why shud I care?`0\" come the answer. \"`1Mi' be 'round %s, chuck.`n`n",e_rand($localmonsters*0.8,$localmonsters*1.2));
+					output("\"`1I dunno 'bout others. 'Eard in the pub t'at %s has %s monsters.`0\"`n`n",$maxcity,$maxmonsters);
 					break;
 				case "Pleasantville":
-					output("The mutant sighs. \"`1There are %s monsters out there. It proves once and for all we're doomed, all doomed.`0\"`n`n",e_rand($localmonsters*0.9,$localmonsters*1.1));
+					output("The mutant looks a bit woried. at your request, but then it lookied woried before. \"`1There are %s monsters attacking %s. It will fall. They always do.`0\"`n`n",$maxmonsters,$maxcity);
 					break;
 				case "Cyber City 404":
-					output("The robot checks a scanner.\"`1There are %s monsters in this area, with a margin of 5%`0\"`n`n",e_rand($localmonsters*0.95,$localmonsters*1.05));
+					output("The robot checks a panel of scanners and performs several thousand calculations in the next millisecond before answering.\"`1There are %s monsters in the area of %s with an error margin of 10 per cent.`0\"`n`n",$maxmonsters,$maxcity);
 					break;
 				case "AceHigh":
-					output("The joker nods in response to your question, and vanishes in a puff of green smoke. You think you perhaps should leave, but a moment later she reappears. There is some blood on here which you are `isure`i wasn't there before.\"`1There are %s monsters herabouts,`0\" she says.\"`1Currently.\"`n`n",e_rand($localmonsters*0.9,$localmonsters*1.1));
+					output("The joker smiles. \"`1Oh is that all?`0\" she says and `gvanishes`0. She is gone quite a while, and you turn to the door to leave when she reappears.\"`1 %s is what I think is in the most danger. I reckon there are %s monsters out there.`0\" It might not be good idea to know `ihow`i she got that count, so you make your olite thanks and leave.`n`n");
 					break;
 				case "Improbable Central":
-					output("The man sighs, folds up his newspaper and disappears through a door benind the desk. A moment later he comes out again, and gives the answer.\"`1There are about %s monsters out there. Okay?`0\" He sits down again and reopens the newspaper, which you notice is last week's `iEnquirer`i, in which he seems to be doing the crossword.`n`n",e_rand($localmonsters*0.9,$localmonsters*1.1));
+					output("The man, without turning from his newspaper, tells you \"there are %s monsters attacking %s, according to the latest reports,`0\" which you presume are in the newspaper. The man carries on in a quieter voice with the crossword. \"`1Nine letters, friends you have not met, first letter S. Hmm.`0\"`n`n");//STRANGERS
 					break;
+				default:
+				output("\"`1Oh dear, %s seems to be in quite a bit of trouble, there are %s monsters there.`0\"`n`n",$maxcity,$maxmonsters);
 			}
-			addnav("Okay");
-			addnav("Stay in offices","runmodule.php?module=counciloffices&councilop=stay");
-			addnav("Return to outpost","village.php");
-			addnav("Where's worst off?","runmodule.php?module=counciloffices&councilop=maxmonsters");
 			break;
 			//for debugging purposes only, delete later
 			if ($maxn["city"]==null)
