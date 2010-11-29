@@ -161,7 +161,9 @@ function turretdefense_run()
 						global $badguy;
 						turretdefense_getenemy();
 						require_once("modules/onslaught.php");
-						if ($cobbledamage >= $quickfighthp && e_rand(100)<=onslaught_checkmonsters())
+						require_once "modules/staminasystem/lib.php";
+						$stamina = get_stamina();
+						if ($cobbledamage >= $quickfighthp && e_rand(100)<=onslaught_checkmonsters() && e_rand(50)<$stamina)
 						{
 							switch ($session['user']['location']){
 			 	case "Improbable Central": 
@@ -253,7 +255,9 @@ function turretdefense_run()
 						} else {
 							require_once("modules/onslaught.php");
 							$monsterreachc = get_module_setting("monsterreachchance")*onslaught_checkmonsters();
-							$monsterreach = e_rand(100000);
+							require_once("modules/staminasystem/lib.php");
+							$stamina = get_stamina();
+							$monsterreach = e_rand(100)*$stamina;
 							if ($monsterreach < $monsterreachc){
 								global $battle;
 								if ($battle==true){
