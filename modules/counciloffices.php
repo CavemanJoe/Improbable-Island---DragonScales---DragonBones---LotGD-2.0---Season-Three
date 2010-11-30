@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 
 function counciloffices_getmoduleinfo(){
