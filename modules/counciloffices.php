@@ -4,7 +4,7 @@ function counciloffices_getmoduleinfo(){
 	$info = array(
 		"name"=>"Council Offices",
 		"author"=>"Cousjava",
-		"version"=>"2010-11-29",
+		"version"=>"2010-11-30",
 		"category"=>"Council Offices",
 		"download"=>"",
 	);
@@ -13,6 +13,7 @@ function counciloffices_getmoduleinfo(){
 
 function counciloffices_install(){
 	module_addhook("village");
+	module_addhook("onslaught");
 	return true;
 }
 
@@ -29,6 +30,7 @@ function counciloffices_dohook($hookname,$args){
 			tlschema();
 			addnav("Council Offices","runmodule.php?module=counciloffices&councilop=enter");
 			break;
+		case "onslaught":break;
 	}
 	return $args;
 }
@@ -62,6 +64,9 @@ function counciloffices_run(){
 					break;
 				case "Improbable Central":
 					output("The \"Council Offices\" of this Outpost amount to a tiny hut with a man inside reading a newspaper behind a desk.  He looks up as you come in.`n`n\"`1Can I help you?`0\"`n`n");
+					break;
+				default: 
+					output("The \"Council Offices\" is really just one office, containing a bored-looking man. `1\"What can I do for you?\" he says.`n`n");
 					break;
 			}
 			addnav("State your business.");
