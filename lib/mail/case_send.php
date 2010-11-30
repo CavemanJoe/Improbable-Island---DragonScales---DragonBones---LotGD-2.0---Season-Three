@@ -32,7 +32,11 @@ if(db_num_rows($result)>0){
 		require_once("lib/systemmail.php");
 		
 		//sneaky bit of code to thwart spammers
+<<<<<<< HEAD
 		if (!strpos(strtolower($body),"lotgd-rl.co.uk") && !strpos(strtolower($body),"finalfantasylive.co.uk")){
+=======
+		if (!strpos(strtolower($body),"lotgd-rl.co.uk") && !strpos(strtolower($body),"finalfantasylive.co.uk") && !strpos(strtolower($body),"abandonedcity.net")){
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 			systemmail($row1['acctid'],$subject,$body,$from);
 			invalidatedatacache("mail/mail-{$row1['acctid']}");
 		}

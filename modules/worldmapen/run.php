@@ -69,6 +69,17 @@ function worldmapen_run_real(){
 		}
 	}
 	page_header("Journey");
+<<<<<<< HEAD
+=======
+	//is the player looking at chat?
+	if (httpget('comscroll') || httpget('comscroll')===0 || httpget('comment') || httpget('refresh')){
+		$chatoverride = 1;
+		require_once("lib/commentary.php");
+		addcommentary();
+		$loc = get_module_pref("worldXYZ","worldmapen");
+		viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+	}
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 	if ($op == "beginjourney"){
 		$loc = $session['user']['location'];
 		$x = get_module_setting($loc."X");
@@ -83,12 +94,34 @@ function worldmapen_run_real(){
 		output("`c`n`^%s`0`n`c`n",$msg);
 		worldmapen_determinenav();
 		if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+<<<<<<< HEAD
 		module_display_events(get_module_setting("randevent"),"runmodule.php?module=worldmapen&op=continue");
 	}elseif ($op == "continue") {
 		checkday();
 		output('`c`nYou think to yourself what a nice day it is.`c`n');
 		worldmapen_determinenav();
 		if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+=======
+		if (!$chatoverride){
+			require_once("lib/commentary.php");
+			addcommentary();
+			$loc = get_module_pref("worldXYZ","worldmapen");
+			viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+		}
+		worldmapen_viewmapkey(true, false);
+		module_display_events(get_module_setting("randevent"),"runmodule.php?module=worldmapen&op=continue");
+	}elseif ($op == "continue") {
+		checkday();
+		worldmapen_determinenav();
+		if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+		if (!$chatoverride){
+			require_once("lib/commentary.php");
+			addcommentary();
+			$loc = get_module_pref("worldXYZ","worldmapen");
+			viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+		}
+		worldmapen_viewmapkey(true, false);
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 	//Turns Trading bit, added by CavemanJoe
 	}elseif ($op == "tradeturn") {
 		checkday();
@@ -103,7 +136,11 @@ function worldmapen_run_real(){
 		$ttoday = get_module_pref("traveltoday", "cities");
 		set_module_pref("traveltoday", $ttoday-$pointstrade, "cities");
 		addnav("Continue","runmodule.php?module=worldmapen&op=continue");
+<<<<<<< HEAD
 	}elseif ($op == "move") {
+=======
+	}elseif ($op == "move" && !$chatoverride) {
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 		checkday();
 		if ($session['user']['location'] != 'World') {
 			set_module_pref("lastCity", $session['user']['location']);
@@ -158,7 +195,12 @@ function worldmapen_run_real(){
 		if ($playerturns == 0 && $allowzeroturns == 0) {
 			$proceed = 0;
 		}
+<<<<<<< HEAD
 		if (e_rand(0, 100) < $encounter && $su!= '1' && $proceed == 1) {
+=======
+		
+		if (e_rand(0, 100) < $encounter && $su!= '1' && $proceed == 1 && !$chatoverride) {
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 			// They've hit a monster!
 			if (module_events(get_module_setting("randevent"), get_module_setting("wmspecialchance"),"runmodule.php?module=worldmapen&op=continue&") != 0) {
 				page_header("Something Special!");
@@ -212,6 +254,7 @@ function worldmapen_run_real(){
 		}else{
 			$args = modulehook("count-travels", array('available'=>0, 'used'=>0));
 			$free = max(0, $args['available'] - $args['used']);
+<<<<<<< HEAD
 			if (get_module_setting("usestamina")==1){
 				output("`c`nYou think to yourself what a nice day it is.`c`n");
 			} else {
@@ -219,6 +262,22 @@ function worldmapen_run_real(){
 			}
 			worldmapen_determinenav();
 			if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+=======
+			// if (get_module_setting("usestamina")==1){
+				// output("`c`nYou think to yourself what a nice day it is.`c`n");
+			// } else {
+				// output("`c`nYou think to yourself what a nice day it is.`nYou have %s Travel Points remaining.%s`c`n",$free);
+			// }
+			worldmapen_determinenav();
+			if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+			if (!$chatoverride){
+				require_once("lib/commentary.php");
+				addcommentary();
+				$loc = get_module_pref("worldXYZ","worldmapen");
+				viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+			}
+			worldmapen_viewmapkey(true, false);
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 			module_display_events(get_module_setting("randevent"),"runmodule.php?module=worldmapen&op=continue");
 		}
 	}elseif ($op == "gypsy"){
@@ -273,6 +332,16 @@ function worldmapen_run_real(){
 		checkday();
 		worldmapen_determinenav();
 		if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+<<<<<<< HEAD
+=======
+		if (!$chatoverride){
+			require_once("lib/commentary.php");
+			addcommentary();
+			$loc = get_module_pref("worldXYZ","worldmapen");
+			viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+		}
+		worldmapen_viewmapkey(true, false);
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 	} elseif ($op=="combat") {
 		// Okay, we've picked a person to fight.
 		require_once("lib/pvpsupport.php");
@@ -290,6 +359,7 @@ function worldmapen_run_real(){
 			$session['user']['playerfights']--;
 		}
 	} elseif ($op=="fight" || $op=="run"){
+<<<<<<< HEAD
 		$battle = true;
 		$args = modulehook("count-travels", array('available'=>0,'used'=>0));
 		$free = max(0, $args['available'] - $args['used']);
@@ -311,6 +381,50 @@ function worldmapen_run_real(){
 				output("You try to run, but you don't manage to get away!`n");
 				$op = "fight";
 				httpset('op', $op);
+=======
+		if (!$chatoverride){
+			$battle = true;
+		} else {
+			worldmapen_determinenav();
+			if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+			worldmapen_viewmapkey(true, false);
+		}
+		// $args = modulehook("count-travels", array('available'=>0,'used'=>0));
+		// $free = max(0, $args['available'] - $args['used']);
+		// if (get_module_setting("usestamina")==1){
+			// $free = 100;
+		// }
+		if ($op == "run" && !$pvp) {
+			if (!$chatoverride){
+				if (e_rand(1, 5) < 3 && $free) {
+					// They managed to get away.
+					output("You set off running at a breakneck pace!`n`n");
+					output("A short time later, you have managed to avoid your opponent, so you stop to catch your breath.");
+					$ttoday = get_module_pref("traveltoday", "cities");
+					set_module_pref("traveltoday", $ttoday+1, "cities");
+					output("As you look around, you realize that all you really managed was to run in circles.");
+					$battle = false;
+					worldmapen_determinenav();
+					if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+					require_once("lib/commentary.php");
+					addcommentary();
+					$loc = get_module_pref("worldXYZ","worldmapen");
+					viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+					worldmapen_viewmapkey(true, false);
+				} else {
+					output("You try to run, but you don't manage to get away!`n");
+					$op = "fight";
+					httpset('op', $op);
+				}
+			} else {
+				if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+				require_once("lib/commentary.php");
+				addcommentary();
+				$loc = get_module_pref("worldXYZ","worldmapen");
+				viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+				worldmapen_determinenav();
+				worldmapen_viewmapkey(true, false);
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 			}
 		} elseif ($op=="run" && $pvp) {
 			output("Your pride prevents you from running");
@@ -331,11 +445,30 @@ function worldmapen_run_real(){
 				addnews("`4%s`3 defeated `4%s`3 while they were camped in the wilderness.`0", $session['user']['name'], $badguy['creaturename']);
 				$badguy=array();
 			} else {
+<<<<<<< HEAD
 				require_once("lib/forestoutcomes.php");
 				forestvictory($badguy, false);
 			}
 			worldmapen_determinenav();
 			if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+=======
+				if (!$chatoverride){
+					//is talking
+					require_once("lib/forestoutcomes.php");
+					forestvictory($badguy, false);
+				}
+			}
+			//has just beaten a badguy
+			worldmapen_determinenav();
+			if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
+			if (!$chatoverride){
+				require_once("lib/commentary.php");
+				addcommentary();
+				$loc = get_module_pref("worldXYZ","worldmapen");
+				viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
+			}
+			worldmapen_viewmapkey(true, false);
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 		}elseif ($defeat){
 			// Reset the players body to the last city they were in
 			$session['user']['location'] = get_module_pref('lastCity');

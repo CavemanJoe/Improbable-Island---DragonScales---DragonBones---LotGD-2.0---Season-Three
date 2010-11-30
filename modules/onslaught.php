@@ -79,7 +79,11 @@ function onslaught_dohook($hookname,$args){
 			$lv = onslaught_checkmonsters();
 			$num = onslaught_nummonsters();
 			$def = onslaught_checkwalls();
+<<<<<<< HEAD
 			debug("Alert: ".$lv);
+=======
+			//debug("Alert: ".$lv);
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 			if (!get_module_setting("testmode")){
 				if ($session['user']['level'] < 10 && $session['user']['dragonkills']==0 && !get_module_pref("user_optin")){
 					$skipeffects=1;
@@ -453,7 +457,11 @@ function onslaught_run(){
 	switch (httpget('op')){
 		case "lookaround":
 			page_header("What's the situation?");
+<<<<<<< HEAD
 			$rawnum = onslaught_checkmonsters();
+=======
+			$rawnum = onslaught_nummonsters();
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 			require_once "lib/dialogue.php";
 			$vague = vagueify($rawnum);
 			output("Taking a moment during a lull in the fighting to look around, you'd say as a rough estimate that there are between %s and %s monsters rampaging through the Outpost.`n`n",$vague['low'],$vague['high']);
@@ -653,6 +661,10 @@ function onslaught_run(){
 						addnav("Reinforce the defences","runmodule.php?module=onslaught&op=reinforce");
 						addnav("Get back into the fight","runmodule.php?module=onslaught&op=start&nodesc=1");
 						addnav("Run outside and let the Outpost fend for itself","runmodule.php?module=onslaught&op=runmap");
+<<<<<<< HEAD
+=======
+						addnav("Take stock of the situation","runmodule.php?module=onslaught&op=lookaround");
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 					} else {
 						addnav("They just keep coming!");
 						addnav("Here comes another one!","runmodule.php?module=onslaught&op=continue&nodesc=1");
@@ -708,7 +720,11 @@ function onslaught_spawn(){
 			$outpostrate = get_module_objpref("city",$cid,"spawnrate");
 			
 			$newcreatures = ceil((($outpostrate/100)*($spawnrate/100)*($numplayers/$difficulty)));
+<<<<<<< HEAD
 			debug("Adding ".$newcreatures." creatures to ".$row['cityname']);
+=======
+			//debug("Adding ".$newcreatures." creatures to ".$row['cityname']);
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 			$creatures += $newcreatures;
 			set_module_objpref("city",$cid,"creatures",round($creatures));
 			//Now damage the walls!  If checkbreach returns more than 80, the monsters will start tearing down the walls.

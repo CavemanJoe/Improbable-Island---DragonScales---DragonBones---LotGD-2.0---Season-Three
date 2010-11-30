@@ -33,10 +33,22 @@ function do_forced_nav($anonymous,$overrideforced){
 			redirect("index.php","Account Disappeared!");
 		}
 		db_free_result($result);
+<<<<<<< HEAD
 		if (isset($session['allowednavs'][$REQUEST_URI]) && $session['allowednavs'][$REQUEST_URI] && $overrideforced!==true){
 			$session['allowednavs']=array();
 		}else{
 			if ($overrideforced!==true){
+=======
+		//check the nav exists in the session's allowednavs array
+		if (isset($session['allowednavs'][$REQUEST_URI]) && $session['allowednavs'][$REQUEST_URI] && $overrideforced!==true){
+			//The nav is fine
+			//clear the navs - more navs will be added as the script the player is currently viewing loads and executes
+			$session['allowednavs']=array();
+		}else{
+			if ($overrideforced!==true){
+				//This nav is not fine at all.  Redirect the player to badnav.php.
+				$session['badnav'] = 1;
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 				redirect("badnav.php","Navigation not allowed to $REQUEST_URI");
 			}
 		}

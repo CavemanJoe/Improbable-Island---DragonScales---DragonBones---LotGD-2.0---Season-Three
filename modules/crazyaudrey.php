@@ -60,7 +60,11 @@ function crazyaudrey_dohook($hookname,$args){
 	switch($hookname){
 	case "village-desc":
 		if (e_rand(1, 100) <= get_module_setting("villagepercent")) {
+<<<<<<< HEAD
 			output("`n`%Crazy Audrey is here with her `#%s`%!`n",$lcanimals);
+=======
+			output("`%Crazy Audrey is here with her `#%s`%!`n`n",$lcanimals);
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 			$args['doaudrey'] = 1;
 		}
 
