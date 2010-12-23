@@ -94,12 +94,21 @@ function racehuman_dohook($hookname,$args){
 	case "villagetext":
 		racehuman_checkcity();
 		if ($session['user']['location'] == $city){
+<<<<<<< HEAD
 			$args['text']=array("`0You are standing in the heart of NewHome.  Though called a city, this stronghold of humans is little more than a fortified village.  The city's low defensive walls are surrounded by rolling plains which gradually turn into dense, moist jungle in one direction, and a stretch of beach and ocean in the other.  Some residents are engaged in conversation outside the Museum.`n");
 			$args['schemas']['text'] = "module-racehuman";
 			$args['clock']="`n`0A nearby loudspeaker announces that the time is currently `&%s`0.`n";
 			$args['schemas']['clock'] = "module-racehuman";
 			if (is_module_active("calendar")) {
 				$args['calendar'] = "`n`0A smaller contraption next to it reads `&%s`0, `&%s %s %s`0.`n";
+=======
+			$args['text']=array("`0You are standing in the heart of NewHome.  Though called a city, this stronghold of humans is little more than a fortified village.  The city's low defensive walls are surrounded by rolling plains which gradually turn into dense, moist jungle in one direction, and a stretch of beach and ocean in the other.`n`n");
+			$args['schemas']['text'] = "module-racehuman";
+			$args['clock']="`0A nearby loudspeaker announces that the time is currently `&%s`0.`n`n";
+			$args['schemas']['clock'] = "module-racehuman";
+			if (is_module_active("calendar")) {
+				$args['calendar'] = "`0A smaller contraption next to it reads `&%s`0, `&%s %s %s`0.`n`n";
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 				$args['schemas']['calendar'] = "module-racehuman";
 			}
 			$args['title']=array("%s, City of Humans", $city);

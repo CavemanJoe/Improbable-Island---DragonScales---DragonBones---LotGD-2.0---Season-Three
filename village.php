@@ -238,6 +238,7 @@ if ($session['user']['superuser'] & SU_INFINITE_DAYS){
   addnav("/?New Day","newday.php");
 }
 tlschema();
+<<<<<<< HEAD
 //let users try to cheat, we protect against this and will know if they try.
 addnav("","superuser.php");
 addnav("","user.php");
@@ -254,6 +255,8 @@ addnav("","retitle.php");
 addnav("","stats.php");
 addnav("","viewpetition.php");
 addnav("","weaponeditor.php");
+=======
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 
 if (!$skipvillagedesc) {
 	//debug($texts);

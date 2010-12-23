@@ -15,7 +15,10 @@
 				addnav("Clan Buffs");
 				addnav("Deposit Gems","runmodule.php?module=clanbuffs&op=deposit");
 				addnav(array("Activate Clan Buff (`5%s Gems`0)",get_module_setting("buffaprice")),"runmodule.php?module=clanbuffs&op=activate&type=buff");
+<<<<<<< HEAD
 				addnav("~");
+=======
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 				output("`!Clan buffs are extremely expensive, but potentially very powerful assets.`0`n");
 				output("`!There are a total of `^%s`! gems in your clan bank.`0`n", get_module_objpref("clans", $session['user']['clanid'],"gems"));
 			}

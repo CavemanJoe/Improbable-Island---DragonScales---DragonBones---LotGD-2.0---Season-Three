@@ -407,6 +407,10 @@ function page_footer($saveuser=true){
 	//this somehow allows some frames to load before the user's navs say it can
 	//session_write_close();
 	echo $output;
+<<<<<<< HEAD
+=======
+        $session['badnav']=0;
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 	exit();
 }
 
@@ -783,7 +787,11 @@ function charstats(){
 		}
 		require_once("lib/datetime.php");
 		$gt = gametimedetails();
+<<<<<<< HEAD
 		addcharstat("Time");
+=======
+		addcharstat("Game State");
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 		addcharstat("Game Time", gmdate("g:i a",$gt['gametime']));
 		addcharstat("New day in:", date("H:i:s",secondstonextgameday()));
 		modulehook("charstats");

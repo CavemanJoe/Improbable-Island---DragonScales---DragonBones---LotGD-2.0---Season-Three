@@ -177,6 +177,7 @@ function debug($text, $force=false){
  * @return string An output (HTML) formatted string
  */
 
+<<<<<<< HEAD
 /*
 New appoencode function is used like this:
 output("This is [01]a [02]TEST!");
@@ -254,6 +255,8 @@ function extended_appoencode($data,$priv=false){
 	return $out;
 }
 
+=======
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 function final_appoencode($data,$priv=false){
 	global $nestedtags,$session;
 	$start = 0;
@@ -924,11 +927,19 @@ function buildnavs(){
 			}//end while
 
 			// Generate the enclosing collapsable section footer
+<<<<<<< HEAD
 			if ($tkey > "" && (!array_key_exists($tkey,$navnocollapse) || !$navnocollapse[$tkey])) {
 				// $args = modulehook("}collapse-nav");
 				if (isset($args['content']))
 					$collapsefooter = $args['content'];
 			}
+=======
+			// if ($tkey > "" && (!array_key_exists($tkey,$navnocollapse) || !$navnocollapse[$tkey])) {
+				// // $args = modulehook("}collapse-nav");
+				// if (isset($args['content']))
+					// $collapsefooter = $args['content'];
+			// }
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 
 			switch ($style) {
 			case "classic":
