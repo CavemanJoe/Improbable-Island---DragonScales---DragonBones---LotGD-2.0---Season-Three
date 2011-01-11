@@ -36,8 +36,8 @@ function eboy_dohook($hookname,$args){
 			$eboyitems = get_items_with_settings("eboy");
 			
 			//get number of players
-			$sql = "SELECT count(acctid) AS c FROM " . db_prefix("accounts") . " WHERE locked=0";
-			$result = db_query_cached($sql,"numplayers",600);
+			$sql = "SELECT count(acctid) AS c FROM " . db_prefix("accounts") . " WHERE locked=0 AND laston>'".date("Y-m-d H:i:s",strtotime("-2 weeks"))."'";
+			$result = db_query_cached($sql,"activeplayers",1800);
 			$row = db_fetch_assoc($result);
 			$numplayers = $row['c'];
 			
@@ -51,9 +51,13 @@ function eboy_dohook($hookname,$args){
 					//Advance Multiplier
 					if ($settings['eboy_multiplier_'.$cid]){
 						if ($settings['eboy_stock_'.$cid] < ($numplayers/10)){
+							debug("Current stock is ".$settings['eboy_stock_'.$cid]." - incrementing eBoy price multiplier on item ".$item." for city id ".$cid);
 							increment_item_setting("eboy_multiplier_".$cid,0.1,$item);
 						} else if ($settings['stock_'.$cid] > ($numplayers/5)){
+							debug("Current stock is ".$settings['eboy_stock_'.$cid]." - reducing eBoy price multiplier on item ".$item." for city id ".$cid);
 							increment_item_setting("eboy_multiplier_".$cid,-0.1,$item);
+						} else {
+							debug("Current stock is ".$settings['eboy_stock_'.$cid]." - eBoy price multiplier will remain the same on item ".$item." for city id ".$cid);
 						}
 						//stop prices staying ridiculously low
 						if (get_item_setting("eboy_multiplier_".$cid,$item) < 0.1) set_item_setting("eboy_multiplier_".$cid,0.1,$item);

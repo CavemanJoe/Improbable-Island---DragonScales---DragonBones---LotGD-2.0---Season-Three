@@ -507,8 +507,8 @@ function modulehook($hookname, $args=false, $allowinactive=false, $only=false){
 			$cond = trim($row['whenactive']);
 			if ($cond == "" || module_condition($cond) == true) {
 				// call the module's hook code
-				$outputbeforehook = $output;
-				$output="";
+				// $outputbeforehook = $output;
+				// $output="";
 /*******************************************************/
 				$starttime = getmicrotime();
 /*******************************************************/
@@ -526,16 +526,16 @@ function modulehook($hookname, $args=false, $allowinactive=false, $only=false){
 					//debug("Modulehook took (".round($endtime-$starttime,10)."s): $hookname - {$row['modulename']}`n");
 				}
 /*******************************************************/
-				$outputafterhook = $output;
-				$output=$outputbeforehook;
+				// $outputafterhook = $output;
+				// $output=$outputbeforehook;
 				// test to see if we had any output and if the module allows
 				// us to collapse it
-				$testout = trim(sanitize_html($outputafterhook));
+				// $testout = trim(sanitize_html($outputafterhook));
 				if (!is_array($res)) {
 					trigger_error("<b>{$row['function']}</b> did not return an array in the module <b>{$row['modulename']}</b> for hook <b>$hookname</b>.",E_USER_WARNING);
 					$res = $args;
 				}
-				$output .= $outputafterhook;
+				// $output .= $outputafterhook;
 				//handle return arguments.
 				if (is_array($res)) $args = $res;
 			}
@@ -705,6 +705,8 @@ function module_delete_userprefs($user){
 }
 
 $module_prefs=array();
+
+//gets every modulepref for one player
 function get_all_module_prefs($module=false,$user=false){
 	global $module_prefs,$mostrecentmodule,$session;
 	if ($module === false) $module = $mostrecentmodule;
@@ -712,6 +714,22 @@ function get_all_module_prefs($module=false,$user=false){
 	load_module_prefs($module,$user);
 
 	return $module_prefs[$user][$module];
+}
+
+//Preloads one particular modulepref for every user in one database hit.  Use this before doing things like running get_module_pref in a loop for different users.
+//todo - have this accept an array of users
+function batch_get_module_prefs($name,$module=false){
+	global $module_prefs,$mostrecentmodule;
+	if ($module === false) $module = $mostrecentmodule;
+
+	$sql = "SELECT userid,value FROM ".db_prefix("module_userprefs")." WHERE setting = '$name' AND modulename='$module'";
+	$result = db_query($sql);
+
+	while ($row=db_fetch_assoc($result)){
+		if (!isset($module_prefs[$row['userid']][$module][$name])){
+			$module_prefs[$row['userid']][$module][$name]=$row['value'];
+		}
+	}
 }
 
 function get_module_pref($name,$module=false,$user=false){

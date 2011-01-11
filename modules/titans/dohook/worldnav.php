@@ -6,5 +6,5 @@ if (httpget('fledtitan')){
 titans_show_nearby_titans();
 titans_spawn_roll();
 
-debug(get_module_pref("lastCity","worldmapen"));
+//debug(get_module_pref("lastCity","worldmapen"));
 ?>

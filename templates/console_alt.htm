@@ -1,0 +1,198 @@
+
+<!--!popuphead-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+
+<head>
+
+<title>{title}</title>
+
+<link href='templates/console-alt.css' rel='stylesheet' type='text/css'>
+
+{headscript}{script}
+
+</head>
+
+<body>
+
+<h2>{title}</h2>
+
+<!--!popupfoot-->
+
+<div class="footer">
+
+	<div class="license">
+
+		{copyright}Design: Console skin by <a href="http://www.stainless-design.co.uk">Stainless Design</a>
+
+	</div>
+
+	<div class="footerinfo">
+
+		{source}<br />{version}<br />{pagegen}<br />
+
+	</div>
+
+</div>
+
+</body>
+
+</html>
+
+<!--!header-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+
+<head>
+
+<title>{title}</title>
+
+<link href='templates/console-alt.css' rel='stylesheet' type='text/css'>
+
+{headscript}{script}
+
+</head>
+
+<body>
+
+<div class="infocolumn">
+
+	<ul>
+
+		<li><a href="#">Show Stats</a>
+
+			<ul>
+
+				<table bgcolor="#333333"><tr><td>{stats}</td></tr></table>
+
+			</ul>
+
+		</li>
+
+	</ul>
+
+</div>
+
+<div class="navcolumn">
+
+	<div class="navbox">
+
+	{nav}
+
+	{paypal}
+
+	</div>
+
+</div>
+
+
+
+<div class="maincolumn">
+
+		{motd} | <b><a href="http://enquirer.improbableisland.com">Enquirer - blog, forums and wiki</a></b> | {mail} | {petition}<br />{petitiondisplay}
+
+	<h2>{title}</h2>
+
+	<!--!footer-->
+
+</div>
+
+<!--Note - extra close-Div because of a minor bug in combatbars.php, shouldn't affect anything else-->
+
+</div>
+
+<div class="footer">
+
+	<div class="license">
+
+		{copyright}Design: Console skin by <a href="http://www.stainless-design.co.uk">Stainless Design</a>
+
+	</div>
+
+	<div class="footerinfo">
+
+		{source}<br />{version}<br />{pagegen}<br />
+
+	</div>
+
+</div>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+<!--!navhead-->
+
+<div class='navhead'>
+
+	{title}<br />********************
+
+</div>
+
+<!--!navhelp-->
+
+* {text}
+
+<!--!navitem-->
+
+<a href="{link}"{accesskey}class='nav' {popup}>{text}</a><br clear='all'>
+
+<!--!statstart-->
+
+<table cellpadding='1' cellspacing='0' class='charinfo'><tr>
+
+<!--!stathead-->
+
+    </td><td class='charhead'>
+
+    {title}<br />********************<br />
+
+<!--!statrow-->
+
+	<table width="100%"><td><b>{title}</b>:</td><td align="right">{value}</td></tr></table>
+
+<!--!statbuff-->
+
+    </td><td class='charhead'>
+
+    {title}<br />********************<br />{value}</td>
+
+<!--!statend-->
+
+</table>
+
+<!--!petitioncount-->
+
+{petitioncount}
+
+<!--!login-->
+
+<div align="center">
+
+	{username}:<br />
+
+	<input name='name' id="name" accesskey='u' size='15'><br /><br />
+
+	{password}:<br />
+
+	<input name='password' id="password" accesskey='p' type='password' size='15'><br /><br />
+
+	<input type='submit' value='{button}' class='button'>
+
+<!--!loginfull-->
+
+<div align="center">
+
+	<b>Server Full!</b>
+
+</div>

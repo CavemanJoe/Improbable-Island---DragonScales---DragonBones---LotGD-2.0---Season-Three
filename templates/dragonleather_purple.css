@@ -120,6 +120,18 @@ a.commentarymouseoverlink:hover span.commentarymouseover{
 	background:url(dragonleather/mainbg.jpg) #C9B18B;
 }
 
+.sitecenter-darker {
+	background:url(dragonleather/mainbg-darker.jpg) #C9B18B;
+}
+
+.sitecenter-darkest {
+	background:url(dragonleather/mainbg-darkest.jpg) #C9B18B;
+}
+
+.sitecenter-lighter {
+	background:url(dragonleather/mainbg-lighter.jpg) #C9B18B;
+}
+
 .footerinfo {
 	font-size:10px;
 	padding:12px;

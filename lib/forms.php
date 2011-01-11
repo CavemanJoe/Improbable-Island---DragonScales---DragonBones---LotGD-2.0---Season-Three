@@ -1,12 +1,16 @@
 <?php
-function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=true, $info=false, $default=false) {
+function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=true, $info=false, $default=false, $jsec=false) {
 	global $schema,$session,$chatsonpage;
 	$talkline = translate_inline($talkline, $schema);
 	$youhave = translate_inline("You have ");
 	$charsleft = translate_inline(" characters left.");
 	$chatsonpage+=1;
-	$nid = $name.$chatsonpage;
-
+	if (!$jsec){
+		$nid = $name.$chatsonpage;
+	} else {
+		$nid = $jsec;
+	}
+	//debug($nid);
 	if ($startdiv === false)
 		$startdiv = "";
 	rawoutput("<script language='JavaScript'>
@@ -163,8 +167,7 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 						}
 					}
 					document.getElementById(\"previewtext$nid\").innerHTML=out+end+'<br/>';
-				}
-				</script>
+				}</script>
 				");
 	if ($charsleft == true) {
 		rawoutput("<span id='charsleft$nid'></span>");

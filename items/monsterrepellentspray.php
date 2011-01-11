@@ -42,7 +42,7 @@ function monsterrepellentspray_use($args){
 			"roundmsg"=>"{badguy} can't stand the smell of your Monster Repellent Spray, and doesn't want to get too close!",
 			"schema"=>"iitems-catcher"
 		));
-		set_item_pref("encounterchance",50,"worldmapen");
+		set_module_pref("encounterchance",50,"worldmapen");
 		output("You liberally douse yourself with an entire can of Monster Repellent Spray.  For the rest of this game day, your chances of encountering a monster on the Island Map have been halved, and monsters you do encounter will be reluctant to attack you as hard.`n`n");
 	}
 	return $args;

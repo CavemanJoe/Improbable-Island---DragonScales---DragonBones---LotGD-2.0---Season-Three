@@ -26,56 +26,18 @@ if ($lastexpire < $needtoexpire){
 	}
 	require_once("lib/charcleanup.php");
 	char_cleanup_allinone($acctids,$type);
-	// $acctids = array();
-	// $pinfo = array();
-	// $dk0lvl = 0;
-	// $dk0ct = 0;
-	// $dk1lvl = 0;
-	// $dk1ct = 0;
-	// $dks = 0;
-	// require_once("lib/charcleanup.php");
-	// while($row1 = db_fetch_assoc($result1)) {
-		// if(!char_cleanup($row1['acctid'], CHAR_DELETE_AUTO)) continue;
-		// array_push($acctids,$row1['acctid']);
-		// array_push($pinfo,"{$row1['login']}:dk{$row1['dragonkills']}-lv{$row1['level']}");
-		// if ($row1['dragonkills']==0) {
-			// $dk0lvl += $row1['level'];
-			// $dk0ct++;
-		// }else if($row1['dragonkills']==1){
-			// $dk1lvl += $row1['level'];
-			// $dk1ct++;
-		// }
-		// $dks += $row1['dragonkills'];
-	// }
 
-	// //Log which accounts were deleted.
-	// $msg = "[{$dk0ct}] with 0 dk avg lvl [".round($dk0lvl/max(1,$dk0ct),2)."]\n";
-	// $msg .= "[{$dk1ct}] with 1 dk avg lvl [".round($dk1lvl/max(1,$dk1ct),2)."]\n";
-	// $msg .= "Avg DK: [".round($dks/max(1,count($acctids)),2)."]\n";
-	// $msg .= "Accounts: ".join($pinfo,", ");
-	// require_once("lib/gamelog.php");
-	// gamelog("Deleted ".count($acctids)." accounts:\n$msg","char expiration");
-
-	// # Now delete the accounts themselves
-	// // one less search pass, and a guarantee that the same accounts selected
-	// // above are the ones deleted here.
-	// if (count($acctids)) {
-		// $sql = "DELETE FROM " . db_prefix("accounts") .
-			// " WHERE acctid IN (".join($acctids,",").")";
-		// db_query($sql);
-	// }
-
-	//five-day warning
-	$old-=5;
-	$sql = "SELECT acctid,emailaddress FROM " . db_prefix("accounts") . " WHERE 1=0 ".($old>0?"OR (laston < \"".date("Y-m-d H:i:s",strtotime("-$old days"))."\")\n":"")." AND emailaddress!='' AND sentnotice=0 AND (superuser&".NO_ACCOUNT_EXPIRATION.")=0";
+	//seven-day warning
+	$old-=7;
+	$sql = "SELECT acctid,emailaddress,name,laston FROM " . db_prefix("accounts") . " WHERE 1=0 ".($old>0?"OR (laston < \"".date("Y-m-d H:i:s",strtotime("-$old days"))."\")\n":"")." AND emailaddress!='' AND sentnotice=0 AND (superuser&".NO_ACCOUNT_EXPIRATION.")=0";
 	$result = db_query($sql);
-	$subject = translate_inline("LoGD Character Expiration");
-	$body = sprintf_translate("One or more of your characters in Legend of the Green Dragon at %s is about to expire.  If you wish to keep this character, you should log on to him or her soon!",getsetting("serverurl","http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] == 80?"":":".$_SERVER['SERVER_PORT']).dirname($_SERVER['REQUEST_URI'])));
+	$subject = translate_inline("Improbable Island Character Expiration");
 	while ($row = db_fetch_assoc($result)) {
-		mail($row['emailaddress'],$subject,
-		$body,
-		"From: ".getsetting("gameadminemail","postmaster@localhost.com")
-		);
+		$body = sprintf_translate("The character known as %s in Improbable Island (%s) is about to expire due to inactivity.  The character was last online at %s.  If you wish to keep this character, you should log on within the week!  If this character has a HyperRing, you can ignore this message.  Thanks!",appoencode($row['name']),getsetting("serverurl","http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] == 80?"":":".$_SERVER['SERVER_PORT']).dirname($_SERVER['REQUEST_URI'])),$row['laston']);
+		//mail($row['emailaddress'],$subject,
+		//$body,
+		//"From: ".getsetting("gameadminemail","postmaster@localhost.com")
+		//);
 		$sql = "UPDATE " . db_prefix("accounts") . " SET sentnotice=1 WHERE acctid='{$row['acctid']}'";
 		db_query($sql);
 	}

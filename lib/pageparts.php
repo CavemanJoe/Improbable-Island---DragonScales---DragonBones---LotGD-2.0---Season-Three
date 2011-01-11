@@ -352,52 +352,51 @@ function page_footer($saveuser=true){
 	$gentime = getmicrotime()-$pagestarttime;
 	$session['user']['gentime']+=$gentime;
 	$session['user']['gentimecount']++;
-	$load = exec("uptime");
-	$load = split("load average:", $load);
-	$load = split(", ", $load[1]);
+	// $load = exec("uptime");
+	// $load = split("load average:", $load);
+	// $load = split(", ", $load[1]);
 	$perfhook = array(
 		"gentime"=>$gentime,
 		"dbinfo"=>$dbinfo,
-		"cpu"=>$load,
+		// "cpu"=>$load,
 		"script"=>$SCRIPT_NAME,
 		"request"=>$REQUEST_URI,
 	);
 	$perfhook = modulehook("footer-performance",$perfhook);
-	$l1 = $load[0];
-	$l5 = $load[1];
-	$l15 = $load[2];
-	$mem = memory_get_usage(true);
-	if ($mem < 1024){
-		$memdisp = $mem." bytes";
-	} else if ($mem < 1048576){
-		$memdisp = round($mem/1024,6)." kilobytes";
-	} else {
-		$memdisp = round($mem/1048576,6)." megabytes";
-	}
+	// $l1 = $load[0];
+	// $l5 = $load[1];
+	// $l15 = $load[2];
+	// $mem = memory_get_usage(true);
+	// if ($mem < 1024){
+		// $memdisp = $mem." bytes";
+	// } else if ($mem < 1048576){
+		// $memdisp = round($mem/1024,6)." kilobytes";
+	// } else {
+		// $memdisp = round($mem/1048576,6)." megabytes";
+	// }
 	if (!isset($dbinfo['cache_fail'])){
 		$dbinfo['cache_fail']=0;
 	}
 	global $output_time;
-	$footer=str_replace("{pagegen}","Page gen: ".round($gentime,3)."s / ".$dbinfo['queriesthishit']." queries (".round($dbinfo['querytime'],3)."s), cache ".$dbinfo['cache_success']." successful (".round($dbinfo['cachetime'],3)."s) / ".$dbinfo['cache_fail']." failed.  Average for this account: ".round($session['user']['gentime']/$session['user']['gentimecount'],3)."s - ".round($session['user']['gentime'],3)."/".round($session['user']['gentimecount'],3)."<br />Current CPU Load: $l1 | $l5 | $l15<br />Memory usage for this page: $memdisp",$footer);
+	$footer=str_replace("{pagegen}","Page gen: ".round($gentime,3)."s / ".$dbinfo['queriesthishit']." queries (".round($dbinfo['querytime'],3)."s), cache ".$dbinfo['cache_success']." successful (".round($dbinfo['cachetime'],3)."s) / ".$dbinfo['cache_fail']." failed.  Average for this account: ".round($session['user']['gentime']/$session['user']['gentimecount'],3)."s - ".round($session['user']['gentime'],3)."/".round($session['user']['gentimecount'],3)."<br />",$footer);
 
 	tlschema();
 
-	// global $allqueries;
-	// debug($allqueries);
-	// global $cachedqueries;
-	// debug($cachedqueries);
-	// global $module_prefs;
-	// debug($module_prefs);
-	// global $moduleperformance;
-	// debug($moduleperformance);
-	// global $allqueriesbyfile;
-	// debug($allqueriesbyfile);
+	//global $allqueries;
+	//debug($allqueries);
+	//global $cachedqueries;
+	//debug($cachedqueries);
+	//global $moduleperformance;
+	//debug($moduleperformance);
+	//global $allqueriesbyfile;
+	//debug($allqueriesbyfile);
 	//clean up spare {fields}s from header and footer (in case they're not used)
 	$footer = preg_replace("/{[^} \t\n\r]*}/i","",$footer);
 	$header = preg_replace("/{[^} \t\n\r]*}/i","",$header);
 
 	//finalize output
 	$output=$header.$output.$footer;
+	modulehook("prerender");
 	$session['user']['gensize']+=strlen($output);
 	$session['output']=$output;
 	if ($saveuser === true) {

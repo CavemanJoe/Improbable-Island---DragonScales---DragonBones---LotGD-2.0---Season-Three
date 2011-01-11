@@ -98,10 +98,14 @@ function ranksystem_dohook($hookname,$args){
 			}
 			break;
 		case "village":
-			if (get_module_pref("rank")>7){
-				blocknav("lodge.php");
-				addnav("You can't use the Hunter's Lodge while you're on a Bastard Rank Drive Kill!","");
-			}
+			// if (get_module_pref("rank")>7){
+				// blocknav("lodge.php");
+				// addnav("You can't use the Hunter's Lodge while you're on a Bastard Rank Drive Kill!","");
+			// }
+			if ($session['user']['dragonkills'] > 0 && get_module_pref("rank")==0){
+				redirect("runmodule.php?module=ranksystem&op=offer","Rank System kicking in");
+			};
+			ranksystem_applyrankbuff();
 		break;
 		}
 	return $args;
@@ -125,7 +129,7 @@ function ranksystem_run(){
 			addnav("Proceed at Level Seven","runmodule.php?module=ranksystem&op=start&rank=7");
 			if (get_module_pref("rank7","ranksystem")>0){
 				addnav("`4Bastard Rank`0");
-				addnav("`JWarning - you can't access the Hunter's Lodge while playing on `4Bastard Rank!`0","");
+				addnav("`JReady to kick it up a notch?","");
 				addnav("`4`bBAAAAASTAAAARD RAAAAAANK!`0","runmodule.php?module=ranksystem&op=start&rank=8");
 			}
 			page_footer();
@@ -134,12 +138,12 @@ function ranksystem_run(){
 			if ($rank==8){
 				output("`\$The Watcher`0 laughs.  \"`7Right, then.  Bastard Rank it is.  I'll see you when my boys bring you back to my Retraining Vessel in a mop bucket.`0\"  Without further ado, she wanders off behind you, chuckling softly.`n`nYou are now attempting a Bastard Rank Drive Kill.");
 			} else {
-				output("`\$The Watcher`0 smiles.  \"`7Right enough.  Good luck out there.  If it gets too hard, come and see me.`0\"  Without further ado, she wanders off behind you.`n`nYour Rank has now been set to level %s.",$rank);
+				output("`\$The Watcher`0 smiles.  \"`7Right enough.  Good luck out there.  If it gets too hard for you, come and see me on the FailBoat and I'll lower your rank for you.`0\"  Without further ado, she wanders off behind you.`n`nYour Rank has now been set to level %s.",$rank);
 			}
 			set_module_pref("rank",$rank);
 			ranksystem_applyrankbuff();
 			addnav("Let's rock!");
-			addnav("Get on with it","forest.php");
+			addnav("Get on with it","village.php");
 			break;
 		case "change":
 			$rank = get_module_pref("rank");

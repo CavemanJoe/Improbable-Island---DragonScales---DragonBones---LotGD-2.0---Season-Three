@@ -38,6 +38,8 @@ function onslaught_install(){
 	module_addhook("battle-victory");
 	module_addhook("alternativeresurrect");
 	module_addhook("worldnav");
+	module_addhook("counciloffices");
+	module_addhook("creatureencounter");
 	require_once("modules/staminasystem/lib/lib.php");
 	install_action("Reinforcement",array(
 		"maxcost"=>5000,
@@ -57,6 +59,49 @@ function onslaught_dohook($hookname,$args){
 	switch($hookname){
 		case "alternativeresurrect":
 			set_module_pref('justresurrected',1);
+		break;
+		case "counciloffices":
+			output("A mechanical readout mounted on the wall gives the threat levels for the various Outposts on the Island:`n`n");
+			$sql = "select * from ".db_prefix("cityprefs");
+			$result=db_query_cached($sql,"allcityprefs");
+			for ($i = 0; $i < db_num_rows($result); $i++){
+				$row = db_fetch_assoc($result);
+				$cid = $row['cityid'];
+				// debug($row);
+				$creatures = get_module_objpref("city",$cid,"creatures");
+				// debug($creatures);
+				$defences = get_module_objpref("city",$cid,"defences");
+				switch ($creatures){
+					case ($creatures < 100):
+						$condition = "`@Peaceful Days (reduced Requisition payouts)`0";
+					break;
+					case ($creatures < 250):
+						$condition = "`2Quiet Times`0";
+					break;
+					case ($creatures < 500):
+						$condition = "`2Minor Activity`0";
+					break;
+					case ($creatures < 600):
+						$condition = "`qGuarded Atmosphere`0";
+					break;
+					case ($creatures < 700):
+						$condition = "`qIncreased Activity`0";
+					break;
+					case ($creatures < 800):
+						$condition = "`QAssistance Required`0 (increased Requisition payouts unless Outpost is breached)";
+					break;
+					case ($creatures < 900):
+						$condition = "`4Critical Situation`0 (increased Requisition payouts unless Outpost is breached)";
+					break;
+					case ($creatures > 900):
+						$condition = "`$`bInteresting Times`b`0 (doubled Requisition payouts unless Outpost is breached)";
+					break;
+				}
+				if (!$creatures){
+					$condition = "`@Peaceful Days (reduced Requisition payouts)`0";
+				}
+				output("`b%s`b: %s`n",$row['cityname'],$condition);
+			}
 		break;
 		case "newday-runonce":
 			$newspawnrate = e_rand(1,200);
@@ -432,13 +477,27 @@ function onslaught_dohook($hookname,$args){
 			}
 			break;
 		case "battle-victory":
+			//debug($args);
 			require_once "modules/cityprefs/lib.php";
 			$cid = get_cityprefs_cityid("location",$session['user']['location']);
 			if ($cid){
 				$creatures = get_module_objpref("city",$cid,"creatures");
 				$creatures--;
+				//debug($creatures);
 				if ($creatures>=0){
 					set_module_objpref("city",$cid,"creatures",$creatures);
+				}
+				if ($creatures < 100){
+					$args['creaturegold'] = round($args['creaturegold']*0.75);
+			//		debug("lower req");
+				} else if ($creatures > 700 && $creatures < 1000){
+					$args['creaturegold'] = round($args['creaturegold']*1.5);
+			//		debug("higher req");
+				} else if ($creatures > 1000){
+					$args['creaturegold'] = round($args['creaturegold']*2);
+			//		debug("double req");
+				} else {
+			//		debug("normal req");
 				}
 			}
 			break;
@@ -449,7 +508,6 @@ function onslaught_dohook($hookname,$args){
 function onslaught_run(){
 	global $session,$battle,$enemies;
 	global $companions,$companion,$newcompanions;
-	debug($session['user']['location']);
 	switch (httpget('op')){
 		case "lookaround":
 			page_header("What's the situation?");
@@ -695,13 +753,13 @@ function onslaught_spawn(){
 		
 		//get number of players
 		$sql = "SELECT count(acctid) AS c FROM " . db_prefix("accounts") . " WHERE locked=0 AND dragonkills > 1";
-		$result = db_query($sql);
+		$result = db_query_cached($sql,"playerswithdks",1800);
 		$row = db_fetch_assoc($result);
 		$numplayers = $row['c'];
 		
 		//for all cities
 		$sql = "select * from ".db_prefix("cityprefs");
-		$result=db_query($sql);
+		$result=db_query_cached($sql,"allcityprefs");
 		for ($i = 0; $i < db_num_rows($result); $i++){
 			$row = db_fetch_assoc($result);
 			$cid = $row['cityid'];
@@ -726,7 +784,7 @@ function onslaught_spawn(){
 function onslaught_shuffleoutposts(){
 	//Randomly determines new weighting patterns for each Outpost
 	$sql = "select * from ".db_prefix("cityprefs");
-	$result=db_query($sql);
+	$result=db_query_cached($sql,"allcityprefs");
 	for ($i = 0; $i < db_num_rows($result); $i++){
 		$row = db_fetch_assoc($result);
 		$cid = $row['cityid'];

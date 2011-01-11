@@ -5,7 +5,7 @@ function titans_spawn_roll($spawnchance=false){
 	$now = time();
 	$nextspawn = $lastspawn + 60;
 	$secsleft = $nextspawn-$now;
-	debug("Next Titan spawn roll in ".$secsleft." seconds.");
+	//debug("Next Titan spawn roll in ".$secsleft." seconds.");
 	if ($now > $nextspawn){
 		set_module_setting("lastroll",$now,"titans");
 		//spawn roll

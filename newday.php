@@ -115,6 +115,13 @@ if ($dp < $dkills) {
 		invalidatedatacache("list.php-warsonline");
 	}
 	$session['user']['age']++;
+	if ($session['user']['age']==1 && !$session['user']['dragonkills']){
+		$subj = "Welcome to the Island!";
+		$body = "If you have any questions that aren't answered in Basic Training, feel free to ask folks in the Banter channel for help - everybody's really friendly here.`n`nTo keep the Island running fast, characters are deleted automatically if they're left to gather dust - so please, remember to sign into your character every now and then.`n`nCharacters who have never earned any experience points will be erased if they haven't logged in for seven days.`nCharacters who have not reached level two will be erased if they don't log in for thirty days.`nCharacters who have reached level two at least once will expire after ninety days of inactivity.`n`nIf you anticipate not being around a computer for three months (it happens - extended holidays, military service, and so on), have a look in the Hunter's Lodge for a permanent account option.`n`nThanks for reading, and good luck!";
+		require_once "lib/systemmail.php";
+		systemmail($session['user']['acctid'],$subj,$body);
+	}
+	
 	$session['user']['seenmaster']=0;
 	output("You open your eyes to discover that a new day has been bestowed upon you. It is day number `^%s.`0",$session['user']['age']);
 	output("You feel refreshed enough to take on the world!`n");

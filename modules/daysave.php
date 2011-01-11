@@ -20,9 +20,9 @@ function daysave_getmoduleinfo(){
 		"settings"=>array(
 			"startdays"=>"Number of game days with which to start a new player,int|2",
 			"startslots"=>"Number of game day slots to start,int|2",
-			"buyslotcost"=>"Players can buy an extra day slot in return for this many Donator Points,int|250",
-			"fillslotcost"=>"Players have the option to fill up their days when buying a new day slot in exchange for this many Donator Points per day to be filled,int|10",
-			"buydaycost"=>"Players have the option to buy an Instant New Day at any time for this many Donator Points,int|25",
+			"buyslotcost"=>"Players can buy an extra day slot in return for this many Supporter Points,int|250",
+			"fillslotcost"=>"Players have the option to fill up their days when buying a new day slot in exchange for this many Supporter Points per day to be filled,int|10",
+			"buydaycost"=>"Players have the option to buy an Instant New Day at any time for this many Supporter Points,int|25",
 			"maxbuyday"=>"Players can buy only this many Instant New Days per real Game Day,int|1",
 		),
 		"prefs"=>array(
@@ -87,14 +87,26 @@ function daysave_dohook($hookname,$args){
 			break;
 		case "village":
 			tlschema('daysavenav');
-			addnav("Saved Days");
-			addnav("New Day Menu","runmodule.php?module=daysave&op=start&return=village");
+			// if ($session['user']['age'] < 2 && !$session['user']['dragonkills']){
+				// require_once "modules/staminasystem/lib/lib.php";
+				// if (get_stamina<10){
+					// output("`J`bYou're starting to run low on Stamina.`b  As you become more exhausted, the Island becomes a more dangerous and unpredictable place.  You can replenish your Stamina by eating or drinking something.  Or, hey - did you notice the Saved Days link down there?  That might be worth a click.  Like all Rookie-advice messages, this one will likely disappear and quit pestering you pretty soon.`0`n`n");
+					// addnav("`JSaved Days`0");
+					// addnav("`JNew Day Menu`0","runmodule.php?module=daysave&op=start&return=village");
+				// } else {
+					// addnav("Saved Days");
+					// addnav("New Day Menu","runmodule.php?module=daysave&op=start&return=village");
+				// }
+			// } else {
+				addnav("Saved Days");
+				addnav("New Day Menu","runmodule.php?module=daysave&op=start&return=village");
+			//}
 		break;
 		case "shades":
 			tlschema('daysavenav');
 			addnav("Saved Days");
 			if (!$session['user']['resurrections'] && !$session['user']['dragonkills'] && get_module_pref("days")){
-				output("`JAdvice for new players: if you try to fight your way back to the Island and fail, then have a look at the New Day Menu.`0`n`n");
+				output("`JAdvice for new players: if you try to fight your way back to the Island and fail, then have a look at the New Day Menu.  This message, like all the other blue newbie messages, will go away and quit pestering you pretty soon.`0`n`n");
 				addnav("`JNew Day Menu","runmodule.php?module=daysave&op=start&return=shades");
 			} else {
 				addnav("New Day Menu","runmodule.php?module=daysave&op=start&return=shades");
@@ -168,19 +180,19 @@ function daysave_run(){
 				} else {
 					$maxdisp = "Days";
 				}
-				addnav("Donator Options");
-				output("Site supporters have several extra options.  As a site supporter, you can instantly start a new Game Day for your character at any time in exchange for %s Donator Points.  You can also add more Chronospheres, allowing you to save up more days to play later.  Each additional Chronosphere costs %s Donator Points, and come pre-filled.  When adding Chronospheres, you have the option of refilling your empty Spheres for a discount cost of %s Donator Points per empty Sphere.`n`nYou currently have %s Donator Points available.  See the Hunter's Lodge in any Outpost for a more detailed explanation of how to get Donator Points, and other cool things you can do with them.`n`n`c`b`4Careful!`0`b`cAlways check the time to the next Game Day (displayed under your Stats) before you use a Chronosphere or buy an Instant New Day!  Nothing sucks worse than paying for a new day and then finding out that you would have gotten one in five minutes anyway.`n`nA quick point to note - if you leave the Island without logging out, and then log back in to arrive at this page, the number of Chronospheres displayed may be out of date.  To fix this, click the Refresh link.`n`nAlso be aware that if you've just logged in to see this page after being logged out for a while, you might have a natural New Day (IE one that won't affect your Chronospheres) waiting for you anyway, which will be triggered when you leave this page.",$buydaycost,$buyslotcost,$fillslotcost,number_format($dps));
+				addnav("Supporter Options");
+				output("Site supporters have several extra options.  As a site supporter, you can instantly start a new Game Day for your character at any time in exchange for %s Supporter Points.  You can also add more Chronospheres, allowing you to save up more days to play later.  Each additional Chronosphere costs %s Supporter Points, and come pre-filled.  When adding Chronospheres, you have the option of refilling your empty Spheres for a discount cost of %s Supporter Points per empty Sphere.`n`nYou currently have %s Supporter Points available.  See the Hunter's Lodge in any Outpost for a more detailed explanation of how to get Supporter Points, and other cool things you can do with them.`n`n`c`b`4Careful!`0`b`cAlways check the time to the next Game Day (displayed under your Stats) before you use a Chronosphere or buy an Instant New Day!  Nothing sucks worse than paying for a new day and then finding out that you would have gotten one in five minutes anyway.`n`nA quick point to note - if you leave the Island without logging out, and then log back in to arrive at this page, the number of Chronospheres displayed may be out of date.  To fix this, click the Refresh link.`n`nAlso be aware that if you've just logged in to see this page after being logged out for a while, you might have a natural New Day (IE one that won't affect your Chronospheres) waiting for you anyway, which will be triggered when you leave this page.",$buydaycost,$buyslotcost,$fillslotcost,number_format($dps));
 				if ($dps>=$buydaycost && $boughttoday < $maxbuyday){
-					addnav(array("Buy an Instant New Day for %s Donator Points",$buydaycost),"runmodule.php?module=daysave&op=buyday&hid=".$hid."&rid=".$rid."&sid=".$sid);
+					addnav(array("Buy an Instant New Day for %s Supporter Points",$buydaycost),"runmodule.php?module=daysave&op=buyday&hid=".$hid."&rid=".$rid."&sid=".$sid);
 				} else if ($dps<$buydaycost){
-					addnav("Not enough Donator Points for an Instant New Day","");
+					addnav("Not enough Supporter Points for an Instant New Day","");
 				} else {
 					addnav("Instant New Day limit reached","");
 				}
 				if ($dps>=$buyslotcost){
-					addnav(array("Buy an extra Chronosphere for %s Donator Points",$buyslotcost),"runmodule.php?module=daysave&op=buyslot&return=".$return."&hid=".$hid."&rid=".$rid."&sid=".$sid);
+					addnav(array("Buy an extra Chronosphere for %s Supporter Points",$buyslotcost),"runmodule.php?module=daysave&op=buyslot&return=".$return."&hid=".$hid."&rid=".$rid."&sid=".$sid);
 				} else {
-					addnav("Not enough Donator Points for a new Chronosphere","");
+					addnav("Not enough Supporter Points for a new Chronosphere","");
 				}
 				addnav("Exit");
 				if ($return=="village") {
@@ -214,7 +226,7 @@ function daysave_run(){
 				addnav("It is a New Day!","newday.php");
 			break;
 			case "buyday":
-				output("You have bought one new Game Day in exchange for %s Donator Points, leaving you with %s points left to spend.  Your Chronospheres are unaffected.  Now go forth and have fun!`n`n",$buydaycost,number_format($dps-$buydaycost));
+				output("You have bought one new Game Day in exchange for %s Supporter Points, leaving you with %s points left to spend.  Your Chronospheres are unaffected.  Now go forth and have fun!`n`n",$buydaycost,number_format($dps-$buydaycost));
 				for ($full=1; $full<=$days; $full++){
 					rawoutput("<img src=\"images/daysphere-full.png\" alt=\"Saved Day\" title=\"Saved Day\">");
 				}
@@ -232,7 +244,7 @@ function daysave_run(){
 				$days = get_module_pref("days");
 				$slots = get_module_pref("slots");
 				$dps = $session['user']['donation']-$session['user']['donationspent'];
-				output("You have bought one additional Chronosphere in exchange for %s Donator Points, leaving you with %s points left to spend.`n`n",$buyslotcost,number_format($dps));
+				output("You have bought one additional Chronosphere in exchange for %s Supporter Points, leaving you with %s points left to spend.`n`n",$buyslotcost,number_format($dps));
 				for ($full=1; $full<=$days; $full++){
 					rawoutput("<img src=\"images/daysphere-full.png\" alt=\"Saved Day\" title=\"Saved Day\">");
 				}
@@ -241,7 +253,7 @@ function daysave_run(){
 				}
 				if ($days<$slots && $dps>=$fillslotcost){
 					addnav("Fill up Chronospheres","");
-					output("`n`nYou now have the option of refilling your empty Chronospheres for %s Donator Points each.`n`n",$fillslotcost);
+					output("`n`nYou now have the option of refilling your empty Chronospheres for %s Supporter Points each.`n`n",$fillslotcost);
 					$empty = $slots-$days;
 					for ($i=1; $i<=$empty; $i++){
 						$cost = $i*$fillslotcost;
@@ -251,7 +263,7 @@ function daysave_run(){
 							} else {
 								$p = "Spheres";
 							}
-							addnav(array("Fill up %s %s for %s Donator Points",$i,$p,$cost),"runmodule.php?module=daysave&op=fillup&fill=".$i."&return=".$return."&hid=".$hid."&rid=".$rid."&sid=".$sid);
+							addnav(array("Fill up %s %s for %s Supporter Points",$i,$p,$cost),"runmodule.php?module=daysave&op=fillup&fill=".$i."&return=".$return."&hid=".$hid."&rid=".$rid."&sid=".$sid);
 						}
 					}
 				}
@@ -269,7 +281,7 @@ function daysave_run(){
 				} else {
 					$p = "Chronospheres";
 				}
-				output("You have filled up %s %s in exchange for %s Donator Points, leaving you with %s points left to spend.`n`n",$fill,$p,number_format($fill*$fillslotcost),number_format($dps));
+				output("You have filled up %s %s in exchange for %s Supporter Points, leaving you with %s points left to spend.`n`n",$fill,$p,number_format($fill*$fillslotcost),number_format($dps));
 				for ($full=1; $full<=$days; $full++){
 					rawoutput("<img src=\"images/daysphere-full.png\" alt=\"Saved Day\" title=\"Saved Day\">");
 				}

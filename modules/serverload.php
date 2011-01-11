@@ -1,5 +1,12 @@
 <?php
 
+// $sql = "TRUNCATE TABLE ".db_prefix("performance");
+// db_query($sql);
+// $sql = "TRUNCATE TABLE ".db_prefix("performancepage");
+// db_query($sql);
+// $sql = "TRUNCATE TABLE ".db_prefix("performancetime");
+// db_query($sql);
+
 function serverload_getmoduleinfo(){
 	$info = array(
 		"name"=>"Server Performance Statistics",
@@ -31,6 +38,7 @@ function serverload_install(){
 		'numplayers'=>array('name'=>'numplayers', 'type'=>'int(11) unsigned'),
 		'totaltime'=>array('name'=>'totaltime', 'type'=>'double unsigned'),
 		'totalpages'=>array('name'=>'totalpages', 'type'=>'int(11) unsigned'),
+		'maxpps'=>array('name'=>'maxpps', 'type'=>'double unsigned'),
 		'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'numplayers'),
 	);
 	require_once("lib/tabledescriptor.php");
@@ -90,7 +98,8 @@ function serverload_run(){
 	
 	$sql = "SELECT regdate, dragonkills, laston, gentimecount, gentime, loggedin FROM " . db_prefix("accounts") . "";
 	$result = db_query($sql);
-	for ($i=0;$i<db_num_rows($result);$i++){
+	$rrows = db_num_rows($result);
+	for ($i=0;$i<$rrows;$i++){
 		$totalplayers++;
 		$row = db_fetch_assoc($result);
 		$lastontime = strtotime($row['laston']);
@@ -122,7 +131,7 @@ function serverload_run(){
 	output("Joined today: %s`n",$joinedtoday);
 	output("Logged in today: %s`n",$loggedintoday);
 	output("Logged in this week: %s`n",$loggedinthisweek);
-	output("Online players: %s`n",$online);
+	output("`bOnline players: %s`b`n",$online);
 	output("New players online right now: %s`n`n",$noobsonline);
 	
 	$time = $t_time - get_module_setting("ltime");
@@ -140,7 +149,7 @@ function serverload_run(){
 		$timesincelast = microtime(true)-$lastupdate;
 		$pps = round($count / $timesincelast,3);
 		output("Average pages per second since last update: %s`n",$pps);
-		output("Peak pages per second: %s`n",get_module_setting("peakpps"));
+		//output("Peak pages per second: %s`n",get_module_setting("peakpps"));
 		$d_count = $t_count - get_module_setting("ldaycount");
 		$dpps = round($d_count / $timedetails['realsecssofartoday'],3);
 		output("Average pages per second for this game day: %s`n`n",$dpps);
@@ -159,12 +168,13 @@ function serverload_run(){
 	
 	
 	//Show player number table
-	$sql = "SELECT numplayers, totalpages, totaltime FROM " . db_prefix("performance") . "";
+	$sql = "SELECT numplayers, totalpages, totaltime, maxpps FROM " . db_prefix("performance") . "";
 	$result = db_query($sql);
 	output("`bAverage Page Generation Times by number of online players`b`n");
 	rawoutput("<table border='0' cellpadding='2' cellspacing='1' align='center' width='100%'>");
-	rawoutput("<tr class='trhead'><td>Online Players</td><td>Total Count</td><td>Total Time</td><td>Average Time / Page</td></tr>");
-	for ($i=0;$i<db_num_rows($result);$i++){
+	rawoutput("<tr class='trhead'><td>Online Players</td><td>Total Count</td><td>Total Time</td><td>Average Time / Page</td><td>PPS</td></tr>");
+	$rrows = db_num_rows($result);
+	for ($i=0;$i<$rrows;$i++){
 		$row = db_fetch_assoc($result);
 		if ($row['totalpages']>=1){
 			$avg = $row['totaltime']/$row['totalpages'];
@@ -189,7 +199,7 @@ function serverload_run(){
 			} else {
 				rawoutput("<tr class='".($i%2?"trdark":"trlight")."'>");
 			}
-			rawoutput("<td>".$row['numplayers']."</td><td>".number_format($row['totalpages'])."</td><td>".$row['totaltime']."</td><td>".$bar.round($row['totaltime']/$row['totalpages'],4).$improvement."</td></tr>");
+			rawoutput("<td>".$row['numplayers']."</td><td>".number_format($row['totalpages'])."</td><td>".$row['totaltime']."</td><td>".$bar.round($row['totaltime']/$row['totalpages'],4).$improvement."</td><td>".number_format($row['maxpps'],4)."</td></tr>");
 		}
 	}
 	rawoutput("</table>");
@@ -202,7 +212,8 @@ function serverload_run(){
 	output("`n`n`bAverage Page Generation Times by Time of Day (server time)`b`nResults are calculated whenever a player logs in or out, so if it's been a while since a login/logout operation, this data may be slightly inaccurate.  All times are GMT, and the current server time is %s.`n",$now);
 	rawoutput("<table border='0' cellpadding='2' cellspacing='1' align='center' width='100%'>");
 	rawoutput("<tr class='trhead'><td>Time Period</td><td>Total Count</td><td>Total Time</td><td>Average Time / Page</td></tr>");
-	for ($i=0;$i<db_num_rows($result);$i++){
+	$rrows = db_num_rows($result);
+	for ($i=0;$i<$rrows;$i++){
 		$row = db_fetch_assoc($result);
 		if ($row['totalpages']>=1){
 			$avg = $row['totaltime']/$row['totalpages'];
@@ -252,7 +263,8 @@ function serverload_update($day=false){
 	
 	$sql = "SELECT laston, gentimecount, gentime, loggedin FROM " . db_prefix("accounts") . "";
 	$result = db_query($sql);
-	for ($i=0;$i<db_num_rows($result);$i++){
+	$rrows = db_num_rows($result);
+	for ($i=0;$i<$rrows;$i++){
 		$row = db_fetch_assoc($result);
 		$lastontime = strtotime($row['laston']);
 		$regtime = strtotime($row['regdate']);
@@ -276,7 +288,7 @@ function serverload_update($day=false){
 			$sql = "UPDATE " . db_prefix("performance") . " SET totalpages=totalpages+$count, totaltime=totaltime+$time WHERE numplayers=$online";
 			db_query($sql);
 			if (!db_affected_rows()){
-				$sql = "INSERT INTO " . db_prefix("performance") . " (numplayers, totalpages, totaltime) VALUES ($online, $count, $time)";
+				$sql = "INSERT LOW_PRIORITY INTO " . db_prefix("performance") . " (numplayers, totalpages, totaltime) VALUES ($online, $count, $time)";
 				db_query($sql);
 			}
 		}
@@ -287,7 +299,7 @@ function serverload_update($day=false){
 			$sql = "UPDATE " . db_prefix("performancetime") . " SET totalpages=totalpages+$count, totaltime=totaltime+$time WHERE timeslice=$timeslice";
 			db_query($sql);
 			if (!db_affected_rows()){
-				$sql = "INSERT INTO " . db_prefix("performancetime") . " (timeslice, totalpages, totaltime) VALUES ($timeslice, $count, $time)";
+				$sql = "INSERT LOW_PRIORITY INTO " . db_prefix("performancetime") . " (timeslice, totalpages, totaltime) VALUES ($timeslice, $count, $time)";
 				db_query($sql);
 			}
 		}
@@ -295,8 +307,16 @@ function serverload_update($day=false){
 		if ($count > 1 && $time > 0){
 			$timesincelast = microtime(true)-$lastupdate;
 			$pps = round($count / $timesincelast,3);
-			if ($pps>get_module_setting("peakpps") && $timesincelast > 0 && $time > 1){
-				set_module_setting("peakpps",$pps);
+			//debug($pps,true);
+			if ($timesincelast > 0 && $time > 1 && $count > 100){
+				$sql = "SELECT maxpps FROM ".db_prefix("performance")." WHERE numplayers=$online";
+				$result = db_query($sql);
+				$row = db_fetch_assoc($result);
+				$oldpps = $row['maxpps'];
+				if ($pps > $oldpps){
+					$sql = "UPDATE ".db_prefix("performance")." SET maxpps=$pps WHERE numplayers=$online";
+					db_query($sql);
+				}
 			}
 		}
 		

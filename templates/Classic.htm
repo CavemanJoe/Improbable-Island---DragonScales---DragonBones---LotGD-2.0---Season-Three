@@ -3,9 +3,22 @@
 <html>
 <head>
 <title>{title}</title>
-<script src="/mint/?js" type="text/javascript"></script>
+
 <link href='templates/classic.css' rel='stylesheet' type='text/css'>
 {headscript}{script}
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19520237-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 <body bgcolor='#303030' text='#333333'>
 <table border='0' cellpadding='4' cellspacing='0' class='pagebackground' width='100%'>
@@ -42,6 +55,19 @@
 <title>{title}</title>
 <link href='templates/classic.css' rel='stylesheet' type='text/css'>
 {headscript}{script}
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19520237-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 <body bgcolor='#303030' text='#333333'>
 <div align="center">
@@ -56,7 +82,7 @@
       <table class='nav' cellspacing='0' cellpadding='0'>
         <tr>
           <td class='nav' width='175'>
-          <div align="center"><img src="templates/classic/decal-top.png"><br><img src="templates/classic/actions.png"></div>{nav}<div align="center"><img src="templates/classic/decal-bottom.png"><br><br></div>
+          <div align="center"><img src="templates/classic/decal-top.png"><br><img src="templates/classic/actions.png"></div>{nav}<div align="center"><img src="templates/classic/decal-bottom.png"><br></div>
           </td>
         </tr>
         <tr>
@@ -95,7 +121,7 @@
               </tr>
               <tr>
                 <td width='200' align='center' valign='top'>
-                  <br>
+                  <br><a href="http://www.improbableisland.com/grid.html">Help us cure cancer, get free Supporter Points!</a><br />
                   {paypal}<br><a href="http://www.improbableisland.com/donation-information.html">Who should I donate to, and why?</a>{verticalad}
                 </td>
               </tr>

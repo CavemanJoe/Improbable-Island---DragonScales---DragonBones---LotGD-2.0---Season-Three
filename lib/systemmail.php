@@ -60,7 +60,7 @@ function systemmail($to,$subject,$body,$from=0,$noemail=false){
 		}
 
 		$sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$from'";
-		$result = db_query($sql);
+		$result = db_query_cached($sql,"playernames/playername_".$from);
 		$row1=db_fetch_assoc($result);
 		db_free_result($result);
 		if ($row1['name']!="")
@@ -69,7 +69,7 @@ function systemmail($to,$subject,$body,$from=0,$noemail=false){
 			$fromline=translate_inline("The Green Dragon","mail");
 
 		$sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$to'";
-		$result = db_query($sql);
+		$result = db_query_cached($sql,"playernames/playername_".$to);
 		$row1=db_fetch_assoc($result);
 		db_free_result($result);
 		$toline = full_sanitize($row1['name']);

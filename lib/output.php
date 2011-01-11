@@ -363,14 +363,14 @@ function appoencode($data,$priv=false){
 			"Y" => "coldarkkhaki",
  		);
 		
-		static $typefaces = array(
-			";" => "fonttimesnewroman",
-			":" => "fontgeorgia",
-			"[" => "fontarial",
-			"{" => "fontcouriernew",
-			"]" => "fontverdana",
-			"}" => "fontcomicsans",
-		);
+		// static $typefaces = array(
+			// ";" => "fonttimesnewroman",
+			// ":" => "fontgeorgia",
+			// "[" => "fontarial",
+			// "{" => "fontcouriernew",
+			// "]" => "fontverdana",
+			// "}" => "fontcomicsans",
+		// );
 		
 		do {
 			++$pos;

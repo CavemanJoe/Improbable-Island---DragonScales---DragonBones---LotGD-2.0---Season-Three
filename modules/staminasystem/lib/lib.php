@@ -191,14 +191,97 @@ function stamina_get_active_buffs($action, $userid=false){
 	$bufflist = unserialize(get_module_pref("buffs", "staminasystem", $userid));
 	$actiondetails = get_player_action($action, $userid);
 	
+	//debug($bufflist);
+	
 	if (is_array($bufflist)) {
 		foreach($bufflist as $buff => $values){
 			if ($values['action'] == $action || $values['action']=="Global" || $values['class']==$actiondetails['class']){
-				$active_action_buffs[$buff] = $values;
+				if (!$values['suspended']){
+					//debug("not suspended!");
+					$active_action_buffs[$buff] = $values;
+				}
 			}
 		}
 	}
+	//debug($active_action_buffs);
 	return($active_action_buffs);
+}
+
+/*
+*******************************************************
+SUSPEND / RESTORE A BUFF / ALL BUFFS
+Temporarily suspends a Stamina buff.  Restore it afterwards, because this is saved back to the modulepref.  God this needs baking into core and rewriting.
+*******************************************************
+*/
+
+function suspend_stamina_buff($referencename, $userid=false){
+	global $session;
+	if ($userid === false) $userid = $session['user']['acctid'];
+	$bufflist = unserialize(get_module_pref("buffs", "staminasystem", $userid));
+	if (is_array($bufflist[$referencename])){
+		$bufflist[$referencename]['suspended'] = true;
+		set_module_pref("buffs", serialize($bufflist), "staminasystem", $userid);
+		$rtrue = true;
+	}
+	if ($rtrue){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function restore_stamina_buff($referencename, $userid=false){
+	global $session;
+	if ($userid === false) $userid = $session['user']['acctid'];
+	$bufflist = unserialize(get_module_pref("buffs", "staminasystem", $userid));
+	if (is_array($bufflist[$referencename])){
+		if ($bufflist[$referencename]['suspended']){
+			$bufflist[$referencename]['suspended'] = false;
+			set_module_pref("buffs", serialize($bufflist), "staminasystem", $userid);
+			$rtrue = true;
+		}
+	}
+	if ($rtrue){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function restore_all_stamina_buffs($userid=false){
+	global $session;
+	if ($userid === false) $userid = $session['user']['acctid'];
+	$bufflist = unserialize(get_module_pref("buffs", "staminasystem", $userid));
+	if (is_array($bufflist) && count($bufflist) > 0){
+		foreach($bufflist AS $buff=>$values){
+			$bufflist[$buff]['suspended'] = false;
+		}
+	}
+	//debug("restoring buffs");
+	set_module_pref("buffs", serialize($bufflist), "staminasystem", $userid);
+}
+
+function mass_suspend_stamina_buffs($name,$userid=false){
+	global $session;
+	if ($userid === false) $userid = $session['user']['acctid'];
+	$bufflist = unserialize(get_module_pref("buffs", "staminasystem", $userid));
+	// debug($bufflist);
+	if (is_array($bufflist) && count($bufflist) > 0){
+		// debug("Okay, it's an array");
+		foreach($bufflist AS $buff=>$values){
+			if (strpos($buff, $name) !== false) {
+				//debug("Suspending buff ".$buff);
+				$bufflist[$buff]['suspended'] = true;
+				$rtrue = true;
+			}
+		}
+		set_module_pref("buffs", serialize($bufflist), "staminasystem", $userid);
+	}
+	if ($rtrue){
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /*
@@ -221,17 +304,19 @@ function stamina_advance_buffs($action, $userid=false) {
 	if (is_array($bufflist)){
 		foreach($bufflist as $buff => $values){
 			if ($values['action'] == $action || $values['action']=="Global" || $values['class']==$actiondetails['class']){
-				if ($values['roundmsg']) output_notl("%s`n",stripslashes($values['roundmsg']));
-				if ($values['rounds'] > 0){
-					$values['rounds']--;
-					$write=1;
-				}
-				if ($values['rounds']==0){
-					if ($values['wearoffmsg']) output_notl("%s`n",stripslashes($values['wearoffmsg']));
-					$write=1;
-					unset($bufflist[$buff]);
-				} else {
-					$bufflist[$buff]=$values;
+				if (!$values['suspended']){
+					if ($values['roundmsg']) output_notl("%s`n",stripslashes($values['roundmsg']));
+					if ($values['rounds'] > 0){
+						$values['rounds']--;
+						$write=1;
+					}
+					if ($values['rounds']==0){
+						if ($values['wearoffmsg']) output_notl("%s`n",stripslashes($values['wearoffmsg']));
+						$write=1;
+						unset($bufflist[$buff]);
+					} else {
+						$bufflist[$buff]=$values;
+					}
 				}
 			}
 		}

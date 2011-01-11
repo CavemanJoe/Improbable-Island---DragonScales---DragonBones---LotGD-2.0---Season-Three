@@ -3,7 +3,8 @@
 global $session;
 
 $rawpref = get_module_pref("sleepingat","improbablehousing");
-if ($rawpref!="none"){
+if ($rawpref!="nowhere"){
+	debug("They slept in a house!");
 	$pref = unserialize($rawpref);
 	require_once "modules/improbablehousing/lib/lib.php";
 	$hid = $pref['house'];

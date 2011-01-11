@@ -157,6 +157,7 @@ function worldmapen_run_real(){
 		$encounterbase = worldmapen_encounter($x, $y, $z);
 		$encounterchance = get_module_pref("encounterchance");
 		$encounter = ($encounterbase * $encounterchance) / 100;
+		debug($encounterbase." * ".$encounterchance." / 100 = ".$encounter);
 		$ttoday = get_module_pref("traveltoday", "cities");
 		set_module_pref("traveltoday", $ttoday+$terraincost, "cities");
 		worldmapen_terrain_takestamina($x, $y, $z);
@@ -227,18 +228,19 @@ function worldmapen_run_real(){
 			$badguy['playerstarthp']=$session['user']['hitpoints'];
 			$badguy['diddamage']=0;
 			$badguy['type'] = 'world';
-			debug("Worldmap run.php is debugging badguy");
-			debug($badguy);
+			//debug("Worldmap run.php is debugging badguy");
+			//debug($badguy);
 			$session['user']['badguy']=createstring($badguy);
 			$battle = true;			
 		}else{
-			$args = modulehook("count-travels", array('available'=>0, 'used'=>0));
-			$free = max(0, $args['available'] - $args['used']);
+			// $args = modulehook("count-travels", array('available'=>0, 'used'=>0));
+			// $free = max(0, $args['available'] - $args['used']);
 			// if (get_module_setting("usestamina")==1){
 				// output("`c`nYou think to yourself what a nice day it is.`c`n");
 			// } else {
 				// output("`c`nYou think to yourself what a nice day it is.`nYou have %s Travel Points remaining.%s`c`n",$free);
 			// }
+			$free = 100;
 			worldmapen_determinenav();
 			if (get_module_setting("smallmap")) worldmapen_viewsmallmap();
 			if (!$chatoverride){
@@ -336,7 +338,7 @@ function worldmapen_run_real(){
 		// $args = modulehook("count-travels", array('available'=>0,'used'=>0));
 		// $free = max(0, $args['available'] - $args['used']);
 		// if (get_module_setting("usestamina")==1){
-			// $free = 100;
+			$free = 100;
 		// }
 		if ($op == "run" && !$pvp) {
 			if (!$chatoverride){

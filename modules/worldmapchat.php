@@ -10,14 +10,17 @@ function worldmapchat_getmoduleinfo(){
 	);
 	return $info;
 }
+
 function worldmapchat_install(){
 	//module_addhook_priority("worldnav",20);
 	module_addhook("worldmap_belowmap");
 	return true;
 }
+
 function worldmapchat_uninstall(){
 	return true;
 }
+
 function worldmapchat_dohook($hookname,$args){
 	global $session;
 	switch($hookname){
@@ -34,6 +37,7 @@ function worldmapchat_dohook($hookname,$args){
 		}
 	return $args;
 }
+
 function worldmapchat_run(){
 	global $session;
 	page_header("Who is here?");
@@ -46,4 +50,5 @@ function worldmapchat_run(){
 	addnav("Back to the World Map","runmodule.php?module=worldmapen&op=continue");
 	page_footer();
 }
+
 ?>

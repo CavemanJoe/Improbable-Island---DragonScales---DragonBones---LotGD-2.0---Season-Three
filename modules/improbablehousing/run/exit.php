@@ -28,6 +28,11 @@ if (is_array($house['data']['rooms'])){
 
 	improbablehousing_sethousedata($house);
 }
+
+//set the player's world map location, just in case...
+
+set_module_pref("worldXYZ",$house['location'],"worldmapen");
+
 $session['user']['location']="World";
 clear_module_pref("sleepingat","improbablehousing");
 redirect("runmodule.php?module=worldmapen&op=continue");

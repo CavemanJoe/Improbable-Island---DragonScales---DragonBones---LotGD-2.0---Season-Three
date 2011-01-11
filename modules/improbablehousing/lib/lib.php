@@ -1,5 +1,24 @@
 <?php
 
+function get_building_pref($pref,$hid){
+	$sql = "SELECT value FROM ".db_prefix("building_prefs")." WHERE pref='$pref' AND hid='$hid'";
+	$result = db_query($sql);
+	$row = db_fetch_assoc($result);
+	return $row['value'];
+}
+
+function set_building_pref($pref,$value,$hid){
+	$value = addslashes($value);
+	$sql = "INSERT INTO ".db_prefix("building_prefs")." (hid,pref,value) VALUES ('$hid','$pref','$value') ON DUPLICATE KEY UPDATE value = VALUES(value)";
+	db_query($sql);
+	//debug($sql);
+}
+
+function clear_building_pref($pref,$hid){
+	$sql = "DELETE FROM ".db_prefix("building_prefs")." WHERE pref='$pref' AND hid='$hid'";
+	db_query($sql);
+}
+
 function improbablehousing_getkeytype($house,$rid,$acctid=false){
 	global $session;
 	if ($acctid == false){
@@ -397,12 +416,12 @@ function improbablehousing_sleeplinks($house, $rid){
 				if ($vals['occupier']){
 					$acctid = $vals['occupier'];
 					$sql = "SELECT name FROM ".db_prefix("accounts")." WHERE acctid='$acctid'";
-					$result = db_query($sql);
+					$result = db_query_cached($sql,"playernames/playername_".$acctid);
 					$row = db_fetch_assoc($result);
 					addnav("Sleeping spaces");
 					addnav(array("%s occupied by %s`0",$vals['name'],$row['name']),"");
 					//do kickout navs if the player is the house owner
-					if ($house['ownedby']==$session['user']['acctid']){
+					if (improbablehousing_getkeytype($house,$rid)>=100){
 						addnav("Kick out Sleepers");
 						addnav(array("Kick out %s`0",$row['name']),"runmodule.php?module=improbablehousing&op=sleep&sub=kickout&hid=".$house['id']."&rid=".$rid."&slot=".$slot);
 					}
@@ -412,6 +431,39 @@ function improbablehousing_sleeplinks($house, $rid){
 					addnav(array("%s available`0",$vals['name']),"runmodule.php?module=improbablehousing&op=sleep&sub=start&hid=$hid&rid=$rid&slot=$slot");
 				}
 			}
+		}
+	}
+}
+
+function improbablehousing_itemlinks($house,$rid){
+	$hid = $house['id'];
+	$items = load_inventory("dwelling_".$hid."_".$rid,true);
+	$roomitems = array();
+	if (count($items) > 0){
+		foreach($items AS $itemid=>$prefs){
+			$roomitems[$prefs['roomslot']] = $itemid;
+		}
+	}
+	$numslots = $house['rooms'][$rid]['itemslots'];
+	for ($i=0; $i<=$numslots; $i++){
+		if ($roomitems[$numslots]){
+			//there's an item here - show its links
+			$itemid = $roomitems[$numslots];
+			//when the item is occupied or otherwise unusable, change its link text pref and clear its link pref
+			addnav("Furniture");
+			if (!get_item_pref("dwellings_link",$itemid)){
+				addnav(array("%s",get_item_pref("dwellings_linktext",$itemid)),"runmodule.php?module=improbablehousing&op=useitem&hid=$hid&rid=$rid&itemid=$itemid");
+			} else if (get_item_pref("dwellings_linktext",$itemid)){
+				addnav(array("%s",get_item_pref("dwellings_linktext",$itemid)),"");
+			}
+			//show a link to pick up the item
+			if (improbablehousing_getkeytype($house,$rid)>=100 && !$vals['occupier']){
+				addnav(array("Pick up %s",get_item_pref("verbosename",$roomitems[$slot])),"runmodule.php?module=improbablehousing&op=pickupitem&hid=$hid&rid=$rid&item=".$roomitems[$slot]);
+			}
+		} else {
+			//there isn't an item here - show links for standard sleeping slots and links to place an item here
+			//sigh...
+			//TODO
 		}
 	}
 }
@@ -430,6 +482,7 @@ function improbablehousing_show_decorating_management_navs($house){
 function improbablehousing_show_decorating_jobs($house){
 	//This shows links to help decorate a room
 	require_once "modules/staminasystem/lib/lib.php";
+	
 	if (has_item('toolbox_decorating')){
 		$hasitem = 1;
 	}
@@ -439,6 +492,10 @@ function improbablehousing_show_decorating_jobs($house){
 	$hid = $house['id'];
 	
 	$rooms = $house['data']['rooms'];
+	if (mass_suspend_stamina_buffs("wlimit")){
+		$restorebuffs = true;
+		//debug("suspended");
+	}
 	$cost = stamina_getdisplaycost("Decorating");
 	$show = 0;
 	foreach($rooms AS $key=>$vals){
@@ -467,6 +524,10 @@ function improbablehousing_show_decorating_jobs($house){
 			addnav("You don't have the right gear to do any decorating.","");
 		}
 	}
+	
+	if ($restorebuffs){
+		restore_all_stamina_buffs();
+	}	
 }
 
 function improbablehousing_new_build_jobs($house,$rid){
@@ -498,6 +559,11 @@ function improbablehousing_show_build_jobs($house){
 	//For easyness, don't allow the player to build if they're in Amber stamina
 	$jobs = $house['data']['buildjobs'];
 	require_once "modules/staminasystem/lib/lib.php";
+	
+	if (mass_suspend_stamina_buffs("wlimit")){
+		$restorebuffs = true;
+	}
+	
 	$storestock = $house['data']['store'];
 	$displayjobs=array();
 	if (count($jobs)){
@@ -587,6 +653,10 @@ function improbablehousing_show_build_jobs($house){
 	}
 	if ($nostam){
 		output("You have the brains to know that doing construction work when you're anything but wide awake is an idea so bad you're not even willing to entertain it.`n`n");
+	}
+	
+	if ($restorebuffs){
+		restore_all_stamina_buffs();
 	}
 }
 

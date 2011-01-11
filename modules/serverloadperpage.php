@@ -52,7 +52,7 @@ function serverloadperpage_dohook($hookname, $args){
 			$sql = "UPDATE " . db_prefix("performancepage") . " SET totalpages=totalpages+1, totaltime=totaltime+'$time' WHERE page = '$playerpage'";
 			db_query($sql);
 			if (!db_affected_rows()){
-				$sql = "INSERT INTO " . db_prefix("performancepage") . " (page, totalpages, totaltime) VALUES ('$playerpage', '1', '$time')";
+				$sql = "INSERT LOW_PRIORITY INTO " . db_prefix("performancepage") . " (page, totalpages, totaltime) VALUES ('$playerpage', '1', '$time')";
 				db_query($sql);
 			}
 		break;

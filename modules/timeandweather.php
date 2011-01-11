@@ -18,7 +18,10 @@ function timeandweather_getmoduleinfo(){
 }
 
 function timeandweather_install(){
+	module_addhook("everyheader");
 	module_addhook("charstats");
+	module_addhook("everyfooter");
+	module_addhook("prerender");
 	return true;
 }
 
@@ -27,9 +30,45 @@ function timeandweather_uninstall(){
 }
 
 function timeandweather_dohook($hookname,$args){
-	global $session;
+	global $session,$outdoors,$shady,$rainy,$brightness;
 	switch($hookname){
+		case "prerender":
+			// $brightness = "darker";
+			// $brightness = "darkest";
+			// $brightness = "lighter";
+			// $rainy = 2;
+			// $outdoors = true;
+			// $shady = true;
+			if (!$session['noweathergraphics'] && (strpos($session['templatename'],"Default")===0 || strpos($session['templatename'],"DragonLeather")===0)){
+				global $output;
+				if ($outdoors){
+					$weatherstart = "";
+					$weatherend = "";
+					for ($i=0; $i<$rainy; $i++){
+						$weatherstart .= "<div style='background:url(images/rain/rain1.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
+						$weatherend .= "</div>";
+						$weatherstart .= "<div style='background:url(images/rain/rain2.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
+						$weatherend .= "</div>";
+						$weatherstart .= "<div style='background:url(images/rain/rain3.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
+						$weatherend .= "</div>";
+						debug("rain");
+					}
+					if ($shady){
+						$weatherstart .= "<div style='background:url(images/rain/tree-1.gif); background-repeat:no-repeat;'>";
+						$weatherend .= "</div>";
+						$weatherstart .= "<div style='background:url(images/rain/tree-2.gif); background-position:top right; background-repeat:no-repeat;'>";
+						$weatherend .= "</div>";
+					}
+					$output = str_replace("<!--weatherstart-->",$weatherstart,$output);
+					$output = str_replace("<!--weatherend-->",$weatherend,$output);
+				}
+				if ($brightness){
+					$output = str_replace("sitecenter","sitecenter-".$brightness,$output);
+				}
+			}
+		break;
 		case "charstats":
+			//debug($session);
 			$info = timeandweather_getcurrent();
 			$definitiontext = array(
 				1 => array(
@@ -163,6 +202,8 @@ function timeandweather_update(){
 	$change = get_module_setting("changeevery","timeandweather");
 	$changeat = $last + $change;
 	//debug($changeat);
+	$changein = $changeat - $now;
+	//debug($changein);
 	if ($now > $changeat){
 		set_module_setting("lastupdate",$now,"timeandweather");
 		//time to change the weather

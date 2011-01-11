@@ -99,7 +99,7 @@ function items_dragonkill($acctid=false){
 
 function get_player_items($acctid){
 	global $session, $idstoitems;
-	$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE owner='$acctid'";
+	$sql = "SELECT item,id FROM ".db_prefix("items_player")." WHERE owner='$acctid'";
 	$result = db_query($sql);
 	$items = array();
 	while ($row = db_fetch_assoc($result)){
@@ -179,7 +179,7 @@ function load_item_prefs($items){
 	}
 }
 
-function load_inventory_optimized($acctid=false,$npcflag=false){
+function load_inventory($acctid=false,$npcflag=false){
 	//debug("Loading inventory");
 	if (!$npcflag){
 		global $session, $itemprefs, $itemsettings, $inventory;
@@ -234,7 +234,7 @@ function load_inventory_doubleoptimized($acctid=false,$npcflag=false){
 	} else {
 		global $itemprefs, $itemsettings;
 	}
-	$sql = "SELECT itemstable.owner AS owner, itemstable.item AS item, itemstable.id AS id, prefstable.setting AS pref, prefstable.value AS prefval, settingstable.setting AS setting, settingstable.value AS settingval FROM ".db_prefix("items_player")." AS itemstable JOIN ".db_prefix("items_settings")." AS settingstable ON itemstable.item = settingstable.item JOIN ".db_prefix("items_prefs")." AS prefstable ON itemstable.id = prefstable.id WHERE itemstable.owner = 1";
+	$sql = "SELECT itemstable.owner AS owner, itemstable.item AS item, itemstable.id AS id, prefstable.setting AS pref, prefstable.value AS prefval, settingstable.setting AS setting, settingstable.value AS settingval FROM ".db_prefix("items_player")." AS itemstable RIGHT JOIN ".db_prefix("items_settings")." AS settingstable ON itemstable.item = settingstable.item LEFT JOIN ".db_prefix("items_prefs")." AS prefstable ON itemstable.id = prefstable.id WHERE itemstable.owner = ".$acctid;
 	$result = db_query($sql);
 	while ($row = db_fetch_assoc($result)){
 		//debug($row);
@@ -245,13 +245,18 @@ function load_inventory_doubleoptimized($acctid=false,$npcflag=false){
 		}
 		$inventory[$row['id']][$row['pref']] = $row['prefval'];
 		$inventory[$row['id']]['item'] = $row['item'];
+		if (!$npcflag){
+			//put items that don't have a carrier into the "main" inventory
+			if (!$inventory[$row['id']]['inventorylocation']) $inventory[$row['id']]['inventorylocation'] = "main";
+		}
 	}
+	//debug($inventory);
 	calculate_weights();
 	$inventory = modulehook("load_inventory",$inventory);
 	return $inventory;
 }
 
-function load_inventory($acctid=false,$npcflag=false){
+function load_inventory_old($acctid=false,$npcflag=false){
 	//debug("Loading inventory");
 	if (!$npcflag){
 		global $session, $itemprefs, $itemsettings, $inventory;
@@ -398,7 +403,7 @@ function get_item_pref($setting,$itemid){
 		return $itemprefs[$itemid][$setting];
 	}
 	
-	debug("Unable to find pref ".$setting." for item number ".$itemid." - now checking settings");
+	//debug("Unable to find pref ".$setting." for item number ".$itemid." - now checking settings");
 	
 	//still not defined... we must figure out what sort of item this is, and obtain its settings
 	$item = itemid_to_item($itemid);
@@ -423,7 +428,7 @@ function get_item_setting($setting,$item){
 		return $itemsettings[$item][$setting];
 	}
 	
-	debug("Item setting ".$setting." for item ".$item." not found, returning false");
+	//debug("Item setting ".$setting." for item ".$item." not found, returning false");
 	$itemsettings[$item][$setting] = false;
 	
 	return false;
@@ -602,20 +607,22 @@ function delete_all_items_of_type($item,$acctid=false){
 	}
 	$count = count($ids);
 	
-	$sqlp = "DELETE FROM ".db_prefix("items_prefs")." WHERE id IN (";
-	
-	foreach($ids AS $id){
-		$sqlp .= $id.",";
+	if ($count > 0){
+		$sqlp = "DELETE FROM ".db_prefix("items_prefs")." WHERE id IN (";
+		
+		foreach($ids AS $id){
+			$sqlp .= $id.",";
+		}
+		$sqlp = substr_replace($sqlp,"",-1);
+		$sqlp .= ")";
+		
+		
+		$sqli = "DELETE FROM ".db_prefix("items_player")." WHERE item = '$item' AND owner = '$acctid'";
+		db_query($sqli);
+		db_query($sqlp);
+		//reload inventory
+		load_inventory();
 	}
-	$sqlp = substr_replace($sqlp,"",-1);
-	$sqlp .= ")";
-	
-	
-	$sqli = "DELETE FROM ".db_prefix("items_player")." WHERE item = '$item' AND owner = '$acctid'";
-	db_query($sqli);
-	db_query($sqlp);
-	//reload inventory
-	load_inventory();
 	return $count;
 }
 
@@ -686,15 +693,15 @@ function itemid_to_item($itemid){
 	if (isset($idstoitems[$itemid])){
 		return $idstoitems[$itemid];
 	}
-	debug("item type not in memory, looking up item ".$itemid." from db");
+	//debug("item type not in memory, looking up item ".$itemid." from db");
 	
 	$sql = "SELECT item FROM ".db_prefix("items_player")." WHERE id = '$itemid'";
 	$result = db_query($sql);
 	$row = db_fetch_assoc($result);
-	debug($row);
+	//debug($row);
 	$idstoitems[$itemid] = $row['item'];
 	
-	debug($idstoitems[$itemid]);
+	//debug($idstoitems[$itemid]);
 	
 	return $idstoitems[$itemid];
 }

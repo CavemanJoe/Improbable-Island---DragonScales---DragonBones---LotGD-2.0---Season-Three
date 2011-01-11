@@ -50,18 +50,24 @@ function giftstation_run(){
 	switch ($op){
 		case "start":
 			if (httpget("subop")=="continue"){
-				output("The KittyMorph shows you a big smile, closing the box and beginning to wrap it up.  \"`1Okay, that'll be delivered first thing in the morning.  Should make for a nice surprise when they wake up.  All gifts are anonymous by default, so if you want them to know who sent the package, you'd better send them a Distraction.  Anyone else you'd like to send a gift to?`0\"`n`n");
+				output("The KittyMorph shows you a big smile.  \"`1Okay, that'll be delivered first thing in the morning.  Should make for a nice surprise when they wake up.  Anyone else you'd like to send a gift to?`0\"`n`n");
 				
 				$player = httpget('player');
 				$itemid = httpget('item');
 				$box = httpget('box');
 				$free = httpget('free');
+				$anonymous = httpget('anonymous');
 				
 				$boxid = give_item($box,false,"giftstation_".$player);
-				debug($boxid);
-				debug($itemid);
+			//	debug($boxid);
+			//	debug($itemid);
 				change_item_owner($itemid,$boxid);
 				set_item_pref("giftbox_contains",$itemid,$boxid);
+				if (!$anonymous){
+					$desc = get_item_pref("description",$boxid);
+					$desc .= "`nThere's a gift tag attached to the box, telling you that this present came from ".$session['user']['name']."`0.";
+					set_item_pref("description",$desc,$boxid);
+				}
 				
 				if (!$free){
 					$session['user']['donationspent']+=1;
@@ -129,10 +135,10 @@ function giftstation_run(){
 					$itemid = $prefs['itemid'];
 					if ($prefs['freegift']){
 						addnav("Send for free");
-						addnav(array("%s (%s available)",$prefs['verbosename'],$prefs['quantity']),"runmodule.php?module=giftstation&op=choosewrapping&item=$itemid&player=$player&free=true");
+						addnav(array("%s (%s available)",$prefs['verbosename'],$prefs['quantity']),"runmodule.php?module=giftstation&op=choosewrapping&item=$itemid&player=$player&free=1");
 					} else {
 						addnav("Send for one Supporter Point");
-						addnav(array("%s (%s available)",$prefs['verbosename'],$prefs['quantity']),"runmodule.php?module=giftstation&op=choosewrapping&item=$itemid&player=$player&free=false");
+						addnav(array("%s (%s available)",$prefs['verbosename'],$prefs['quantity']),"runmodule.php?module=giftstation&op=choosewrapping&item=$itemid&player=$player&free=0");
 					}
 				}
 				addnav("Cancel?");
@@ -152,12 +158,22 @@ function giftstation_run(){
 			$boxes = get_items_with_settings("giftwrap");
 			foreach($boxes AS $boxid => $prefs){
 				$img = $prefs['image'];
-				rawoutput("<a href='runmodule.php?module=giftstation&op=start&subop=continue&player=$player&item=$itemid&box=$boxid&free=$free'><img src='images/items/$img'></a>");
-				addnav("","runmodule.php?module=giftstation&op=start&subop=continue&player=$player&item=$itemid&box=$boxid&free=$free");
+				rawoutput("<a href='runmodule.php?module=giftstation&op=chooseanonymous&player=$player&item=$itemid&box=$boxid&free=$free'><img src='images/items/$img'></a>");
+				addnav("","runmodule.php?module=giftstation&op=chooseanonymous&player=$player&item=$itemid&box=$boxid&free=$free");
 			}
 			addnav("Cancel?");
 			addnav("Wait, I've changed my mind.  Let's back up a step.","runmodule.php?module=giftstation&op=start&subop=searchagain");
 			addnav("Actually, forget the whole thing.","gardens.php");
+		break;
+		case "chooseanonymous":
+			$player = httpget('player');
+			$itemid = httpget('item');
+			$free = httpget('free');
+			$box = httpget('box');
+			output("The KittyMorph ties a ribbon around the box before reaching below the counter and bringing up a gift tag and a preposterously flamboyant quill pen.`n`n\"`1So, is this an anonymous gift, or would you like your name on it?`0\"`n`n");
+			addnav("Anonymous or not?");
+			addnav("Tell them who it's from","runmodule.php?module=giftstation&op=start&subop=continue&player=$player&item=$itemid&box=$box&free=$free");
+			addnav("Give anonymously","runmodule.php?module=giftstation&op=start&subop=continue&player=$player&item=$itemid&box=$box&free=$free&anonymous=true");
 		break;
 	}
 

@@ -3,7 +3,7 @@
 function improbablehousing_furnitureshop_getmoduleinfo(){
 	$info=array(
 		"name"=>"Improbable Housing: Furniture Shop",
-		"version"=>"2010-06-27",
+		"version"=>"2010-11-29",
 		"author"=>"Dan Hall, aka Caveman Joe, improbableisland.com",
 		"category"=>"Housing",
 		"download"=>"",
@@ -111,7 +111,9 @@ function improbablehousing_furnitureshop_run(){
 				if ($vals['image']) rawoutput("</td></tr></table>");
 				rawoutput("</td></tr>");
 			}
-			rawoutput("</td></tr></table>");			
+			rawoutput("</td></tr></table>");	
+			addnav("Custom Furniture");
+			addnav("Enquire about Custom Furniture","runmodule.php?module=improbablehousing_furnitureshop&op=custom&sub=start");
 		break;
 		case "buy":
 			$item = httpget("item");
@@ -156,6 +158,83 @@ function improbablehousing_furnitureshop_run(){
 			improbablehousing_sethousedata($house);
 			addnav("Continue");
 			addnav(array("Return to %s",$house['data']['rooms'][$rid]['name']),"runmodule.php?module=improbablehousing&op=interior&hid=".$hid."&rid=".$rid);
+		break;
+		case "custom":
+			$sub = httpget('sub');
+			switch ($sub){
+				case "start":
+					output("\"`3Oh yeah, I get lots of custom orders,`0\" says Cadfael, grinning.  \"`3Mostly for Mutants and Robots.  Interestin' stuff, really, tryin' to figure out where all the extra arms and legs would go.  I can make any of my furniture pieces look like just about anythin'.  Custom work'll set ye back five ciggies as a startin' price, an' goes up from there according to complexity.  You got somethin' in mind?`0\"`n`n`JCadfael can take any piece of furniture intended for sleeping on and assign a new name and description to the sleeping slot that it'll take up.  If you want your houseguests to be able to sleep on top of a bookcase, or inside a cleverly-concealed secret foldaway bed, or in a zero-gravity chamber (yes, Cadfael's carpentry skills are `ijust that good`i), then bring one of his furniture pieces here.`0`n`n");
+					$furniture = get_items_with_prefs("furniture");
+					if (is_array($furniture)){
+						addnav("Customize Furniture");
+						foreach($furniture AS $key => $vals){
+							addnav(array("Customize %s",$vals['verbosename']),"runmodule.php?module=improbablehousing_furnitureshop&op=custom&sub=desc&item=".$key);
+						}
+					}
+					addnav("Return");
+					addnav("Back to the Furniture List","runmodule.php?module=improbablehousing_furnitureshop&op=start");
+				break;
+				case "desc":
+					//get the descriptions from the player
+					$item = httpget('item');
+					output("\"`3Right, then - what'll this be called?`0\"`n`n`0Enter a title for the furniture piece here.  This is what's displayed in the nav links in your Dwelling - it'll read something like \"(your title) Available\" or \"(your title) Occupied by Admin CavemanJoe\" - you've got 25 characters to play about with, and no colour or formatting codes are allowed here.`n`n");
+					$oldtitle = get_item_pref("sleepslot_name",$item);
+					$olddesc = get_item_pref("sleepslot_desc",$item);
+					rawoutput("<form action='runmodule.php?module=improbablehousing_furnitureshop&op=custom&sub=confirm&item=".$item."' method='POST'>");
+					rawoutput("<input id='newtitle' name='newtitle' width='25' maxlength='25' value='".$oldtitle."'>");
+					output("`n`nNow enter a description for the new furniture piece.  This is what's displayed to players when they settle down for a good night's kip.  The longer the description, the more it'll cost.  You can use colour and formatting codes here - remember to use ``n for new lines.`n`n");
+					rawoutput("<textarea name='newdesc' id='newdesc' rows='6' cols='60'>".$olddesc."</textarea><input type=submit></form>");
+					addnav("Return");
+					addnav("Back to the Furniture List","runmodule.php?module=improbablehousing_furnitureshop&op=start");
+					addnav("","runmodule.php?module=improbablehousing_furnitureshop&op=custom&sub=confirm&item=".$item);
+				break;
+				case "confirm":
+					$newtitle = httppost('newtitle');
+					$newdesc = httppost('newdesc');
+					$item = httpget('item');
+					
+					$newdesc = str_replace("\n","`n",$newdesc);
+					$newtitle = str_replace("`","",$newtitle);
+					$newtitle = substr($newtitle,0,25);
+					
+					$newtitle = stripslashes($newtitle);
+					$newdesc = stripslashes($newdesc);
+					//show the descriptions
+					output("Your new title is:`n%s`0`n`nYour new description is:`n%s`0`n`n",$newtitle,$newdesc);
+					
+					$cigcost = 5 + (floor(strlen($newdesc)/50));
+					output("This much work will cost %s cigarettes.`n`n",$cigcost);
+					
+					set_item_pref("proposed_sleepslot_name",$newtitle,$item);
+					set_item_pref("proposed_sleepslot_desc",$newdesc,$item);
+					
+					if ($session['user']['gems'] >= $cigcost){
+						addnav("Continue");
+						addnav("Pay the man!","runmodule.php?module=improbablehousing_furnitureshop&op=custom&sub=confirmfinal&item=".$item."&cost=".$cigcost);
+					} else {
+						output("You don't have enough cigarettes for that!`n`n");
+					}
+					addnav("Return");
+					addnav("Back to the Furniture List","runmodule.php?module=improbablehousing_furnitureshop&op=start");
+				break;
+				case "confirmfinal":
+					//take the cigaretes, change the prefs
+					$item = httpget('item');
+					$cost = httpget('cost');
+					$session['user']['gems'] -= $cost;
+					output("Cadfael takes your cigarettes and furniture with a smile, and disappears into the back of the shop.  You hear muffled sounds of sawing, hammering, swearing and so forth, and after half an hour or so he returns.  \"`3Here you go - might not look much different `inow,`i but wait 'til you get it in yer house.`0\"`n`nYour furniture is now customized!");
+					
+					$newtitle = get_item_pref("proposed_sleepslot_name",$item);
+					$newdesc = get_item_pref("proposed_sleepslot_desc",$item);
+					set_item_pref("verbosename","Customized Furniture (".$newtitle.")",$item);
+					set_item_pref("sleepslot_name",$newtitle,$item);
+					set_item_pref("sleepslot_desc",$newdesc,$item);
+					set_item_pref("description","This furniture was modified at Cadfael's shop in Improbable Central.",$item);
+					
+					addnav("Return");
+					addnav("Back to the Furniture List","runmodule.php?module=improbablehousing_furnitureshop&op=start");
+				break;
+			}
 		break;
 	}
 

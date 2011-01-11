@@ -67,6 +67,9 @@ function hunterslodge_customtitle_run(){
 
 			$ntitle = preg_replace("/[`][cHw]/", "", $ntitle);
 			$ntitle = sanitize_html($ntitle);
+			$ntitle = str_replace("`b", "", $ntitle);
+			$ntitle = str_replace("`i", "", $ntitle);
+			$ntitle = str_replace("`n", "", $ntitle);
 
 			$nname = get_player_basename();
 			output("`0Your new title will look like this: %s`0`n", $ntitle);

@@ -98,7 +98,7 @@ function massmail_run(){
 			$res = db_query($sql);
 			for ($i = 0; $i < db_num_rows($res); $i++){
 				$row = db_fetch_assoc($res);
-				systemmail($row['acctid'],"`^Server News from ".$name,$body);
+				systemmail($row['acctid'],"`^Important information about your Improbable Island account from ".$name,$body);
 			}
 			output("Your mail was sent to all players");
 		}

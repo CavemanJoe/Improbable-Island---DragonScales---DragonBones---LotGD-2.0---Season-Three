@@ -44,7 +44,7 @@ function timedcombat_teach_dohook($hookname,$args){
 				}
 				require_once "lib/systemmail.php";
 				$subj = $session['user']['name']." taught you a new skill!";
-				$body = "You can now perform Timed Combat in fights!  If you time your fight commands correctly, you'll get a double-attack and double-defence bonus!  The bonus applies to everything you do in combat.  Try timing your five-round auto-fights - one correct hit wins you five rounds of extra power!  If you don't want to muck about with counting under your breath, you can ignore the new skill and carry on fighting as you've always done.  Get four perfect hits in a row and you can teach other players too!  Have fun!";
+				$body = "You can now perform Timed Combat in fights!  If you time your fight commands correctly, you'll get a double-attack and double-defence bonus!  The bonus applies to everything you do in combat.  Try timing your five-round auto-fights - one correct hit wins you five rounds of extra power, and the same goes for ten-round auto-fighting too!  If you don't want to muck about with counting under your breath, you can ignore the new skill and carry on fighting as you've always done.  Get four perfect hits in a row and you can teach other players!  Have fun!";
 				systemmail($args['acctid'],$subj,$body);
 			}
 			$ret = httpget('ret');
@@ -54,7 +54,7 @@ function timedcombat_teach_dohook($hookname,$args){
 				$sloc = get_module_pref("loc","commentaryinfo",$args['acctid']);
 				if ($tloc==$sloc && !get_module_pref("able","timedcombat",$args['acctid'])){
 					output("This player doesn't know how to do Timed Combat.  You can teach one student per game day.`n`n");
-					addnav("Teach this player the Timed Combat skill","bio.php?op=teachtimedcombat&char=".$args['acctid']."&ret=".$ret);
+					addnav("Teach this player the Timed Combat skill","bio.php?op=teachtimedcombat&char=".$args['acctid']."&ret=".urlencode($ret));
 				}
 			}
 			break;

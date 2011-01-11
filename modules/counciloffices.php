@@ -65,7 +65,7 @@ function counciloffices_run(){
 					break;
 			}
 			addnav("State your business.");
-			addnav("You know, I don't have a clue what I came in here for.  Back to the Outpost.","village.php");
+			addnav("O?You know, I don't have a clue what I came in here for.  Back to the Outpost.","village.php");
 			break;
 	}
 	modulehook("counciloffices");

@@ -1,8 +1,8 @@
 <?php
 
 function char_cleanup_allinone($ids,$type){
-	//if an acctid doesn't need to be erased, just remove it from this array via the modulehook
 
+	//if an acctid doesn't need to be erased, just remove it from this array via the modulehook
 	$hook = array(
 		"deltype"=>$type,
 		"ids"=>$ids,

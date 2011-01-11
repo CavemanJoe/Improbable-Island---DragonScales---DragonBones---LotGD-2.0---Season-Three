@@ -39,6 +39,7 @@ function oneshotteleporter_run(){
 		foreach($vloc as $loc=>$val) {
 			addnav(array("Go to %s", $loc), "runmodule.php?module=oneshotteleporter&to=".htmlentities($loc));
 		}
+		modulehook("teleport");
 	} else {
 		page_header("Back to Reality");
 		output("You quickly select an outpost from the list.  With a sudden jolt, you find yourself standing in the middle of your chosen outpost!  You look around for your teleporting device, but realise that it must have only teleported you, not itself.  What a piece of junk.");

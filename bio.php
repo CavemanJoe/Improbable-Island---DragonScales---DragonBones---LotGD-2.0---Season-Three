@@ -139,6 +139,8 @@ if ($target = db_fetch_assoc($result)) {
   }
   tlschema();
 
+  debug($return);
+  
   if ($ret==""){
 	  $return = substr($return,strrpos($return,"/")+1);
 	  tlschema("nav");
@@ -152,6 +154,7 @@ if ($target = db_fetch_assoc($result)) {
 	  if ($return=="list.php") {
 		  addnav("Return to the warrior list",$return);
 	  } else {
+			debug($return);
 		  addnav("Return whence you came",$return);
 	  }
 	  tlschema();

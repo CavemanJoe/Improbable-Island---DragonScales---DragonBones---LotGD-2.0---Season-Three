@@ -41,6 +41,10 @@
 	//Wipe the news entirely
 	$sql = "TRUNCATE TABLE ".db_prefix("news");
 	db_query($sql);
+	
+	//wipe the contents of the whostyping table
+	$sql = "TRUNCATE TABLE ".db_prefix("whostyping");
+	db_query($sql);
 
 	if (getsetting("expirecontent",180)>0){
 		//Clean up debug log, moved from there

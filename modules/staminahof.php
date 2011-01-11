@@ -58,7 +58,9 @@ function staminahof_run(){
 		$staminasql = "SELECT setting,value,userid FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='actions'";
 		$staminaresult = db_query($staminasql);
 		
-		for ($i=0;$i<db_num_rows($staminaresult);$i++){
+		$scount = db_num_rows($staminaresult);
+		
+		for ($i=0;$i<$scount;$i++){
 			$row = db_fetch_assoc($staminaresult);
 			$actions_array = @unserialize($row['value']);
 			$actiondetails = $actions_array[$hof];
@@ -67,7 +69,9 @@ function staminahof_run(){
 			$hofpage[$row['userid']]['lvl'] = $actiondetails['lvl'];
 		}
 		
-		for ($i=0;$i<db_num_rows($namesresult);$i++){
+		$ncount = db_num_rows($namesresult);
+		
+		for ($i=0;$i<$ncount;$i++){
 			$row = db_fetch_assoc($namesresult);
 			$numres++;
 			$hofpage[$row['acctid']]['name'] = $row['name'];

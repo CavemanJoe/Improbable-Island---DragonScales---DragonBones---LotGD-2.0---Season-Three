@@ -50,6 +50,10 @@ function items_world_map_gathering_run(){
 	$type=httpget('mat');
 	$item=httpget('item');
 	require_once "modules/staminasystem/lib/lib.php";
+	if (mass_suspend_stamina_buffs("wlimit")){
+		output("`0Correctly figuring that your backpack and bandolier would only slow you down, you shrug them off and put them somewhere you can keep an eye on them.`n`n");
+		$restorebuffs = true;
+	}
 	if ($type=="wood"){
 		$lv = process_action("Logging");
 		$stam = get_stamina();
@@ -106,6 +110,9 @@ function items_world_map_gathering_run(){
 		addnav("Guess what happens now?");
 		addnav("That's right.","shades.php");
 	}
+	if ($restorebuffs){
+		restore_all_stamina_buffs();
+	}
 	page_footer();
 }
 
@@ -119,21 +126,34 @@ function items_world_map_gathering_showgather($loc=false){
 	if ($terrain['type']=="Forest"){
 		$equipment = get_items_with_prefs("treechopping");
 		if (is_array($equipment)){
+			require_once "modules/staminasystem/lib/lib.php";
+			if (mass_suspend_stamina_buffs("wlimit")){
+				$restorebuffs = true;
+			}
 			addnav("Material Gathering");
 			foreach($equipment AS $key => $vals){
 				//debug($vals);
-				addnav(array("Cut wood using %s",$vals['verbosename']),"runmodule.php?module=items_world_map_gathering&mat=wood&item=".$vals['item']);
+				$displaycost = stamina_getdisplaycost("Logging");
+				addnav(array("Cut wood using %s (`Q%s%%`0)",$vals['verbosename'],$displaycost),"runmodule.php?module=items_world_map_gathering&mat=wood&item=".$vals['item']);
 			}
 		}
 	} else if ($terrain['type']=="Mount"){
 		$equipment = get_items_with_prefs("rockbreaking");
 		if (is_array($equipment)){
+			require_once "modules/staminasystem/lib/lib.php";
+			if (mass_suspend_stamina_buffs("wlimit")){
+				$restorebuffs = true;
+			}
 			addnav("Material Gathering");
 			foreach($equipment AS $key => $vals){
 //				debug($vals);
-				addnav(array("Break stone using %s",$vals['verbosename']),"runmodule.php?module=items_world_map_gathering&mat=stone&item=".$vals['item']);
+				$displaycost = stamina_getdisplaycost("Stonecutting");
+				addnav(array("Break stone using %s (`Q%s%%`0)",$vals['verbosename'],$displaycost),"runmodule.php?module=items_world_map_gathering&mat=stone&item=".$vals['item']);
 			}
 		}
+	}
+	if ($restorebuffs){
+		restore_all_stamina_buffs();
 	}
 }
 ?>

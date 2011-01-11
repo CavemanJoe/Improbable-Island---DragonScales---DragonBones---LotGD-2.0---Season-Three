@@ -11,6 +11,10 @@ require_once "modules/improbablehousing/lib/lib.php";
 require_once "modules/staminasystem/lib/lib.php";
 $house=improbablehousing_gethousedata($hid);
 
+if (mass_suspend_stamina_buffs("wlimit")){
+	$restorebuffs = true;
+}
+
 $jobtoperform = $house['data']['buildjobs'][$job]['jobs'][$subjob];
 if (!$jobtoperform){
 	output("Before you can get started, you realise someone has already finished the job for you!`n`n");
@@ -61,6 +65,10 @@ if (!$jobtoperform){
 		break;
 	}
 
+	if ($restorebuffs){
+		output("`0Correctly figuring that your backpack and bandolier would only slow you down, you shrug them off and place them off to one side.  It's not like anyone's gonna nick them in here.`n`n");
+	}	
+	
 	foreach($actions AS $action=>$reps){
 		output_notl("%s`n`n",$house['data']['buildjobs'][$job]['jobs'][$subjob]['desc']);
 		for ($i=0; $i<$reps; $i++){
@@ -144,7 +152,12 @@ if (!$jobtoperform){
 	//Show links to do more building
 	improbablehousing_show_build_jobs($house);
 	improbablehousing_bottomnavs($house,$rid);
+	
 	page_footer();
+}
+
+if ($restorebuffs){
+	restore_all_stamina_buffs();
 }
 
 ?>

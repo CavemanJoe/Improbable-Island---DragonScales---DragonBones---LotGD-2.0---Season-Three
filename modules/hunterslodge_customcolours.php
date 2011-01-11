@@ -48,6 +48,9 @@ function hunterslodge_customcolours_run(){
 		case "confirm":
 			$newname = httppost("newname");
 			$newname = str_replace("`0", "", httppost("newname"));
+			$newname = str_replace("`b", "", $newname);
+			$newname = str_replace("`i", "", $newname);
+			$newname = str_replace("`n", "", $newname);
 			$newname = preg_replace("/[`][cHw]/", "", $newname);
 			$regname = get_player_basename();
 			$comp1 = strtolower(sanitize($regname));
