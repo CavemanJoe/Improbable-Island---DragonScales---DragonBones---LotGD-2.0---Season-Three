@@ -96,8 +96,8 @@ switch ($operation) {
 	case "talk":
 		require_once("lib/commentary.php");
 		addcommentary();
-		output("`@You hear people whispering...`n",$vicar);
-		viewcommentary("marriage","`#Whisper?`@",25,"whisper");
+		output("`@You hear people whispering...`n`0");
+		viewcommentary("marriage","Whisper?",25);
 		break;
 	case "marry":
 		$allprefs=unserialize(get_module_pref('allprefs'));

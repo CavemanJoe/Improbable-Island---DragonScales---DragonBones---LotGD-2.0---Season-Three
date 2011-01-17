@@ -18,7 +18,9 @@ output("`0The FailBoat bobs a couple of miles offshore.  In the distance, Improb
 
 output("`0Once every minute, a loudspeaker blares into life.  A certain `\$familiar`0 recorded voice says \"`&The time is now %s.  One more minute has passed since you arrived here; one more minute in which someone else is claiming your glory.  You will be returned to the Island at midnight, or after you have undergone Retraining to my satisfaction, whichever occurs first.  This message will repeat until you bloody well get off my Retraining Vessel.`0\"`n`n",getgametime());
 modulehook("shades", array());
-commentdisplay("`n`0Nearby, some fellow failies grumble to themselves and, occasionally, each other:`n", "shade","Chat with other Failed contestants",25,"mutters");
+
+//commentdisplay("`n`0Nearby, some fellow failies grumble to themselves and, occasionally, each other:`n", "shade","Chat with other Failed contestants",25,"mutters");
+dualcommentary("shade","Chat with other Failed contestants",25,"mutters");
 
 addnav("Log out","login.php?op=logout");
 addnav("Places");
