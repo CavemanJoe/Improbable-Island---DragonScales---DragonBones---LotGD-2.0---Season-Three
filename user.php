@@ -85,7 +85,7 @@ foreach ($specialties as $key=>$name) {
 }
 
 //Inserted for v1.1.0 Dragonprime Edition to extend clan possibilities
-$ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`#Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
+$ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`3Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
 $ranks = modulehook("clanranks", array("ranks"=>$ranks, "clanid"=>NULL, "userid"=>$userid));
 $ranks = $ranks['ranks'];
 $rankstring = "";

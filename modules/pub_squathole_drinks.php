@@ -64,7 +64,7 @@ function pub_squathole_drinks_dohook($hookname,$args){
 						"rounds"=>8,
 						"atkmod"=>1.05,
 						"roundmsg"=>"The Mudwisearse you imbibed in Squat Hole has made you feel slightly more aggressive.  `iVery`i slightly more aggressive.",
-						"wearoff"=>"You feel the effects of the Vegetable Cider fade away.",
+						"wearoff"=>"You feel the effects of the crap beer fade away.",
 						"schema"=>"pub_squathole"
 					));
 				break;

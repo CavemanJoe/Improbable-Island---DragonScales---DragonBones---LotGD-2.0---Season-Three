@@ -170,7 +170,7 @@ if ($op==""){
 		} else if (!isset($companions[$row['name']])) {
 			addnav(array("%s",$row['name']), "mercenarycamp.php?op=buy&id={$row['companionid']}");
 		}
-		output("`#%s`n`7%s`n`n",$row['name'], $row['description']);
+		output("`3%s`n`7%s`n`n",$row['name'], $row['description']);
 	}
 	healnav($companions, $texts, $schemas);
 } else if ($op == "heal") {

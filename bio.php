@@ -50,7 +50,7 @@ if ($target = db_fetch_assoc($result)) {
   output_notl("`n`n");
 
   if ($target['clanname']>"" && getsetting("allowclans",false)){
-	  $ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`#Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
+	  $ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`3Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
 	  $ranks = modulehook("clanranks", array("ranks"=>$ranks, "clanid"=>$target['clanid']));
 	  tlschema("clans"); //just to be in the right schema
 	  array_push($ranks['ranks'],"`\$Founder");
@@ -67,7 +67,7 @@ if ($target = db_fetch_assoc($result)) {
 			getsetting("LOGINTIMEOUT", 900))) {
 	  $loggedin = true;
   }
-  $status = translate_inline($loggedin?"`#Online`0":"`\$Offline`0");
+  $status = translate_inline($loggedin?"`3Online`0":"`\$Offline`0");
   output("`^Status: %s`n",$status);
 
   output("`^Resurrections: `@%s`n",$target['resurrections']);

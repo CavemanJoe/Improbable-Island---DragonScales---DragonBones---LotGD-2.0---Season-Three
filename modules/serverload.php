@@ -85,6 +85,7 @@ function serverload_run(){
 	}
 	output("`bCPU Load averages`b`n");
 	output("One minute: %s`nFive minutes: %s`nFifteen minutes: %s`n`n",$load[0],$load[1],$load[2]);
+	output("Last load registered by game: ".getsetting("systemload_lastload",0)."`n`n");
 	addnav("Options");
 	addnav("Refresh","runmodule.php?module=serverload");
 	addnav("Go to login page","home.php");
@@ -96,7 +97,7 @@ function serverload_run(){
 	$joinedtoday = 0;
 	$totalplayers = 0;
 	
-	$sql = "SELECT regdate, dragonkills, laston, gentimecount, gentime, loggedin FROM " . db_prefix("accounts") . "";
+	$sql = "SELECT regdate, laston, gentimecount, gentime, loggedin FROM " . db_prefix("accounts") . "";
 	$result = db_query($sql);
 	$rrows = db_num_rows($result);
 	for ($i=0;$i<$rrows;$i++){
@@ -261,16 +262,15 @@ function serverload_update($day=false){
 	//get current ten-minute slice of time
 	$timeslice = floor((time()-strtotime(date("Y-m-d 00:00:00")))/600);
 	
-	$sql = "SELECT laston, gentimecount, gentime, loggedin FROM " . db_prefix("accounts") . "";
+	$sql = "SELECT laston, gentimecount, gentime FROM " . db_prefix("accounts_everypage") . "";
 	$result = db_query($sql);
 	$rrows = db_num_rows($result);
 	for ($i=0;$i<$rrows;$i++){
 		$row = db_fetch_assoc($result);
 		$lastontime = strtotime($row['laston']);
-		$regtime = strtotime($row['regdate']);
 		$curtime = date(U);
 		$sincelogon = $curtime - $lastontime;
-		if ($sincelogon < getsetting("LOGINTIMEOUT",900) && $row['loggedin'] == 1){
+		if ($sincelogon < getsetting("LOGINTIMEOUT",600)){
 			$online++;
 		}
 		$t_time += $row['gentime'];

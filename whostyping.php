@@ -5,7 +5,7 @@ define("ALLOW_ANONYMOUS",true);
 define("OVERRIDE_FORCED_NAV",true);
 require_once "common.php";
 
-// $start = getmicrotime(true);
+//$start = getmicrotime(true);
 
 
 
@@ -54,26 +54,25 @@ Pass every two seconds.
 Javascript needs to call this file with the section and the number of characters entered.
 */
 
+$old = $now - 2;
+
 //update time
 if ($updateplayer){
 	$sql = "INSERT INTO ".db_prefix("whostyping")." (time,name,section) VALUES ('$now','$name','$section') ON DUPLICATE KEY UPDATE time = VALUES(time), section = VALUES(section)";
 	db_query($sql);
 	//echo("Updating player");
+	//erase old entries
+	$delsql = "DELETE FROM ".db_prefix("whostyping")." WHERE time < $old";
+	db_query($delsql);
 }
 
 //retrieve, deleting as appropriate
-$sql = "SELECT * FROM ".db_prefix("whostyping")." WHERE section='$section'";
+$sql = "SELECT * FROM ".db_prefix("whostyping")." WHERE section='$section' AND time >= $old";
 $result = db_query($sql);
-$now = time();
 $disp = array();
 while ($row = db_fetch_assoc($result)){
 	$disp[]=$row['name'];
 }
-
-//erase old entries
-$old = $now - 2;
-$delsql = "DELETE FROM ".db_prefix("whostyping")." WHERE time < $old";
-db_query($delsql);
 
 //display
 foreach($disp AS $name){
@@ -81,10 +80,10 @@ foreach($disp AS $name){
 	echo($encodedname);
 }
 
-$end = getmicrotime(true);
+// $end = getmicrotime(true);
 // $total = $end - $start;
-// echo("CavemanJoe is debugging in the middle of the night, and this cycle of whostyping.php took this long: ");
-// echo($total);
+//echo("CavemanJoe is debugging in the middle of the night, and this cycle of whostyping.php took this long: ");
+//echo($total);
 //echo("test!");
 //echo($session['iterations']);
 

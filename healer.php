@@ -59,7 +59,7 @@ if ($op==""){
 			output("`3With a grimace, you up-end the potion the creature hands you, and despite the foul flavor, you feel a warmth spreading through your veins.");
 			output("Staggering some you are ready to be out of here.");
 		}
-		output("`n`n`#You have been healed for %s points!", $diff);
+		output("`n`n`3You have been healed for %s points!", $diff);
 	}else{
 		output("`3The old creature pierces you with a gaze hard and cruel.");
 		output("Your lightning quick reflexes enable you to dodge the blow from its gnarled staff.");

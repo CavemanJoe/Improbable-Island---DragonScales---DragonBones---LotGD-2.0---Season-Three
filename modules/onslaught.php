@@ -700,7 +700,7 @@ function onslaught_run(){
 		if ($victory){
 			$experience=e_rand($badguy['creatureexp']*1.25, $badguy['creatureexp']*2);
 			$experience=round($experience);
-			output("`#You receive `6%s `#experience!`n",$experience);
+			output("`3You receive `6%s `3experience!`n",$experience);
 			$session['user']['experience']+=$experience;
 			$left = onslaught_checkmonsters();
 			if ($left>100){

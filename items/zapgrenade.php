@@ -21,13 +21,13 @@ function zapgrenade_use($args){
 	global $session;
 	debug("Applying Zap Grenade buff");
 	apply_buff('zapgrenade', array(
-		"startmsg"=>"`#You pull the pin on your grenade and toss it at {badguy}`#, shielding your eyes.  After a blinding flash, your foe is left dazed and confused!",
+		"startmsg"=>"`3You pull the pin on your grenade and toss it at {badguy}`3, shielding your eyes.  After a blinding flash, your foe is left dazed and confused!",
 		"name"=>"`^ZAP Grenade",
 		"rounds"=>e_rand(3,7),
 		"badguyatkmod"=>0.1,
 		"badguydefmod"=>0.1,
 		"roundmsg"=>"{badguy} is blinded, deafened and thoroughly confused, and flails wildly while you pummel it!",
-		"wearoff"=>"{badguy}`# feels some coherence return, and lunges at you!",
+		"wearoff"=>"{badguy}`3 feels some coherence return, and lunges at you!",
 		"expireafterfight"=>1,
 		"schema"=>"iitems-catcher"
 	));

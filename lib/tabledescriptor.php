@@ -25,7 +25,7 @@ function synctable($tablename,$descriptor,$nodrop=false){
 			output("`\$Error:`^ %s`n", db_error());
 			rawoutput("<pre>".htmlentities($sql, ENT_COMPAT, getsetting("charset", "ISO-8859-1"))."</pre>");
 		} else {
-			output("`^Table `#%s`^ created.`n", $tablename);
+			output("`^Table `3%s`^ created.`n", $tablename);
 		}
 	}else{
 		//the table exists, so we need to compare it against the descriptor.

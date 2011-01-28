@@ -51,14 +51,14 @@ function forestvictory($enemies,$denyflawless=false){
 	$gold = e_rand(round($gold/$count),round($gold/$count)*round(($count+1)*pow(1.2, $count-1),0));
 	$expbonus = round ($expbonus/$count,0);
 	if ($gold) {
-		output("`#You receive `^%s`# gold!`n",$gold);
+		output("`^%s`3 shiny Requisition tokens are dispensed from the nearest camera!`n",$gold);
 		//debuglog("received gold for slaying a monster.",false,false,"forestwin",$badguy['creaturegold']);
 	}
 	// No gem hunters allowed!
 	$args = modulehook("alter-gemchance", array("chance"=>getsetting("forestgemchance", 25)));
 	$gemchances = $args['chance'];
 	if ($session['user']['level'] < 15 && e_rand(1,$gemchances) == 1) {
-		output("`&You find A GEM!`n`#");
+		output("`&You find a `5cigarette!`n`3");
 		$session['user']['gems']++;
 		//debuglog("found gem when slaying a monster.",false,false,"forestwingem",1);
 	}
@@ -75,12 +75,12 @@ function forestvictory($enemies,$denyflawless=false){
 		}
 		if ($expbonus>0){
 			$expbonus = round($expbonus * pow(1+(getsetting("addexp", 5)/100), $count-1),0);
-			output("`#***Because of the difficult nature of this fight, you are awarded an additional `^%s`# experience! `n",$expbonus);
+			output("`3***Because of the difficult nature of this fight, you are awarded an additional `^%s`3 experience! `n",$expbonus);
 		} elseif ($expbonus<0){
-			output("`#***Because of the simplistic nature of this fight, you are penalized `^%s`# experience! `n",abs($expbonus));
+			output("`3***Because of the simplistic nature of this fight, you are penalized `^%s`3 experience! `n",abs($expbonus));
 		}
 		if (count($enemies) > 1) {
-			output("During this fight you received `^%s`# total experience!`n`0",$exp+$expbonus);
+			output("During this fight you received `^%s`3 total experience!`n`0",$exp+$expbonus);
 		}
 		$session['user']['experience']+=$expbonus;
 	} else {
@@ -89,11 +89,11 @@ function forestvictory($enemies,$denyflawless=false){
 		}
 		if ($expbonus>0){
 			$expbonus = round($expbonus * pow(1+(getsetting("addexp", 5)/100), $count-1),0);
-			output("`#***Because of the difficult nature of this fight, you are awarded an additional `^%s`# experience! `n(%s + %s = %s) ",$expbonus,$exp,abs($expbonus),$exp+$expbonus);
+			output("`3***Because of the difficult nature of this fight, you are awarded an additional `^%s`3 experience! `n(%s + %s = %s) ",$expbonus,$exp,abs($expbonus),$exp+$expbonus);
 		} elseif ($expbonus<0){
-			output("`#***Because of the simplistic nature of this fight, you are penalized `^%s`# experience! `n(%s - %s = %s) ",abs($expbonus),$exp,abs($expbonus),$exp+$expbonus);
+			output("`3***Because of the simplistic nature of this fight, you are penalized `^%s`3 experience! `n(%s - %s = %s) ",abs($expbonus),$exp,abs($expbonus),$exp+$expbonus);
 		}
-		output("You receive `^%s`# total experience!`n`0",$exp+$expbonus);
+		output("You receive `^%s`3 total experience!`n`0",$exp+$expbonus);
 		$session['user']['experience']+=($exp+$expbonus);
 	}
 	$session['user']['gold']+=$gold;

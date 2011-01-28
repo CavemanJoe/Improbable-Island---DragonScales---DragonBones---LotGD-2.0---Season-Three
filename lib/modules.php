@@ -31,14 +31,14 @@ function injectmodule($modulename,$force=false){
 			//or doesn't meet the prerequisites.
 			if (db_num_rows($result)==0) {
 				tlschema();
-			 	output_notl("`n`3Module `#%s`3 is not installed, but was attempted to be injected.`n",$modulename);
+			 	output_notl("`n`3Module `3%s`3 is not installed, but was attempted to be injected.`n",$modulename);
 				$injected_modules[$force][$modulename]=false;
 				return false;
 			}
 			$row = db_fetch_assoc($result);
 			if ($row['active']){ } else {
 				tlschema();
-			 	output("`n`3Module `#%s`3 is not active, but was attempted to be injected.`n",$modulename);
+			 	output("`n`3Module `3%s`3 is not active, but was attempted to be injected.`n",$modulename);
 				$injected_modules[$force][$modulename]=false;
 				return false;
 			}
@@ -57,7 +57,7 @@ function injectmodule($modulename,$force=false){
 			if (!module_check_requirements($info['requires'])) {
 				$injected_modules[$force][$modulename]=false;
 				tlschema();
-				output("`n`3Module `#%s`3 does not meet its prerequisites.`n",$modulename);
+				output("`n`3Module `3%s`3 does not meet its prerequisites.`n",$modulename);
 				return false;
 			}
 		}
@@ -397,6 +397,7 @@ function mass_module_prepare($hooknames){
  */
 $currenthook = "";
 function modulehook($hookname, $args=false, $allowinactive=false, $only=false){
+	$thstart = microtime(true);
 	global $navsection, $mostrecentmodule;
 	global $blocked_modules, $block_all_modules, $unblocked_modules;
 	global $output, $session, $modulehook_queries;
@@ -550,6 +551,9 @@ function modulehook($hookname, $args=false, $allowinactive=false, $only=false){
 	$mostrecentmodule=$mod;
 	$currenthook = $lasthook;
 
+	$thend = microtime(true);
+	$thtot = $thend-$thstart;
+	//debug($hookname.": ".$thtot);
 	// And hand them back so they can be used.
 	return $args;
 }
@@ -904,17 +908,34 @@ function load_all_module_prefs($user=false){
 	global $module_prefs,$session;
 	if ($user===false) $user = $session['user']['acctid'];
 	if (!isset($module_prefs[$user])){
-		$module_prefs[$user] = array();
 		$start = microtime(true);
-		$sql = "SELECT setting,value,modulename FROM " . db_prefix("module_userprefs") . " WHERE userid='$user'";
-		$result = db_query_cached($sql,"moduleprefs/moduleprefs-$user",86400);
-		$end1 = microtime(true);
-		while ($row = db_fetch_assoc($result)){
-			$module_prefs[$user][$row['modulename']][$row['setting']] = $row['value'];
+		$module_prefs[$user] = datacache("moduleprefs/moduleprefs-$user");
+		if (!is_array($module_prefs[$user])){
+			debug("Getting from db");
+			$sql = "SELECT setting,value,modulename FROM " . db_prefix("module_userprefs") . " WHERE userid='$user'";
+			$result = db_query($sql);
+			$module_prefs[$user] = array();
+			while ($row = db_fetch_assoc($result)){
+				$module_prefs[$user][$row['modulename']][$row['setting']] = $row['value'];
+			}
+			db_free_result($result);
+			updatedatacache("moduleprefs/moduleprefs-$user",$module_prefs[$user]);
 		}
-		$end2 = microtime(true);
-		$time1 = $end1-$start;
-		$time2 = $end2-$start;
+		$end = microtime(true);
+		$tot = $end - $start;
+		debug("Loaded module prefs in: ".$tot);
+		
+		// $module_prefs[$user] = array();
+		// $start = microtime(true);
+		// $sql = "SELECT setting,value,modulename FROM " . db_prefix("module_userprefs") . " WHERE userid='$user'";
+		// $result = db_query_cached($sql,"moduleprefs/moduleprefs-$user",86400);
+		// $end1 = microtime(true);
+		// while ($row = db_fetch_assoc($result)){
+			// $module_prefs[$user][$row['modulename']][$row['setting']] = $row['value'];
+		// }
+		// $end2 = microtime(true);
+		// $time1 = $end1-$start;
+		// $time2 = $end2-$start;
 		//debug("All prefs load time: ".$time2.", of which ".$time1." spent in db_query_cached");
 	}
 	//debug($module_prefs);

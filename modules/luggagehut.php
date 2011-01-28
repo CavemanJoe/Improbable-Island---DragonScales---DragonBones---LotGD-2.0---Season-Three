@@ -42,7 +42,7 @@ function luggagehut_run(){
 		"carrieritem"=>"main",
 	);
 	$backpack = get_items_with_prefs($backpackprefs,true);
-	// debug($backpack);
+	debug($backpack);
 	
 	foreach($backpack AS $key => $prefs){
 		$currentbackpack = $prefs;

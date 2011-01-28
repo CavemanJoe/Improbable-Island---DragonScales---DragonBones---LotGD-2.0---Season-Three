@@ -16,7 +16,7 @@ page_header("The Green Dragon!");
 $op = httpget('op');
 if ($op==""){
 	if (!httpget('nointro')) {
-		output("`\$Fighting down every urge to flee, you cautiously enter the cave entrance, intent on catching the great green dragon sleeping, so that you might slay it with a minimum of pain.");
+		output("Fighting back every urge to flee, you cautiously enter the laboratory, hoping against hope that the generators powering the Drive had run out of fuel.`n`n");
 		output("Sadly, this is not to be the case, for as you round a corner within the cave you discover the great beast sitting on its haunches on a huge pile of gold, picking its teeth with a rib.");
 	}
 	$badguy = array(

@@ -129,7 +129,7 @@ previewfield("body", "`^", false, false, array("type"=>"textarea", "class"=>"inp
 $send = translate_inline("Send");
 rawoutput("<table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td><input type='submit' class='button' value='$send'></td><td align='right'><div id='sizemsg'></div></td></tr></table>");
 rawoutput("</form>");
-$sizemsg = "`#Max message size is `@%s`#, you have `^XX`# characters left.";
+$sizemsg = "`3Max message size is `@%s`3, you have `^XX`3 characters left.";
 $sizemsg = translate_inline($sizemsg);
 $sizemsg = sprintf($sizemsg,getsetting("mailsizelimit",1024));
 $sizemsgover = "`\$Max message size is `@%s`\$, you are over by `^XX`\$ characters!";

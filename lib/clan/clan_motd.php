@@ -41,9 +41,9 @@
 			$row = db_fetch_assoc($result);
 			$descauthname = $row['name'];
 
-			output("`&`bCurrent MoTD:`b `#by %s`2`n",$motdauthname);
+			output("`&`bCurrent MoTD:`b `3by %s`2`n",$motdauthname);
 			output_notl(nltoappon($claninfo['clanmotd'])."`n");
-			output("`&`bCurrent Description:`b `#by %s`2`n",$descauthname);
+			output("`&`bCurrent Description:`b `3by %s`2`n",$descauthname);
 			output_notl(nltoappon($claninfo['clandesc'])."`n");
 
 			rawoutput("<form action='clan.php?op=motd' method='POST'>");

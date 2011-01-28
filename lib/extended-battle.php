@@ -13,7 +13,7 @@ function show_enemies($enemies) {
 	global $enemycounter, $session;
 	foreach ($enemies as $index => $badguy) {
 		if ((isset($badguy['istarget']) && $badguy['istarget'] == true) && $enemycounter > 1)
-			$ccode = "`#";
+			$ccode = "`3";
 		else
 			$ccode = "`2";
 		if (isset($badguy['hidehitpoints']) && $badguy['hidehitpoints'] == true) {

@@ -23,7 +23,7 @@ if (db_num_rows($result)>0){
 		}
 	}
 	if (!$row['seen']) {
-		output("`b`#NEW`b`n");
+		output("`b`3NEW`b`n");
 	}else{
 		output("`n");
 	}

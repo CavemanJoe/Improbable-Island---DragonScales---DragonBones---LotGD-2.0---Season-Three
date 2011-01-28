@@ -73,7 +73,7 @@
 	$sex = translate_inline("Sex");
 	$who = translate_inline("Married To");
 	$marriagedate = translate_inline("Marriage Date");
-	$online = translate_inline("`#(Online)");
+	$online = translate_inline("`3(Online)");
 	$unlogged= translate_inline("`4long ago");
 
 	rawoutput("<table border=0 cellpadding=2 cellspacing=1 bgcolor='#999999'>",true);

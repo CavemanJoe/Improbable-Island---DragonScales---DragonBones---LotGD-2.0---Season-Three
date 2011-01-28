@@ -56,6 +56,7 @@ function removecommentary($cid,$reason,$mod){
 	db_query($sql);
 	invalidatedatacache("commentary/latestcommentary_".$row['section']);
 	invalidatedatacache("commentary/commentarycount_".$row['section']);
+	invalidatedatacache("commentary/whosonline_".$section);
 }
 
 function restorecommentary($cid,$reason,$mod){
@@ -75,6 +76,7 @@ function restorecommentary($cid,$reason,$mod){
 	db_query($sql);
 	invalidatedatacache("commentary/latestcommentary_".$row['section']);
 	invalidatedatacache("commentary/commentarycount_".$row['section']);
+	invalidatedatacache("commentary/whosonline_".$section);
 }
 
 function addcommentary() {
@@ -111,6 +113,75 @@ function addcommentary() {
 	
 	if ($session['user']['chatloc']=="DNI"){
 		$dni = true;
+	}
+	
+	$colors = array(
+		"1" => "colDkBlue",
+		"2" => "colDkGreen",
+		"3" => "colDkCyan",
+		"4" => "colDkRed",
+		"5" => "colDkMagenta",
+		"6" => "colDkYellow",
+		"7" => "colDkWhite",
+		"~" => "colBlack",
+		"!" => "colLtBlue",
+		"@" => "colLtGreen",
+		"#" => "colLtCyan",
+		"\$" => "colLtRed",
+		"%" => "colLtMagenta",
+		"^" => "colLtYellow",
+		"&" => "colLtWhite",
+		")" => "colLtBlack",
+		"e" => "colDkRust",
+		"E" => "colLtRust",
+		"g" => "colXLtGreen",
+		"G" => "colXLtGreen",
+		"j" => "colMdGrey",
+		"k" => "colaquamarine",
+		"K" => "coldarkseagreen",
+		"l" => "colDkLinkBlue",
+		"L" => "colLtLinkBlue",
+		"m" => "colwheat",
+		"M" => "coltan",
+		"p" => "collightsalmon",
+		"P" => "colsalmon",
+		"q" => "colDkOrange",
+		"Q" => "colLtOrange",
+		"R" => "colRose",
+		"T" => "colDkBrown",
+		"t" => "colLtBrown",
+		"V" => "colBlueViolet",
+		"v" => "coliceviolet",
+		"x" => "colburlywood",
+		"X" => "colbeige",
+		"y" => "colkhaki",
+		"Y" => "coldarkkhaki",
+	);
+	
+	if (substr($comment,0,9) == "/chatcol "){
+		$ucol = substr($comment,9,1);
+		if (!isset($colors[$ucol])){
+			output("`c`b`4Invalid default talk colour`b`nYou entered an invalid colour code, please try again.`0`c`n");
+			return false;
+		} else {
+			$session['user']['prefs']['ucol'] = $ucol;
+			output_notl("`c`bDefault talk colour changed`b`n`".$ucol."This is your new default commentary dialogue colour.  When you type in commentary areas, this colour will show up automatically.  If you're an Extra-Awesome Site Supporter, you can also change the colour of your character's dialogue during quests, monster fights and other in-game areas using the /talkcol switch, in the same way you just used the /chatcol switch.`0`c`n");
+			return false;
+		}
+	} else if (substr($comment,0,9) == "/talkcol "){
+		$ucol = substr($comment,9,1);
+		if (!isset($colors[$ucol])){
+			output("`c`b`4Invalid default talk colour`b`nYou entered an invalid colour code, please try again.`0`c`n");
+			return false;
+		} else {
+			$session['user']['prefs']['ugcol'] = $ucol;
+			if ($session['user']['donation'] >= 2000){
+				output_notl("`c`bDefault talk colour changed`b`n`".$ucol."This is your new default in-game dialogue colour.  This is the colour we'll use to represent your character's dialogue during quests, monster encounters, and other in-game things.  If you choose a colour commonly used by monsters or other characters, you might have problems figuring out who's talking - if that's the case, you can reset to the default with \"/talkcol #\".  You can also change your default colour for commentary areas by using the /chatcol switch, in the same way you just used /talkcol.`0`c`n");
+			} else {
+				output("`c`bNot enough Supporter Points`b`nSorry, but due to the extra system load that the /talkcol switch uses, this feature is restricted to players with more than 2,000 Supporter Points.`0`c`n");
+			}
+			return false;
+		}
 	}
 	
 	if ($comment == strtoupper($comment)){
@@ -155,24 +226,24 @@ function addcommentary() {
 			'section'=>$section,
 		);
 		$returnedhook = modulehook("commentarycommand",$hookcommand);
-		if (!$returnedhook['processed']){
-			debug($returnedhook);
-			output("`c`b`JCommand Not Recognized`b`0`nWhen you type in ALL CAPS, the game doesn't think you're talking to other players; it thinks you're trying to perform an action within the game.  For example, typing `#GREM`0 will remove the last comment you posted, as long as you posted it less than two minutes ago.  Typing `#AFK`0 or `#BRB`0 will turn your online status bar grey, so that people know you're `#A`0way `#F`0rom the `#K`0eyboard (or, if you prefer, that you'll `#B`0e `#R`0ight `#B`0ack).  Typing `#DNI`0 will let other players know that you're busy talking to one particular player - maybe somewhere off-camera - and that you don't want to be interrupted right now.`nSome areas have special hidden commands or other easter eggs that you can hunt for.  This time around, you didn't trigger anything special.`c`0`n");
+		if (!$returnedhook['skipcommand']){
+			//if for some reason you're going to involve a command that can be a mix of upper and lower case, set $args['skipcommand'] and $args['ignore'] to true and handle it in postcomment instead.
+			if (!$returnedhook['processed']){
+				output("`c`b`JCommand Not Recognized`b`0`nWhen you type in ALL CAPS, the game doesn't think you're talking to other players; it thinks you're trying to perform an action within the game.  For example, typing `#GREM`0 will remove the last comment you posted, as long as you posted it less than two minutes ago.  Typing `#AFK`0 or `#BRB`0 will turn your online status bar grey, so that people know you're `#A`0way `#F`0rom the `#K`0eyboard (or, if you prefer, that you'll `#B`0e `#R`0ight `#B`0ack).  Typing `#DNI`0 will let other players know that you're busy talking to one particular player - maybe somewhere off-camera - and that you don't want to be interrupted right now.`nSome areas have special hidden commands or other easter eggs that you can hunt for.  This time around, you didn't trigger anything special.`c`0`n");
+			}
+			return false;
 		}
-		return false;
 	}
 	
-	//if (array_key_exists('commentcounter',$session) && $session['commentcounter']==$counter) {
-		if ($section || $talkline || $comment) {
-			$tcom = color_sanitize($comment);
-			if ($tcom == "" || $tcom == ":" || $tcom == "::" || $tcom == "/me"){
-				$emptypost = 1;
-			} else {
-				$comment = comment_sanitize($comment);
-				injectcommentary($section, $talkline, $comment);
-			}
+	if ($section || $talkline || $comment) {
+		$tcom = color_sanitize($comment);
+		if ($tcom == "" || $tcom == ":" || $tcom == "::" || $tcom == "/me"){
+			$emptypost = 1;
+		} else {
+			$comment = comment_sanitize($comment);
+			injectcommentary($section, $talkline, $comment);
 		}
-	//}
+	}
 }
 
 function injectsystemcomment($section,$comment) {
@@ -192,6 +263,7 @@ function injectrawcomment($section, $author, $comment, $name=false, $info=false)
 	db_query($sql);
 	invalidatedatacache("commentary/latestcommentary_".$section);
 	invalidatedatacache("commentary/commentarycount_".$section);
+	invalidatedatacache("commentary/whosonline_".$section);
 }
 
 function injectcommentary($section, $talkline, $comment) {
@@ -215,7 +287,7 @@ function injectcommentary($section, $talkline, $comment) {
 				// $x++;
 			// }
 		// }
-
+		
 		$info = array();
 		$info['rawcomment']=$comment;
 		$clanid = $session['user']['clanid'];
@@ -227,6 +299,12 @@ function injectcommentary($section, $talkline, $comment) {
 			$info['clanshort'] = $clanrow['clanshort'];
 			$info['clanid'] = $clanid;
 			$info['clanrank'] = $session['user']['clanrank'];
+		}
+		
+		if (!isset($session['user']['prefs']['ucol'])){
+			$session['user']['prefs']['ucol'] = false;
+		} else {
+			$info['talkcolour'] = $session['user']['prefs']['ucol'];
 		}
 		
 		$args = array('commentline'=>$commentary, 'commenttalk'=>$talkline, 'info'=>$info, 'name'=>$session['user']['name'], 'section'=>$section);
@@ -349,14 +427,22 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 		}
 	}
 	$commentbuffer = array();
+	
+	$start = microtime(true);
+	
 	while ($row = db_fetch_assoc($result)){
 		$row['info']=@stripslashes($row['info']);
 		$row['info']=@unserialize($row['info']);
 		if (!is_array($row['info'])){
 			$row['info']=array();
 		}
+		$row['info']['link'] = buildcommentarylink("&commentid=".$row['commentid']);
 		$commentbuffer[]=$row;
 	}
+	
+	$end = microtime(true);
+	$tot = $end - $start;
+	debug($tot);
 	
 	//pre-formatting
 	$commentbuffer = modulehook("commentbuffer-preformat",$commentbuffer);
@@ -431,7 +517,7 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 				}
 			}
 			if (!$row['gamecomment'] && ($row['info']['clanid'] || $row['info']['clanid']===0) && $row['info']['clanrank']){
-				$clanrankcolors=array(CLAN_APPLICANT=>"`!",CLAN_MEMBER=>"`#",CLAN_OFFICER=>"`^",CLAN_LEADER=>"`&", CLAN_FOUNDER=>"`\$");
+				$clanrankcolors=array(CLAN_APPLICANT=>"`!",CLAN_MEMBER=>"`3",CLAN_OFFICER=>"`^",CLAN_LEADER=>"`&", CLAN_FOUNDER=>"`\$");
 				$thiscomment.="`0<a title=\"".$row['info']['clanname']."\">&lt;".$clanrankcolors[$row['info']['clanrank']].$row['info']['clanshort']."`0&gt;</a>";
 			}
 			if ($row['biolink'] && !$row['gamecomment']){
@@ -447,7 +533,12 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 				// $thiscomment.="`&";
 			// }
 			if (!$row['skiptalkline']){
-				$thiscomment.=$talkline." \"`#";
+				$thiscomment.=$talkline." \"";
+				if (!isset($row['info']['talkcolour']) || $row['info']['talkcolour']===false){
+					$thiscomment.="`#";
+				} else {
+					$thiscomment.="`".$row['info']['talkcolour'];
+				}
 			}
 			$thiscomment.=str_replace("&amp;","&",htmlentities($row['comment'], ENT_COMPAT, getsetting("charset", "ISO-8859-1")));
 			$thiscomment.="`0";
@@ -484,7 +575,12 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 	//get offline/online/nearby status
 	$acctids = join(',',$acctidstoquery);
 	$onlinesql = "SELECT acctid, laston, loggedin, chatloc FROM ".db_prefix("accounts")." WHERE acctid IN ($acctids)";
-	$onlineresult = db_query($onlinesql);
+	//cache it for 30 seconds
+	if (!$com){
+		$onlineresult = db_query_cached($onlinesql,"commentary/whosonline_".$section,30);
+	} else {
+		$onlineresult = db_query($onlinesql);
+	}
 	$onlinestatus = array();
 	$offline = date("Y-m-d H:i:s",strtotime("-".getsetting("LOGINTIMEOUT",900)." seconds"));
 	while ($row = db_fetch_assoc($onlineresult)){
@@ -794,6 +890,7 @@ function preparecommentaryblock($section,$message="Interject your own commentary
 	if (httpget('comment')){
 		invalidatedatacache("commentary/latestcommentary_".$section);
 		invalidatedatacache("commentary/commentarycount_".$section);
+		invalidatedatacache("commentary/whosonline_".$section);
 	}
 	
 	if (($session['user']['superuser'] & SU_EDIT_COMMENTS) || $overridemod){
@@ -893,6 +990,8 @@ function viewcommentary($section,$message="Interject your own commentary?",$limi
 		$session['recentcomments'] = date("Y-m-d H:i:s");
 	}
 	
+	rawoutput("<!--start of commentary area-->");
+	
 	global $fiveminuteload;
 	if ($session['user']['prefs']['commentary_auto_update'] && !httpget('comscroll') && $fiveminuteload < 8){
 		$jsec = strtolower($section);
@@ -944,6 +1043,8 @@ function viewcommentary($section,$message="Interject your own commentary?",$limi
 	if (!$skipfooter){
 		commentaryfooter($section,$message,$limit,$talkline,$schema);
 	}
+	
+	rawoutput("<!--end of commentary area-->");
 }
 
 function commentaryfooter($section,$message="Interject your own commentary?",$limit=25,$talkline="says",$schema=false){
@@ -1065,6 +1166,11 @@ function buildcommentarylink($append,$returnlink=false){
 	$nlink = preg_replace("'&r(estorecomment)?=([[:digit:]]|-)*'", "", $nlink);
 	$nlink = preg_replace("'\\?r(estorecomment)?=([[:digit:]]|-)*'", "?", $nlink);
 	
+	// $nlink = preg_replace("'&a(utomod_inc)?=([[:digit:]]|-)*'", "", $nlink);
+	// $nlink = preg_replace("'\\?a(utomod_inc)?=([[:digit:]]|-)*'", "?", $nlink);
+	// $nlink = preg_replace("'&a(utomod_dec)?=([[:digit:]]|-)*'", "", $nlink);
+	// $nlink = preg_replace("'\\?a(utomod_dec)?=([[:digit:]]|-)*'", "?", $nlink);	
+	
 	$nlink = str_replace("?enable_auto_update=true","",$nlink);
 	$nlink = str_replace("?disable_auto_update=true","",$nlink);
 	$nlink = str_replace("&enable_auto_update=true","",$nlink);
@@ -1081,12 +1187,18 @@ function buildcommentarylink($append,$returnlink=false){
 	$nlink = str_replace("?switchmultichat=1","",$nlink);
 	$nlink = str_replace("?switchmultichat=2","",$nlink);
 	$nlink = str_replace("?switchmultichat=3","",$nlink);
+	
+	//debug($nlink);
+	
 	if (!strpos($nlink,"?")){
 		$nlink = str_replace("&","?",$nlink);
 		if (!strpos($nlink,"?")){
 			$nlink.="?";
 		}
 	}
+	
+	//debug($nlink);
+	
 	if ($jump && $section) {
 		$nlink .= "#$section";
 	}
@@ -1103,6 +1215,10 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 	$jump = false;
 	if (isset($session['user']['prefs']['nojump']) && $session['user']['prefs']['nojump'] == true) {
 		$jump = true;
+	}
+	
+	if (!isset($session['user']['prefs']['ucol'])){
+		$session['user']['prefs']['ucol'] = false;
 	}
 	
 	$counttoday=0;
@@ -1135,7 +1251,7 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 			"talkline"	=>	$talkline,
 			"schema"	=>	$schema
 		);
-		$args1 = modulehook("commentarytalkline",$args1);
+		// $args1 = modulehook("commentarytalkline",$args1);
 		//rawoutput('<div id="commentaryformcontainer">');
 		output_notl($args1['formline'] . ">",true);
 	// *** AJAX CHAT MOD END ***
@@ -1148,7 +1264,7 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 		$jsec = str_replace("-","",$jsec);
 		$jsec = str_replace(",","0",$jsec);
 		//debug($jsec);
-		previewfield("insertcommentary", $session['user']['name'], $talkline, true, array("size"=>"30", "maxlength"=>255-$tll),false,$jsec);
+		previewfield("insertcommentary", $session['user']['name'], $talkline, true, array("size"=>"30", "maxlength"=>255-$tll),false,$jsec,$session['user']['prefs']['ucol']);
 		rawoutput("<script type=\"text/javascript\">
 			var typetimelimit".$jsec." = 0;
 			var timebetween".$jsec." = 1500;
@@ -1187,9 +1303,9 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 		</script>");
 	} else {
 		if ($fiveminuteload >= 8){
-			output("Server load is currently too high for auto-update chat.  This will balance out in a few minutes.`n");
+			output("Server load is currently too high for auto-update chat.  This will hopefully balance out in a few minutes.`n");
 		}
-		previewfield("insertcommentary", $session['user']['name'], $talkline, true, array("size"=>"30", "maxlength"=>255-$tll),false,false);
+		previewfield("insertcommentary", $session['user']['name'], $talkline, true, array("size"=>"30", "maxlength"=>255-$tll),false,false,$session['user']['prefs']['ucol']);
 		//debug("System load too high at ".$fiveminuteload);
 	}
 	rawoutput("<input type='hidden' name='talkline' value='$talkline'>");
@@ -1213,7 +1329,6 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 
 	// *** DRAGONBG.COM CORE PATCH START***
 	output_notl("<input type='submit' class='button' value='$add'>	",true);
-		modulehook("commentarytrail",array());	
 	// *** DRAGONBG.COM CORE PATCH END***
 
 	// *** AJAX CHAT MOD START ***

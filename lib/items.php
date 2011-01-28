@@ -81,6 +81,7 @@ function items_delete_character($acctid){
 	$sqli = "DELETE FROM ".db_prefix("items_player")." WHERE owner = '$acctid'";
 	db_query($sqli);
 	db_query($sqlp);
+	invalidatedatacache("playeritems/playeritems_$acctid");
 }
 
 function items_dragonkill($acctid=false){
@@ -99,12 +100,19 @@ function items_dragonkill($acctid=false){
 
 function get_player_items($acctid){
 	global $session, $idstoitems;
-	$sql = "SELECT item,id FROM ".db_prefix("items_player")." WHERE owner='$acctid'";
-	$result = db_query($sql);
-	$items = array();
-	while ($row = db_fetch_assoc($result)){
-		$items[$row['id']]['item'] = $row['item'];
-		$idstoitems[$row['id']] = $row['item'];
+	
+	$items = datacache("playeritems/playeritems_$acctid");
+	
+	if (!is_array($items) || !count($items)){	
+		$sql = "SELECT item,id FROM ".db_prefix("items_player")." WHERE owner='$acctid'";
+		$result = db_query($sql);	
+		$items = array();
+		$baseitems = array();
+		while ($row = db_fetch_assoc($result)){
+			$items[$row['id']]['item'] = $row['item'];
+			$idstoitems[$row['id']] = $row['item'];
+		}
+		updatedatacache("playeritems/playeritems_$acctid",$items);
 	}
 	//debug("Loading player items from database");
 	return $items;
@@ -134,16 +142,22 @@ function get_items_by_id($ids){
 
 function load_item_settings(){
 	//load settings for all items, put them in $itemsettings
-	//todo: cache this
+	//we don't cache this because the datacache is lousy at getting large amounts of data via db_fetch_assoc.
 	global $itemsettings;
+	
+	if (!isset($itemsettings) || !is_array($itemsettings)){
+		$itemsettings = datacache("item-settings");
+	}
+	
 	if (!isset($itemsettings) || !is_array($itemsettings)){
 		$itemsettings = array();
-	}
-	$ssql = "SELECT * FROM ".db_prefix("items_settings");
-	$sresult = db_query($ssql);
-	//debug("Loading item settings from database");
-	while ($srow = db_fetch_assoc($sresult)){
-		$itemsettings[$srow['item']][$srow['setting']] = stripslashes($srow['value']);
+		$ssql = "SELECT * FROM ".db_prefix("items_settings");
+		$sresult = db_query($ssql);
+		//debug("Loading item settings from database");
+		while ($srow = db_fetch_assoc($sresult)){
+			$itemsettings[$srow['item']][$srow['setting']] = stripslashes($srow['value']);
+		}
+		updatedatacache("item-settings",$itemsettings);
 	}
 }
 
@@ -466,6 +480,7 @@ function set_item_setting($setting,$value,$item){
 	$value = addslashes($value);
 	$sql = "INSERT INTO ".db_prefix("items_settings")." (item,setting,value) VALUES ('$item','$setting','$value') ON DUPLICATE KEY UPDATE value = VALUES(value)";
 	db_query($sql);
+	invalidatedatacache("item-settings");
 	return $value;
 }
 
@@ -475,6 +490,7 @@ function increment_item_setting($setting,$value,$item){
 	$newvalue = $itemsettings[$item][$setting];
 	$sql = "INSERT INTO ".db_prefix("items_settings")." (item,setting,value) VALUES ('$item','$setting','$newvalue') ON DUPLICATE KEY UPDATE value = VALUES(value)";
 	db_query($sql);
+	invalidatedatacache("item-settings");
 	return $value;
 }
 
@@ -497,6 +513,23 @@ function write_item_prefs(){
 function change_item_owner($itemids,$newowner){
 	global $itemsettings, $itemprefs, $inventory;
 	if (is_array($itemids)){
+	
+		//get the items' old owners, so we can invalidate the cache properly
+		if (getsetting("usedatacache",0)){
+			$sql = "SELECT owner FROM ".db_prefix("items_player")." WHERE id IN (";
+			foreach($itemids AS $id){
+				$sql .= $id.",";
+				//set_item_pref("inventorylocation","main",$id);
+			}
+			$sql = substr_replace($sql,"",-1);
+			$sql .= ")";
+			
+			$result = db_query($sql);
+			while ($row = db_fetch_assoc($result)){
+				invalidatedatacache("playeritems/playeritems_".$row['owner']);
+			}
+		}
+	
 		$sql = "UPDATE ".db_prefix("items_player")." SET owner='$newowner' WHERE id IN (";
 		foreach($itemids AS $id){
 			$sql .= $id.",";
@@ -505,9 +538,20 @@ function change_item_owner($itemids,$newowner){
 		$sql = substr_replace($sql,"",-1);
 		$sql .= ")";
 	} else {
+		if (getsetting("usedatacache",0)){
+			$sql = "SELECT owner FROM ".db_prefix("items_player")." WHERE id='$itemids'";
+			
+			$result = db_query($sql);
+			while ($row = db_fetch_assoc($result)){
+				invalidatedatacache("playeritems/playeritems_".$row['owner']);
+			}
+		}
 		$sql = "UPDATE ".db_prefix("items_player")." SET owner='$newowner' WHERE id='$itemids'";
 		//set_item_pref("inventorylocation","main",$itemids);
 	}
+	
+	invalidatedatacache("playeritems/playeritems_$newowner");
+	
 	if ($itemids){
 		//debug($sql);
 		db_query($sql);
@@ -551,7 +595,7 @@ function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
 	
 	if ($acctid == $session['user']['acctid']){
 		//saves a query over loading the inventory every time
-		if (!isset($inventory) || !is_array($inventory)){
+		if (!isset($inventory) || !is_array($inventory) && !$skipreload){
 			load_inventory();
 		} else {
 			if (!isset($itemsettings) || !is_array($itemsettings)){
@@ -560,6 +604,9 @@ function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
 			$inventory[$key] = $itemsettings[$item];
 		}
 	}
+	
+	invalidatedatacache("playeritems/playeritems_$acctid");
+	
 	return $key;
 }
 
@@ -579,10 +626,20 @@ function give_multiple_items($item,$quantity,$acctid=false){
 		//reload inventory - we can't really get around it
 		load_inventory();
 	}
+	
+	invalidatedatacache("playeritems/playeritems_$acctid");
 }
 
 function delete_item($itemid){
 	global $inventory;
+	if (getsetting("usedatacache",0)){
+		$sql = "SELECT owner FROM ".db_prefix("items_player")." WHERE id='$itemid'";
+		$result = db_query($sql);
+		while ($row = db_fetch_assoc($result)){
+			invalidatedatacache("playeritems/playeritems_".$row['owner']);
+		}
+	}
+	
 	$sqli = "DELETE FROM ".db_prefix("items_player")." WHERE id = '$itemid'";
 	$sqlp = "DELETE FROM ".db_prefix("items_prefs")." WHERE id = '$itemid'";
 	db_query($sqli);
@@ -590,6 +647,8 @@ function delete_item($itemid){
 	if (isset($inventory[$itemid])){
 		unset($inventory[$itemid]);
 	}
+	
+	invalidatedatacache("playeritems/playeritems_$acctid");
 }
 
 function delete_all_items_of_type($item,$acctid=false){
@@ -623,6 +682,7 @@ function delete_all_items_of_type($item,$acctid=false){
 		//reload inventory
 		load_inventory();
 	}
+	invalidatedatacache("playeritems/playeritems_$acctid");
 	return $count;
 }
 

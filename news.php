@@ -136,7 +136,7 @@ if ($totaltoday>$newsperpage){
 	for ($i=0;$i<$totaltoday;$i+=$newsperpage){
 		$pnum = $i/$newsperpage+1;
 		if ($pnum == $page) {
-			addnav(array("`b`#Page %s`0`b", $pnum),"news.php?offset=$offset&page=$pnum&r=".$r);
+			addnav(array("`b`3Page %s`0`b", $pnum),"news.php?offset=$offset&page=$pnum&r=".$r);
 		} else {
 			addnav(array("Page %s", $pnum),"news.php?offset=$offset&page=$pnum&r=".$r);
 		}

@@ -189,8 +189,8 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 				$session['user']['seenmaster']=0;
 				debuglog("Defeated master, setting seenmaster to 0");
 			}
-			output("`#You advance to level `^%s`#!`n",$session['user']['level']);
-			output("Your maximum hitpoints are now `^%s`#!`n",$session['user']['maxhitpoints']);
+			output("`3You advance to level `^%s`3!`n",$session['user']['level']);
+			output("Your maximum hitpoints are now `^%s`3!`n",$session['user']['maxhitpoints']);
 			output("You gain an attack point!`n");
 			output("You gain a defense point!`n");
 			if ($session['user']['level']<15){
@@ -203,7 +203,7 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 				// db_query($sql);
 				// $session['user']['refererawarded']=1;
 				// $subj=array("`%One of your referrals advanced!`0");
-				// $body=array("`&%s`# has advanced to level `^%s`#, and so you have earned `^%s`# points!", $session['user']['name'], $session['user']['level'], getsetting("refereraward", 25));
+				// $body=array("`&%s`3 has advanced to level `^%s`3, and so you have earned `^%s`3 points!", $session['user']['name'], $session['user']['level'], getsetting("refereraward", 25));
 				// systemmail($session['user']['referer'],$subj,$body);
 				// //Patch to handle second-hand referrers, added by Caveman Joe
 				// $sql = "SELECT acctid,name,referer FROM " . db_prefix("accounts") . " WHERE acctid={$session['user']['referer']}";
@@ -212,7 +212,7 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 				// if ($row['referer']){
 					// $award = round(getsetting("refereraward",25) / 2);
 					// $subj=array("`%One of your second-hand referrals advanced!`0");
-					// $body=array("`&%s`#, referred by `&%s`#, has advanced to level `^%s`# - and so you have earned `^%s`# points!", $session['user']['name'], $row['name'], $session['user']['level'], $award);
+					// $body=array("`&%s`3, referred by `&%s`3, has advanced to level `^%s`3 - and so you have earned `^%s`3 points!", $session['user']['name'], $row['name'], $session['user']['level'], $award);
 					// systemmail($row['referer'],$subj,$body);
 					// $sql = "UPDATE " . db_prefix("accounts") . " SET donation=donation+".$award." WHERE acctid={$row['referer']}";
 					// db_query($sql);

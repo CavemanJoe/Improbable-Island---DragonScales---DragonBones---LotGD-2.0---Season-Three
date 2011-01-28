@@ -21,31 +21,31 @@ if (!isset($valid_loc[$session['user']['location']])) {
 	$session['user']['location']=$vname;
 }
 
-$newestname = "";
-$newestplayer = getsetting("newestplayer", "");
-if ($newestplayer == $session['user']['acctid']) {
-	$newtext = "`nYou're the newest member of the village.  As such, you wander around, gaping at the sights, and generally looking lost.";
-	$newestname = $session['user']['name'];
-} else {
-	$newtext = "`n`2Wandering near the inn is `&%s`2, looking completely lost.";
-	if ((int)$newestplayer != 0) {
-		$sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$newestplayer'";
-		//$result = db_query_cached($sql, "newest");
-		$result = db_query_cached($sql,"playernames/playername_".$newestplayer);
-		if (db_num_rows($result) == 1) {
-			$row = db_fetch_assoc($result);
-			$newestname = $row['name'];
-		} else {
-			$newestplayer = "";
-		}
-	} else {
-		if ($newestplayer > "") {
-			$newestname = $newestplayer;
-		} else {
-			$newestname = "";
-		}
-	}
-}
+// $newestname = "";
+// $newestplayer = getsetting("newestplayer", "");
+// if ($newestplayer == $session['user']['acctid']) {
+	// $newtext = "`nYou're the newest member of the village.  As such, you wander around, gaping at the sights, and generally looking lost.";
+	// $newestname = $session['user']['name'];
+// } else {
+	// $newtext = "`n`2Wandering near the inn is `&%s`2, looking completely lost.";
+	// if ((int)$newestplayer != 0) {
+		// $sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$newestplayer'";
+		// //$result = db_query_cached($sql, "newest");
+		// $result = db_query_cached($sql,"playernames/playername_".$newestplayer);
+		// if (db_num_rows($result) == 1) {
+			// $row = db_fetch_assoc($result);
+			// $newestname = $row['name'];
+		// } else {
+			// $newestplayer = "";
+		// }
+	// } else {
+		// if ($newestplayer > "") {
+			// $newestname = $newestplayer;
+		// } else {
+			// $newestname = "";
+		// }
+	// }
+// }
 
 // if (!$session['user']['dragonkills'] && !$session['user']['experience'] && $session['user']['hitpoints'] == $session['user']['maxhitpoints'] && $session['user']['age'] < 2 && $session['user']['gold']==80){
 	// output("`J`bConfused?`b`nDon't worry.  A lot of new players tend to react to NewHome with cries of 'LOOK AT ALL THOSE LINKS HOLY BALLS WHAT DO I DO,' so you're in good company.  First, you should head into the Council Offices and grab your free stuff for today.  After that, there's no easy answer to the question of 'what do I do' - but we can give you some hints.`n`nIf you're the sort who enjoys beating up monsters, levelling up, inching your way up the Hall O' Fame, you might want to check out the Jungle.  It'd be a good idea to visit Sheila's Shack O' Shiny first, and get yourself some sort of weapon or, y'know, clothing.`nIf you enjoy exploration, there's an awful lot of stuff you can see on the World Map, a lot of which was built by our own players.  Some folks like to just wander around gawping at all the interesting buildings that people have put together.  A can of Monster Repellent Spray from eBoy's Trading Station will make you less likely to be set upon by monsters while you're out looking around.`nIf you want to know more about the world in which Improbable Island is set, or if you're more in the mood to be told a story or to play a quest than to leap straight towards the levelling-up, then the Museum is a good bet.`nIf the accumulation of wealth is what interests you, then it's worth pointing out that the prices at eBoy's Trading Station are different in every Outpost and affected by supply and demand, so it's possible to make a tidy profit buying low and selling high.`nAre you the kind of player who believes that playing with other human beings can be far more fun?  You're absolutely right.  Introduce yourself in the Banter Channel - as web games go, Improbable Island's players are unusually friendly.`nRemember, you can always revisit Basic Training from NewHome if you need to, and don't hesitate to ask questions in the Banter channel or Location Four.`nThis message will disappear after you fight a monster, spend or earn some Requisition, or trigger a new Game Day.`n`n");

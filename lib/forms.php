@@ -1,5 +1,5 @@
 <?php
-function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=true, $info=false, $default=false, $jsec=false) {
+function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=true, $info=false, $default=false, $jsec=false, $ucol=false) {
 	global $schema,$session,$chatsonpage;
 	$talkline = translate_inline($talkline, $schema);
 	$youhave = translate_inline("You have ");
@@ -11,6 +11,55 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 		$nid = $jsec;
 	}
 	//debug($nid);
+	
+	if ($ucol!==false){
+		$colors = array(
+			"1" => "colDkBlue",
+			"2" => "colDkGreen",
+			"3" => "colDkCyan",
+			"4" => "colDkRed",
+			"5" => "colDkMagenta",
+			"6" => "colDkYellow",
+			"7" => "colDkWhite",
+			"~" => "colBlack",
+			"!" => "colLtBlue",
+			"@" => "colLtGreen",
+			"#" => "colLtCyan",
+			"\$" => "colLtRed",
+			"%" => "colLtMagenta",
+			"^" => "colLtYellow",
+			"&" => "colLtWhite",
+			")" => "colLtBlack",
+			"e" => "colDkRust",
+			"E" => "colLtRust",
+			"g" => "colXLtGreen",
+			"G" => "colXLtGreen",
+			"j" => "colMdGrey",
+			"k" => "colaquamarine",
+			"K" => "coldarkseagreen",
+			"l" => "colDkLinkBlue",
+			"L" => "colLtLinkBlue",
+			"m" => "colwheat",
+			"M" => "coltan",
+			"p" => "collightsalmon",
+			"P" => "colsalmon",
+			"q" => "colDkOrange",
+			"Q" => "colLtOrange",
+			"R" => "colRose",
+			"T" => "colDkBrown",
+			"t" => "colLtBrown",
+			"V" => "colBlueViolet",
+			"v" => "coliceviolet",
+			"x" => "colburlywood",
+			"X" => "colbeige",
+			"y" => "colkhaki",
+			"Y" => "coldarkkhaki",
+ 		);
+		$usercol = $colors[$ucol];
+	} else {
+		$usercol = "colLtCyan";
+	}
+	
 	if ($startdiv === false)
 		$startdiv = "";
 	rawoutput("<script language='JavaScript'>
@@ -35,7 +84,7 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 						x=5;");
 		}
 		rawoutput("	}else{
-						out += '</span><span class=\\'colDkCyan\\'> ".addslashes(appoencode($talkline))." \"</span><span class=\\'colLtCyan\\'>';
+						out += '</span><span class=\\'colDkCyan\\'> ".addslashes(appoencode($talkline))." \"</span><span class=\\'$usercol\\'>';
 						end += '</span><span class=\\'colDkCyan\\'>\"';
 					}");
 	}

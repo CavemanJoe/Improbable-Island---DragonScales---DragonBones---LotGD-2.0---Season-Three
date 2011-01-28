@@ -63,7 +63,7 @@ while ($row = db_fetch_assoc($result)) {
 		$odate = $dom;
 	}
 	$time = date("H:i:s", strtotime($row['date']))." (".reltime(strtotime($row['date'])).")";
-	output_notl("`#%s (%s) `^%s - `&%s`7 %s`0", $row['field'], $row['value'], $time, $row['actorname'], $row['message']);
+	output_notl("`3%s (%s) `^%s - `&%s`7 %s`0", $row['field'], $row['value'], $time, $row['actorname'], $row['message']);
 	if ($row['target']) {
 		output(" \\-- Recipient = `\$%s`0", $row['targetname']);
 	}

@@ -95,7 +95,7 @@ function improbablebandit_run(){
 					set_module_pref("reel1symbol","`bKittyBike`b");
 				}
 				if($reel1random>=get_module_setting("diseasedlungchance")){
-					set_module_pref("reel1symbol","`b`#Diseased Lung`0`b");
+					set_module_pref("reel1symbol","`b`3Diseased Lung`0`b");
 				}
 				//Spin the second reel
 				$reel2random=e_rand(1,get_module_setting("reelrange"));
@@ -115,7 +115,7 @@ function improbablebandit_run(){
 					set_module_pref("reel2symbol","`bKittyBike`b");
 				}
 				if($reel2random>=get_module_setting("diseasedlungchance")){
-					set_module_pref("reel2symbol","`b`#Diseased Lung`0`b");
+					set_module_pref("reel2symbol","`b`3Diseased Lung`0`b");
 				}
 				//Spin the third reel
 				$reel3random=e_rand(1,get_module_setting("reelrange"));
@@ -135,7 +135,7 @@ function improbablebandit_run(){
 					set_module_pref("reel3symbol","`bKittyBike`b");
 				}
 				if($reel3random>=get_module_setting("diseasedlungchance")){
-					set_module_pref("reel3symbol","`b`#Diseased Lung`0`b");
+					set_module_pref("reel3symbol","`b`3Diseased Lung`0`b");
 				}
 				//Adjust output according to payout percentage
 				//recalculate actual payout percentage
@@ -146,7 +146,7 @@ function improbablebandit_run(){
 				}
 				//set to a bad mood
 				if(get_module_setting("desiredpayout")<get_module_setting("actualpayout")-5){
-					set_module_pref("reel1symbol","`b`#Diseased Lung`0`b");
+					set_module_pref("reel1symbol","`b`3Diseased Lung`0`b");
 				}
 				//Output the reels
 				output("The first reel stops on the %s symbol.`n",get_module_pref("reel1symbol"));
@@ -188,7 +188,7 @@ function improbablebandit_run(){
 					$session['user']['gems']+=get_module_setting("kittybikeprize");
 					set_module_setting("moneywon",get_module_setting("moneywon")+get_module_setting("kittybikeprize"));
 				}
-				if(get_module_pref("reel1symbol")=="`b`#Diseased Lung`0`b" && get_module_pref("reel2symbol")=="`b`#Diseased Lung`0`b" && get_module_pref("reel3symbol")=="`b`#Diseased Lung`0`b") {
+				if(get_module_pref("reel1symbol")=="`b`3Diseased Lung`0`b" && get_module_pref("reel2symbol")=="`b`3Diseased Lung`0`b" && get_module_pref("reel3symbol")=="`b`3Diseased Lung`0`b") {
 					output("The machine lets out a terrible mechanical screeching sound, followed by an awful metallic moan.  All at once, the jackpot pours out into the payout tray, and spills onto the floor in an avalance of %s cigarettes!`nDan buries his face in his hands and weeps.`n",get_module_setting("diseasedlungprize"));
 					$session['user']['gems']+=get_module_setting("diseasedlungprize");
 					set_module_setting("moneywon",get_module_setting("moneywon")+get_module_setting("diseasedlungprize"));

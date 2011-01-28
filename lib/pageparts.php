@@ -329,7 +329,7 @@ function page_footer($saveuser=true){
 			$p = "<a href='viewpetition.php'>$pet</a>";
 			addnav("", "viewpetition.php");
 		}
-		$p .= " `\${$petitions[5]}`0|`^{$petitions[4]}`0|`b{$petitions[0]}`b|{$petitions[1]}|`!{$petitions[3]}`0|`#{$petitions[7]}`0|`%{$petitions[6]}`0|`i{$petitions[2]}`i";
+		$p .= " `\${$petitions[5]}`0|`^{$petitions[4]}`0|`b{$petitions[0]}`b|{$petitions[1]}|`!{$petitions[3]}`0|`3{$petitions[7]}`0|`%{$petitions[6]}`0|`i{$petitions[2]}`i";
 		$pcount = templatereplace("petitioncount", array("petitioncount"=>appoencode($p, true)));
 		$footer = str_replace("{petitiondisplay}", $pcount, $footer);
 		$header = str_replace("{petitiondisplay}", $pcount, $header);
@@ -382,14 +382,22 @@ function page_footer($saveuser=true){
 
 	tlschema();
 
-	//global $allqueries;
-	//debug($allqueries);
-	//global $cachedqueries;
-	//debug($cachedqueries);
-	//global $moduleperformance;
-	//debug($moduleperformance);
+	global $allqueries;
+	if (is_array($allqueries)){
+		usort($allqueries,'timesort');
+	}
+	debug($allqueries);
+	// global $cachedqueries;
+	// if (is_array($cachedqueries)){
+		// usort($cachedqueries,'timesort');
+	// }
+	// debug($cachedqueries);
+	// global $moduleperformance;
+	// debug($moduleperformance);
 	//global $allqueriesbyfile;
 	//debug($allqueriesbyfile);
+	// global $updated_module_prefs;
+	// debug($updated_module_prefs);
 	//clean up spare {fields}s from header and footer (in case they're not used)
 	$footer = preg_replace("/{[^} \t\n\r]*}/i","",$footer);
 	$header = preg_replace("/{[^} \t\n\r]*}/i","",$header);
@@ -408,6 +416,10 @@ function page_footer($saveuser=true){
 	echo $output;
         $session['badnav']=0;
 	exit();
+}
+
+function timesort($a, $b){
+	return strnatcmp($b['time'], $a['time']);
 }
 
 /**

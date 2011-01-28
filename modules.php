@@ -173,7 +173,7 @@ if ($op==""){
 			rawoutput("<br>");
 			output_notl("(%s) ", $row['modulename'], $row['version']);
 			rawoutput("</span></td><td valign='top'>");
-			output_notl("`#%s`0", $row['moduleauthor'], true);
+			output_notl("`3%s`0", $row['moduleauthor'], true);
 			rawoutput("</td><td nowrap valign='top'>");
 			$line = sprintf($installstr, $row['installedby']);
 			output_notl("%s", $row['installdate']);
@@ -267,7 +267,7 @@ if ($op==""){
 					 sanitize($moduleinfo[$i]['name']))."\">");
 				rawoutput($moduleinfo[$i]['name']." ".$moduleinfo[$i]['version']);
 				rawoutput("</span></td><td valign='top'>");
-				output_notl("`#%s`0", $moduleinfo[$i]['author'], true);
+				output_notl("`3%s`0", $moduleinfo[$i]['author'], true);
 				rawoutput("</td><td valign='top'>");
 				rawoutput($moduleinfo[$i]['category']);
 				rawoutput("</td><td valign='top'>");

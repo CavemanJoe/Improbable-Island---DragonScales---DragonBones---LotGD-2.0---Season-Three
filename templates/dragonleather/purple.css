@@ -1,0 +1,32 @@
+
+body {
+	background:url(pagebg-purple.jpg) #222222;
+}
+
+a:link {
+    color: #150015;
+}
+
+a:visited {
+	color: #150015;
+}
+
+a:hover { 
+    color: #660066;
+}
+
+a:active {
+	color: #150015;
+}
+
+a:hover.nav, a:active.nav {
+    color: #770077;
+}
+
+.navhi {
+    color: #660066;
+}
+
+a.hotmotd {
+    color:#660066;
+}

@@ -71,7 +71,7 @@ function claneditor_run(){
 		}
 	}
 	addcommentary();
-	$ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`#Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
+	$ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`3Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
 	$args = modulehook("clanranks", array("ranks"=>$ranks, "clanid"=>$dt));
 	$ranks = translate_inline($args['ranks'], "clan");
 	superusernav();
@@ -207,13 +207,13 @@ function claneditor_run(){
 			$result = db_query($sql);
 			$row = db_fetch_assoc($result);
 			$descauthname = $row['name'];
-			output("`&`bCurrent MoTD:`b `#by %s`2`n",$motdauthname);
+			output("`&`bCurrent MoTD:`b `3by %s`2`n",$motdauthname);
 			output_notl(nltoappon($claninfo['clanmotd'])."`n`n");
 
 			commentdisplay("", "clan-{$claninfo['clanid']}","Speak into their Clan",25,"projects");
 			output_notl("`n`n");
 			modulehook("collapse{", array("name"=>"collapsedesc"));
-			output("`&`bCurrent Description:`b `#by %s`2`n",$descauthname);
+			output("`&`bCurrent Description:`b `3by %s`2`n",$descauthname);
 			output_notl(nltoappon($claninfo['clandesc'])."`n");
 			modulehook("}collapse");
 			$sql = "SELECT count(*) AS c, clanrank FROM " . db_prefix("accounts") . " WHERE clanid={$claninfo['clanid']} GROUP BY clanrank DESC";
@@ -355,9 +355,9 @@ function claneditor_run(){
 			$result = db_query($sql);
 			$row = db_fetch_assoc($result);
 			$descauthname = $row['name'];
-			output("`&`bCurrent MoTD:`b `#by %s`2`n",$motdauthname);
+			output("`&`bCurrent MoTD:`b `3by %s`2`n",$motdauthname);
 			output_notl(nltoappon($claninfo['clanmotd'])."`n");
-			output("`&`bCurrent Description:`b `#by %s`2`n",$descauthname);
+			output("`&`bCurrent Description:`b `3by %s`2`n",$descauthname);
 			output_notl(nltoappon($claninfo['clandesc'])."`n");
 			rawoutput("<form action='runmodule.php?module=claneditor&op=updinfo&dt=$dt' method='POST'>");
 			addnav("","runmodule.php?module=claneditor&op=updinfo&dt=$dt");
@@ -459,7 +459,7 @@ function claneditor_run(){
 				rawoutput("</td><td>");
 				output_notl("`3%s`0",$row['clanjoindate']);
 				rawoutput("</td><td>");
-				output_notl("`#%s`0",reltime(strtotime($row['laston'])));
+				output_notl("`3%s`0",reltime(strtotime($row['laston'])));
 				rawoutput("</td>");
 				rawoutput("<td>");
 				rawoutput("[ <a href='runmodule.php?module=claneditor&op=membership&dt=$dt&setrank=".($row['clanrank']+1)."&who=".rawurlencode($row['login'])."'>$promote</a> | ");

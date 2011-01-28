@@ -269,7 +269,7 @@ function racejoker_dohook($hookname,$args){
 					"allowinpvp"=>1,
 					"allowintrain"=>1,
 					"rounds"=>-1,
-					"effectmsg"=>"`#Your internal bleeding causes you to lose {damage} hitpoints.`0",
+					"effectmsg"=>"`3Your internal bleeding causes you to lose {damage} hitpoints.`0",
 					"schema"=>"module-racejoker",
 					)
 				);
@@ -281,7 +281,7 @@ function racejoker_dohook($hookname,$args){
 					"allowinpvp"=>1,
 					"allowintrain"=>1,
 					"rounds"=>-1,
-					"effectmsg"=>"`#Your accelerated cellular regeneration causes you to gain {damage} hitpoints.`0",
+					"effectmsg"=>"`3Your accelerated cellular regeneration causes you to gain {damage} hitpoints.`0",
 					"schema"=>"module-racejoker",
 					)
 				);

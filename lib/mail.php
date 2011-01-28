@@ -186,7 +186,7 @@ if ($op==""){
 					call_user_func_array("sprintf_translate", $row['body']);
 			}
 		}
-		if (!$row['seen']) output("`b`#NEW`b`n");
+		if (!$row['seen']) output("`b`3NEW`b`n");
 		else output("`n");
 		output("`b`2From:`b `^%s`n",$row['name']);
 		output("`b`2Subject:`b `^%s`n",$row['subject']);
@@ -368,7 +368,7 @@ if ($op==""){
 	$send = translate_inline("Send");
 	rawoutput("<table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td><input type='submit' class='button' value='$send'></td><td align='right'><div id='sizemsg'></div></td></tr></table>");
 	output_notl("</form>",true);
-	$sizemsg = "`#Max message size is `@%s`#, you have `^XX`# characters left.";
+	$sizemsg = "`3Max message size is `@%s`3, you have `^XX`3 characters left.";
 	$sizemsg = translate_inline($sizemsg);
 	$sizemsg = sprintf($sizemsg,getsetting("mailsizelimit",1024));
 	$sizemsgover = "`\$Max message size is `@%s`\$, you are over by `^XX`\$ characters!";

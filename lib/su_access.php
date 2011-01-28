@@ -62,7 +62,7 @@ function check_su_access($level){
 		$result = db_query($sql);
 		require_once("lib/systemmail.php");
 		while ($row = db_fetch_assoc($result)) {
-			$subj = "`#%s`# tried to hack the superuser pages!";
+			$subj = "`3%s`3 tried to hack the superuser pages!";
 			$subj = sprintf($subj, $session['user']['name']);
 			$body = "Bad, bad, bad %s, they are a hacker!`n`nTried to access %s from %s.";
 			$body = sprintf($body, $session['user']['name'], $_SERVER['REQUEST_URI'], $SERVER['HTTP_REFERER']);

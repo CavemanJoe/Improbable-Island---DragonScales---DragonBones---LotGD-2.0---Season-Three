@@ -63,7 +63,7 @@ addnav("Pages");
 for ($i=0;$i<$totalplayers;$i+=$playersperpage){
 	$pnum = $i/$playersperpage+1;
 	if ($page == $pnum) {
-		addnav(array(" ?`b`#Page %s`0 (%s-%s)`b", $pnum, $i+1, min($i+$playersperpage,$totalplayers)), "list.php?page=$pnum&r=".$r);
+		addnav(array(" ?`b`3Page %s`0 (%s-%s)`b", $pnum, $i+1, min($i+$playersperpage,$totalplayers)), "list.php?page=$pnum&r=".$r);
 	} else {
 		addnav(array(" ?Page %s (%s-%s)", $pnum, $i+1, min($i+$playersperpage,$totalplayers)), "list.php?page=$pnum&r=".$r);
 	}
@@ -151,7 +151,7 @@ for($i=0;$i<$max;$i++){
 	$loggedin=(date("U") - strtotime($row['laston']) < getsetting("LOGINTIMEOUT",900) && $row['loggedin']);
 	output_notl("`&%s`0", $row['location']);
 	if ($loggedin) {
-		$online = translate_inline("`#(Online)");
+		$online = translate_inline("`3(Online)");
 		output_notl("%s", $online);
 	}
 	rawoutput("</td><td>");

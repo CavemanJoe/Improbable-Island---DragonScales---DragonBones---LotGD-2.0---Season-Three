@@ -71,7 +71,7 @@ function kissingbooth_run()
 	output("`c`b`QThe `\$Kissing`Q Booth`0`b`c`n");
 	if ($op == "") {
 		while ($kissee == "") {
-			$guys = array(getsetting("barkeep", '`tCedrik'), "`!Lonestrider", "`@JR`3Min`!ga", "`6Smiythe", getsetting("bard", "`^Seth"), "`&Oliver", "`#MightyE", "`%Kendaer");
+			$guys = array(getsetting("barkeep", '`tCedrik'), "`!Lonestrider", "`@JR`3Min`!ga", "`6Smiythe", getsetting("bard", "`^Seth"), "`&Oliver", "`3MightyE", "`%Kendaer");
 			$girls = array("`)Heidi", "`7Petra", "`QSaucy`\$Wench", "`@Foil`&wench", getsetting('barmaid', "`%Violet"), "`^Ella");
 			if ($session['user']['sex']!=SEX_MALE) {
 				$kissee = $guys[e_rand(0, count($guys)-1)];
@@ -111,9 +111,9 @@ function kissingbooth_run()
 			else villagenav();
 		}
 	}elseif ($op=="flee") {
-		output("`#You freeze with embarrasment at the thought of kissing %s`#.`n", $kissee);
-		output("`#After about a minute has passed and you're still standing there stammering, %s`# sighs and beckons the person behind you to come forward and take your place.`n", $kissee);
-		output("`#A helper gently takes you aside and seats you under a nearby tree to recover.");
+		output("`3You freeze with embarrasment at the thought of kissing %s`3.`n", $kissee);
+		output("`3After about a minute has passed and you're still standing there stammering, %s`3 sighs and beckons the person behind you to come forward and take your place.`n", $kissee);
+		output("`3A helper gently takes you aside and seats you under a nearby tree to recover.");
 		if ($gardens) addnav("Leave","gardens.php");
 		else addnav("Leave","village.php");
 	}elseif ($op=="stay") {
@@ -136,7 +136,7 @@ function kissingbooth_run()
 			output("%s`6 leans forward and kisses you gently on the lips.",
 					$kissee);
 			output("$Cheshe holds it slightly longer than you expected and pulls back with an impressed look on $hisher face.`n");
-			output("\"`#Not bad`6\", $heshe says, \"come back anytime!\"`n");
+			output("\"`3Not bad`6\", $heshe says, \"come back anytime!\"`n");
 			output("You blush slightly, but find a new confidence in your step as you walk away.`n");
 			output("You feel `\$charming`6!");
 			$session['user']['charm']++;
@@ -163,7 +163,7 @@ function kissingbooth_run()
 			output("%s`6's eyes light up as you approach, and $heshe kisses you with enthusiasm.`n", $kissee);
 			output("`6You feel an energy spread throughout your entire body, making you `^tingle!`n`n");
 			output("`6As you walk away, you feel a light tap on your bottom!`n");
-			output("`6You turn around to see %s`6 winking at you! \"`#Go get 'em, tiger!`6\", $heshe says.`n", $kissee);
+			output("`6You turn around to see %s`6 winking at you! \"`3Go get 'em, tiger!`6\", $heshe says.`n", $kissee);
 			output("`6The tingling fills you, and you feel enthusiastic about life in general!  You gain some Stamina`n");
 			$session['user']['turns']++;
 			if (is_module_active("medals")){
@@ -177,7 +177,7 @@ function kissingbooth_run()
 			output("`6However, in your enthusiasm, you fumble the kiss and end up bumping noses!`n");
 			output("`6You look up and see nearby people trying to stifle giggles!`n");
 			output("`6You wander off, feeling somewhat embarrassed.`n`n");
-			output("`6However, looking down as you walk off, you spot something `#shiny`6 in the dust!`n");
+			output("`6However, looking down as you walk off, you spot something `3shiny`6 in the dust!`n");
 			output("`QYou lose charm, but you gain a gem!`n");
 			if ($session['user']['charm'] > 0){
 				$session['user']['charm']--;
@@ -188,7 +188,7 @@ function kissingbooth_run()
 		case 15:
 			//hp-- (15)
 			output("`6You drop your coins in the jar and reach forward to kiss %s.`n", $kissee);
-			output("`6\"`#Hey! Not so hard!`6\", $heshe yells, and smacks you across the face!`n");
+			output("`6\"`3Hey! Not so hard!`6\", $heshe yells, and smacks you across the face!`n");
 			$loss = round($session['user']['maxhitpoints'] *
 					($smackloss/100), 0);
 			if ($loss >= $session['user']['hitpoints'])

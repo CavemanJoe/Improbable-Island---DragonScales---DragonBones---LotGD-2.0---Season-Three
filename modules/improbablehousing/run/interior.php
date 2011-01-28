@@ -67,62 +67,8 @@ $subop=httpget('subop');
 if (!$subop){
 	//interior description
 	if (isset($house['data']['rooms'][$rid]['name'])){
-		output_notl("`0%s`n`n",$house['data']['rooms'][$rid]['desc']);
-		if (improbablehousing_getkeytype($house,$rid)>=100){
-			//house owner / master keyholder "manage dwelling" links
-			improbablehousing_new_build_jobs($house,$rid);
-			addnav("Decorations");
-			addnav("Decorate this room","runmodule.php?module=improbablehousing&op=decorate&subop=start&hid=$hid&rid=$rid");
-			if ($rid==0){
-				addnav("Decorate this Dwelling's exterior","runmodule.php?module=improbablehousing&op=decorate&subop=extdesc&hid=$hid");
-			}
-		}
-		if (improbablehousing_getkeytype($house,$rid)>=20){
-			//handle normal locks
-			addnav("Locks");
-			if ($rid!=0){
-				if ($house['data']['rooms'][$rid]['locked']){
-					if ($house['data']['rooms'][$rid]['locked']==1){
-						addnav("This room is `\$locked`0","");
-						if (improbablehousing_getkeytype($house,$rid)>=30){
-							addnav("Deadbolt this room","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid&deadbolt=lock");
-						}
-						addnav("Unlock this room","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid");
-					} else if ($house['data']['rooms'][$rid]['locked']==2){
-						addnav("This room is `\$deadbolted.`0","");
-						if (improbablehousing_getkeytype($house,$rid)>=30){
-							addnav("Open the deadbolt","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid&deadbolt=unlock");
-						}
-					}
-				} else {
-					addnav("This room is `@unlocked`0","");
-					addnav("Lock this room","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid");
-					if (improbablehousing_getkeytype($house,$rid)>=30){
-						addnav("Deadbolt this room","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid&deadbolt=lock");
-					}
-				}
-			}
-		}
-		if (improbablehousing_getkeytype($house,$rid)>=100){
-			if ($rid==0){
-				if ($house['data']['locked']){
-					addnav("This Dwelling is `\$locked`0","");
-					addnav("Unlock this Dwelling","runmodule.php?module=improbablehousing&op=locks&toggle=master&hid=$hid&rid=$rid");
-				} else {
-					addnav("This Dwelling is `@unlocked`0","");
-					addnav("Lock this Dwelling","runmodule.php?module=improbablehousing&op=locks&toggle=master&hid=$hid&rid=$rid");
-				}
-			}
-			addnav("Manage Keys","runmodule.php?module=improbablehousing&op=keys&sub=start&hid=$hid&rid=$rid");
-		}
-		improbablehousing_sleeplinks($house,$rid);
-		//remove this before going live!
-		//addnav("Cheat","runmodule.php?module=improbablehousing&op=cheat&hid=$hid&rid=$rid");
-	} else {
-		output("This dwelling is not yet completed, and doesn't have any rooms to speak of.`n`n");
-	}
-	
-	if (isset($house['data']['rooms'][$rid]['name'])){
+		output_notl("`0%s`0`n`n",$house['data']['rooms'][$rid]['desc']);
+		
 		foreach($house['data']['rooms'] AS $rkey=>$rvals){
 			//show room links and description
 			if ($rkey!=$rid){
@@ -161,8 +107,65 @@ if (!$subop){
 				}
 			}
 		}
+		
+		improbablehousing_sleeplinks($house,$rid);
+		
+		if (improbablehousing_getkeytype($house,$rid)>=20){
+			//handle normal locks
+			addnav("Locks");
+			if ($rid!=0){
+				if ($house['data']['rooms'][$rid]['locked']){
+					if ($house['data']['rooms'][$rid]['locked']==1){
+						addnav("This room is `\$locked`0","");
+						if (improbablehousing_getkeytype($house,$rid)>=30){
+							addnav("Deadbolt this room","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid&deadbolt=lock");
+						}
+						addnav("Unlock this room","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid");
+					} else if ($house['data']['rooms'][$rid]['locked']==2){
+						addnav("This room is `\$deadbolted.`0","");
+						if (improbablehousing_getkeytype($house,$rid)>=30){
+							addnav("Open the deadbolt","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid&deadbolt=unlock");
+						}
+					}
+				} else {
+					addnav("This room is `@unlocked`0","");
+					addnav("Lock this room","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid");
+					if (improbablehousing_getkeytype($house,$rid)>=30){
+						addnav("Deadbolt this room","runmodule.php?module=improbablehousing&op=locks&toggle=$rid&hid=$hid&rid=$rid&deadbolt=lock");
+					}
+				}
+			}
+		}
+		
 		improbablehousing_show_decorating_jobs($house);
+		
+		if (improbablehousing_getkeytype($house,$rid)>=100){
+			//house owner / master keyholder "manage dwelling" links
+			improbablehousing_new_build_jobs($house,$rid);
+			addnav("Decorations");
+			addnav("Decorate this room","runmodule.php?module=improbablehousing&op=decorate&subop=start&hid=$hid&rid=$rid");
+			if ($rid==0){
+				addnav("Decorate this Dwelling's exterior","runmodule.php?module=improbablehousing&op=decorate&subop=extdesc&hid=$hid");
+			}
+		}
+		if (improbablehousing_getkeytype($house,$rid)>=100){
+			if ($rid==0){
+				if ($house['data']['locked']){
+					addnav("This Dwelling is `\$locked`0","");
+					addnav("Unlock this Dwelling","runmodule.php?module=improbablehousing&op=locks&toggle=master&hid=$hid&rid=$rid");
+				} else {
+					addnav("This Dwelling is `@unlocked`0","");
+					addnav("Lock this Dwelling","runmodule.php?module=improbablehousing&op=locks&toggle=master&hid=$hid&rid=$rid");
+				}
+			}
+			addnav("Manage Keys","runmodule.php?module=improbablehousing&op=keys&sub=start&hid=$hid&rid=$rid");
+		}
+		//remove this before going live!
+		//addnav("Cheat","runmodule.php?module=improbablehousing&op=cheat&hid=$hid&rid=$rid");
+	} else {
+		output("This dwelling is not yet completed, and doesn't have any rooms to speak of.`n`n");
 	}
+	
 	improbablehousing_show_build_jobs($house,$rid);
 	addnav("Building Materials");
 	addnav("Examine materials stock","runmodule.php?module=improbablehousing&op=store&sub=start&hid=$hid&rid=$rid");

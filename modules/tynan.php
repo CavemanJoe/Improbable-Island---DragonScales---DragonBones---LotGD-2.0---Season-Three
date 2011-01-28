@@ -132,9 +132,9 @@ function tynan_run(){
 	$hitpoints = get_module_pref("hitpoints");
 
 	if ($op=="gym"){
-		output("You walk in to a large gleaming building, the outside of which is adorned with a sign reading, \"`#Tynan's Gym`&.\"");
+		output("You walk in to a large gleaming building, the outside of which is adorned with a sign reading, \"`3Tynan's Gym`&.\"");
 		output("The sign itself is decorated with the appearance of a perfectly sculpted male silhouette holding a curved bar at arms length over his head, either side of which is a T representing the illustrious establishment's name.");
-		output("A smaller slogan under the bold title reads, \"`#Turning the average boy into an Adonis, or girl into Artemis`&.\"`n`n");
+		output("A smaller slogan under the bold title reads, \"`3Turning the average boy into an Adonis, or girl into Artemis`&.\"`n`n");
 		output("`&Walking in, you're greeted by the warm musk of concentrated human effort as around you other warriors work various weight machines.");
 		output("Spotting you, Tynan approaches. \"`^Vaht do vee hav here?  Eet eez ein leetle scrawny perzon I sink.  Vell, I sink I can help you vit zee muscles odor ze tonink of your flahbby arms, ja.  Eef you verk on zee muscles, you vill heet ze badguys harder, odor eef you verk on zee tone, you veel hav ze endurance, und if you verk on zee ageelity you vill be harder for ze badguys to be hitting you.`&\"`n`n");
 		output("`&After puzzling through what Tynan just said, you figure out that training for muscles will give you more attack, training for tone will give you more hitpoints, and training for agility will give you more defense.");
@@ -142,10 +142,10 @@ function tynan_run(){
 	}elseif ($op=="train"){
 		if ($session['user']['turns']>0){
 			$what = httpget("what");
-			$weakmessage = translate_inline("`&\"`#Vaht, you seenk you can leeft zeese veights?  Look, zay are veighink two times as much as you!`&\" Tynan scoffs.`n`n`^You think you need more attack or defense to sustain this type of training.");
-			$scrawnymessage = translate_inline("`&\"`#Vaht, you seenk you hav zee bones to support such muscles?  Your muscles, zey vould break you like ein twig!`&\" Tynan scoffs.`n`n`^You think you need more hitpoints to sustain this type of training.");
-			$nodiemessage = translate_inline("`&\"`#Vaht are you tryink to do, be keelink yourselv?  All zat you be doink iz gettink blud on ze equipment if you don' bandeege ze woundz!`&\" smirks Tynan.`n`n`^You think you should heal yourself before you try to work out any more.");
-			$workoutmessage = translate_inline("`&Tynan hands you a training schedule involving several machines which he's conveniently numbered.  Approaching the machines, you're not certain you even understand how to use them, but after fumbling around for a bit, you manage to seriously injure yourself.  Tynan, seeing this, hollers over to you, \"`#Ja, ja, zat is eet, you veel be zee person vit zee perfekt muscles soon!`&\"`n`n");
+			$weakmessage = translate_inline("`&\"`3Vaht, you seenk you can leeft zeese veights?  Look, zay are veighink two times as much as you!`&\" Tynan scoffs.`n`n`^You think you need more attack or defense to sustain this type of training.");
+			$scrawnymessage = translate_inline("`&\"`3Vaht, you seenk you hav zee bones to support such muscles?  Your muscles, zey vould break you like ein twig!`&\" Tynan scoffs.`n`n`^You think you need more hitpoints to sustain this type of training.");
+			$nodiemessage = translate_inline("`&\"`3Vaht are you tryink to do, be keelink yourselv?  All zat you be doink iz gettink blud on ze equipment if you don' bandeege ze woundz!`&\" smirks Tynan.`n`n`^You think you should heal yourself before you try to work out any more.");
+			$workoutmessage = translate_inline("`&Tynan hands you a training schedule involving several machines which he's conveniently numbered.  Approaching the machines, you're not certain you even understand how to use them, but after fumbling around for a bit, you manage to seriously injure yourself.  Tynan, seeing this, hollers over to you, \"`3Ja, ja, zat is eet, you veel be zee person vit zee perfekt muscles soon!`&\"`n`n");
 			if ($what=="muscles"){
 				//attack
 				// Let's see how many perm hitpoints can be carried over.
@@ -263,7 +263,7 @@ function tynan_run(){
 			if ($session['user']['hitpoints'] < 1)
 				$session['user']['hitpoints'] = 1;
 		}else{
-			output("`&Tynan scoffs, \"`#Vaht, you seenk you can verk on zeese machines veet your eyes almost goink to fall to ze sleepsies?  Nein, Ich veel not vaste mein time so you can fail you girly girl.`&\"");
+			output("`&Tynan scoffs, \"`3Vaht, you seenk you can verk on zeese machines veet your eyes almost goink to fall to ze sleepsies?  Nein, Ich veel not vaste mein time so you can fail you girly girl.`&\"");
 		}
 	}
 	page_footer();
