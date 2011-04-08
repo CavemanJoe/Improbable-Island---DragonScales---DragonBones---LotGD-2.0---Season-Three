@@ -142,13 +142,17 @@ if ($target = db_fetch_assoc($result)) {
   debug($return);
   
   if ($ret==""){
-	  $return = substr($return,strrpos($return,"/")+1);
+	  if (strpos($return,"/")===0){
+		$return = substr($return,strrpos($return,"/")+1);
+	}
 	  tlschema("nav");
 	  addnav("Return");
 	  addnav("Return to the warrior list",$return);
 	  tlschema();
   }else{
+	if (strpos($return,"/")===0){
 	  $return = substr($return,strrpos($return,"/")+1);
+	}
 	  tlschema("nav");
 	  addnav("Return");
 	  if ($return=="list.php") {
@@ -164,15 +168,19 @@ if ($target = db_fetch_assoc($result)) {
   page_footer();
 } else {
 	page_header("Character has been deleted");
-	output("This character is already deleted.");
+	output("This character does not exist.");
   if ($ret==""){
+	  if (strpos($return,"/")===0){
 	  $return = substr($return,strrpos($return,"/")+1);
+	}
 	  tlschema("nav");
 	  addnav("Return");
 	  addnav("Return to the warrior list",$return);
 	  tlschema();
   }else{
+	 if (strpos($return,"/")===0){
 	  $return = substr($return,strrpos($return,"/")+1);
+	}
 	  tlschema("nav");
 	  addnav("Return");
 	  if ($return=="list.php") {

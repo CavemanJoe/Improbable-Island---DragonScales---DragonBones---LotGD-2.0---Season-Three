@@ -168,6 +168,7 @@ if ($op=="suicide" && getsetting("selfdelete",0)!=0) {
 			date($session['user']['prefs']['timeformat']),
 			date($session['user']['prefs']['timeformat'],
 				strtotime("now") + ($session['user']['prefs']['timeoffset'] * 60 * 60))),
+		"commentary_autocomplete"=>"Enable autocomplete in commentary input boxes,bool",
 		//"ihavenocheer"=>"`0Always disable all holiday related text replacements (such as a`1`0l`1`0e => e`1`0g`1`0g n`1`0o`1`0g for December),bool",
 		"nojump"=>"Don't jump to comment areas after refreshing or posting a comment?,bool",
 		"commentary_reverse"=>"Commentary sorting,enum,0,Oldest First,1,Newest First",

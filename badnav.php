@@ -12,6 +12,7 @@ if ($session['user']['loggedin'] && $session['loggedin']){
 	if (strpos($session['output'],"<!--CheckNewDay()-->")){
 		checkday();
 	}
+	//echo($session['badnav']);
 	while (list($key,$val)=each($session['allowednavs'])){
 		//hack-tastic.
 		if (
@@ -37,7 +38,7 @@ if ($session['user']['loggedin'] && $session['loggedin']){
 		}
 		page_footer();
 	}
-        if ($session['badnav'] > 2){
+        if ($session['badnav'] > 1){
             $badnavbox = "<div style=\"background-color:#ffffff; color:#000000;\"><strong>Hey, is something wrong?</strong><br /><br />We're showing you this message because it looks like you've gotten stuck.  Please see <a href=\"http://enquirer.improbableisland.com/dokuwiki/doku.php?id=badnav\">this page</a> for more details about what's going on.  Or, try one of these links instead of the links in the actual page down there - they don't have easily-recognisable names, but one of them might look like what you wanted to do.  Please try the links in the actual, regular page before you click on these links.<br /><br />If you see this message consistently, please add your tuppence'orth to <a href='http://enquirer.improbableisland.com/forum/viewtopic.php?showtopic=19239'>this forum thread</a>.<br /><br />";
             foreach($session['allowednavs'] AS $key=>$vals){
                 if (!strpos($key,"superuser") && !strpos($key,"taunt")){
@@ -52,6 +53,7 @@ if ($session['user']['loggedin'] && $session['loggedin']){
 	$session['debug']="";
 	$session['user']['allowednavs']=$session['allowednavs'];
 	$session['badnav']+=1;
+	//echo($session['badnav']);
 	saveuser();
 }else{
 	$session=array();

@@ -191,7 +191,7 @@ function onslaught_dohook($hookname,$args){
 						case "Kittania":
 							switch ($lv){
 								case ($lv<10):
-									output_notl("`0Kittania is quiet, as per usual.  The archers patrolling the walls are mostly standing around chatting.  Birds can be heard singing happily.  For the moment, Kittania is safe.`n`n");
+									output_notl("`0Kittania is quiet, as per usual.  The archers patrolling the walls are mostly standing around chatting.  For the moment, Kittania is safe.`n`n");
 								break;
 								case ($lv<25):
 									output_notl("`0You glance upwards, to check on the archers.  They are idly moseying along the perimeter, their bows still slung across their shoulders.  As you watch, one of them tests the point of an arrow with her finger.  Kittania remains well-guarded.`n`n");

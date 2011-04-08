@@ -130,9 +130,9 @@ function improbablehousing_secretrooms_run(){
 			if (httpget("save")){
 				$posted = httpallpost();
 				$nphrases = array();
-				foreach($posted AS $phrase){
+				foreach($posted AS $post => $phrase){
 					$nphrase = stripslashes($phrase);
-					if ($nphrase!=""){
+					if ($nphrase!="" && substr($post,0,6)=="phrase"){
 						$nphrases[]=strtoupper($nphrase);
 					}
 				}

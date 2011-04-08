@@ -11,7 +11,9 @@
 require_once('modules/worldmapen/lib.php');
 
 function worldmapen_run_real(){
-	global $session, $badguy, $pvptimeout, $options;
+	global $session, $badguy, $pvptimeout, $options, $outdoors, $shady;
+	$outdoors = true;
+	
 	$op = httpget("op");
 	$battle = false;
 	
@@ -99,6 +101,13 @@ function worldmapen_run_real(){
 		}
 		worldmapen_viewmapkey(true, false);
 		module_display_events(get_module_setting("randevent"),"runmodule.php?module=worldmapen&op=continue");
+		$loc = get_module_pref('worldXYZ');
+		list($x, $y, $z) = explode(",", $loc);
+		$t = worldmapen_getTerrain($x, $y, $z);
+		//debug($t);
+		if ($t['type']=="Forest"){
+			$shady = true;
+		}
 	}elseif ($op == "continue") {
 		checkday();
 		worldmapen_determinenav();
@@ -110,6 +119,13 @@ function worldmapen_run_real(){
 			viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
 		}
 		worldmapen_viewmapkey(true, false);
+		$loc = get_module_pref('worldXYZ');
+		list($x, $y, $z) = explode(",", $loc);
+		$t = worldmapen_getTerrain($x, $y, $z);
+		//debug($t);
+		if ($t['type']=="Forest"){
+			$shady = true;
+		}
 	//Turns Trading bit, added by CavemanJoe
 	}elseif ($op == "tradeturn") {
 		checkday();
@@ -252,7 +268,15 @@ function worldmapen_run_real(){
 			worldmapen_viewmapkey(true, false);
 			module_display_events(get_module_setting("randevent"),"runmodule.php?module=worldmapen&op=continue");
 		}
+		$loc = get_module_pref('worldXYZ');
+		list($x, $y, $z) = explode(",", $loc);
+		$t = worldmapen_getTerrain($x, $y, $z);
+		//debug($t);
+		if ($t['type']=="Forest"){
+			$shady = true;
+		}
 	}elseif ($op == "gypsy"){
+		$outdoors = false;
 		if ($buymap == ''){
 			output("`5\"`!Ah, yes.  An adventurer.  I could tell by looking into your eyes,`5\" the gypsy says.`n");
 			output("\"`!Many people have lost their way while journeying without a guide such as this.");
@@ -311,6 +335,13 @@ function worldmapen_run_real(){
 			viewcommentary("mapchat-".$loc,"Chat with others who walk this path...",25);
 		}
 		worldmapen_viewmapkey(true, false);
+		$loc = get_module_pref('worldXYZ');
+		list($x, $y, $z) = explode(",", $loc);
+		$t = worldmapen_getTerrain($x, $y, $z);
+		//debug($t);
+		if ($t['type']=="Forest"){
+			$shady = true;
+		}
 	} elseif ($op=="combat") {
 		// Okay, we've picked a person to fight.
 		require_once("lib/pvpsupport.php");
@@ -327,8 +358,8 @@ function worldmapen_run_real(){
 			$session['user']['badguy']=createstring($badguy);
 			$session['user']['playerfights']--;
 		}
-	} elseif ($op=="fight" || $op=="run"){
-		if (!$chatoverride){
+	} elseif (($op=="fight" || $op=="run")){
+		if (!$chatoverride && !httpget("frombio")){
 			$battle = true;
 		} else {
 			worldmapen_determinenav();
@@ -376,6 +407,13 @@ function worldmapen_run_real(){
 			$op = "fight";
 			httpset('op', $op);
 		}
+		$loc = get_module_pref('worldXYZ');
+		list($x, $y, $z) = explode(",", $loc);
+		$t = worldmapen_getTerrain($x, $y, $z);
+		//debug($t);
+		if ($t['type']=="Forest"){
+			$shady = true;
+		}
 	}
 	if ($battle){
 		include_once("battle.php");
@@ -390,7 +428,7 @@ function worldmapen_run_real(){
 				addnews("`4%s`3 defeated `4%s`3 while they were camped in the wilderness.`0", $session['user']['name'], $badguy['creaturename']);
 				$badguy=array();
 			} else {
-				if (!$chatoverride){
+				if (!$chatoverride && !httpget('frombio')){
 					//is talking
 					require_once("lib/forestoutcomes.php");
 					forestvictory($badguy, false);

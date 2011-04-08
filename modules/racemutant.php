@@ -226,19 +226,19 @@ function racemutant_dohook($hookname,$args){
 	case "villagetext":
 		racemutant_checkcity();
 		if ($session['user']['location'] == $city){
-			$args['text']=array("`0You are standing in the heart of Pleasantville.  It's all very clean, but there are no reflective surfaces - every window has either been boarded up or slavered with a thick coating of slime to prevent reflections.`n`nLooking around at the state of some of your fellow contestants, you think you can see why.`n");
+			$args['text']=array("`0You are standing in the heart of Pleasantville.  It's all very clean, but there are no reflective surfaces - every window has either been boarded up or slavered with a thick coating of slime to prevent reflections.`n`nLooking around at the state of some of your fellow contestants, you think you can see why.`n`n");
 			$args['schemas']['text'] = "module-racemutant";
-			$args['clock']="`n`0A clock in the village square reads `&%s`0.`n";
+			$args['clock']="`0A clock in the village square reads `&%s`0.`n`n";
 			$args['schemas']['clock'] = "module-racemutant";
 			if (is_module_active("calendar")) {
-				$args['calendar'] = "`n`0A smaller dial beneath reads `&%s`0, `&%s %s %s`0.`n";
+				$args['calendar'] = "`0A smaller dial beneath reads `&%s`0, `&%s %s %s`0.`n`n";
 				$args['schemas']['calendar'] = "module-racemutant";
 			}
 			$args['title']=array("%s, Home of the Mutants", $city);
 			$args['schemas']['title'] = "module-racemutant";
 			$args['sayline']="says";
 			$args['schemas']['sayline'] = "module-racemutant";
-			$args['talk']="`n`&Nearby some mutants drone endlessly about their problems:`n";
+			$args['talk']="`&Nearby some mutants drone endlessly about their problems:`n";
 			$args['schemas']['talk'] = "module-racemutant";
 			$new = get_module_setting("newest-$city", "cities");
 			if ($new != 0) {

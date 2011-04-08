@@ -25,7 +25,7 @@ function statue_install(){
 	module_addhook("village-desc");
 	module_addhook("dragonkill");
 	module_addhook("namechange");
-	module_addhook("index");
+	//module_addhook("index");
 	return true;
 }
 
@@ -49,7 +49,7 @@ function statue_dohook($hookname, $args) {
 			$sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$hero'";
 			$result = db_query_cached($sql, "lasthero");
 			$row = db_fetch_assoc($result);
-			output("`n`0The inhabitants of %s are busy erecting a statue for their newest hero, `&%s`0 on the only statue pedestal around.  The remains of the statue that had stood there before lie in such ruins around the pedestal that it is no longer recognizable.`0`n",$session['user']['location'],$row['name']);
+			output("`0The inhabitants of %s are busy erecting a statue for their newest hero, `&%s`0, on the only statue pedestal around.  The remains of the statue that had stood there before lie in such ruins around the pedestal that it is no longer recognizable.`0`n`n",$session['user']['location'],$row['name']);
 		}
 		break;
 	case "index":

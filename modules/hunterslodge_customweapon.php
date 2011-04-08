@@ -61,20 +61,35 @@ function hunterslodge_customweapon_run(){
 	global $session;
 	$op = httpget("op");
 	$free = httpget("free");
-
+	$context = httpget("context");
+	switch ($context){
+		case "village":
+			$backlink = "village.php";
+		break;
+		case "forest":
+			$backlink = "forest.php";
+		break;
+		case "worldmap":
+			$backlink = "runmodule.php?module=worldmapen&op=continue";
+		break;
+		case "lodge":
+			$backlink = "runmodule.php?module=iitems_hunterslodge&op=start";
+		break;
+	}
+	
 	page_header("Choose your Custom Weapon");
 	
 	switch($op){
 		case "change":
 			output("Want to change your Custom Weapon?  No problem.  Enter your desired weapon in the box below.  You've got 25 characters to play around with.`n(leave this blank to disable custom weapon naming and return to default, game-supplied weapon names)`n`n");
-			rawoutput("<form action='runmodule.php?module=hunterslodge_customweapon&op=confirm&free=".$free."' method='POST'>");
+			rawoutput("<form action='runmodule.php?module=hunterslodge_customweapon&op=confirm&free=".$free."&context=".$context."' method='POST'>");
 			$weapon = get_module_pref("customweapon");
 			rawoutput("<input id='input' name='newweapon' width='25' maxlength='25' value='".htmlentities($weapon, ENT_COMPAT, getsetting("charset", "ISO-8859-1"))."'>");
 			rawoutput("<input type='submit' class='button' value='Preview'>");
 			rawoutput("</form>");
-			addnav("", "runmodule.php?module=hunterslodge_customweapon&op=confirm&free=".$free);
+			addnav("", "runmodule.php?module=hunterslodge_customweapon&op=confirm&free=".$free."&context=".$context);
 			addnav("Cancel");
-			addnav("Don't set a custom weapon, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't set a custom weapon, just go back to where I came from",$backlink);
 		break;
 		case "confirm":
 			$newweapon = httppost("newweapon");
@@ -88,9 +103,9 @@ function hunterslodge_customweapon_run(){
 				output("You've chosen to go back to the default, game-supplied weapons.  Are you sure that's what you want?`n`n");
 			}
 			addnav("Confirm");
-			addnav("Set custom weapon","runmodule.php?module=hunterslodge_customweapon&op=set&free=$free&newweapon=".rawurlencode($newweapon));
+			addnav("Set custom weapon","runmodule.php?module=hunterslodge_customweapon&op=set&free=$free&context=$context&newweapon=".rawurlencode($newweapon));
 			addnav("Cancel");
-			addnav("Don't set a custom weapon, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't set a custom weapon, just go back to where I came from",$backlink);
 		break;
 		case "set":
 			$newweapon = rawurldecode(httpget("newweapon"));
@@ -106,7 +121,7 @@ function hunterslodge_customweapon_run(){
 				delete_item($id);
 			}
 			addnav("Return");
-			addnav("Return to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Go back to where I came from",$backlink);
 		break;
 	}
 	page_footer();

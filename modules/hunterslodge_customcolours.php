@@ -35,6 +35,21 @@ function hunterslodge_customcolours_run(){
 	global $session;
 	$op = httpget("op");
 	$free = httpget("free");
+	$context = httpget("context");
+	switch ($context){
+		case "village":
+			$backlink = "village.php";
+		break;
+		case "forest":
+			$backlink = "forest.php";
+		break;
+		case "worldmap":
+			$backlink = "runmodule.php?module=worldmapen&op=continue";
+		break;
+		case "lodge":
+			$backlink = "runmodule.php?module=iitems_hunterslodge&op=start";
+		break;
+	}
 
 	page_header("Choose your Custom Colours");
 	
@@ -43,7 +58,7 @@ function hunterslodge_customcolours_run(){
 			output("Want to change your name colours?  No problem.  Enter your desired name, using colour codes, in the box below.  You've got 30 characters to play around with, including colour codes.`n`n");
 			namecolour_form();
 			addnav("Cancel");
-			addnav("Don't change colours, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't change colours, just go back to where I came from",$backlink);
 		break;
 		case "confirm":
 			$newname = httppost("newname");
@@ -70,12 +85,12 @@ function hunterslodge_customcolours_run(){
 			if (!$err) {
 				output("`0Your name will look this this: %s`n`n`0Do you want to set your new name colours now?`n`n", $newname);
 				addnav("Confirm");
-				addnav("Set the new name colours","runmodule.php?module=hunterslodge_customcolours&op=set&free=$free&newname=".rawurlencode($newname));
+				addnav("Set the new name colours","runmodule.php?module=hunterslodge_customcolours&op=set&free=$free&context=$context&newname=".rawurlencode($newname));
 				addnav("Cancel");
-				addnav("Don't change colours, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+				addnav("Don't change colours, just go back to where I came from",$backlink);
 			} else {
 				addnav("Cancel");
-				addnav("Don't change colours, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+				addnav("Don't change colours, just go back to where I came from",$backlink);
 			}
 			output("`0Change your name again below, if you like.`n`n");
 			namecolour_form();
@@ -91,13 +106,14 @@ function hunterslodge_customcolours_run(){
 				delete_item($id);
 			}
 			addnav("Return");
-			addnav("Return to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Go back to where I came from",$backlink);
 		break;
 	}
 	page_footer();
 }
 
 function namecolour_form() {
+	$context = httpget("context");
 	$regname = get_player_basename();
 	rawoutput("Your current name is: ".$regname);
 	output("`0`nWhich renders as: %s`0`n`n",$regname);
@@ -106,10 +122,10 @@ function namecolour_form() {
 	} else {
 		$val = htmlentities($regname, ENT_COMPAT, getsetting("charset", "ISO-8859-1"));
 	}
-	rawoutput("<form action='runmodule.php?module=hunterslodge_customcolours&op=confirm&free=".$free."' method='POST'>");
+	rawoutput("<form action='runmodule.php?module=hunterslodge_customcolours&op=confirm&context=$context&free=$free' method='POST'>");
 	rawoutput("<input id='input' name='newname' width='30' maxlength='30' value='".$val."'>");
 	rawoutput("<input type='submit' class='button' value='Preview'>");
 	rawoutput("</form>");
-	addnav("", "runmodule.php?module=hunterslodge_customcolours&op=confirm&free=".$free);
+	addnav("", "runmodule.php?module=hunterslodge_customcolours&op=confirm&context=$context&free=$free");
 }
 ?>

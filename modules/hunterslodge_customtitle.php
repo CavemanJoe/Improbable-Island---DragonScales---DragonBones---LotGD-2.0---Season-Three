@@ -47,6 +47,21 @@ function hunterslodge_customtitle_run(){
 	global $session;
 	$op = httpget("op");
 	$free = httpget("free");
+	$context = httpget("context");
+	switch ($context){
+		case "village":
+			$backlink = "village.php";
+		break;
+		case "forest":
+			$backlink = "forest.php";
+		break;
+		case "worldmap":
+			$backlink = "runmodule.php?module=worldmapen&op=continue";
+		break;
+		case "lodge":
+			$backlink = "runmodule.php?module=iitems_hunterslodge&op=start";
+		break;
+	}
 
 	page_header("Choose your Custom Title");
 	
@@ -55,7 +70,7 @@ function hunterslodge_customtitle_run(){
 			output("Ready to change your Title?  No problem.  Enter your desired Title in the box below.  You've got 25 characters to play with, including colour codes.`n`n");
 			titlechange_form();
 			addnav("Cancel");
-			addnav("Don't change colours, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't change the Title, just go back to where I came from",$backlink);
 		break;
 		case "confirm":
 			$ntitle = rawurldecode(httppost('newname'));
@@ -80,9 +95,9 @@ function hunterslodge_customtitle_run(){
 			titlechange_form();
 			
 			addnav("Confirm");
-			addnav("Set the new Title","runmodule.php?module=hunterslodge_customtitle&op=set&free=$free&newname=".rawurlencode($ntitle));
+			addnav("Set the new Title","runmodule.php?module=hunterslodge_customtitle&op=set&free=$free&context=$context&newname=".rawurlencode($ntitle));
 			addnav("Cancel");
-			addnav("Don't change your Title, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't change the Title, just go back to where I came from",$backlink);
 		break;
 		case "set":
 			$ntitle=rawurldecode(httpget('newname'));
@@ -97,23 +112,24 @@ function hunterslodge_customtitle_run(){
 				delete_item($id);
 			}
 			addnav("Return");
-			addnav("Return to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Back to where I came from",$backlink);
 		break;
 	}
 	page_footer();
 }
 
 function titlechange_form() {
+	$context = httpget("context");
 	$otitle = get_player_title();
 	if ($otitle=="`0") $otitle="";
 	output("Your title is currently: ");
 	rawoutput($otitle);
 	output_notl("`0`n");
 	output("`0`nWhich renders as: %s`n`n", $otitle);
-	rawoutput("<form action='runmodule.php?module=hunterslodge_customtitle&op=confirm' method='POST'>");
+	rawoutput("<form action='runmodule.php?module=hunterslodge_customtitle&op=confirm&context=$context' method='POST'>");
 	rawoutput("<input id='input' name='newname' width='25' maxlength='25' value='".htmlentities($otitle, ENT_COMPAT, getsetting("charset", "ISO-8859-1"))."'>");
 	rawoutput("<input type='submit' class='button' value='Preview'>");
 	rawoutput("</form>");
-	addnav("", "runmodule.php?module=hunterslodge_customtitle&op=confirm");
+	addnav("", "runmodule.php?module=hunterslodge_customtitle&op=confirm&context=$context");
 }
 ?>

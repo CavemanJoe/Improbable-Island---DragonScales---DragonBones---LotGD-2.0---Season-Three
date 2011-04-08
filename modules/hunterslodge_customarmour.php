@@ -61,20 +61,35 @@ function hunterslodge_customarmour_run(){
 	global $session;
 	$op = httpget("op");
 	$free = httpget("free");
+	$context = httpget("context");
+	switch ($context){
+		case "village":
+			$backlink = "village.php";
+		break;
+		case "forest":
+			$backlink = "forest.php";
+		break;
+		case "worldmap":
+			$backlink = "runmodule.php?module=worldmapen&op=continue";
+		break;
+		case "lodge":
+			$backlink = "runmodule.php?module=iitems_hunterslodge&op=start";
+		break;
+	}
 
 	page_header("Choose your Custom Armour");
 	
 	switch($op){
 		case "change":
 			output("Want to change your Custom Armour?  No problem.  Enter your desired armour in the box below.  You've got 25 characters to play around with.`n(leave this blank to disable custom armour naming and return to default, game-supplied armour names)`n`n");
-			rawoutput("<form action='runmodule.php?module=hunterslodge_customarmour&op=confirm&free=".$free."' method='POST'>");
+			rawoutput("<form action='runmodule.php?module=hunterslodge_customarmour&op=confirm&free=$free&context=$context' method='POST'>");
 			$armour = get_module_pref("customarmour");
 			rawoutput("<input id='input' name='newarmour' width='25' maxlength='25' value='".htmlentities($armour, ENT_COMPAT, getsetting("charset", "ISO-8859-1"))."'>");
 			rawoutput("<input type='submit' class='button' value='Preview'>");
 			rawoutput("</form>");
-			addnav("", "runmodule.php?module=hunterslodge_customarmour&op=confirm&free=".$free);
+			addnav("", "runmodule.php?module=hunterslodge_customarmour&op=confirm&free=$free&context=$context");
 			addnav("Cancel");
-			addnav("Don't set custom armour, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't set custom armour, just go back to where I came from",$backlink);
 		break;
 		case "confirm":
 			$newarmour = httppost("newarmour");
@@ -88,9 +103,9 @@ function hunterslodge_customarmour_run(){
 				output("You've chosen to go back to the default, game-supplied armours.  Are you sure that's what you want?`n`n");
 			}
 			addnav("Confirm");
-			addnav("Set custom armour","runmodule.php?module=hunterslodge_customarmour&op=set&free=$free&newarmour=".rawurlencode($newarmour));
+			addnav("Set custom armour","runmodule.php?module=hunterslodge_customarmour&op=set&free=$free&context=$context&newarmour=".rawurlencode($newarmour));
 			addnav("Cancel");
-			addnav("Don't set custom armour, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't set custom armour, just go back to where I came from",$backlink);
 		break;
 		case "set":
 			$newarmour = rawurldecode(httpget("newarmour"));
@@ -107,7 +122,7 @@ function hunterslodge_customarmour_run(){
 				delete_item($id);
 			}
 			addnav("Return");
-			addnav("Return to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Return to where I came from",$backlink);
 		break;
 	}
 	page_footer();

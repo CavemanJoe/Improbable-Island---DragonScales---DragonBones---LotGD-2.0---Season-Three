@@ -90,8 +90,13 @@
 		db_query($sql);
 		gamelog("Deleted ".db_affected_rows()." old moderated comments.","comment expiration");
 	}
-	if (strtotime(getsetting("lastdboptimize", date("Y-m-d H:i:s", strtotime("-1 day")))) < strtotime("-1 day"))
-	require_once("lib/newday/dbcleanup.php");
+	if (strtotime(getsetting("lastdboptimize", date("Y-m-d H:i:s", strtotime("-1 day")))) < strtotime("-1 day")){
+		//defrag database
+		require_once("lib/newday/dbcleanup.php");
+		//empty datacache
+		require_once("lib/datacache.php");
+		empty_datacache();
+	}
 	
 	require_once("lib/gamelog.php");
 	$now = microtime(true);

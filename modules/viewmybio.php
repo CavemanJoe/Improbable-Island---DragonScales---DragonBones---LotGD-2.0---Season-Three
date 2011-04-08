@@ -24,7 +24,9 @@ function viewmybio_dohook($hookname,$args){
 	global $session;
 	switch ($hookname){
 		case "commentaryoptions":
-			$link = "bio.php?char=".$session['user']['acctid'] ."&ret=".URLEncode($_SERVER['REQUEST_URI']);
+			require_once("lib/commentary.php");
+			$link = "bio.php?char=".$session['user']['acctid'] ."&ret=".URLEncode(buildcommentarylink("&frombio=true",$_SERVER['REQUEST_URI']));
+			debug($link);
 			output("`n`n<a href=\"$link\">View my Bio</a>",true);
 			addnav("",$link);
 		break;

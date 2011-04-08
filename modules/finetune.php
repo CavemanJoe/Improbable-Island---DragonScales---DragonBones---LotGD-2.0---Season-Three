@@ -29,7 +29,7 @@ function finetune_dohook($hookname,$args){
 	global $session;
 	switch($hookname){
 		case "healmultiply":
-			debug($args);
+			//debug($args);
 			$args['alterpct'] = get_module_setting("healermultiplier");
 		break;
 	}

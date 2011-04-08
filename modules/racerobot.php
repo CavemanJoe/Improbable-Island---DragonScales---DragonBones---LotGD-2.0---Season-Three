@@ -295,7 +295,7 @@ function racerobot_dohook($hookname,$args){
 	case "villagetext":
 		racerobot_checkcity();
 		if ($session['user']['location'] == $city){
-			$args['text']=array("`0You are standing in the heart of %s.  Though called a city by outsiders, this stronghold of robots is little more than a glorified scrapyard.  Puddles of rusted, oily water cover the bare, muddy earth, and piles of scrap metal lie here and there.  Some residents are engaged in stilted, mechanical conversation around the well in the village square.`n", $city, $city);
+			$args['text']=array("`0You are standing in the heart of %s.  Though called a city by outsiders, this stronghold of robots is little more than a glorified scrapyard.  Puddles of rusted, oily water cover the bare, muddy earth, and piles of scrap metal lie here and there.`n`n", $city, $city);
 			$args['schemas']['text'] = "module-racerobot";
 			$args['clock']="`n`0The great clockwork readout at the centre of the city reads `&%s`0.`n";
 			$args['schemas']['clock'] = "module-racerobot";

@@ -60,6 +60,9 @@ function donationextend_dohook($hookname,$args){
 			}
 		break;
 		case "everyfooter":
+		
+			//debug($args,true);
+			
 			// Set up and decrement the kitty
 			require_once("lib/bars.php");
 			$last = get_module_setting("lasttick");
@@ -100,37 +103,63 @@ function donationextend_dohook($hookname,$args){
 					require_once "lib/datetime.php";
 					$expirein = reltime($expirationtime,false);
 					
-					$out .= "<strong>Special Extend active!</strong><br />".$bar."Thank you for your support!  Special Extend expires in ".$expirein."<br />Last donation by ".$player." (anonymous donations available, check your Preferences) <a href='runmodule.php?module=donationextend' target='_blank' onclick=\"".popup("runmodule.php?module=donationextend").";return false;\">(what's a Special Extend?)</a>";
+					$out .= "<span style='font-size:smaller'><strong>Special Extend active!</strong><br />".$bar."Thank you for your support!  Special Extend expires in ".$expirein."<br /><a href='runmodule.php?module=donationextend' target='_blank' onclick=\"".popup("runmodule.php?module=donationextend").";return false;\">(what's a Special Extend?)</span></a>";
 				} else {
 					$moreneeded = $ext2 - $newkitty;
 					$bar = simplebar($newkitty-$ext1,$ext2-$ext1,70,5,"00FF00","AA00AA");
 					$moredisp = number_format($moreneeded/100, 2);
-					$out .= "<strong>Extended Play active!</strong><br />".$bar."\$".$moredisp." more for <a href='runmodule.php?module=donationextend' target='_blank' onclick=\"".popup("runmodule.php?module=donationextend").";return false;\">Special Extend</a>!  Last donation by ".$player." (anonymous donations available, check your Preferences)";
+					$out .= "<span style='font-size:smaller'><strong>Extended Play active!</strong><br />".$bar."\$".$moredisp." more for <a href='runmodule.php?module=donationextend' target='_blank' onclick=\"".popup("runmodule.php?module=donationextend").";return false;\">Special Extend</a>!</span>";
 				}
 			} else {
 				$moreneeded = $ext1 - $newkitty;
 				$moredisp = number_format($moreneeded/100, 2);
-				$bar = fadebar($newkitty,$ext1);
+				$bar = fadebar($newkitty,$ext1,57);
 				$perplayer = ($moreneeded/100)/$totalplayers;
 				if ($perplayer > 1){
 					$perplayerdisp = "about ".round((($moreneeded)/$totalplayers), 4)." cents per player";
 				} else {
 					$perplayerdisp = "about $".number_format((($moreneeded/100)/$totalplayers), 2)." per player";
 				}
-				$out .= "\$".$moredisp." more (".$perplayerdisp.") for <a href='runmodule.php?module=donationextend' target='_blank' onclick=\"".popup("runmodule.php?module=donationextend").";return false;\">Extended Play</a>!".$bar."Last donation by ".$player." (anonymous donations available, check your Preferences)";
+				$out .= $bar;
+				if ($newkitty > 0){
+					$out .= "<span style='font-size:smaller'>\$".$moredisp." more (".$perplayerdisp.") for <a href='runmodule.php?module=donationextend' target='_blank' onclick=\"".popup("runmodule.php?module=donationextend").";return false;\">Extended Play</a>!</span>";
+				} else if ($session['user']['loggedin']){
+					$out .= "<span class='colDkRed'><strong>The kitty is empty!</strong></span>  Improbable Island is entirely dependant on your donations to survive.  When the meter is empty, the Island and its creators are in trouble!  Someone please chuck a couple of bucks in the hat!";
+				}
 			}
 			
-			//insert display output into page
-			if (!array_key_exists('paypal', $args) || !is_array($args['paypal'])){
-				$args['paypal'] = array();
+			global $template;
+			//debug($template);
+			if (strpos($template['footer'],"{paypal_extras}")){
+			//if (isset($template['{paypal_extras}'])){
+				//debug("Yes!");
+				$rep = "paypal_extras";
+			} else {
+				//debug("No!");
+				$rep = "paypal";
 			}
-			array_push($args['paypal'],$out);
+			
+			//$rep = "paypal_extras";
+			
+			//insert display output into page
+			if (!array_key_exists($rep, $args) || !is_array($args[$rep])){
+				$args[$rep] = array();
+			}
+			array_push($args[$rep],$out);
 			
 			//write values back to database
 			if ($elapsed > 10){
 				set_module_setting("lasttick",time());
 				set_module_setting("kitty",$newkitty);
 			}
+			
+			//debug($args,true);
+			
+			
+			addcharstat("Misc");
+			addcharstat("Misc","testing testing woohoo!");
+			
+			
 		break;
 		case "stamina-newday":
 			$kitty = get_module_setting("kitty");

@@ -245,7 +245,7 @@ function racezombie_dohook($hookname,$args){
 	case "villagetext":
 		racezombie_checkcity();
 		if ($session['user']['location'] == $city){
-			$args['text']=array("`0You are standing in the heart of New Pittsburgh.  This place used to be populated almost entirely by humans, but... well, you know zombies.`n`nThe stench of rotten flesh hangs in the air, and cries of \"BRAAAAAINS\" can be heard every now and then.`n`nYou notice a group of zombies conversing in grunts and moans around an old horse trough, idly picking at the flappy bits of skin on their necks.`n");
+			$args['text']=array("`0You are standing in the heart of New Pittsburgh.  This place used to be populated almost entirely by humans, but... well, you know zombies.`n`n");
 			$args['schemas']['text'] = "module-racezombie";
 			$args['clock']="`n`0From the strength of the overpowering odour, you reason that it is approximately `0%s`0.`n";
 			$args['schemas']['clock'] = "module-racezombie";

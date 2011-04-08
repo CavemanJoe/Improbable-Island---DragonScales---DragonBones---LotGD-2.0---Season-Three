@@ -51,20 +51,35 @@ function hunterslodge_customrace_run(){
 	global $session;
 	$op = httpget("op");
 	$free = httpget("free");
+	$context = httpget("context");
+	switch ($context){
+		case "village":
+			$backlink = "village.php";
+		break;
+		case "forest":
+			$backlink = "forest.php";
+		break;
+		case "worldmap":
+			$backlink = "runmodule.php?module=worldmapen&op=continue";
+		break;
+		case "lodge":
+			$backlink = "runmodule.php?module=iitems_hunterslodge&op=start";
+		break;
+	}
 
 	page_header("Choose your Custom Race");
 	
 	switch($op){
 		case "change":
 			output("Want to change your Custom Race?  No problem.  Enter your desired race in the box below.  You've got 25 characters to play around with.`n(leave this blank to disable custom race naming and return to default, game-supplied race names)`n`n");
-			rawoutput("<form action='runmodule.php?module=hunterslodge_customrace&op=confirm&free=".$free."' method='POST'>");
+			rawoutput("<form action='runmodule.php?module=hunterslodge_customrace&op=confirm&context=$context&free=".$free."' method='POST'>");
 			$race = get_module_pref("customrace");
 			rawoutput("<input id='input' name='newrace' width='25' maxlength='25' value='".htmlentities($race, ENT_COMPAT, getsetting("charset", "ISO-8859-1"))."'>");
 			rawoutput("<input type='submit' class='button' value='Preview'>");
 			rawoutput("</form>");
-			addnav("", "runmodule.php?module=hunterslodge_customrace&op=confirm&free=".$free);
+			addnav("", "runmodule.php?module=hunterslodge_customrace&op=confirm&context=$context&free=".$free);
 			addnav("Cancel");
-			addnav("Don't set a custom race, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't set a custom race, just go back to where I came from",$backlink);
 		break;
 		case "confirm":
 			$newrace = httppost("newrace");
@@ -78,9 +93,9 @@ function hunterslodge_customrace_run(){
 				output("You've chosen to go back to the default, game-supplied races.  Are you sure that's what you want?`n`n");
 			}
 			addnav("Confirm");
-			addnav("Set custom race","runmodule.php?module=hunterslodge_customrace&op=set&free=$free&newrace=".rawurlencode($newrace));
+			addnav("Set custom race","runmodule.php?module=hunterslodge_customrace&op=set&free=$free&context=$context&newrace=".rawurlencode($newrace));
 			addnav("Cancel");
-			addnav("Don't set a custom race, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't set a custom race, just go back to where I came from",$backlink);
 		break;
 		case "set":
 			$newrace = rawurldecode(httpget("newrace"));
@@ -91,7 +106,7 @@ function hunterslodge_customrace_run(){
 				delete_item($id);
 			}
 			addnav("Return");
-			addnav("Return to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Back to where I came from",$backlink);
 		break;
 	}
 	page_footer();

@@ -51,7 +51,14 @@ function forestvictory($enemies,$denyflawless=false){
 	$gold = e_rand(round($gold/$count),round($gold/$count)*round(($count+1)*pow(1.2, $count-1),0));
 	$expbonus = round ($expbonus/$count,0);
 	if ($gold) {
-		output("`^%s`3 shiny Requisition tokens are dispensed from the nearest camera!`n",$gold);
+		$hook = array();
+		$hook['gold'] = $gold;
+		$hook['overridemsg'] = false;
+		$hook = modulehook("battle-gold",$hook);
+		$gold = $hook['gold'];
+		if (!$hook['overridemsg']){
+			output("`^%s`3 shiny Requisition tokens are dispensed from the nearest camera!`n",$gold);
+		}
 		//debuglog("received gold for slaying a monster.",false,false,"forestwin",$badguy['creaturegold']);
 	}
 	// No gem hunters allowed!

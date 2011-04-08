@@ -17,7 +17,7 @@ function improbablehousing_teleportbeacon_getmoduleinfo(){
 
 function improbablehousing_teleportbeacon_install(){
 	module_addhook("improbablehousing_interior");
-	module_addhook("newday_runonce");
+	module_addhook("newday-runonce");
 	module_addhook("teleport");
 	return true;
 }
@@ -67,7 +67,7 @@ function improbablehousing_teleportbeacon_dohook($hookname,$args){
 		break;
 		case "newday-runonce":
 			//loop through the beacons and deduct days of fuel
-			$sql = "UPDATE ".db_prefix("room_prefs")." SET value=value-1 WHERE pref='beacon_fuel'";
+			$sql = "UPDATE ".db_prefix("building_prefs")." SET value=value-1 WHERE pref='beacon_fuel'";
 			db_query($sql);
 		break;
 	}

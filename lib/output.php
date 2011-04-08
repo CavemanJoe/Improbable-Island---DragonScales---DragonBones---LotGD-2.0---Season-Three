@@ -130,7 +130,8 @@ function output_fight_special($text){
  *
  */
 function output(){
-	global $block_new_output;
+	global $block_new_output,$output_time;
+	$start = microtime(true);
 	if ($block_new_output) return;
 	$args = func_get_args();
 	if (is_array($args[0])) $args = $args[0];
@@ -141,6 +142,9 @@ function output(){
 		$args[0] = translate($args[0]);
 	}
 	call_user_func_array("output_notl",$args);
+	$end = microtime(true);
+	$tot = $end - $start;
+	$output_time += $tot;
 }
 
 /**
@@ -304,6 +308,58 @@ function final_appoencode($data,$priv=false){
 	return $out;
 }
 
+function getcolors($exclude=array()){
+	$colors = array(
+		"1" => "colDkBlue",
+		"2" => "colDkGreen",
+		"3" => "colDkCyan",
+		"4" => "colDkRed",
+		"5" => "colDkMagenta",
+		"6" => "colDkYellow",
+		"7" => "colDkWhite",
+		"~" => "colBlack",
+		"!" => "colLtBlue",
+		"@" => "colLtGreen",
+		"#" => "colLtCyan",
+		"\$" => "colLtRed",
+		"%" => "colLtMagenta",
+		"^" => "colLtYellow",
+		"&" => "colLtWhite",
+		")" => "colLtBlack",
+		"e" => "colDkRust",
+		"E" => "colLtRust",
+		"g" => "colXLtGreen",
+		"G" => "colXLtGreen",
+		"j" => "colMdGrey",
+		"J" => "colMdBlue",
+		"k" => "colaquamarine",
+		"K" => "coldarkseagreen",
+		"l" => "colDkLinkBlue",
+		"L" => "colLtLinkBlue",
+		"m" => "colwheat",
+		"M" => "coltan",
+		"p" => "collightsalmon",
+		"P" => "colsalmon",
+		"q" => "colDkOrange",
+		"Q" => "colLtOrange",
+		"R" => "colRose",
+		"T" => "colDkBrown",
+		"t" => "colLtBrown",
+		"V" => "colBlueViolet",
+		"v" => "coliceviolet",
+		"x" => "colburlywood",
+		"X" => "colbeige",
+		"y" => "colkhaki",
+		"Y" => "coldarkkhaki",
+	);
+	if (is_array($exclude) && count($exclude)){
+		foreach($exclude AS $drop){
+			unset($colors[$drop]);
+		}
+	}
+	return $colors;
+}
+
 function appoencode($data,$priv=false){
 	global $nestedtags,$session;
 	$start = 0;
@@ -319,58 +375,7 @@ function appoencode($data,$priv=false){
 		if (!isset($nestedtags['>'])) $nestedtags['>']=false;
 		if (!isset($nestedtags['h'])) $nestedtags['h']=false;
 
-		static $colors = array(
-			"1" => "colDkBlue",
-			"2" => "colDkGreen",
-			"3" => "colDkCyan",
-			"4" => "colDkRed",
-			"5" => "colDkMagenta",
-			"6" => "colDkYellow",
-			"7" => "colDkWhite",
-			"~" => "colBlack",
-			"!" => "colLtBlue",
-			"@" => "colLtGreen",
-			"#" => "colLtCyan",
-			"\$" => "colLtRed",
-			"%" => "colLtMagenta",
-			"^" => "colLtYellow",
-			"&" => "colLtWhite",
-			")" => "colLtBlack",
-			"e" => "colDkRust",
-			"E" => "colLtRust",
-			"g" => "colXLtGreen",
-			"G" => "colXLtGreen",
-			"j" => "colMdGrey",
-			"J" => "colMdBlue",
-			"k" => "colaquamarine",
-			"K" => "coldarkseagreen",
-			"l" => "colDkLinkBlue",
-			"L" => "colLtLinkBlue",
-			"m" => "colwheat",
-			"M" => "coltan",
-			"p" => "collightsalmon",
-			"P" => "colsalmon",
-			"q" => "colDkOrange",
-			"Q" => "colLtOrange",
-			"R" => "colRose",
-			"T" => "colDkBrown",
-			"t" => "colLtBrown",
-			"V" => "colBlueViolet",
-			"v" => "coliceviolet",
-			"x" => "colburlywood",
-			"X" => "colbeige",
-			"y" => "colkhaki",
-			"Y" => "coldarkkhaki",
- 		);
-		
-		// static $typefaces = array(
-			// ";" => "fonttimesnewroman",
-			// ":" => "fontgeorgia",
-			// "[" => "fontarial",
-			// "{" => "fontcouriernew",
-			// "]" => "fontverdana",
-			// "}" => "fontcomicsans",
-		// );
+		$colors = getcolors();
 		
 		do {
 			++$pos;
@@ -1082,6 +1087,8 @@ function navcount(){
  *
  */
 function clearnav(){
+	global $navbysection;
+	$navbysection = array();
 	$session['allowednavs']=array();
 }
 

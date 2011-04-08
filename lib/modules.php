@@ -911,7 +911,7 @@ function load_all_module_prefs($user=false){
 		$start = microtime(true);
 		$module_prefs[$user] = datacache("moduleprefs/moduleprefs-$user");
 		if (!is_array($module_prefs[$user])){
-			debug("Getting from db");
+			//debug("Getting from db");
 			$sql = "SELECT setting,value,modulename FROM " . db_prefix("module_userprefs") . " WHERE userid='$user'";
 			$result = db_query($sql);
 			$module_prefs[$user] = array();
@@ -923,7 +923,7 @@ function load_all_module_prefs($user=false){
 		}
 		$end = microtime(true);
 		$tot = $end - $start;
-		debug("Loaded module prefs in: ".$tot);
+		//debug("Loaded module prefs in: ".$tot);
 		
 		// $module_prefs[$user] = array();
 		// $start = microtime(true);

@@ -87,7 +87,7 @@ function cities_dohook($hookname,$args){
 			// more descriptive
 			// Let's do this a different way so that things which this
 			// module (or any other) resets don't get resurrected.
-			$args['text'] = array("All around you, the people of Improbable Central move about their business.  No one seems to pay much attention to you as they all seem absorbed in their own lives and problems.  Along various streets you see many different types of shops, each with a sign out front proclaiming the business done therein.  Off to one side, you see a very curious looking rock which attracts your eye with its strange shape and color.  People are constantly entering and leaving via the city gates to a variety of destinations.`n");
+			$args['text'] = array("All around you, the people of Improbable Central move about their business.  No one seems to pay much attention to you as they all seem absorbed in their own lives and problems.  Along various streets you see many different types of shops, each with a sign out front proclaiming the business done therein.  Off to one side, you see a very curious looking rock which attracts your eye with its strange shape and color.  People are constantly entering and leaving via the city gates to a variety of destinations.`n`n");
 			$args['schemas']['text'] = "module-cities";
 			$args['clock']="`n`0The clock on the inn reads `^%s.`0`n";
 			$args['schemas']['clock'] = "module-cities";

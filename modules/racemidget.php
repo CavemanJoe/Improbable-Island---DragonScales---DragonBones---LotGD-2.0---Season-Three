@@ -322,19 +322,19 @@ function racemidget_dohook($hookname,$args){
 	case "villagetext":
 		racemidget_checkcity();
 		if ($session['user']['location'] == $city){
-			$args['text']=array("`0You are standing in the heart of Squat Hole.  Man, this place has gone downhill.`n`nRusted-out cars compete for space with empty cider cans, and there's a general atmosphere of meanness about.  Piles of dead skunks and excrement lie steaming and glistening by the side of the road.  All the windows are broken, and the whole place could do with a good scrubbing, but there's no chance for investment around here - there is truth in the rumour that copper wire was invented by two Midgets fighting over a penny.`n");
+			$args['text']=array("`0You are standing in the heart of Squat Hole.  Man, this place has gone downhill.`n`nRusted-out cars compete for space with empty cider cans, and there's a general atmosphere of meanness about.  Piles of dead skunks and excrement lie steaming and glistening by the side of the road.  All the windows are broken, and the whole place could do with a good scrubbing, but there's no chance for investment around here - there is truth in the rumour that copper wire was invented by two Midgets fighting over a penny.`n`n");
 			$args['schemas']['text'] = "module-racemidget";
-			$args['clock']="`n`0From the strength of the overpowering odour, you reason that it is approximately `&%s`0.`n";
+			$args['clock']="`0From the strength of the overpowering odour, you reason that it is approximately `&%s`0.`n`n";
 			$args['schemas']['clock'] = "module-racemidget";
 			if (is_module_active("calendar")) {
-				$args['calendar'] = "`n`0Written in blood on a nearby wall is `&%s`0, `&%s %s %s`0.`n";
+				$args['calendar'] = "`0Written in blood on a nearby wall is `&%s`0, `&%s %s %s`0.`n`n";
 				$args['schemas']['calendar'] = "module-racemidget";
 			}
 			$args['title']=array("%s, Home of the Midgets", $city);
 			$args['schemas']['title'] = "module-racemidget";
 			$args['sayline']="says";
 			$args['schemas']['sayline'] = "module-racemidget";
-			$args['talk']="`n`&Nearby some midgets stand around smoking hand-rolled cigarettes, using a decomposing chicken carcass as an ashtray.  Occasionally they shout at each other in irritating, squeaky voices:`n";
+			$args['talk']="`0Nearby some midgets stand around smoking hand-rolled cigarettes, using a decomposing chicken carcass as an ashtray.  Occasionally they shout at each other in irritating, squeaky voices:`n`n";
 			$args['schemas']['talk'] = "module-racemidget";
 			$new = get_module_setting("newest-$city", "cities");
 			if ($new != 0) {

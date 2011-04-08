@@ -32,10 +32,12 @@ function char_cleanup_allinone($ids,$type){
 	//erase everything else
 	$eraseoutput = "DELETE FROM ".db_prefix("accounts_output")." WHERE acctid IN ($joined)";
 	db_query($eraseoutput);
+	$eraseeverypage = "DELETE FROM ".db_prefix("accounts_everypage")." WHERE acctid IN ($joined)";
+	db_query($eraseeverypage);
 	$erasecommentary = "DELETE FROM ".db_prefix("commentary")." WHERE author IN ($joined)";
 	db_query($erasecommentary);
 	$erasemoduleprefs = "DELETE FROM ".db_prefix("module_userprefs")." WHERE userid IN ($joined)";
-	db_query($erasemoduleprfs);
+	db_query($erasemoduleprefs);
 	
 	// Clean up any clan positions held by this character
 	$leader = CLAN_LEADER;

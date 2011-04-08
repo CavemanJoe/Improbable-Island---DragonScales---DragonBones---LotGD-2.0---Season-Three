@@ -44,6 +44,21 @@ function hunterslodge_avatar_run(){
 	global $session;
 	$op = httpget("op");
 	$free = httpget("free");
+	$context = httpget("context");
+	switch ($context){
+		case "village":
+			$backlink = "village.php";
+		break;
+		case "forest":
+			$backlink = "forest.php";
+		break;
+		case "worldmap":
+			$backlink = "runmodule.php?module=worldmapen&op=continue";
+		break;
+		case "lodge":
+			$backlink = "runmodule.php?module=iitems_hunterslodge&op=start";
+		break;
+	}
 
 	page_header("Choose your Avatar");
 	
@@ -51,10 +66,10 @@ function hunterslodge_avatar_run(){
 		case "change":
 			output("Want to change your Avatar?  No problem.  Upload your avatar via the box below.  Please note that NSFW images, stolen artwork or otherwise dodgy avatars will be erased without refund.  Upload files in .jpg or .png format.  Your limits are 100 pixels wide, 100 pixels tall, with a maximum filesize of 100k.  100px * 100px * 100k, simple!`n`n");
 			output("Upload your avatar:`n");
-			rawoutput("<form method='POST' enctype='multipart/form-data' name='upload' action='runmodule.php?module=hunterslodge_avatar&op=confirm&free=$free'><input type='file' name='file'><br><br><input type='submit' class='button' name='Upload' value='Upload!'></form>");
-			addnav("", "runmodule.php?module=hunterslodge_avatar&op=confirm&free=".$free);
+			rawoutput("<form method='POST' enctype='multipart/form-data' name='upload' action='runmodule.php?module=hunterslodge_avatar&op=confirm&free=$free&context=$context'><input type='file' name='file'><br><br><input type='submit' class='button' name='Upload' value='Upload!'></form>");
+			addnav("", "runmodule.php?module=hunterslodge_avatar&op=confirm&free=$free&context=$context");
 			addnav("Cancel");
-			addnav("Don't set an Avatar, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't set an Avatar, just go back to where I came from",$backlink);
 		break;
 		case "confirm":
 			if(httppost("Upload")) {
@@ -85,7 +100,7 @@ function hunterslodge_avatar_run(){
 								if ($pic_height <= 100 && $pic_width <= 100){
 									output("So, this is what you want to look like?  Click \"Set Avatar\" to confirm.`n`n");
 									addnav("Confirm");
-									addnav("Set Avatar","runmodule.php?module=hunterslodge_avatar&op=set&free=$free&avatar=".rawurlencode($filename));
+									addnav("Set Avatar","runmodule.php?module=hunterslodge_avatar&op=set&free=$free&context=$context&avatar=".rawurlencode($filename));
 									$image="<img align='left' src='".$filename."'>";
 									
 									rawoutput("<table><tr><td valign='top'>");
@@ -108,10 +123,10 @@ function hunterslodge_avatar_run(){
 				}
 			}
 			output("`0To try again with a different picture, use the form below.`n`n");
-			rawoutput("<form method='POST' enctype='multipart/form-data' name='upload' action='runmodule.php?module=hunterslodge_avatar&op=confirm&free=$free'><input type='file' name='file'><br><br><input type='submit' class='button' name='Upload' value='Upload!'></form>");
-			addnav("", "runmodule.php?module=hunterslodge_avatar&op=confirm&free=".$free);
+			rawoutput("<form method='POST' enctype='multipart/form-data' name='upload' action='runmodule.php?module=hunterslodge_avatar&op=confirm&free=$free&context=$context'><input type='file' name='file'><br><br><input type='submit' class='button' name='Upload' value='Upload!'></form>");
+			addnav("", "runmodule.php?module=hunterslodge_avatar&op=confirm&free=$free&context=$context");
 			addnav("Cancel");
-			addnav("Don't set an Avatar, just go back to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Don't set an Avatar, just go back to where I came from",$backlink);
 		break;
 		case "set":
 			$av = httpget("avatar");
@@ -122,7 +137,7 @@ function hunterslodge_avatar_run(){
 				delete_item($id);
 			}
 			addnav("Return");
-			addnav("Return to the Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+			addnav("Go back to where I came from",$backlink);
 		break;
 	}
 	page_footer();

@@ -85,7 +85,12 @@ switch(httpget('subop')){
 		output("`0On Improbable Island, a dab of paint here and there can make the difference between a shack and a mansion.`n`nDecorating a room will allow you to change its internal description.  The longer the description, the more you'll have to decorate - but like with building, your friends can help you out.  You can also change the name of the room, at a maximum of 55 characters.  Changing the name of a room doesn't have any Stamina or materials cost - after all, you can very easily call a room a study when it's clearly a kitchen.  It's just that everyone will point and laugh at you.`n`nThe current description for this room is:`n`n%s`0`n`nYou can change this description via the box below.  Use ``n for a new line, ``b for bold, ``i for italics.  Make sure to close your bold and italics with another ``b or ``i (for example, ``ithis text``i is italicised, and ``bthis text``b is bold).`n`n`c`b`4WARNING: NEVER USE A WORD PROCESSOR`b`nWord processors insert \"helpful\" special characters - they change quotation marks so that they lean to the right or left, they convert ...'s into single-character ellipses, they turn hyphens into unparseable garbage and in general they just bugger everything up in order to make it look pretty.  These shenanigans can sometimes cause Horrible Problems when trying to retrieve your house's data, and they make matters really complicated whenever we try to restore data from a backup.  Type your description either into a plain-text editor or straight into this box, and use an online spellchecker.  `iDon't use a word processor.`i  Word processors and the Internet do not mix.`c`0`n`n",$room['desc']);
 		//show form to change description
 		$roomname=$room['name'];
-		rawoutput("<form action='runmodule.php?module=improbablehousing&op=decorate&subop=change&hid=$hid&rid=$rid' method='POST'><input name='name' id='name' value='$roomname'><br /><textarea rows='6' cols='60' name='newdesc' id='newdesc'>".$room['desc']."</textarea><input type=submit>");
+		rawoutput("<form action='runmodule.php?module=improbablehousing&op=decorate&subop=change&hid=$hid&rid=$rid' method='POST'><input name='name' id='name' value='$roomname'><br />");
+		
+		require_once "lib/forms.php";
+		previewfield_countup("newdesc",false,$room['desc']);
+		rawoutput("<input type=submit></form>");
+		
 		addnav("","runmodule.php?module=improbablehousing&op=decorate&subop=change&hid=$hid&rid=$rid");
 	break;
 	case "change":

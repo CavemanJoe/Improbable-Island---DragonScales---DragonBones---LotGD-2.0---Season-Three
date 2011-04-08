@@ -24,7 +24,7 @@ if ($now > $expiresin || ($session['user']['chatloc'] != $section  && $session['
 	echo($commentary);
 }
 saveuser();
-
+exit();
 
 
 ?>

@@ -20,6 +20,10 @@ $op = httpget("op");
 
 $battle = false;
 
+global $outdoors, $shady;
+$outdoors = true;
+$shady = true;
+
 if ($op=="run"){
 	if (e_rand()%3 == 0){
 		output ("`c`b`&You have successfully fled your opponent!`0`b`c`n");

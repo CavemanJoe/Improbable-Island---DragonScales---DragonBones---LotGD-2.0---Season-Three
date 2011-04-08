@@ -36,7 +36,8 @@ function biochat_dohook($hookname,$args){
 			$section = "bio-".$args['acctid'];
 			viewcommentary($section,"Natter!",25);
 			
-			if (!strpos(httpget('ret'),"bio.php")){
+			if (strpos(httpget('ret'),"bio.php")===false){
+				
 				set_module_pref("lastplace",httpget('ret'));
 			}
 			
@@ -53,7 +54,6 @@ function biochat_dohook($hookname,$args){
 			
 			$return = get_module_pref("lastplace");
 			if ($return){
-				$return = substr($return,strrpos($return,"/")+1);
 				addnav("Been clicking around Bios and Nattering for a while?");
 				addnav("Go `iright`i back to where you came from",$return);
 			}
@@ -61,7 +61,7 @@ function biochat_dohook($hookname,$args){
 		break;
 		case "commentaryoptions":
 			if (!strpos($_SERVER['REQUEST_URI'],"char=".$session['user']['acctid']."&")){
-				$link = "bio.php?char=".$session['user']['acctid'] ."&ret=".URLEncode($_SERVER['REQUEST_URI']);
+				$link = "bio.php?char=".$session['user']['acctid'] ."&ret=".URLEncode(buildcommentarylink("&frombio=true"));
 				$total = get_module_pref("total");
 				$seen = get_module_pref("seen");
 				output("<a href=\"$link\">View my Bio</a> ",true);

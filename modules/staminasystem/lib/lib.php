@@ -168,7 +168,7 @@ function stamina_calculate_buffed_exp($action, $userid=false){
 	if ($userid === false) $userid = $session['user']['acctid'];
 	$active_action_buffs = stamina_get_active_buffs($action, $userid);
 	$actiondetails = get_player_action($action, $userid);
-	$buffedexp = 100;
+	$buffedexp = e_rand(80,120);
 	if (is_array($active_action_buffs) && $active_action_buffs){
 		foreach($active_action_buffs as $buff => $values){
 			$buffedexp = round($buffedexp * $values['expmod']);
@@ -695,6 +695,274 @@ function removestamina($amount, $userid = false){
 	set_module_pref("stamina",$newstamina,"staminasystem",$userid);
 	
 	return $newstamina;
+}
+
+function stamina_minihof($action,$userid=false){
+	global $session;
+	if ($userid === false) $userid = $session['user']['acctid'];
+	$st = microtime(true);
+	$boardfilename = str_replace(" ","",$action);
+	$boardinfo = datacache("staminaboardinfo_".$boardfilename,120);
+	$en = microtime(true);
+	$to = $en - $st;
+	//debug("Cache: ".$to);
+	
+	if (!is_array($boardinfo)){
+		$board = array();
+		$staminasql = "SELECT setting,value,userid FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='actions'";
+		$staminaresult = db_query($staminasql);
+		
+		$scount = db_num_rows($staminaresult);
+		for ($i=0;$i<$scount;$i++){
+			$row = db_fetch_assoc($staminaresult);
+			$actions_array = @unserialize($row['value']);
+			$actiondetails = $actions_array[$action];
+			$board[$row['userid']] = $actiondetails['exp'];
+		}
+		
+		$boardinfo = stamina_minihof_assignranks($board);
+		
+		updatedatacache("staminaboardinfo_".$boardfilename,$boardinfo);
+	}
+	
+	//set the player's entry in the board with brand-new data
+	$player_action = get_player_action($action);
+	$boardinfo['board'][$userid] = $player_action['exp'];
+	
+	$smallboard = stamina_minihof_makesmallboard($boardinfo,$userid);
+	
+	if (!$smallboard){
+		$boardinfo = stamina_minihof_assignranks($boardinfo['board']);
+		$smallboard = stamina_minihof_makesmallboard($boardinfo,$userid);
+	}
+	
+	//display the board!
+	
+	output("`n`n");
+	rawoutput("<div align=center>");
+	rawoutput("<table cellspacing='0' cellpadding='5'>");
+	rawoutput("<tr class='trhead'><td colspan=3><strong>$action</strong></td></tr>");
+	rawoutput("<tr class='trhead'><td><strong>Rank</strong></td><td><strong>Name</strong></td><td><strong>Experience</strong></td></tr>");
+	$count = count($smallboard);
+	for ($i=0; $i < $count; $i++){
+		rawoutput("<tr class='".($i%2?"trlight":"trdark")."'>");
+		if ($smallboard[$i]['acctid'] == $userid){
+			rawoutput("<td><strong>".number_format($smallboard[$i]['rank'])."</strong></td><td><strong>".appoencode($smallboard[$i]['name'])."</strong></td><td><strong>".number_format($smallboard[$i]['xp'])."</strong></td></tr>");
+		} else {
+			rawoutput("<td>".number_format($smallboard[$i]['rank'])."</td><td>".appoencode($smallboard[$i]['name'])."</td><td>".number_format($smallboard[$i]['xp'])."</td></tr>");
+		}
+	}
+	rawoutput("</table></div>");
+}
+
+function stamina_minihof_makesmallboard($boardinfo,$userid=false){
+	global $session;
+	if ($userid === false) $userid = $session['user']['acctid'];
+	
+	$ranks = $boardinfo['ranks'];
+	$board = $boardinfo['board'];
+	$smallboard = array();
+	//$myrank = $board[$userid]['rank'];
+	
+	$st = microtime(true);
+	$myrank = array_search($userid,$ranks);
+	$en = microtime(true);
+	$to = $en - $st;
+	//debug("find player rank: ".$to);
+	
+	$st = microtime(true);
+	//get the twenty players above and below, put them in arrays
+	$largeboard = array();
+	for ($i = -10; $i <= 10; $i++){
+		$acctid = $ranks[$myrank+$i];
+		$parray = array();
+		$parray['acctid'] = $acctid;
+		$parray['xp'] = $board[$acctid];
+		$parray['rank'] = $myrank+$i;
+		if ($acctid == $session['user']['acctid']){
+			$parray['name'] = $session['user']['name'];
+		}
+		if ($parray['acctid']){
+			$largeboard[] = $parray;
+		}
+	}
+	$en = microtime(true);
+	$to = $en - $st;
+	//debug("largeboard: ".$to);
+	
+	//now, check the player's rank is where it should be.  If not, re-work the ranks.  If the player is off the page, run assignranks and start again.
+	
+	if ($myrank >=10){
+		$playerposition = 10;
+	} else {
+		$playerposition = $myrank;
+	}
+	
+	$st = microtime(true);
+	while ($largeboard[$playerposition]['xp'] > $largeboard[$playerposition-1]['xp'] && $playerposition >= 0){
+		$temp = $largeboard[$playerposition];
+		$largeboard[$playerposition] = $largeboard[$playerposition-1];
+		$largeboard[$playerposition-1] = $temp;
+		$playerposition--;
+		$redoranks = true;
+	}
+	
+	//debug($largeboard);
+	
+	if ($playerposition <= 0){
+		return false;
+	}
+	$en = microtime(true);
+	$to = $en - $st;
+	//debug("checkranks: ".$to);
+	
+	//now recalc the ranks, from top to bottom
+	if ($redoranks && $playerposition){
+		$startrank = $largeboard[0]['rank'];
+		for ($i=1; $i<=20; $i++){
+			$largeboard[$i]['rank'] = $startrank+$i;
+		}
+	}
+	
+	$smallboard = array();
+	for ($i=-2; $i <= 2; $i++){
+		if ($largeboard[$playerposition+$i]){
+			$smallboard[]=$largeboard[$playerposition+$i];
+		}
+	}
+	
+	$st = microtime(true);
+	//get the names of the contestants in the small board
+	$sbc = count($smallboard);
+	for ($i=0; $i<$sbc; $i++){
+		if (!$smallboard[$i]['name']){
+			$sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='".$smallboard[$i]['acctid']."'";
+			$result = db_query_cached($sql,"playernames/playername_".$smallboard[$i]['acctid'],3600);
+			$row = db_fetch_assoc($result);
+			$smallboard[$i]['name'] = $row['name'];
+		}
+	}
+	$en = microtime(true);
+	$to = $en - $st;
+	
+	//debug($smallboard);
+	
+	//debug("smallboard: ".$to);
+	
+	return $smallboard;
+}
+
+function stamina_minihof_assignranks($board){
+	arsort($board);
+	//debug($board);
+	$r=1;
+	$ranks = array();
+	$st = microtime(true);
+	foreach($board AS $acctid => $exp){
+		$ranks[$r] = $acctid;
+		$r++;
+	}
+	$en = microtime(true);
+	$to = $en - $st;
+	//debug("Rank assignment: ".$to);
+	$boardinfo=array();
+	$boardinfo['board'] = $board;
+	$boardinfo['ranks'] = $ranks;
+	//debug($ranks);
+	return $boardinfo;
+}
+
+
+function stamina_minihof_old($action,$userid=false){
+	global $session;
+	if ($userid === false) $userid = $session['user']['acctid'];
+
+	$st = microtime(true);
+	
+	$boardfilename = str_replace(" ","",$action);
+	$boardinfo = datacache("staminaboardinfo_".$boardfilename,20);
+	
+	$en = microtime(true);
+	$to = $en - $st;
+	debug("Cache: ".$to);
+	
+	if (!is_array($boardinfo)){
+		$board = array();
+		$staminasql = "SELECT setting,value,userid FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='actions'";
+		$staminaresult = db_query($staminasql);
+		
+		$scount = db_num_rows($staminaresult);
+		for ($i=0;$i<$scount;$i++){
+			$row = db_fetch_assoc($staminaresult);
+			$actions_array = @unserialize($row['value']);
+			$actiondetails = $actions_array[$action];
+			if (!$actiondetails['exp']) continue;
+			$board[$row['userid']]['xp'] = $actiondetails['exp'];
+			$board[$row['userid']]['id'] = $row['userid'];
+			//$board[$row['userid']]['lvl'] = $actiondetails['lvl'];
+		}
+		
+		$boardinfo = stamina_minihof_assignranks($board);
+		updatedatacache("staminaboardinfo_".$boardfilename,$boardinfo);
+	}
+		
+	//set the player's entry in the board with brand-new data
+	$player_action = get_player_action($action);
+	$boardinfo['board'][$userid]['xp'] = $player_action['exp'];
+	
+	$smallboard = stamina_minihof_smallboard($boardinfo,$userid);
+	
+	debug($smallboard);
+}
+
+function stamina_minihof_sort($x, $y){
+	if ($x['xp'] == $y['xp']) return 0;
+	else if ($x['xp'] < $y['xp']) return 1;
+	else return -1;
+}
+
+function stamina_minihof_smallboard_old($boardinfo,$userid=false){
+	global $session;
+	if ($userid === false) $userid = $session['user']['acctid'];
+	
+	$ranks = $boardinfo['ranks'];
+	$board = $boardinfo['board'];
+	$smallboard = array();
+	//$myrank = $board[$userid]['rank'];
+	
+	$myrank = array_search($userid,$ranks);
+	
+	$smallboard[] = $board[$ranks[$myrank-2]];
+	$smallboard[] = $board[$ranks[$myrank-1]];
+	$smallboard[] = $board[$ranks[$myrank]];
+	$smallboard[] = $board[$ranks[$myrank+1]];
+	$smallboard[] = $board[$ranks[$myrank+2]];
+	
+	if ($smallboard[2]['xp']>$smallboard[1]['xp']){
+		debug("resorting...");
+		usort($smallboard,"stamina_minihof_sort");
+	}
+	return $smallboard;
+}
+
+function stamina_minihof_assignranks_old($board){
+	uasort($board,"stamina_minihof_sort");
+	$r=1;
+	$ranks = array();
+	$st = microtime(true);
+	foreach($board AS $acctid => $vals){
+		//$board[$acctid]['rank'] = $r;
+		$ranks[$r] = $acctid;
+		$r++;
+	}
+	$en = microtime(true);
+	$to = $en - $st;
+	debug("Rank assignment: ".$to);
+	$boardinfo=array();
+	$boardinfo['board'] = $board;
+	$boardinfo['ranks'] = $ranks;
+	debug($ranks);
+	return $boardinfo;
 }
 
 ?>

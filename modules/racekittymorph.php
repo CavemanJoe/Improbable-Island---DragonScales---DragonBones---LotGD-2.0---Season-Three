@@ -184,7 +184,7 @@ function racekittymorph_dohook($hookname,$args){
 		if ($session['user']['race']==$race){
 			//get those folks who haven't manually chosen a race
 			racekittymorph_checkcity();
-			if ($session['user']['armor']=="Nudity"){
+			if ($session['user']['armordef'] == 0){
 				apply_buff("nudekitty",array(
 					"name"=>"`7KittyMorph Bonus: Nude Fighting`0",
 					"badguyatkmod"=>0.7,

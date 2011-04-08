@@ -32,8 +32,8 @@ function watcher_quests_dohook($hookname,$args){
 	global $session;
 	switch($hookname){
 		case "village":
-			require_once("lib/http.php");
-			if ($session['user']['level'] > 2 && get_module_pref("plotpoint1")==0){
+			//require_once("lib/http.php");
+			if ($session['user']['level'] >= 3 && get_module_pref("plotpoint1")==0){
 				addnav("","runmodule.php?module=watcher_quests&plotpoint=1");
 				redirect("runmodule.php?module=watcher_quests&plotpoint=1","Watcher plot point 1");
 			}

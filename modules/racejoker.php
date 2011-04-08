@@ -367,19 +367,19 @@ function racejoker_dohook($hookname,$args){
 	case "villagetext":
 		racejoker_checkcity();
 		if ($session['user']['location'] == $city){
-			$args['text']=array("`0You are standing in the heart of AceHigh.  Though relatively new, this town seems to be prospering.  The houses are built of stone and timber frames, and well-dressed gentlemen and ladies stroll about with impeccable manners.  Every now and then, one of them explodes in an astonishing flash of green light, drawing polite applause from nearby persons.`n");
+			$args['text']=array("`0You are standing in the heart of AceHigh.  Though relatively new, this town seems to be prospering.  The houses are built of stone and timber frames, and well-dressed gentlemen and ladies stroll about with impeccable manners.  Every now and then, one of them explodes in an astonishing flash of green light, drawing polite applause from those nearby.`n`n");
 			$args['schemas']['text'] = "module-racejoker";
-			$args['clock']="`n`0The great clockwork readout at the centre of the city reads `&%s`0.`n";
+			$args['clock']="`0The great clockwork readout at the centre of the city reads `&%s`0.`n`n";
 			$args['schemas']['clock'] = "module-racejoker";
 			if (is_module_active("calendar")) {
-				$args['calendar'] = "`n`0A smaller contraption next to it reads `&%s`0, `&%s %s %s`0.`n";
+				$args['calendar'] = "`0A smaller contraption next to it reads `&%s`0, `&%s %s %s`0.`n`n";
 				$args['schemas']['calendar'] = "module-racejoker";
 			}
 			$args['title']=array("%s, Home of the Jokers", $city);
 			$args['schemas']['title'] = "module-racejoker";
 			$args['sayline']="says";
 			$args['schemas']['sayline'] = "module-racejoker";
-			$args['talk']="`n`&Nearby some people converse:`n";
+			$args['talk']="`0Nearby some people converse politely:`n";
 			$args['schemas']['talk'] = "module-racejoker";
 			$new = get_module_setting("newest-$city", "cities");
 			if ($new != 0) {

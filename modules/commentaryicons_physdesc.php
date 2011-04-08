@@ -9,7 +9,7 @@ function commentaryicons_physdesc_getmoduleinfo(){
 		"download"=>"",
 		"prefs"=>array(
 			"Commentary Info: Physical Description,title",
-			"user_physdesc"=>"Short physical description of your character shown in commentary mouseovers (100 chars max - blank it to hide your description),string,100",
+			"user_physdesc"=>"Short physical description of your character shown in commentary mouseovers (160 chars max - blank it to hide your description),string,160",
 			"user_showmyavatar"=>"Show my avatar in commentary mouseovers,bool|1",
 			"user_showdesc"=>"Show other people's physical descriptions in commentary mouseovers,bool|1",
 		),
@@ -51,11 +51,17 @@ function commentaryicons_physdesc_dohook($hookname,$args){
 				$closetable=1;
 			}
 			if (get_module_pref("user_physdesc") && get_module_pref("user_physdesc")!=""){
-				$mouseover.=stripslashes(get_module_pref("user_physdesc"));
+				$physdesc = htmlspecialchars(stripslashes(get_module_pref("user_physdesc")));
+				$physdesc = str_replace("`b","",$physdesc);
+				$physdesc = str_replace("`i","",$physdesc);
+				$mouseover.=$physdesc;
 			}
 			if ($mouseover!=""){
-				if ($closetable) $mouseover.="</tr></td></table>";
-				$args['info']['mouseover']['appearance']=$mouseover."`n";
+				if ($closetable){
+					$args['info']['mouseover']['appearance']=$mouseover."</tr></td></table>";
+				} else {
+					$args['info']['mouseover']['appearance']=$mouseover."`n";
+				}
 			}
 		break;
 		case "commentbuffer":

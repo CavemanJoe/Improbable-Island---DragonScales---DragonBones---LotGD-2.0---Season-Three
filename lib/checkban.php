@@ -37,7 +37,7 @@ function checkban($login=false){
 			db_query($sql);
 			$session['message'].="`n";
 		}
-		$session['message'].=translate_inline("`4If you wish, you may appeal your ban with the petition link.");
+		//$session['message'].=translate_inline("`4If you wish, you may appeal your ban with the petition link.");
 		tlschema();
 		header("Location: index.php");
 		exit();

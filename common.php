@@ -380,12 +380,12 @@ if ($session['user']['loggedin']) {
 	modulehook("everyhit-loggedin");
 }
 
-// This bit of code checks the current system load, so that high-intensity operations can be disabled or postponed during times of exceptionally high load.  Since checking system load can in itself be resource intensive, we'll only check system load once per minute, checking it against time retrieved from the database at the first load of getsetting().
+// This bit of code checks the current system load, so that high-intensity operations can be disabled or postponed during times of exceptionally high load.  Since checking system load can in itself be resource intensive, we'll only check system load once per thirty seconds, checking it against time retrieved from the database at the first load of getsetting().
 global $fiveminuteload;
 $lastcheck = getsetting("systemload_lastcheck",0);
 $fiveminuteload = getsetting("systemload_lastload",0);
 $currenttime = time();
-if ($currenttime - $lastcheck > 60){
+if ($currenttime - $lastcheck > 30){
 	$load = exec("uptime");
 	$load = split("load average:", $load);
 	$load = split(", ", $load[1]);

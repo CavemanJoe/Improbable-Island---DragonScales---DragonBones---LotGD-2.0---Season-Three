@@ -36,7 +36,7 @@ function worldmap_items_dohook($hookname,$args){
 //						debug("Found something!");
 						addnav("","inventory.php?items_context=".$args['context']."&items_mapdrop=".$prefs['itemid']."&items_sort=$sort");
 						$args['inventory'][$itemid]['inventoryactions'].="<a href=\"inventory.php?items_context=".$args['context']."&items_mapdrop=".$prefs['itemid']."&items_sort=$sort\">Drop this item on the Map</a> | ";
-						if ($args['inventory'][$itemid]['quantity'] > 1){
+						if ($args['inventory'][$itemid]['quantity'] > 1 && !$prefs['dropworldmap_blockdropall']){
 							addnav("","inventory.php?items_context=".$args['context']."&items_mapdrop=".$prefs['itemid']."&items_sort=$sort&dropall=true");
 							$args['inventory'][$itemid]['inventoryactions'].="<a href=\"inventory.php?items_context=".$args['context']."&items_mapdrop=".$prefs['itemid']."&items_sort=$sort&dropall=true\">Drop all</a> | ";
 						}
@@ -66,9 +66,7 @@ function worldmap_items_dohook($hookname,$args){
 		case "worldnav":
 			$ploc = implode(",",$args);
 			$squarestuff = load_inventory("worldmap_".$ploc, true);
-			//debug($squarestuff);
-			//$squarestuff = worldmap_items_getsquare($ploc);
-			//debug($squarestuff);
+
 			$itemid = httpget('item-pickup');
 			
 			if ($itemid){
@@ -85,11 +83,11 @@ function worldmap_items_dohook($hookname,$args){
 					}
 					//debug($pickup);
 					change_item_owner($pickup,$session['user']['acctid']);
-					output("`0You pick up the %s and put them in your backpack.`n",$squarestuff[$itemid]['plural']);
+					output("`0You pick up the %s.`n",$squarestuff[$itemid]['plural']);
 				} else {
 					//Pick up single iitem
 					if ($squarestuff[$itemid]){
-						output("`0You pick up the %s and put it in your backpack.`n",$squarestuff[$itemid]['verbosename']);
+						output("`0You pick up the %s.`n",$squarestuff[$itemid]['verbosename']);
 						change_item_owner($itemid,$session['user']['acctid']);
 					} else {
 						output("`0You bend over to pick up the item, but it's suddenly not there anymore!  Some crafty bastard has pinched it from right under your nose!`n");
@@ -105,7 +103,7 @@ function worldmap_items_dohook($hookname,$args){
 			foreach($squarestuff AS $sortid => $prefs){
 				$itemid = $prefs['itemid'];
 				$showmsg = true;
-				if ($prefs['quantity'] > 1){
+				if ($prefs['quantity'] > 1 && !$prefs['dropworldmap_blockdropall']){
 					addnav("Pick up items");
 					addnav(array("Pick up %s",$prefs['verbosename']),"runmodule.php?module=worldmapen&op=continue&item-pickup=".$itemid);
 					addnav(array("Pick up all %s",$prefs['plural']),"runmodule.php?module=worldmapen&op=continue&item-pickup=".$itemid."&pickupall=true");

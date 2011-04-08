@@ -3,7 +3,7 @@
 // translator ready
 // mail ready
 function reltime($date,$short=true){
-	$now = strtotime("now");
+	$now = time();
 	$x = abs($now - $date);
 	$d = (int)($x/86400);
 	$x = $x % 86400;
@@ -14,7 +14,7 @@ function reltime($date,$short=true){
 	$s = (int)($x);
 	if ($short){
 		$array=array("d"=>"d","h"=>"h","m"=>"m","s"=>"s");
-		$array=translate_inline($array,"datetime");
+		//$array=translate_inline($array,"datetime");
 		if ($d > 0)
 			$o = $d.$array['d'].($h>0?$h.$array['h']:"");
 		elseif ($h > 0)
@@ -64,7 +64,7 @@ function reltime($date,$short=true){
 		$o = str_replace(" ", "&nbsp;", $o);*/
 	}else{
 		$array=array("day"=>"day","days"=>"days","hour"=>"hour","hours"=>"hours","minute"=>"minute","minutes"=>"minutes","second"=>"second","seconds"=>"second");
-		$array=translate_inline($array,"datetime"); //translate it... tl-ready now
+		//$array=translate_inline($array,"datetime"); //translate it... tl-ready now
 		if ($d > 0)
 			$o = "$d ".($d>1?$array['days']:$array['day']).($h>0?", $h ".($h>1?$array['hours']:$array['hour']):"");
 		elseif ($h > 0)

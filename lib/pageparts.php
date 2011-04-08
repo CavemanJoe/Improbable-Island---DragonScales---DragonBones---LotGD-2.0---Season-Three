@@ -382,11 +382,11 @@ function page_footer($saveuser=true){
 
 	tlschema();
 
-	global $allqueries;
-	if (is_array($allqueries)){
-		usort($allqueries,'timesort');
-	}
-	debug($allqueries);
+	// global $allqueries;
+	// if (is_array($allqueries)){
+		// usort($allqueries,'timesort');
+	// }
+	// debug($allqueries);
 	// global $cachedqueries;
 	// if (is_array($cachedqueries)){
 		// usort($cachedqueries,'timesort');
@@ -398,6 +398,8 @@ function page_footer($saveuser=true){
 	//debug($allqueriesbyfile);
 	// global $updated_module_prefs;
 	// debug($updated_module_prefs);
+	// global $output_time;
+	// debug("Output time: ".$output_time);
 	//clean up spare {fields}s from header and footer (in case they're not used)
 	$footer = preg_replace("/{[^} \t\n\r]*}/i","",$footer);
 	$header = preg_replace("/{[^} \t\n\r]*}/i","",$header);
@@ -789,7 +791,7 @@ function charstats(){
 			addcharstat("Experience", number_format($u['experience'].check_temp_stat("experience",1))."/$req<br /><table style='border: solid 1px #000000;' bgcolor='red'  cellpadding='0' cellspacing='0' width='70' height='5'><tr><td width='$pct%' bgcolor='$color'></td><td width='$nonpct%'></td></tr></table>$expmsg");
 			addcharstat("Equipment Info");
 			addcharstat("Weapon", $u['weapon']);
-			addcharstat("Armor", $u['armor']);
+			addcharstat("Armour", $u['armor']);
 			if ($u['hashorse'])
 				addcharstat("Creature", $playermount['mountname'] . "`0");
 		}

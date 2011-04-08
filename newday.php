@@ -327,5 +327,8 @@ if ($dp < $dkills) {
 	debuglog("New Day Turns: $turnstoday");
 
 }
+
+$session['user']['sentnotice']=0;
+
 page_footer();
 ?>

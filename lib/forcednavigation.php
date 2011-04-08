@@ -57,7 +57,7 @@ function do_forced_nav($anonymous,$overrideforced){
 			gentimecount
 			gensize
 		*/
-		$sql = "SELECT * FROM ".db_prefix("accounts_everypage")." WHERE acctid = '".$session['user']['acctid']."'";
+		$sql = "SELECT allowednavs,laston,gentime,gentimecount,gensize FROM ".db_prefix("accounts_everypage")." WHERE acctid = '".$session['user']['acctid']."'";
 		$result = db_query($sql);
 		if (db_num_rows($result)==1){
 			//debug("Getting fresh info from accounts_everypage");
@@ -120,7 +120,7 @@ function do_forced_nav($anonymous,$overrideforced){
 		}else{
 			if ($overrideforced!==true){
 				//This nav is not fine at all.  Redirect the player to badnav.php.
-				$session['badnav'] = 1;
+				//$session['badnav'] = 1;
 				redirect("badnav.php","Navigation not allowed to $REQUEST_URI");
 			}
 		}

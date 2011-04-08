@@ -8,9 +8,12 @@ function hunterslodge_customarmour_define_item(){
 	set_item_setting("image","hunterslodge_customarmour.png","hunterslodge_customarmour");
 	set_item_setting("inventorylocation","lodgebag","hunterslodge_customarmour");
 	set_item_setting("lodge","true","hunterslodge_customarmour");
-	set_item_setting("context_lodge","true","hunterslodge_customarmour");
-	set_item_setting("lodge_cost","100","hunterslodge_customarmour");
-	set_item_setting("lodge_longdesc","This Armour Customisation Kit (consisting of a can of paint, some tinfoil and a large hammer) will allow you to set the name of your armour to anything you like. You get 25 characters to play about with, and other players will be able to see your custom weapon in commentary mouseover areas. If you're roleplaying a character with an unusual taste in clothing which to which Sheila's Shack doesn't cater, then this is the item for you. Once you set your custom armour, buying new armour will only change your stats and buffs; the name will always reflect what you chose when you customised your armour.`n`nThis item lets you customise your armour once; if you want to change it again, you'll need another Armour Customisation Kit. If you can see yourself doing this a lot, you'll save money by buying the Deluxe Armour Customisation Kit, which gives you unlimited armour name changes.`n`nYou can use this item from any Hunter's Lodge.","hunterslodge_customarmour");
+	set_item_setting("context_lodge",true,"hunterslodge_customweapon");
+	set_item_setting("context_village",true,"hunterslodge_customweapon");
+	set_item_setting("context_forest",true,"hunterslodge_customweapon");
+	set_item_setting("context_worldmap",true,"hunterslodge_customweapon");
+	set_item_setting("lodge_cost","75","hunterslodge_customarmour");
+	set_item_setting("lodge_longdesc","This Armour Customisation Kit (consisting of a can of paint, some tinfoil and a large hammer) will allow you to set the name of your armour to anything you like. You get 25 characters to play about with, and other players will be able to see your custom armour in commentary mouseover areas. If you're roleplaying a character with an unusual taste in clothing which to which Sheila's Shack doesn't cater, then this is the item for you. Once you set your custom armour, buying new armour will only change your stats and buffs; the name will always reflect what you chose when you customised your armour.`n`nThis item lets you customise your armour once; if you want to change it again, you'll need another Armour Customisation Kit. If you can see yourself doing this a lot, you'll save money by buying the Deluxe Armour Customisation Kit, which gives you unlimited armour name changes.`n`nYou can use this item in Jungles, while Travelling, in Outposts and in the Hunter's Lodge.","hunterslodge_customarmour");
 	set_item_setting("verbosename","Custom Armour Kit","hunterslodge_customarmour");
 	set_item_setting("require_file","hunterslodge_customarmour.php","hunterslodge_customarmour");
 	set_item_setting("call_function","hunterslodge_customarmour_use","hunterslodge_customarmour");
@@ -24,21 +27,23 @@ function hunterslodge_customarmour_permanent_define_item(){
 	set_item_setting("image","hunterslodge_customarmour_permanent.png","hunterslodge_customarmour_permanent");
 	set_item_setting("inventorylocation","lodgebag","hunterslodge_customarmour_permanent");
 	set_item_setting("lodge","true","hunterslodge_customarmour_permanent");
-	set_item_setting("context_lodge","true","hunterslodge_customarmour_permanent");
-	set_item_setting("lodge_cost","1000","hunterslodge_customarmour_permanent");
-	set_item_setting("lodge_longdesc","This Deluxe Armour Customisation Kit (consisting of a can of paint, some tinfoil and a large hammer, all cunningly disguised so nobody will ever know) will allow you to set the name of your armour to anything you like. You get 25 characters to play about with, and other players will be able to see your custom armour in commentary mouseover areas. If you're roleplaying a character with an unusual taste in clothing which to which Sheila's Shack doesn't cater, then this is the item for you. Once you set your custom armour, buying new armour will only change your stats and buffs; the name will always reflect what you chose when you customised your armour.`n`nThis item lets you customise your armour as many times as you like without having to buy it again, but remember - `4if you're buying this as a present, remember not to use it! Only new, unused items can be gifted to other players!`0`n`nYou can use this item from any Hunter's Lodge.","hunterslodge_customarmour_permanent");
+	set_item_setting("context_lodge",true,"hunterslodge_customweapon");
+	set_item_setting("context_village",true,"hunterslodge_customweapon");
+	set_item_setting("context_forest",true,"hunterslodge_customweapon");
+	set_item_setting("context_worldmap",true,"hunterslodge_customweapon");
+	set_item_setting("lodge_cost","595","hunterslodge_customarmour_permanent");
+	set_item_setting("lodge_longdesc","This Deluxe Armour Customisation Kit (consisting of a can of paint, some tinfoil and a large hammer, all cunningly disguised so nobody will ever know) will allow you to set the name of your armour to anything you like. You get 25 characters to play about with, and other players will be able to see your custom armour in commentary mouseover areas. If you're roleplaying a character with an unusual taste in clothing which to which Sheila's Shack doesn't cater, then this is the item for you. Once you set your custom armour, buying new armour will only change your stats and buffs; the name will always reflect what you chose when you customised your armour.`n`nThis item lets you customise your armour as many times as you like without having to buy it again, but remember - `4if you're buying this as a present, remember not to use it! Only new, unused items can be gifted to other players!`0`n`nYYou can use this item in Jungles, while Travelling, in Outposts and in the Hunter's Lodge.","hunterslodge_customarmour_permanent");
 	set_item_setting("verbosename","Deluxe Custom Armour Kit","hunterslodge_customarmour_permanent");
 	set_item_setting("require_file","hunterslodge_customarmour.php","hunterslodge_customarmour_permanent");
-	set_item_setting("call_function","hunterslodge_customarmour_permanent_use","hunterslodge_customarmour_permanent");
-	
+	set_item_setting("call_function","hunterslodge_customarmour_permanent_use","hunterslodge_customarmour_permanent");	
 }
 
 function hunterslodge_customarmour_use($args){
-	redirect("runmodule.php?module=hunterslodge_customarmour&op=change");
+	redirect("runmodule.php?module=hunterslodge_customarmour&op=change&context=".$args['context']);
 }
 
 function hunterslodge_customarmour_permanent_use($args){
-	redirect("runmodule.php?module=hunterslodge_customarmour&op=change&free=1");
+	redirect("runmodule.php?module=hunterslodge_customarmour&op=change&free=1&context=".$args['context']);
 }
 
 ?>

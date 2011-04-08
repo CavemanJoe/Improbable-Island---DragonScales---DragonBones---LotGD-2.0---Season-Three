@@ -5,7 +5,7 @@ function timeandweather_getmoduleinfo(){
 		"name"=>"Time and Weather",
 		"version"=>"2010-10-27",
 		"author"=>"Dan Hall",
-		"category"=>"Improbable",
+		"category"=>"Time and Weather",
 		"download"=>"",
 		"settings"=>array(
 			"currentweather"=>"The current weather code,int|4",
@@ -18,10 +18,9 @@ function timeandweather_getmoduleinfo(){
 }
 
 function timeandweather_install(){
-	module_addhook("everyheader");
 	module_addhook("charstats");
-	module_addhook("everyfooter");
 	module_addhook("prerender");
+	module_addhook("worldnav");
 	return true;
 }
 
@@ -33,6 +32,7 @@ function timeandweather_dohook($hookname,$args){
 	global $session,$outdoors,$shady,$rainy,$brightness;
 	switch($hookname){
 		case "prerender":
+			debug($outdoors);
 			// $brightness = "darker";
 			// $brightness = "darkest";
 			// $brightness = "lighter";
@@ -41,29 +41,30 @@ function timeandweather_dohook($hookname,$args){
 			// $shady = true;
 			if (!$session['noweathergraphics'] && (strpos($session['templatename'],"Default")===0 || strpos($session['templatename'],"DragonLeather")===0)){
 				global $output;
+				timeandweather_calculate_graphics();
 				if ($outdoors){
 					$weatherstart = "";
 					$weatherend = "";
 					for ($i=0; $i<$rainy; $i++){
-						$weatherstart .= "<div style='background:url(images/rain/rain1.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
+						$weatherstart .= "<div style='background:url(images/weather/rain1.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
 						$weatherend .= "</div>";
-						$weatherstart .= "<div style='background:url(images/rain/rain2.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
+						$weatherstart .= "<div style='background:url(images/weather/rain2.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
 						$weatherend .= "</div>";
-						$weatherstart .= "<div style='background:url(images/rain/rain3.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
+						$weatherstart .= "<div style='background:url(images/weather/rain3.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
 						$weatherend .= "</div>";
 						debug("rain");
 					}
-					if ($shady){
-						$weatherstart .= "<div style='background:url(images/rain/tree-1.gif); background-repeat:no-repeat;'>";
+					if ($shady && $brightness!="darker" && $brightness!="darkest" && !$rainy){
+						$weatherstart .= "<div style='background:url(images/weather/tree-1.gif); background-repeat:no-repeat;'>";
 						$weatherend .= "</div>";
-						$weatherstart .= "<div style='background:url(images/rain/tree-2.gif); background-position:top right; background-repeat:no-repeat;'>";
+						$weatherstart .= "<div style='background:url(images/weather/tree-2.gif); background-position:top right; background-repeat:no-repeat;'>";
 						$weatherend .= "</div>";
 					}
 					$output = str_replace("<!--weatherstart-->",$weatherstart,$output);
 					$output = str_replace("<!--weatherend-->",$weatherend,$output);
-				}
-				if ($brightness){
-					$output = str_replace("sitecenter","sitecenter-".$brightness,$output);
+					if ($brightness){
+						$output = str_replace("sitecenter","sitecenter-".$brightness,$output);
+					}
 				}
 			}
 		break;
@@ -147,8 +148,175 @@ function timeandweather_run(){
 	return true;
 }
 
+function timeandweather_calculate_graphics(){
+	global $session,$outdoors,$shady,$rainy,$brightness,$override_weather;
+	if (!$override_weather){
+		$info = timeandweather_getcurrent();
+		switch ($info['timezone']){
+			case 1:
+				switch($info['weather']){
+					case 1:
+						$brightness = "darker";
+					break;
+					case 2:
+						$brightness = "darker";
+					break;
+					case 3:
+						$brightness = "darker";
+					break;
+					case 4:
+						$brightness = "darker";
+					break;
+					case 5:
+						$rainy = 1;
+						$brightness = "darker";
+					break;
+					case 6:
+						$rainy = 2;
+						$brightness = "darkest";
+					break;
+					case 7:
+						$rainy = 3;
+						$brightness = "darkest";
+					break;
+				}
+			break;
+			case 2:
+				switch($info['weather']){
+					case 5:
+						$rainy = 1;
+						$brightness = "darker";
+					break;
+					case 6:
+						$rainy = 2;
+						$brightness = "darkest";
+					break;
+					case 7:
+						$rainy = 3;
+						$brightness = "darkest";
+					break;
+				}
+			break;
+			case 3:
+				switch($info['weather']){
+					case 1:
+						$brightness = "lighter";
+					break;
+					case 2:
+						$brightness = "lighter";
+					break;
+					case 5:
+						$rainy = 1;
+					break;
+					case 6:
+						$rainy = 2;
+						$brightness = "darker";
+					break;
+					case 7:
+						$rainy = 3;
+						$brightness = "darkest";
+					break;
+				}
+			break;
+			case 4:
+				switch($info['weather']){
+					case 1:
+						$brightness = "lighter";
+					break;
+					case 2:
+						$brightness = "lighter";
+					break;
+					case 5:
+						$rainy = 1;
+					break;
+					case 6:
+						$rainy = 2;
+						$brightness = "darker";
+					break;
+					case 7:
+						$rainy = 3;
+						$brightness = "darkest";
+					break;
+				}
+			break;
+			case 5:
+				switch($info['weather']){
+					case 5:
+						$rainy = 1;
+						$brightness = "darker";
+					break;
+					case 6:
+						$rainy = 2;
+						$brightness = "darkest";
+					break;
+					case 7:
+						$rainy = 3;
+						$brightness = "darkest";
+					break;
+				}
+			break;
+			case 6:
+				switch($info['weather']){
+					case 1:
+						$brightness = "darker";
+					break;
+					case 2:
+						$brightness = "darker";
+					break;
+					case 3:
+						$brightness = "darker";
+					break;
+					case 4:
+						$brightness = "darker";
+					break;
+					case 5:
+						$rainy = 1;
+						$brightness = "darker";
+					break;
+					case 6:
+						$rainy = 2;
+						$brightness = "darkest";
+					break;
+					case 7:
+						$rainy = 3;
+						$brightness = "darkest";
+					break;
+				}
+			break;
+			case 7:
+				switch($info['weather']){
+					case 1:
+						$brightness = "darkest";
+					break;
+					case 2:
+						$brightness = "darkest";
+					break;
+					case 3:
+						$brightness = "darkest";
+					break;
+					case 4:
+						$brightness = "darkest";
+					break;
+					case 5:
+						$rainy = 1;
+						$brightness = "darkest";
+					break;
+					case 6:
+						$rainy = 2;
+						$brightness = "darkest";
+					break;
+					case 7:
+						$rainy = 3;
+						$brightness = "darkest";
+					break;
+				}
+			break;
+		}
+	}
+}
+
 function timeandweather_getcurrent(){
-	global $session;
+	global $session,$outdoors,$shady,$rainy,$brightness;
 	require_once "lib/datetime.php";
 	$tdet = gametimedetails();
 	$now = $tdet['secssofartoday'];
@@ -204,12 +372,26 @@ function timeandweather_update(){
 	//debug($changeat);
 	$changein = $changeat - $now;
 	//debug($changein);
+	//$changeat = 0;
 	if ($now > $changeat){
 		set_module_setting("lastupdate",$now,"timeandweather");
 		//time to change the weather
 		$old = get_module_setting("currentweather","timeandweather");
 		set_module_setting("lastweather",$old,"timeandweather");
-		$new = e_rand(-2,2);
+		if ($old==1){
+			$new = e_rand(0,2);
+		} else if ($old==2){
+			$new = e_rand(-1,2);
+		} else if ($old==6){
+			$new = e_rand(-2,1);
+		}
+		 else if ($old==7){
+			$new = e_rand(-2,0);
+		} else {
+			//trend towards the sun
+			//$new = e_rand(-2,2);
+			$new = e_rand(-2,1);
+		}
 		increment_module_setting("currentweather",$new,"timeandweather");
 		if (get_module_setting("currentweather","timeandweather") > 7){
 			set_module_setting("currentweather",7,"timeandweather");

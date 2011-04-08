@@ -87,15 +87,29 @@ function items_delete_character($acctid){
 function items_dragonkill($acctid=false){
 	//this could be done better, but right now I just want it released damn it
 	global $session, $itemprefs, $itemsettings, $inventory;
-	if (!isset($inventory)){
-		load_inventory();
+	
+	if (!$acctid){
+		$acctid=$session['user']['acctid'];
 	}
 	
+	if (!isset($inventory)){
+		load_inventory($acctid);
+	}
+	
+	debug($inventory);
+	
 	foreach($inventory AS $itemid => $prefs){
+		debug($itemid);
 		if (!$prefs['dkpersist']){
+			debug("Found an item that doesn't belong!");
 			delete_item($itemid);
 		}
 	}
+	
+	debug($inventory);
+	
+	invalidatedatacache("playeritems/playeritems_$acctid");
+	
 }
 
 function get_player_items($acctid){
@@ -233,6 +247,7 @@ function load_inventory($acctid=false,$npcflag=false){
 			if (!isset($inventory[$ikeys[$i]]['inventorylocation'])) $inventory[$ikeys[$i]]['inventorylocation'] = "main";
 		}
 	}
+	clear_weights();
 	calculate_weights();
 	$inventory = modulehook("load_inventory",$inventory);
 	
@@ -512,6 +527,9 @@ function write_item_prefs(){
 
 function change_item_owner($itemids,$newowner){
 	global $itemsettings, $itemprefs, $inventory;
+	
+	$oldowners = array();
+	
 	if (is_array($itemids)){
 	
 		//get the items' old owners, so we can invalidate the cache properly
@@ -526,7 +544,7 @@ function change_item_owner($itemids,$newowner){
 			
 			$result = db_query($sql);
 			while ($row = db_fetch_assoc($result)){
-				invalidatedatacache("playeritems/playeritems_".$row['owner']);
+				$oldowners[]=$row['owner'];
 			}
 		}
 	
@@ -543,21 +561,47 @@ function change_item_owner($itemids,$newowner){
 			
 			$result = db_query($sql);
 			while ($row = db_fetch_assoc($result)){
-				invalidatedatacache("playeritems/playeritems_".$row['owner']);
+				$oldowners[]=$row['owner'];
 			}
 		}
 		$sql = "UPDATE ".db_prefix("items_player")." SET owner='$newowner' WHERE id='$itemids'";
 		//set_item_pref("inventorylocation","main",$itemids);
 	}
 	
-	invalidatedatacache("playeritems/playeritems_$newowner");
-	
 	if ($itemids){
+		
+		if (is_array($itemids)){
+			foreach($itemids AS $id){
+				//check whether or not this item also gives its container item, IE lodge bags, shoeboxes
+				if (get_item_pref("give_container",$id)){
+					//check for the container
+					if (!has_item(get_item_pref("give_container",$id),$newowner) && is_numeric($newowner)){
+						debug("Giving item container");
+						give_item(get_item_pref("give_container",$id),false,$newowner);
+					}
+				}
+			}
+		} else {
+			if (get_item_pref("give_container",$itemids)){
+				//check for the container
+				if (!has_item(get_item_pref("give_container",$itemids),$newowner) && is_numeric($newowner)){
+					debug("Giving item container");
+					give_item(get_item_pref("give_container",$itemids),false,$newowner);
+				}
+			}
+		}
 		//debug($sql);
 		db_query($sql);
-		//reload inventory
-		load_inventory();
 	}
+
+	invalidatedatacache("playeritems/playeritems_$newowner");
+	
+	foreach($oldowners AS $oldowner){
+		invalidatedatacache("playeritems/playeritems_".$oldowner);
+	}
+	
+	//reload inventory
+	load_inventory();
 };
 
 //=======================================================================
@@ -576,7 +620,7 @@ function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
 		$sql = "SELECT * FROM ".db_prefix("items_player")." WHERE item = '$item' AND owner = '$acctid'";
 		$result = db_query($sql);
 		if (db_num_rows($result)){
-			output("`c`b`4HORRIBLE HORRIBLE ITEM SYSTEM ERROR`nSomething has gone wrong, and the item system has tried to give you an item of which you should have only one.  Like a backpack or something.  Please report this, and tell us exactly what you did!`0`b`c`n`n");
+			//output("`c`b`4HORRIBLE HORRIBLE ITEM SYSTEM ERROR`nSomething has gone wrong, and the item system has tried to give you an item of which you should have only one.  Like a backpack or something.  Please report this, and tell us exactly what you did!`0`b`c`n`n");
 			return false;
 		}
 	}
@@ -593,6 +637,16 @@ function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
 		}
 	}
 	
+	//check whether or not this item also gives its container item, IE lodge bags, shoeboxes
+	if (get_item_setting("give_container",$item)){
+		//check for the container
+		if (!has_item(get_item_setting("give_container",$item),$acctid) && is_numeric($acctid)){
+			give_item(get_item_setting("give_container",$item),false,$acctid);
+		}
+	}
+	
+	invalidatedatacache("playeritems/playeritems_$acctid");
+	
 	if ($acctid == $session['user']['acctid']){
 		//saves a query over loading the inventory every time
 		if (!isset($inventory) || !is_array($inventory) && !$skipreload){
@@ -604,8 +658,6 @@ function give_item($item, $prefs=false, $acctid=false, $skipreload=false){
 			$inventory[$key] = $itemsettings[$item];
 		}
 	}
-	
-	invalidatedatacache("playeritems/playeritems_$acctid");
 	
 	return $key;
 }
@@ -649,6 +701,8 @@ function delete_item($itemid){
 	}
 	
 	invalidatedatacache("playeritems/playeritems_$acctid");
+	//clear_weights();
+	//calculate_weights();
 }
 
 function delete_all_items_of_type($item,$acctid=false){
@@ -679,10 +733,10 @@ function delete_all_items_of_type($item,$acctid=false){
 		$sqli = "DELETE FROM ".db_prefix("items_player")." WHERE item = '$item' AND owner = '$acctid'";
 		db_query($sqli);
 		db_query($sqlp);
-		//reload inventory
-		load_inventory();
 	}
 	invalidatedatacache("playeritems/playeritems_$acctid");
+	//reload inventory
+	load_inventory();
 	return $count;
 }
 
@@ -712,7 +766,7 @@ function use_item($item,$context="default"){
 			$useitem = call_user_func($useitem['call_function'],$useitem);
 		}
 		if ($useitem['usetext']){
-			output("`0%s`n`n",$useitem['usetext']);
+			output("`0%s`0`n`n",$useitem['usetext']);
 		}
 		if ($useitem['destroyafteruse']){
 			delete_item($useitem['id']);
@@ -966,6 +1020,7 @@ function group_items($items,$sort=false){
 		$uni[$sitem]['data']['itemid'] = $itemid;
 		$uni[$sitem]['data'] = array_merge($uni[$sitem]['data'],$vals);
 	}
+	//debug($uni);
 	$ret = array();
 	$carriers = array();
 	$items = array();

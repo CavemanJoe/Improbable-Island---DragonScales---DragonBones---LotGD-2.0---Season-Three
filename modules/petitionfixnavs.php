@@ -76,6 +76,9 @@ function petitionfixnavs_run(){
 			$author=$author['author'];
 			$sql="UPDATE ".db_prefix("accounts")." SET allowednavs='',specialinc='' WHERE acctid=$author";
 			$result=db_query($sql);
+			$sql="UPDATE ".db_prefix("accounts_everypage")." SET allowednavs='' WHERE acctid=$author";
+			$result=db_query($sql);
+			invalidatedatacache("accounts/account_".$author);
 			$sql="DELETE FROM ".db_prefix("accounts_output")." WHERE acctid=$author";
 			$result=db_query($sql);		
 			$nextid=httpget('nextid');
@@ -100,8 +103,9 @@ function petitionfixnavs_run(){
 			$author=$author['author'];
 			$sql="UPDATE ".db_prefix("accounts")." SET allowednavs='',specialinc='' WHERE acctid=$author";
 			$result=db_query($sql);
-			$sql="DELETE FROM ".db_prefix("accounts_output")." WHERE acctid=$author";
+			$sql="UPDATE ".db_prefix("accounts_everypage")." SET allowednavs='' WHERE acctid=$author";
 			$result=db_query($sql);
+			invalidatedatacache("accounts/account_".$author);
 			pt_insert(translate_inline("/me has fixed this users navs"));
 			require_once("lib/systemmail.php");
 			systemmail($author,array("Your petition"),array("Your navs have been fixed, you should be able to navigate from the stuck page now. If not, please petition again. (This is an automatic message).`n`nRegards %s",$session['user']['name']));

@@ -32,7 +32,10 @@ $hook = array(
 	'inventory' => $inventory,
 	'context' => $context,
 );
-$hook = modulehook("inventory-predisplay",$hook);
+$new = modulehook("inventory-predisplay",$hook);
+if ($hook != $new){
+	load_inventory();
+}
 
 addnav("Sort by...");
 addnav("Recently Acquired","inventory.php?items_sort=key&items_context=$context");

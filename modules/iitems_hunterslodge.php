@@ -149,6 +149,9 @@ function iitems_hunterslodge_run(){
 			}
 			
 			foreach($lodgeitems AS $key=>$vals){
+				if (!$vals['lodge']){
+					continue;
+				}
 				$classcount+=1;
 				$class=($classcount%2?"trdark":"trlight");
 				rawoutput("<tr class='$class'><td>");
@@ -202,6 +205,7 @@ function iitems_hunterslodge_run(){
 				rawoutput("</td></tr>");
 			}
 			rawoutput("</td></tr></table>");
+			modulehook("hunterslodge");
 		break;
 		case "buy":
 			$itemid = httpget("item");

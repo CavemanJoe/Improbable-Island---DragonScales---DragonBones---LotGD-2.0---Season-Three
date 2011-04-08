@@ -39,9 +39,10 @@ reset($mods);
 // Let's get them all into one array.
 $cities = array();
 $vname = getsetting("villagename", LOCATION_FIELDS);
+// debug($vname);
 $cities['village']['auxarea'] = "village-aux";
 $cities['village']['name'] = $vname;
-
+// debug($cities);
 foreach ($mods AS $area=>$name) {
 	// strncmp returns 0 if equal
 	if (!strncmp($name,"City of ", 8)){
@@ -52,7 +53,7 @@ foreach ($mods AS $area=>$name) {
 	}
 }
 reset($mods);
-
+// debug($cities);
 // First get the old names in, the ones that aren't supplied by modules
 $iname = getsetting("innname", LOCATION_INN);
 $locs = array(
@@ -82,7 +83,11 @@ reset($cities);
 
 addnav("Other Locations");
 foreach ($locs as $area=>$name) {
-	addnav($name, "moderate.php?op=sect&area=$area");
+	if ($area == "shade"){
+		addnav($name, "moderate.php?op=dual&area=$area");
+	} else {
+		addnav($name, "moderate.php?op=sect&area=$area");
+	}
 }
 reset($locs);
 
@@ -104,10 +109,17 @@ switch ($op){
 
 	foreach ($locs AS $area=>$name){
 		output("`b");
-		rawoutput("<a href=\"moderate.php?op=sect&area=$area\">".$name."</a>");
-		output("`b`n`0");
-		addnav("","moderate.php?op=sect&area=$area");
-		viewcommentary($area,"X",25);
+		if ($area == "shade"){
+			rawoutput("<a href=\"moderate.php?op=dual&area=$area\">".$name."</a>");
+			output("`b`n`0");
+			addnav("","moderate.php?op=dual&area=$area");
+			dualcommentary($area,"X",25);
+		} else {
+			rawoutput("<a href=\"moderate.php?op=sect&area=$area\">".$name."</a>");
+			output("`b`n`0");
+			addnav("","moderate.php?op=sect&area=$area");
+			viewcommentary($area,"X",25);
+		}
 		rawoutput("<hr style=\"border-bottom: 1px dotted #333333; border-top: 0; border-left: 0; border-right: 0;\" />");
 	}
 	break;
@@ -188,7 +200,7 @@ switch ($op){
 		rawoutput("</a>");
 		addnav("","moderate.php?op=dwellmap&x=$x&y=$y");
 		output("`b`n");
-		viewcommentary($room,"Intervene:",100);
+		viewcommentary($room,"Intervene:",25);
 	break;
 	
 	case "dwellmap":
@@ -251,7 +263,7 @@ switch ($op){
 			output("You entered: x = %s, y = %s.`n", $x, $y);
 			output("Valid map coordinates are: x = 1 to %s, and y = 1 to %s. Please try again.", $sizeX, $sizeY);
 		}else{
-			$square = "mapchat-".$x.",".$y.",1";
+			$square = "worldmap-".$x.",".$y.",1";
 			addnav("","moderate.php?op=mapreload&area=$square");
 			redirect("moderate.php?op=mapreload&area=$square");
 		}
@@ -263,17 +275,21 @@ switch ($op){
 		rawoutput("<a href=\"moderate.php?op=mapreload&area=$square\">".$square."</a>");
 		output("`b`n`0");
 		addnav("","moderate.php?op=mapreload&area=$square");
-		viewcommentary($square,"Intervene:",100);
+		viewcommentary($square,"Intervene:",25);
 	break;
 
 	case "dual":
 		$area = httpget('area');
 		output("`b");
-		rawoutput("<a href=\"moderate.php?op=dual&area=$area\">".$cities[$area]['name']."</a>");
+		if ($area == "shade"){
+			rawoutput("<a href=\"moderate.php?op=dual&area=$area\">Failboat</a>");
+		} else {
+			rawoutput("<a href=\"moderate.php?op=dual&area=$area\">".$cities[$area]['name']."</a>");
+		}
 		output("`b`0");
 		addnav("","moderate.php?op=dual&area=$area");
 //		output("`b%s`b", $cities[$area]['name']);
-		dualcommentary($area,"Intervene:",100);
+		dualcommentary($area,"Intervene:",25);
 	break;
 
 	case "sect":
@@ -283,7 +299,7 @@ switch ($op){
 		rawoutput("<a href=\"moderate.php?op=sect&area=$area\">".$locname."</a>");
 		output("`b`n`0");
 		addnav("","moderate.php?op=sect&area=$area");
-		viewcommentary($area,"Intervene:",100);
+		viewcommentary($area,"Intervene:",25);
 	break;
 
 	case "raw":
@@ -309,7 +325,7 @@ switch ($op){
 
 			case "all";
 				output("`bAll Comments`b`n");
-				viewcommentary("all", "X", 200);
+				viewcommentary("all", "X", 25);
 			break;
 		}
 	break;

@@ -348,11 +348,11 @@ function injectcommentary($section, $talkline, $comment) {
 			injectsystemcomment($section,$commentary);
 		} else {
 			//This query checks for double posts
-			$sql = "SELECT comment,author FROM " . db_prefix("commentary") . " WHERE section='$section' ORDER BY commentid DESC LIMIT 1";
+			$sql = "SELECT comment FROM " . db_prefix("commentary") . " WHERE section='$section' AND author='".$session['user']['acctid']."' ORDER BY commentid DESC LIMIT 1";
 			$result = db_query($sql);
 			$row = db_fetch_assoc($result);
 			db_free_result($result);
-			if ($row['comment']!=stripslashes($commentary) || $row['author']!=$session['user']['acctid']){
+			if ($row['comment']!=stripslashes($commentary)){
 				//Not a double post, inject the comment
 				injectrawcomment($section, $session['user']['acctid'], $commentary, $session['user']['name'], $info);
 				$session['user']['laston']=date("Y-m-d H:i:s");
@@ -419,30 +419,33 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 		$result = db_query($sql);
 		$viewingallsections=1;
 	} else {
+		$start = microtime(true);
 		$sql = "SELECT * FROM ".db_prefix("commentary")." WHERE section='$section' ORDER BY commentid DESC LIMIT ".($com*$limit).",$limit";
-		if ($com){
+		if (!$com){
+			//save doing db_fetch_assoc on commentary that's already cached; just unserialize and load it in one chunk
+			$commentbuffer = datacache("commentary/latestcommentary_".$section,60);
+		}
+		if (!is_array($commentbuffer) || $com){
+			$commentbuffer = array();
 			$result = db_query($sql);
-		} else {
-			$result = db_query_cached($sql,"commentary/latestcommentary_".$section);
+			while ($row = db_fetch_assoc($result)){
+				$row['info']=@stripslashes($row['info']);
+				$row['info']=@unserialize($row['info']);
+				if (!is_array($row['info'])){
+					$row['info']=array();
+				}
+				$row['info']['link'] = buildcommentarylink("&commentid=".$row['commentid']);
+				$commentbuffer[]=$row;
+			}
+			if (!$com){
+				updatedatacache("commentary/latestcommentary_".$section,$commentbuffer);
+			}
 		}
-	}
-	$commentbuffer = array();
-	
-	$start = microtime(true);
-	
-	while ($row = db_fetch_assoc($result)){
-		$row['info']=@stripslashes($row['info']);
-		$row['info']=@unserialize($row['info']);
-		if (!is_array($row['info'])){
-			$row['info']=array();
-		}
-		$row['info']['link'] = buildcommentarylink("&commentid=".$row['commentid']);
-		$commentbuffer[]=$row;
 	}
 	
 	$end = microtime(true);
 	$tot = $end - $start;
-	debug($tot);
+	//debug($tot);
 	
 	//pre-formatting
 	$commentbuffer = modulehook("commentbuffer-preformat",$commentbuffer);
@@ -466,8 +469,11 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 	$acctidstoquery=array();
 	
 	//prepare the actual comment line part of the comment - is it hidden, is it an action, is it a game comment, should we show a moderation link, clan rank colours, posting date abs/rel
-	//$loop1start = getmicrotime(true);
+	$loop1start = getmicrotime(true);
 	$bioretlink = $returnlink;
+	$bioretlink = URLEncode(buildcommentarylink("&frombio=true",$returnlink));
+	$restorelink = buildcommentarylink("&comscroll=".$com."&restorecomment=",$returnlink);
+	$removelink = buildcommentarylink("&comscroll=".$com."&removecomment=",$returnlink);
 	for ($i=0; $i < $rowcount; $i++){
 		if ((!$commentbuffer[$i]['info']['hidecomment']) || $showmodlink){
 			$thiscomment="";
@@ -481,24 +487,24 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 			if (substr($row['comment'],0,1)==":" || substr($row['comment'],0,3)=="/me") {
 				$row['skiptalkline']=true;
 				//remove beginning /me
-				$length = strlen($row['comment']);
+				//$length = strlen($row['comment']);
 				if (substr($row['comment'],0,3)=="/me"){
 					//debug("Match on ".$row['comment']);
-					$row['comment'] = substr($row['comment'],3,$length);
+					$row['comment'] = substr($row['comment'],3);
 				} else if (substr($row['comment'],0,2)=="::"){
 					//debug("Match on ".$row['comment']);
-					$row['comment'] = substr($row['comment'],2,$length);
+					$row['comment'] = substr($row['comment'],2);
 				} else if (substr($row['comment'],0,1)==":"){
 					//debug("Match on ".$row['comment']);
-					$row['comment'] = substr($row['comment'],1,$length);
+					$row['comment'] = substr($row['comment'],1);
 				}
 			}
-			if ((substr($row['comment'],0,5)=="/game" && !$row['name']) || $row['info']['gamecomment']){
+			if ($row['info']['gamecomment'] || (substr($row['comment'],0,5)=="/game" && !$row['name'])){
 				//debug("Game Comment: ".$row['comment']);
 				$row['gamecomment']=true;
 				$row['skiptalkline']=true;
 				$row['info']['icons']=array();
-				$length = strlen($row['comment']);
+				//$length = strlen($row['comment']);
 				$row['comment'] = str_replace("/game","",$row['comment']);
 			}
 			if ($linkbios){
@@ -506,14 +512,13 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 			}
 			if ($showmodlink){
 				if ($row['info']['hidecomment']){
-					$link = buildcommentarylink("&restorecomment=".$row['commentid']."&comscroll=".$com,$returnlink);
-					$thiscomment.="`0[<a href='$link'>$undel</a>]`0 <del>";
-					addnav("",$link);
+					//$link = buildcommentarylink("&restorecomment=".$row['commentid']."&comscroll=".$com,$returnlink);
+					$thiscomment.="`0[<a href='$restorelink".$row['commentid']."'>$undel</a>]`0 <del>";
+					addnav("",$restorelink.$row['commentid']);
 				} else {
-					$link = buildcommentarylink("&removecomment=".$row['commentid']."&comscroll=".$com,$returnlink);
-					$thiscomment.="`0[<a href='$link'>$del</a>] <input type='checkbox' name='deletecomment_".$row['commentid']."'> `0 ";
-					addnav("",$link);
-					//debug($session['user']['allowednavs']);
+					//$link = buildcommentarylink("&removecomment=".$row['commentid']."&comscroll=".$com,$returnlink);
+					$thiscomment.="`0[<a href='$removelink".$row['commentid']."'>$del</a>] <input type='checkbox' name='deletecomment_".$row['commentid']."'> `0 ";
+					addnav("",$removelink.$row['commentid']);
 				}
 			}
 			if (!$row['gamecomment'] && ($row['info']['clanid'] || $row['info']['clanid']===0) && $row['info']['clanrank']){
@@ -565,9 +570,9 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 		}
 		$bottomcid = $commentbuffer[$i]['commentid'];
 	}
-	// $loop1end = getmicrotime(true);
-	// $loop1tot = $loop1end - $loop1start;
-	// debug("Loop 1: ".$loop1tot);
+	$loop1end = getmicrotime(true);
+	$loop1tot = $loop1end - $loop1start;
+	//debug("Loop 1: ".$loop1tot);
 	
 	//send through a modulehook for additional processing by modules
 	$commentbuffer = modulehook("commentbuffer",$commentbuffer);
@@ -592,7 +597,7 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 	$rowcount = count($commentbuffer);
 	
 	//second loop through - add basic status icons for online/offline/nearby/afk/dnd
-	//$loop2start = getmicrotime(true);
+	$loop2start = getmicrotime(true);
 	for ($i=0; $i < $rowcount; $i++){
 		if (isset($commentbuffer[$i])){
 			$row = $commentbuffer[$i];
@@ -636,9 +641,9 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 			$commentbuffer[$i]['info']['icons']['online']=$icon;
 		}
 	}
-	// $loop2end = getmicrotime(true);
-	// $loop2tot = $loop2end - $loop2start;
-	// debug("Loop 2: ".$loop2tot);
+	$loop2end = getmicrotime(true);
+	$loop2tot = $loop2end - $loop2start;
+	//debug("Loop 2: ".$loop2tot);
 	
 	//debug($commentbuffer);
 	// $gcend = getmicrotime(true);
@@ -726,9 +731,7 @@ function dualcommentary($section,$message="Interject your own commentary?",$limi
 	
 	$nlink = buildcommentarylink("&refresh=1");
 	//debug($nlink);
-	
-	output_notl("`n`n");
-	
+		
 	if ($session['user']['dragonkills']==0 && $session['user']['level']==1){
 		output("`JHey, it looks like you're new in town!  Why not introduce yourself in the `bBanter Channel`b?  Everybody's really friendly here!`n`nIf you haven't already done so, you can give us a short physical description of your character that'll be shown to other players when they move their mouse over the eye symbol.  Once you've figured out a good description, check your preferences menu!`n`nThis message will go away after you've hit Level 2 for the first time.  Have fun!`n`n");
 	}
@@ -791,101 +794,10 @@ function dualcommentary($section,$message="Interject your own commentary?",$limi
 	$session['recentcomments'] = date("Y-m-d H:i:s");
 }
 
-// function viewcommentary_ajax($section,$message="Interject your own commentary?",$limit=25,$talkline="says",$schema=false,$skipfooter=false,$customsql=false,$skiprecentupdate=false,$overridemod=false) {
- 	// global $session,$REQUEST_URI,$doublepost, $translation_namespace;
-	// global $emptypost;
-	// global $chatloc,$chatsonpage,$afk,$dni,$moderating;
-	
-	// if (httpget('comment')){
-		// invalidatedatacache("commentary/latestcommentary_".$section);
-		// invalidatedatacache("commentary/commentarycount_".$section);
-	// }
-	
-	// if (($session['user']['superuser'] & SU_EDIT_COMMENTS) || $overridemod){
-		// $showmodlink=true;
-	// } else {
-		// $showmodlink=false;
-	// }
-	
-	// $ret = "`n";
-	
-	// //output_notl("`n");
-	
-	// //skip assigning chatloc if this chatloc's id ends with "_aux" - this way we can have dual chat areas
-	// if (!$afk && $session['user']['chatloc']!="DNI"){
-		// if (substr($section,strlen($section)-4,strlen($section))!="_aux"){
-			// $chatloc = $section;
-		// } else {
-			// $chatloc = substr($section,0,-4);
-		// }
-		// $session['user']['chatloc']=$chatloc;
-	// } else {
-		// $chatloc = "AFK";
-	// }
-
-	// if($section) {
-		// $ret .= "<a name='$section'></a>";
-		// // Let's add a hook for modules to block commentary sections
-		// $args = modulehook("blockcommentarea", array("section"=>$section));
-		// if (isset($args['block']) && ($args['block'] == "yes"))
-			// return;
-	// }
-	
-	// $commentbuffer = getcommentary($section,$limit,$talkline,$customsql,$showmodlink);
-	// $rowcount = count($commentbuffer);
-	
-	// if ($doublepost) $ret .= "`\$`bDouble post?`b`0`n";
-	// if ($emptypost) $ret .= "`\$`bWell, they say silence is a virtue.`b`0`n";
-	
-	// //output the comments!
-	
-	// if (($moderating && $rowcount) || !$moderating){
-		// $new = 0;
-		// if (!isset($session['user']['prefs']['commentary_recentline'])){
-			// $session['user']['prefs']['commentary_recentline']=1;
-		// }
-		// if (!$session['user']['prefs']['commentary_reverse']){
-			// for ($i=$rowcount-1; $i>=0; $i--){
-				// $line = preparecommentaryline($commentbuffer[$i]);
-				// //highlight new commentary lines
-				// if ($commentbuffer[$i]['postdate'] > $session['recentcomments'] && !$new && $session['user']['prefs']['commentary_recentline']){
-					// $ret .= "<hr style=\"border-bottom: 1px dotted #333333; border-top: 0; border-left: 0; border-right: 0;\" />";
-					// $new = 1;
-				// }
-				// $ret.= "$line`n";
-			// }
-		// } else {
-			// for ($i=0; $i<=$rowcount-1; $i++){
-				// $line = preparecommentaryline($commentbuffer[$i]);
-				// $ret .= "$line`n";
-				// if ($commentbuffer[$i]['postdate'] > $session['recentcomments'] && !$new && $session['user']['prefs']['commentary_recentline']){
-					// $ret .= "<hr style=\"border-bottom: 1px dotted #333333; border-top: 0; border-left: 0; border-right: 0;\" />";
-					// $new = 1;
-				// }
-			// }
-		// }
-		
-		// if ($showmodlink){
-			// //moderation link mass delete button
-			// $ret .= "<input type=\"submit\" value=\"Mass Delete\"></form>";
-		// }
-		
-		// if (!$skipfooter){
-			// //commentaryfooter($section,$message,$limit,$talkline,$schema);
-		// }
-	// }
-	
-	// if (!$skiprecentupdate){
-		// $session['recentcomments'] = date("Y-m-d H:i:s");
-	// }
-	
-	// return $ret;
-// }
-
 function preparecommentaryblock($section,$message="Interject your own commentary?",$limit=25,$talkline="says",$schema=false,$skipfooter=false,$customsql=false,$skiprecentupdate=false,$overridemod=false,$returnlink=false) {
  	global $session,$REQUEST_URI,$doublepost, $translation_namespace;
 	global $emptypost;
-	global $chatloc,$chatsonpage,$afk,$dni,$moderating;
+	global $chatloc,$afk,$dni,$moderating;
 	
 	if (httpget('comment')){
 		invalidatedatacache("commentary/latestcommentary_".$section);
@@ -929,6 +841,8 @@ function preparecommentaryblock($section,$message="Interject your own commentary
 	
 	//output the comments!
 	
+	$start = microtime(true);
+	
 	if (($moderating && $rowcount) || !$moderating){
 		$new = 0;
 		if (!isset($session['user']['prefs']['commentary_recentline'])){
@@ -956,13 +870,17 @@ function preparecommentaryblock($section,$message="Interject your own commentary
 		}
 	}
 	
+	$end = microtime(true);
+	$tot = $end - $start;
+	//debug("Preparecommentaryblock loop: ".$tot);
+	
 	return $ret;
 }
 
 function viewcommentary($section,$message="Interject your own commentary?",$limit=25,$talkline="says",$schema=false,$skipfooter=false,$customsql=false,$skiprecentupdate=false,$overridemod=false) {
 	global $session,$REQUEST_URI,$doublepost, $translation_namespace;
 	global $emptypost;
-	global $chatloc,$chatsonpage,$afk,$dni,$moderating;
+	global $chatloc,$afk,$dni,$moderating;
 	
 	if (!array_key_exists('commentary_auto_update', $session['user']['prefs'])){
 		$session['user']['prefs']['commentary_auto_update'] = 1;
@@ -998,9 +916,19 @@ function viewcommentary($section,$message="Interject your own commentary?",$limi
 		$jsec = str_replace("_","",$jsec);
 		$jsec = str_replace("-","",$jsec);
 		$jsec = str_replace(",","0",$jsec);
+		
+		//this javascript code auto-updates the chat automatically, based on server load.
+		//The current five-minute average as last reported to the game (reported once per minute) is stored in the global $fiveminuteload.
+		// $refreshbase = ceil($fiveminuteload);
+		// if ($refreshbase < 1) $refreshbase = 1;
+		// $refreshrate = $refreshbase*1000;
+		
+		//or, just go with every six seconds
+		$refreshrate = 6000;
+		
 		rawoutput("<script type=\"text/javascript\">
 			var limit".$jsec." = 0;
-			timer".$jsec."=setTimeout(\"loadnewchat".$jsec."()\",6000);
+			timer".$jsec."=setTimeout(\"loadnewchat".$jsec."()\",".$refreshrate.");
 			function loadnewchat".$jsec."() {
 				limit".$jsec." ++;
 				if (window.XMLHttpRequest){
@@ -1013,7 +941,7 @@ function viewcommentary($section,$message="Interject your own commentary?",$limi
 				xmlhttp".$jsec.".onreadystatechange=function(){
 					if (xmlhttp".$jsec.".readyState==4 && xmlhttp".$jsec.".status==200 && limit".$jsec." < 100){
 						document.getElementById(\"ajaxcommentarydiv".$jsec."\").innerHTML = xmlhttp".$jsec.".responseText;
-						timer".$jsec."=setTimeout(\"loadnewchat".$jsec."()\",6000);
+						timer".$jsec."=setTimeout(\"loadnewchat".$jsec."()\",".$refreshrate.");
 					} else if (limit".$jsec." >= 100){
 						document.getElementById(\"ajaxcommentarynoticediv".$jsec."\").innerHTML = 'Auto-update has timed out.  Click any link to restart the clock.';
 					}
@@ -1029,7 +957,8 @@ function viewcommentary($section,$message="Interject your own commentary?",$limi
 	
 	$out = preparecommentaryblock($section,$message,$limit,$talkline,$schema,$skipfooter,$customsql,$skiprecentupdate,$overridemod,$returnlink);
 	$commentary = appoencode($out,true);
-	output_notl("%s",$commentary,true);
+	rawoutput($commentary);
+	//output_notl("%s",$commentary,true);
 	
 	if ($session['user']['prefs']['commentary_auto_update']){
 		rawoutput("</div>");
@@ -1050,7 +979,7 @@ function viewcommentary($section,$message="Interject your own commentary?",$limi
 function commentaryfooter($section,$message="Interject your own commentary?",$limit=25,$talkline="says",$schema=false){
  	global $session,$REQUEST_URI,$doublepost, $translation_namespace;
 	global $emptypost;
-	global $chatloc,$chatsonpage,$moderating,$bottomcid;
+	global $chatloc,$moderating,$bottomcid;
 	//Output page jumpers
 	$com = httpget('comscroll');
 	if ($section=="all"){
@@ -1064,11 +993,29 @@ function commentaryfooter($section,$message="Interject your own commentary?",$li
 	$rowcount = $val['c'];
 	$val = round($val['c'] / $limit + 0.5,0) - 1;
 
+	$returnlink = URLEncode($_SERVER['REQUEST_URI']);
+	$returnlink = URLEncode(buildcommentarylink("&frombio=true",$returnlink));
+	
+	$hook = array(
+		"section"=>$section,
+		"message"=>$message,
+		"talkline"=>$talkline,
+		"returnlink"=>$returnlink,
+	);
+	
+	$hook = modulehook("commentary_talkform",$hook);
+	
+	$section = $hook['section'];
+	$message = $hook['message'];
+	$talkline = $hook['talkline'];
+	
 	if ($session['user']['loggedin']) {
 		if ($message!="X"){
 			$message="`n`@$message`0`n";
-			output($message);
-			talkform($section,$talkline,$limit,$schema);
+			output($message,true);
+			if (!$hook['blocktalkform']){
+				talkform($section,$talkline,$limit,$schema);
+			}
 		}
 	}
 
@@ -1123,16 +1070,21 @@ function commentaryfooter($section,$message="Interject your own commentary?",$li
 	
 	addnav("",$nlink);
 	output("`n`n`0Jump to commentary page: ");
+	$start = microtime(true);
+	$nlink = buildcommentarylink("&refresh=1&comscroll=");
 	for ($i=$val; $i>=0; $i--){
-		$nlink = buildcommentarylink("&comscroll=".$i."&refresh=1");
+		// $nlink = buildcommentarylink("&comscroll=".$i."&refresh=1");
 		$ndisp = 1+$val-$i;
-		if (httpget('comscroll')!=$i){
-			output_notl("<a href=\"$nlink\">$ndisp</a> ",true);
-			addnav("",$nlink);
+		if ($com!=$i){
+			output_notl("<a href=\"".$nlink.$i."\">$ndisp</a> ",true);
+			addnav("",$nlink.$i);
 		} else {
 			output_notl("`@$ndisp`0 ",true);
 		}
 	}
+	$end = microtime(true);
+	$tot = $end - $start;
+	//debug("commentary footer page numbers loop: ".$tot);
 	output_notl("`n");
 	if ($moderating){
 //		output("`bLast Comment ID shown on this page: %s`b`n",number_format($bottomcid));
@@ -1171,12 +1123,21 @@ function buildcommentarylink($append,$returnlink=false){
 	// $nlink = preg_replace("'&a(utomod_dec)?=([[:digit:]]|-)*'", "", $nlink);
 	// $nlink = preg_replace("'\\?a(utomod_dec)?=([[:digit:]]|-)*'", "?", $nlink);	
 	
+	//solve world map re-fight exploit
+	$nlink = str_replace("?op=fight","?op=continue",$nlink);
+	$nlink = str_replace("&op=fight","&op=continue",$nlink);
+	
+	//stop multiple addnav counters getting added to the end
+	$nlink = preg_replace("'&c?=([[:digit:]]|-)*'", "", $nlink);
+	$nlink = preg_replace("'\\?c?=([[:digit:]]|-)*'", "?", $nlink);
+	
 	$nlink = str_replace("?enable_auto_update=true","",$nlink);
 	$nlink = str_replace("?disable_auto_update=true","",$nlink);
 	$nlink = str_replace("&enable_auto_update=true","",$nlink);
 	$nlink = str_replace("&disable_auto_update=true","",$nlink);
 	$nlink = str_replace("&bulkdelete=true","",$nlink);
 	$nlink = str_replace("?bulkdelete=true","",$nlink);
+	$nlink = str_replace("&frombio=true","",$nlink);
 	$nlink .= $append;
 	$nlink = str_replace(".php&",".php?",$nlink);
 	$nlink = str_replace("&switchstack=1","",$nlink);
@@ -1221,22 +1182,6 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 		$session['user']['prefs']['ucol'] = false;
 	}
 	
-	$counttoday=0;
-	// if (substr($section,0,5)!="clan-"){
-		// $sql = "SELECT author FROM " . db_prefix("commentary") . " WHERE section='$section' AND postdate>'".date("Y-m-d 00:00:00")."' ORDER BY commentid DESC LIMIT $limit";
-		// $result = db_query($sql);
-		// while ($row=db_fetch_assoc($result)){
-			// if ($row['author']==$session['user']['acctid']) $counttoday++;
-		// }
-		// if (round($limit/2,0)-$counttoday <= 0 && getsetting('postinglimit',1)){
-			// if ($session['user']['superuser']&~SU_DOESNT_GIVE_GROTTO){
-				// output("`n`)(You'd be out of posts if you weren't a superuser or moderator.)`n");
-			// }else{
-				// output("`n`)(You are out of posts for the time being.  Once some of your existing posts have moved out of the comment area, you'll be allowed to post again.)`n");
-				// return false;
-			// }
-		// }
-	// }
 	if (translate_inline($talkline,$schema)!="says")
 		$tll = strlen(translate_inline($talkline,$schema))+11;
 		else $tll=0;
@@ -1267,7 +1212,7 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 		previewfield("insertcommentary", $session['user']['name'], $talkline, true, array("size"=>"30", "maxlength"=>255-$tll),false,$jsec,$session['user']['prefs']['ucol']);
 		rawoutput("<script type=\"text/javascript\">
 			var typetimelimit".$jsec." = 0;
-			var timebetween".$jsec." = 1500;
+			var timebetween".$jsec." = 1000;
 			var oldchars".$jsec." = 'xxxxx';
 			var newchars".$jsec." = 'xxxxx';
 			var newchars".$jsec." = document.getElementById('input".$jsec."').value;
@@ -1330,15 +1275,7 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 	// *** DRAGONBG.COM CORE PATCH START***
 	output_notl("<input type='submit' class='button' value='$add'>	",true);
 	// *** DRAGONBG.COM CORE PATCH END***
-
-	// *** AJAX CHAT MOD START ***
-	//if (round($limit/2,0)-$counttoday < 3 && getsetting('postinglimit',1)){
-	//	output("`)(You have %s posts left today)`n`0",(round($limit/2,0)-$counttoday));
-	//}
-	rawoutput("<div id='previewtext'></div></form>");
-	//rawoutput('</div>');
-	// *** AJAX CHAT MOD END ***
-	
+	rawoutput("</form>");
 	tlschema();
 }
 ?>

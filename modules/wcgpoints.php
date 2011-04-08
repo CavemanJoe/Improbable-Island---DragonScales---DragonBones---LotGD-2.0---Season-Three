@@ -1,4 +1,4 @@
-]<?php
+<?php
 
 function wcgpoints_getmoduleinfo(){
 	$info = array(

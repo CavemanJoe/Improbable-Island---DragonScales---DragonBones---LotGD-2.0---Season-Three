@@ -22,6 +22,7 @@ function staminasystem_getmoduleinfo(){
 			"amber"=>"Amount of the bar taken up in Amber Stamina levels,int|400000",
 			"actions"=>"Player's Actions array,textarea|array()",
 			"buffs"=>"Player's Buffs array,textarea|array()",
+			"user_minihof"=>"Show me the mini-HOF for Stamina-related actions,bool|true",
 		)
 	);
 	return $info;
