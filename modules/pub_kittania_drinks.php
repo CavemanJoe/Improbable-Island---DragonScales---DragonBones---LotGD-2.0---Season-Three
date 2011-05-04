@@ -63,8 +63,8 @@ function pub_kittania_drinks_dohook($hookname,$args){
 						"wearoff"=>"You feel the effects of the Vegetable Cider fade away.",
 						"schema"=>"pub_kittania"
 					));
-					require_once "modules/staminasystem/lib/lib.php";
-					addstamina(5000);
+					//require_once "modules/staminasystem/lib/lib.php";
+					//addstamina(5000);
 				break;
 				case "tiggerbalm":
 					$session['user']['gold'] -= 40;
@@ -80,13 +80,13 @@ function pub_kittania_drinks_dohook($hookname,$args){
 							"wearoff"=>"`4You feel the Tigger Balm Shakes fade away.  Thank goodness for that.",
 							"schema"=>"pub_kittania"
 						));
-						require_once "modules/staminasystem/lib/lib.php";
-						addstamina(6000);
+						//require_once "modules/staminasystem/lib/lib.php";
+						//addstamina(6000);
 					} else {
 						output("You sip gently at the thick, herbal-tasting green fluid.  The fluid is cold, but feels pleasantly warm as it goes down.`n`n");
 						output("You feel `2Energetic!`0`n`n");
-						require_once "modules/staminasystem/lib/lib.php";
-						addstamina(7000);
+						//require_once "modules/staminasystem/lib/lib.php";
+						//addstamina(7000);
 						apply_buff('pub_kittania_tiggerbalm', array(
 							"name"=>"`2Tigger Balm Warmth",
 							"rounds"=>25,

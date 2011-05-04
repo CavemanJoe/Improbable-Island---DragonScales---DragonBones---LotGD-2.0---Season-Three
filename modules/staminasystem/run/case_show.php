@@ -1,5 +1,7 @@
 <?php
 
+require_once "modules/staminasystem/lib/lib.php";
+
 popup_header("Your Stamina statistics");
 
 $stamina = get_module_pref("stamina");

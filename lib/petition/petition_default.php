@@ -3,7 +3,7 @@ tlschema("petition");
 popup_header("Petition for Help");
 $post = httpallpost();
 if (count($post)>0){
-	debug($post,true);
+	//debug($post,true);
 	if (strpos($post['description'],"[link=") || strpos($post['description'],"bitcomet") || strpos($post['description'],"<a href=")){
 		output("Petition rejected as spam.  If you think this was in error, Petition again - without the links this time.`n`nHere's what you typed:`n`n%s",$post['description']);
 	} else {

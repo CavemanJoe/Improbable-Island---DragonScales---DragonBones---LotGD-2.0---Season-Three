@@ -60,7 +60,7 @@ function biochat_dohook($hookname,$args){
 			debug($return);
 		break;
 		case "commentaryoptions":
-			if (!strpos($_SERVER['REQUEST_URI'],"char=".$session['user']['acctid']."&")){
+			if (!strpos($_SERVER['REQUEST_URI'],"char=".$session['user']['acctid']."&") && !strpos($_SERVER['REQUEST_URI'],"global_banter")){
 				$link = "bio.php?char=".$session['user']['acctid'] ."&ret=".URLEncode(buildcommentarylink("&frombio=true"));
 				$total = get_module_pref("total");
 				$seen = get_module_pref("seen");

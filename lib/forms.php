@@ -1,5 +1,5 @@
 <?php
-function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=true, $info=false, $default=false, $jsec=false, $ucol=false) {
+function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=true, $info=false, $default=false, $jsec=false, $ucol=false, $focus=false) {
 	global $schema,$session,$chatsonpage;
 	$talkline = translate_inline($talkline, $schema);
 	$youhave = translate_inline("You have ");
@@ -228,6 +228,9 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 		}
 	}
 	rawoutput("<div id='previewtext$nid'></div>");
+	if ($focus){
+		rawoutput("<script language='javascript'>document.getElementById('input".$nid."').focus();</script>");
+	}
 }
 
 function previewfield_countup($name,$maxchars=false,$default=""){
@@ -243,7 +246,6 @@ function previewfield_countup($name,$maxchars=false,$default=""){
 					var y='';
 					var z='';
 					var charsleft = (t.length)+' Characters';
-					var 
 					italics=0;
 					bold=0;
 					document.getElementById('charsleft$id').innerHTML=charsleft;

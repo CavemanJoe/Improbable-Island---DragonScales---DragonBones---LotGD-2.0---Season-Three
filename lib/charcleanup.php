@@ -62,12 +62,12 @@ function char_cleanup_allinone($ids,$type){
 			}
 		} else {
 			// this clan needs to be disbanded.
-			$sql = "DELETE FROM " . db_prefix("clans") . " WHERE clanid=$cid";
-			db_query($sql);
+			// $sql = "DELETE FROM " . db_prefix("clans") . " WHERE clanid=$cid";
+			// db_query($sql);
 			// And just in case we goofed, no players associated with a
 			// deleted clan  This shouldn't be important, but.
 			$sql = "UPDATE " . db_prefix("accounts") . " SET clanid=0,clanrank=0,clanjoindate='0000-00-00 00:00;00' WHERE clanid=$cid";
-			db_query($sql);
+			// db_query($sql);
 		}
 	}
 	

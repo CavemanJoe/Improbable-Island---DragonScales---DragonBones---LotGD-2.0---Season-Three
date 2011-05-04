@@ -150,6 +150,10 @@ function improbablehousing_mementos_run(){
 			$cost = ceil(strlen($newtext)/2);
 			$session['user']['donationspent'] += $cost;
 			
+			//log purchase
+			$sql = "INSERT INTO ".db_prefix("purchaselog")." (acctid,purchased,amount,data,giftwrap,timestamp) VALUES ('".$session['user']['acctid']."','memento_housing_interaction','".$cost."','none','0','".date("Y-m-d H:i:s")."')";
+			
+			
 			//get all the items like this and apply the pref to all of them
 			$sql = "SELECT * FROM ".db_prefix("items_prefs")." WHERE setting='memento_originalitem' AND value='".$itemid."'";
 			$result = db_query($sql);

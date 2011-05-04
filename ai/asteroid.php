@@ -5,8 +5,12 @@ global $badguy,$enemies,$index;
 if (!isset($badguy['asteroid_split'])){
 	$badguy['asteroid_split']=1;
 }
+//debug("Asteroid!");
+//debug($badguy['creaturehealth']);
+//debug($badguy['creaturestartinghealth']);
 if ($badguy['creaturehealth'] < ($badguy['creaturestartinghealth']*0.5)){
 	//check to see if this has already split
+//	debug("Asteroid!");
 	if ($badguy['asteroid_split'] <= 3 && !$badguy['alreadysplit']){
 		$newrock = $badguy;
 		$badguy['alreadysplit']=1;

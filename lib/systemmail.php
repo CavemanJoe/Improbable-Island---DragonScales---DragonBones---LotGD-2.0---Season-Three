@@ -98,7 +98,7 @@ function systemmail($to,$subject,$body,$from=0,$noemail=false){
 			stripslashes($body),
 			$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])
 		),$to);
-		//mail($row['emailaddress'],$mailsubj,str_replace("`n","\n",$mailbody),"From: ".getsetting("gameadminemail","postmaster@localhost"));
+		//mail($row['emailaddress'],$mailsubj,str_replace("`n","\n",$mailbody),"From: Improbable Island<".getsetting("gameadminemail","postmaster@localhost").">");
 	}
 	invalidatedatacache("mail/mail-$to");
 }

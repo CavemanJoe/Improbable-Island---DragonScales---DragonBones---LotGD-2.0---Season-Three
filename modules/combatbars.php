@@ -74,10 +74,38 @@ function combatbars_showbar($cur,$max,$name,$maxlen=0){
 	} else {
 		$numdisp = "K.O.";
 	}
-	$hpout = combatbars_hitpoints($cur,$maxlen);
+	//$hpout = combatbars_hitpoints($cur,$maxlen);
+	$hpout = nixienumbers($cur,2);
 	$nhpout = addslashes($hpout);
-	//rawoutput("<script style=\"text/javascript\" language=\"javascript\">document.getElementById(\"combatbars\").innerHTML += '<table cellpadding=0 cellspacing=0><tr><td>".$nhpout."</td><td><table cellpadding=0 cellspacing=0><tr><td width=\"220px\"><div style=\"width:200; height:25; background:url(/modules/combatbars/lifebar-bottom.png); border:1px solid #000000;\"><div style=\"width: 195; height: 25; padding-left:5px; background: url(/modules/combatbars/lifebar-top.png); background-repeat: no-repeat; line-height: 25px; background-position: -".$pixeloffset."px\"><font color=#ffffff><b>".$numdisp."</b></font></div></div></td><td><b>".addslashes(appoencode($name))."</b></font></td></tr></table></td></tr></table>';</script>");
-	rawoutput("<script style=\"text/javascript\" language=\"javascript\">document.getElementById(\"combatbars\").innerHTML += '<table cellpadding=0 cellspacing=0><tr><td width=\"220px\"><div style=\"width:200; height:25; background:url(/modules/combatbars/lifebar-bottom.png); border:1px solid #000000;\"><div style=\"width: 195; height: 25; padding-left:5px; background: url(/modules/combatbars/lifebar-top.png); background-repeat: no-repeat; line-height: 25px; background-position: -".$pixeloffset."px\"><font color=#ffffff><b>".$numdisp."</b></font></div></div></td><td><b>".addslashes(appoencode($name))."</b></font></td></tr></table>';</script>");
+	rawoutput("<script style=\"text/javascript\" language=\"javascript\">document.getElementById(\"combatbars\").innerHTML += '<table cellpadding=0 cellspacing=0><tr><td>".$nhpout."</td><td><table cellpadding=0 cellspacing=0><tr><td width=\"220px\"><div style=\"width:200; height:25; background:url(/modules/combatbars/lifebar-bottom.png); border:1px solid #000000;\"><div style=\"width: 195; height: 25; padding-left:5px; background: url(/modules/combatbars/lifebar-top.png); background-repeat: no-repeat; line-height: 25px; background-position: -".$pixeloffset."px\"><font color=#ffffff><b>".$numdisp."</b></font></div></div></td><td><b>".addslashes(appoencode($name))."</b></font></td></tr></table></td></tr></table>';</script>");
+	//rawoutput("<script style=\"text/javascript\" language=\"javascript\">document.getElementById(\"combatbars\").innerHTML += '<table cellpadding=0 cellspacing=0><tr><td width=\"220px\"><div style=\"width:200; height:25; background:url(/modules/combatbars/lifebar-bottom.png); border:1px solid #000000;\"><div style=\"width: 195; height: 25; padding-left:5px; background: url(/modules/combatbars/lifebar-top.png); background-repeat: no-repeat; line-height: 25px; background-position: -".$pixeloffset."px\"><font color=#ffffff><b>".$numdisp."</b></font></div></div></td><td><b>".addslashes(appoencode($name))."</b></font></td></tr></table>';</script>");
+}
+
+function nixienumbers($number,$size=1){
+	//convert to string
+	if ($number > 0){
+		$number = "$number";
+	} else {
+		$number = "0";
+	}
+	$len = strlen($number);
+	$str = "";
+	$tsep = -1;
+	for ($i=$len-1; $i>=0; $i--){
+		$stradd="<img src='images/numbers/nixies/".$size."/nixie_".$number[$i].".png'>";
+		$tsep++;
+		if ($tsep==3){
+			$stradd.="&nbsp;&nbsp;&nbsp;";
+			$tsep=0;
+		}
+		$str = $stradd.$str;
+	}
+	while ($tsep < 2){
+		$stradd = "<img src='images/numbers/nixies/".$size."/nixie_blank.png'>";
+		$str = $stradd.$str;
+		$tsep++;
+	}
+	return $str;
 }
 
 function combatbars_hitpoints($hp,$maxlen=0){

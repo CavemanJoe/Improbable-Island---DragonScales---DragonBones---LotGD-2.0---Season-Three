@@ -255,14 +255,37 @@ function injectsystemcomment($section,$comment) {
 
 function injectrawcomment($section, $author, $comment, $name=false, $info=false){
 	if ($info){
-		$info=@serialize($info);
-		$info=addslashes($info);
+		$sqlinfo=@serialize($info);
+		$sqlinfo=addslashes($sqlinfo);
 	}
 	$name = addslashes($name);
-	$sql = "INSERT INTO " . db_prefix("commentary") . " (postdate,section,author,comment,name,info) VALUES ('".date("Y-m-d H:i:s")."','$section',$author,\"$comment\",\"$name\",\"$info\")";
+	$sql = "INSERT INTO " . db_prefix("commentary") . " (postdate,section,author,comment,name,info) VALUES ('".date("Y-m-d H:i:s")."','$section',$author,\"$comment\",\"$name\",\"$sqlinfo\")";
 	db_query($sql);
-	invalidatedatacache("commentary/latestcommentary_".$section);
-	invalidatedatacache("commentary/commentarycount_".$section);
+	
+	//update datacache for latest commentary - no need to invalidate this and then rebuild it again, just pop one off the start and put our new one on the end
+	$commentbuffer = datacache("commentary/latestcommentary_".$section,60);
+	if (is_array($commentbuffer)){
+		$newcomment = array(
+			"postdate" => date("Y-m-d H:i:s"),
+			"section" => $section,
+			"author" => $author,
+			"comment" => stripslashes($comment),
+			"name" => $name,
+			"info" => $info,
+		);
+		array_unshift($commentbuffer,$newcomment);
+		updatedatacache("commentary/latestcommentary_".$section,$commentbuffer);
+	}
+	//invalidatedatacache("commentary/latestcommentary_".$section);
+	
+	//commentary count - no need to invalidate this and then rebuild it again, just increment it by one
+	$count = datacache("commentary/commentarycount_".$section,60);
+	if (is_array($count)){
+		$count[0]['c']+=1;
+		updatedatacache("commentary/commentarycount_".$section,$count);
+	}
+	//invalidatedatacache("commentary/commentarycount_".$section);
+	
 	invalidatedatacache("commentary/whosonline_".$section);
 }
 
@@ -334,30 +357,32 @@ function injectcommentary($section, $talkline, $comment) {
 		//Clean up the comment a bit
 		$commentary = preg_replace("'([^[:space:]]{45,45})([^[:space:]])'","\\1 \\2",$commentary);
 		$commentary = addslashes($commentary);
-
-		// do an emote if the area has a custom talkline and the user
-		// isn't trying to emote already.
-		// if ($talkline!="says" && substr($commentary,0,1)!=":" && substr($commentary,0,2)!="::" && substr($commentary,0,3)!="/me" && substr($commentary,0,5) != "/game") {
-			// //debug($commentary);
-			// $commentary = ":`3$talkline, \\\"`#$commentary`3\\\"";
-		// }
 		
 		// Sort out /game switches
 		if (substr($commentary,0,5)=="/game" && ($session['user']['superuser']&SU_IS_GAMEMASTER)==SU_IS_GAMEMASTER) {
 			//handle game master inserts now, allow double posts
 			injectsystemcomment($section,$commentary);
 		} else {
-			//This query checks for double posts
-			$sql = "SELECT comment FROM " . db_prefix("commentary") . " WHERE section='$section' AND author='".$session['user']['acctid']."' ORDER BY commentid DESC LIMIT 1";
-			$result = db_query($sql);
-			$row = db_fetch_assoc($result);
-			db_free_result($result);
-			if ($row['comment']!=stripslashes($commentary)){
+			//check for double posts
+			$commentbuffer = datacache("commentary/latestcommentary_".$section,60);
+			if (is_array($commentbuffer)){
+				if ($commentbuffer[0]['comment'] == stripslashes($commentary)){
+					$doublepost = true;
+				}
+			} else {
+				$sql = "SELECT comment FROM " . db_prefix("commentary") . " WHERE section='$section' AND author='".$session['user']['acctid']."' ORDER BY commentid DESC LIMIT 1";
+				$result = db_query($sql);
+				$row = db_fetch_assoc($result);
+				db_free_result($result);
+				if ($row['comment']==stripslashes($commentary)){
+					$doublepost = true;
+				}
+			}
+			
+			if (!$doublepost){
 				//Not a double post, inject the comment
 				injectrawcomment($section, $session['user']['acctid'], $commentary, $session['user']['name'], $info);
 				$session['user']['laston']=date("Y-m-d H:i:s");
-			} else {
-				$doublepost = 1;
 			}
 		}
 	}
@@ -391,7 +416,7 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 	}
 	
 	//stops people from clicking on Bio links in the MoTD
-	$nobios = array("motd.php"=>true);
+	$nobios = array("motd.php"=>true,"runmodule.php?module=global_banter"=>true);
 	if (!array_key_exists(basename($_SERVER['SCRIPT_NAME']),$nobios)) $nobios[basename($_SERVER['SCRIPT_NAME'])] = false;
 	if ($nobios[basename($_SERVER['SCRIPT_NAME'])]){
 		$linkbios=false;
@@ -424,6 +449,7 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 		if (!$com){
 			//save doing db_fetch_assoc on commentary that's already cached; just unserialize and load it in one chunk
 			$commentbuffer = datacache("commentary/latestcommentary_".$section,60);
+			//debug($commentbuffer);
 		}
 		if (!is_array($commentbuffer) || $com){
 			$commentbuffer = array();
@@ -507,7 +533,7 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 				//$length = strlen($row['comment']);
 				$row['comment'] = str_replace("/game","",$row['comment']);
 			}
-			if ($linkbios){
+			if ($linkbios && !isset($row['biolink'])){
 				$row['biolink']=true;
 			}
 			if ($showmodlink){
@@ -525,14 +551,22 @@ function getcommentary($section, $limit=25, $talkline, $customsql=false, $showmo
 				$clanrankcolors=array(CLAN_APPLICANT=>"`!",CLAN_MEMBER=>"`3",CLAN_OFFICER=>"`^",CLAN_LEADER=>"`&", CLAN_FOUNDER=>"`\$");
 				$thiscomment.="`0<a title=\"".$row['info']['clanname']."\">&lt;".$clanrankcolors[$row['info']['clanrank']].$row['info']['clanshort']."`0&gt;</a>";
 			}
-			if ($row['biolink'] && !$row['gamecomment']){
-				$bio = "bio.php?char=".$row['acctid']."&ret=".$bioretlink;
-				if (!$row['skiptalkline']){
-					$thiscomment.="<a href=\"$bio\" style=\"text-decoration: none\">`&".$row['name']."</a>`& ";
+			if (!$row['gamecomment']){
+				if ($row['biolink']){
+					$bio = "bio.php?char=".$row['acctid']."&ret=".$bioretlink;
+					if (!$row['skiptalkline']){
+						$thiscomment.="<a href=\"$bio\" style=\"text-decoration: none\">`&".$row['name']."</a>`& ";
+					} else {
+						$thiscomment.="<a href=\"$bio\" style=\"text-decoration: none\">`&".$row['name']."</a>`&";
+					}
+					addnav("",$bio);
 				} else {
-					$thiscomment.="<a href=\"$bio\" style=\"text-decoration: none\">`&".$row['name']."</a>`&";
+					if (!$row['skiptalkline']){
+						$thiscomment.="`&".$row['name']."`& ";
+					} else {
+						$thiscomment.="`&".$row['name']."`&";
+					}
 				}
-				addnav("",$bio);
 			}
 			// if ($row['skiptalkline']){
 				// $thiscomment.="`&";
@@ -799,11 +833,11 @@ function preparecommentaryblock($section,$message="Interject your own commentary
 	global $emptypost;
 	global $chatloc,$afk,$dni,$moderating;
 	
-	if (httpget('comment')){
-		invalidatedatacache("commentary/latestcommentary_".$section);
-		invalidatedatacache("commentary/commentarycount_".$section);
-		invalidatedatacache("commentary/whosonline_".$section);
-	}
+	// if (httpget('comment')){
+		// invalidatedatacache("commentary/latestcommentary_".$section);
+		// invalidatedatacache("commentary/commentarycount_".$section);
+		// invalidatedatacache("commentary/whosonline_".$section);
+	// }
 	
 	if (($session['user']['superuser'] & SU_EDIT_COMMENTS) || $overridemod){
 		$showmodlink=true;
@@ -849,12 +883,18 @@ function preparecommentaryblock($section,$message="Interject your own commentary
 			$session['user']['prefs']['commentary_recentline']=1;
 		}
 		if (!$session['user']['prefs']['commentary_reverse']){
+			//debug($session['recentcomments']);
 			for ($i=$rowcount-1; $i>=0; $i--){
 				$line = preparecommentaryline($commentbuffer[$i]);
 				//highlight new commentary lines
 				if ($commentbuffer[$i]['postdate'] > $session['recentcomments'] && !$new && $session['user']['prefs']['commentary_recentline']){
 					$ret .= "<hr style=\"border-bottom: 1px dotted #333333; border-top: 0; border-left: 0; border-right: 0;\" />";
 					$new = 1;
+					$ret .= "<a name=\"commentaryjump_".$section."\"></a>";
+					//debug("Jump at comment id".$commentbuffer[$i]['commentid']);
+				} else if ($i == 2){
+					$ret .= "<a name=\"commentaryjump_".$section."\"></a>";
+					//debug("Jump at comment id".$commentbuffer[$i]['commentid']);
 				}
 				$ret .= "$line`n";
 			}
@@ -908,7 +948,7 @@ function viewcommentary($section,$message="Interject your own commentary?",$limi
 		$session['recentcomments'] = date("Y-m-d H:i:s");
 	}
 	
-	rawoutput("<!--start of commentary area-->");
+	rawoutput("<!--start of commentary area--><a name=\"commentarystart\"></a>");
 	
 	global $fiveminuteload;
 	if ($session['user']['prefs']['commentary_auto_update'] && !httpget('comscroll') && $fiveminuteload < 8){
@@ -1161,7 +1201,7 @@ function buildcommentarylink($append,$returnlink=false){
 	//debug($nlink);
 	
 	if ($jump && $section) {
-		$nlink .= "#$section";
+		$nlink .= "#commentarystart";
 	}
 	addnav("",$nlink);
 	return $nlink;
@@ -1173,9 +1213,15 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 	if ($schema===false) $schema=$translation_namespace;
 	tlschema("commentary");
 
-	$jump = false;
+	$jump = true;
 	if (isset($session['user']['prefs']['nojump']) && $session['user']['prefs']['nojump'] == true) {
-		$jump = true;
+		$jump = false;
+	}
+	
+	if ($jump && httpget('comment') && httppost('focus')==$section){
+		$focus = true;
+	} else {
+		$focus = false;
 	}
 	
 	if (!isset($session['user']['prefs']['ucol'])){
@@ -1186,6 +1232,9 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 		$tll = strlen(translate_inline($talkline,$schema))+11;
 		else $tll=0;
 	$req = buildcommentarylink("&comment=1");
+	if ($jump){
+		$req .= "#commentaryjump_".$section;
+	}
 	addnav("",$req);
 
 	// *** AJAX CHAT MOD START ***
@@ -1209,10 +1258,10 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 		$jsec = str_replace("-","",$jsec);
 		$jsec = str_replace(",","0",$jsec);
 		//debug($jsec);
-		previewfield("insertcommentary", $session['user']['name'], $talkline, true, array("size"=>"30", "maxlength"=>255-$tll),false,$jsec,$session['user']['prefs']['ucol']);
+		previewfield("insertcommentary", $session['user']['name'], $talkline, true, array("size"=>"30", "maxlength"=>255-$tll),false,$jsec,$session['user']['prefs']['ucol'],$focus);
 		rawoutput("<script type=\"text/javascript\">
 			var typetimelimit".$jsec." = 0;
-			var timebetween".$jsec." = 1000;
+			var timebetween".$jsec." = 1500;
 			var oldchars".$jsec." = 'xxxxx';
 			var newchars".$jsec." = 'xxxxx';
 			var newchars".$jsec." = document.getElementById('input".$jsec."').value;
@@ -1255,6 +1304,7 @@ function talkform($section,$talkline,$limit=10,$schema=false){
 	}
 	rawoutput("<input type='hidden' name='talkline' value='$talkline'>");
 	rawoutput("<input type='hidden' name='schema' value='$schema'>");
+	rawoutput("<input type='hidden' name='focus' value='$section'>");
 	rawoutput("<input type='hidden' name='counter' value='{$session['counter']}'>");
 	$session['commentcounter'] = $session['counter'];
 	if ($section=="X"){

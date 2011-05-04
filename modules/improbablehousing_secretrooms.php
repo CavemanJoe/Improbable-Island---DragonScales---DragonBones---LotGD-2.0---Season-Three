@@ -107,6 +107,11 @@ function improbablehousing_secretrooms_run(){
 		break;
 		case "buy":
 			$session['user']['donationspent']+=$cost;
+			
+			//log purchase
+			$sql = "INSERT INTO ".db_prefix("purchaselog")." (acctid,purchased,amount,data,giftwrap,timestamp) VALUES ('".$session['user']['acctid']."','housing_secretroom','".$cost."','none','0','".date("Y-m-d H:i:s")."')";
+			db_query($sql);
+			
 			output("You've bought a `5Secret Room!`0  To enter it, just type \"`#SECRET`0\" into the chat box in the room called \"%s\" (you can delete this trigger phrase and set up some new ones once you're inside the secret room).`n`nHave fun!`n`n",$roomname);
 			$newroom = array(
 				"name"=>"Secret Room",

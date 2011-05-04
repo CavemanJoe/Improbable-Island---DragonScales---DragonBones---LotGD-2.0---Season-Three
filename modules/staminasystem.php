@@ -1,6 +1,6 @@
 <?php
 
-require_once "modules/staminasystem/lib/lib.php";
+//require_once "modules/staminasystem/lib/lib.php";
 
 function staminasystem_getmoduleinfo(){
 	$info=array(
@@ -39,6 +39,7 @@ function staminasystem_uninstall(){
 
 function staminasystem_dohook($hookname,$args){
 	global $stamina,$session;
+	require_once "modules/staminasystem/lib/lib.php";
 	include("staminasystem/dohook/switch_$hookname.php");
 	return $args;
 }

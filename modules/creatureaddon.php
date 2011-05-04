@@ -27,11 +27,6 @@ function creatureaddon_getmoduleinfo(){
 			"image"=>"What is the image name?,text",
 			"image_note"=>"The images should be placed in the images directory of your root.  Use the entire file name, ie 'creature.jpg',note",
 		),
-		"prefs"=>array(
-			"Module Preferences,title",
-			"user_showimages"=>"Show creature images during combat?,bool|0",
-			"user_note"=>"This will also enable/disable the descriptions if there are any.,note",
-		)
 	);
 	return $info;
 }

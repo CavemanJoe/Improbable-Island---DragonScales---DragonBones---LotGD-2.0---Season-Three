@@ -69,8 +69,17 @@ function giftstation_run(){
 					set_item_pref("description",$desc,$boxid);
 				}
 				
+				//notify player that they've got something awesome waiting for them
+				require_once "lib/systemmail.php";
+				$body = "Someone has used the Gifting Station in Common Ground to send you something.  Whatever it is, it'll turn up on your next new Game Day.";
+				systemmail($player,"Someone sent you something awesome!",$body);
+				
 				if (!$free){
 					$session['user']['donationspent']+=1;
+					
+					//log purchase
+					$sql = "INSERT INTO ".db_prefix("purchaselog")." (acctid,purchased,amount,data,giftwrap,timestamp) VALUES ('".$session['user']['acctid']."','giftstation_giftwrap','1','none','0','".date("Y-m-d H:i:s")."')";
+					
 					$points = $session['user']['donation']-$session['user']['donationspent'];
 				}
 				

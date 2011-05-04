@@ -176,7 +176,8 @@ if (!$subop){
 		"rid"=>$rid,
 		"house"=>$house,
 	);
-	modulehook("improbablehousing_interior",$hook);
+	$hook = modulehook("improbablehousing_interior",$hook);
+	$house = $hook['house'];
 	if (!$house['data']['rooms'][$rid]['blockchat']){
 		require_once("lib/commentary.php");
 		addcommentary();

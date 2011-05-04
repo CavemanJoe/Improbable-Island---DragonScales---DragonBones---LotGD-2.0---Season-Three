@@ -80,21 +80,77 @@ function iitems_hunterslodge_run(){
 	
 	switch ($op){
 		case "superuser":
-			//TODO: do this properly, give average purchases per day, that kind of thing
-			$sql = "SELECT * FROM ".db_prefix("purchaselog");
-			$result = db_query($sql);
-			$transactions = array();
-			while ($row = db_fetch_assoc($result)){
-				$row['date'] = getdate(strtotime($details['timestamp']));
-				$transactions[]=$row;
+		$sql = "SELECT * FROM ".db_prefix("purchaselog");
+		$result = db_query($sql);
+		$peritem = array();
+		$now = time();
+
+		while ($row = db_fetch_assoc($result)){
+			$item = $row['purchased'];
+			$peritem[$item]['sold'] += 1;
+			$peritem[$item]['income'] += $row['amount'];
+			$time = strtotime($row['timestamp']);
+			if (isset($peritem[$item]['firstpurchase']) && $peritem[$item]['firstpurchase'] > $time){
+				$peritem[$item]['firstpurchase'] = $time;
+			} else if (!isset($peritem[$item]['firstpurchase'])){
+				$peritem[$item]['firstpurchase'] = $time;
+			}			
+		}
+
+		foreach($peritem AS $item => $data){
+			$timesincefirst = $now - $data['firstpurchase'];
+			$incomeperday = round(($data['income'] / ($timesincefirst/86400))/100,2);
+			$peritem[$item]['incomeperday'] = $incomeperday;
+			$peritem[$item]['item'] = $item;
+		}
+
+		function sortbysold($a, $b){
+			if ($b['sold'] > $a['sold']){
+				return true;
+			} else {
+				return false;
 			}
-			//top-selling items
-			$topsellers = array();
-			foreach ($transactions AS $transaction => $details){
-				$topsellers[$details['purchased']]+=1;
+		}
+
+		function sortbyincome($a, $b){
+			if ($b['income'] > $a['income']){
+				return true;
+			} else {
+				return false;
 			}
-			arsort($topsellers);
-			debug($topsellers);
+		}
+
+		function sortbydailyincome($a, $b){
+			if ($b['incomeperday'] > $a['incomeperday']){
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		rawoutput("<table width=100% border=0 cellpadding=0 cellspacing=0><tr class='trhead'><td>Item</td><td>Item Verbose Name</td><td><a href='runmodule.php?module=iitems_hunterslodge&op=superuser&sort=sortbysold'>Units sold</a></td><td><a href='runmodule.php?module=iitems_hunterslodge&op=superuser&sort=sortbyincome'>Profit total</a></td><td><a href='runmodule.php?module=iitems_hunterslodge&op=superuser&sort=sortbydailyincome'>Profit per day</a></td></tr>");
+		$classcount=1;
+		
+		addnav("","runmodule.php?module=iitems_hunterslodge&op=superuser&sort=sortbysold");
+		addnav("","runmodule.php?module=iitems_hunterslodge&op=superuser&sort=sortbyincome");
+		addnav("","runmodule.php?module=iitems_hunterslodge&op=superuser&sort=sortbydailyincome");
+		
+		if (httpget('sort')){
+			usort($peritem,httpget('sort'));
+		}
+
+		foreach($peritem AS $item => $data){
+			$classcount++;
+			$class=($classcount%2?"trdark":"trlight");
+			$vname = get_item_setting("verbosename",$data['item']);
+			if (!$vname){
+				$vname = $data['item'];
+			}
+			rawoutput("<tr class='$class'><td>".$data['item']."</td><td>".$vname."</td><td>".number_format($data['sold'])."</td><td>\$".number_format($data['income']/100,2)."</td><td>\$".number_format($data['incomeperday'],2)."</td></tr>");
+		}
+		rawoutput("</table>");
+		addnav("Return");
+		addnav("Back to the Grotto","superuser.php");
 		break;
 		case "explain":
 			output("You give a friendly nod to the proprietor, and open your mouth to ask him a question.`n`nHe grins back at you.`n`nThere's a small `ipop`iping sensation in the centre of your skull, like a muscle abruptly shifting - and you suddenly realise what this place is all about.`n`n`bAbout Supporter Points`b`nImprobable Island is entirely funded by donations from its players.  When you donate, you get Supporter Points, which you can use on items in the Hunter's Lodge.  You get one hundred Supporter Points per US Dollar, and donations are accepted through PayPal.  To donate, click the coin slot to the lower right of your screen.  Always use the \"Site Admin\" PayPal button when donating if you wish to receive Supporter Points (donations made through the \"Author\" button go to Eric Stevens, the author of the game engine on which Improbable Island was originally based - you don't get any Supporter Points for donating through this button).  You can also get Supporter Points by referring new players to the site (click the Referrals link to the left) or sometimes in `4Other Ways`0 which will be announced from time to time.`n`n`bTo give presents`b`nAll Hunter's Lodge items (and most other in-game items) can be given as gifts to other players.  Visit the Gifting Station in Common Ground to do so.  Some items can be gifted for free - others cost one Supporter Point each to gift.  Hunter's Lodge items that bestow permanent benefits (IE unlimited title change documents) can only be gifted if they're unused.  In all cases, you'll get to choose your gift-wrap and whether to give anonymously or not.`n`n`bHey, it's my birthday soon.  Can I ask my non-Island-playing mates to buy me points on the Island?`b`nYes!  Just send them to this link:`nhttp://www.improbableisland.com/runmodule.php?module=giftpoints&acctid=%s`n`n",$session['user']['acctid']);

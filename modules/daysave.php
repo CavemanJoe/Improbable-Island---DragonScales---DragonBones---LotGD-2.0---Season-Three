@@ -236,8 +236,16 @@ function daysave_run(){
 				addnav("It is a New Day!","newday.php");
 				$session['user']['donationspent']+=$buydaycost;
 				increment_module_pref("instantbuys");
+				
+				//log purchase
+				$sql = "INSERT INTO ".db_prefix("purchaselog")." (acctid,purchased,amount,data,giftwrap,timestamp) VALUES ('".$session['user']['acctid']."','newday_instant','".$buydaycost."','none','0','".date("Y-m-d H:i:s")."')";
+				db_query($sql);
 			break;
 			case "buyslot":
+				//log purchase
+				$sql = "INSERT INTO ".db_prefix("purchaselog")." (acctid,purchased,amount,data,giftwrap,timestamp) VALUES ('".$session['user']['acctid']."','newday_chronosphere','".$buyslotcost."','none','0','".date("Y-m-d H:i:s")."')";
+				db_query($sql);
+				
 				$session['user']['donationspent']+=$buyslotcost;
 				increment_module_pref("days");
 				increment_module_pref("slots");
@@ -272,6 +280,13 @@ function daysave_run(){
 			break;
 			case "fillup":
 				$fill = httpget('fill');
+				
+				//log purchase
+				for ($i=0; $i<$fill; $i++){
+					$sql = "INSERT INTO ".db_prefix("purchaselog")." (acctid,purchased,amount,data,giftwrap,timestamp) VALUES ('".$session['user']['acctid']."','newday_fillslot','".$fillslotcost."','none','0','".date("Y-m-d H:i:s")."')";
+					db_query($sql);
+				}
+				
 				$session['user']['donationspent']+=($fill*$fillslotcost);
 				$dps = $session['user']['donation']-$session['user']['donationspent'];
 				increment_module_pref("days",$fill);

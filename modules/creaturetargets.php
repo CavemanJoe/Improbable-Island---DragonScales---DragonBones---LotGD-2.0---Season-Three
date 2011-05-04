@@ -101,7 +101,7 @@ function creaturetargets_getmoduleinfo(){
 }
 
 function creaturetargets_install(){
-	module_addhook("creatureencounter");
+	module_addhook("buffbadguy");
 	module_addhook("fightnav-specialties");
 	module_addhook("apply-specialties");
 	module_addhook("battle");
@@ -126,7 +126,7 @@ function creaturetargets_uninstall(){
 function creaturetargets_dohook($hookname,$args){
 	global $session, $enemies;
 	switch($hookname){
-	case "creatureencounter":
+	case "buffbadguy":
 		if (get_module_objpref("creatures",  $args['creatureid'], "usetargets")==1){
 			for ($i=1;$i<=6;$i++) {
 				$args['target'.$i.'']['name'] = get_module_objpref("creatures",  $args['creatureid'], "target".$i."");
@@ -149,6 +149,7 @@ function creaturetargets_dohook($hookname,$args){
 		}
 		//Give the creature a set of starting hitpoints, because it's SO DAMNED USEFUL
 		$args['creaturestartinghealth'] = $args['creaturehealth'];
+		debug($args['creaturestartinghealth']);
 		//Set the phase for the AI Script and move on
 		$args['phase'] = 1;
 		// debug("Debugging args after creatureencounter");

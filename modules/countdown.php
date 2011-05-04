@@ -29,9 +29,9 @@ function countdown_dohook($hookname,$args){
 			// output("`c`b`\$%s:%s:%s:%s`0`b`c`n`n",$end[0],$end[1],$end[2],$end[3]);
 		// } else {
 			// output("`c`b`\$STARTING CHANGEOVER`nLOGGING CHARACTERS OUT`nWARMING UP`0`b`c`n`n");
+			output("`c`b`\$Improbable Island will be down for a couple of minutes while we fix a bug in the commentary system.  When it comes back online, please CLOSE GLOBAL BANTER and LEAVE WHATEVER PAGE YOU'RE ON before returning.  If you're in a house or an Outpost, go outside and come back in.  If you're in the Jungle, go into an Outpost and leave again.  Whatever you were doing while chatting, go and do something else for a second or so, and then come back again, and everything should be right as rain.  Thank you.`0`b`c`n`n");
 			if ($session['user']['acctid'] != 1){
-			$session['user']['loggedin'] = 0;
-			output("`c`b`\$Improbable Island will be unavailable for a while as we sort out the Hunter's Lodge so that it works properly.  You may end up travelling backwards in time a few minutes when we come back online.  Thanks for your patience.`0`b`c`n`n");
+				$session['user']['loggedin'] = 0;
 			}
 		// }
 		break;

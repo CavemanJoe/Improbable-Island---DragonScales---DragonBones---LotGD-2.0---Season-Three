@@ -163,6 +163,7 @@ if ($op != "newtarget") {
 		$newenemies = array();
 		// Run the beginning of round buffs (this also calculates all modifiers)
 		foreach ($enemies as $index=>$badguy) {
+			$badguy = modulehook("startofround-perbadguy-prebuff",$badguy);
 			if ($badguy['dead'] == false && $badguy['creaturehealth'] > 0) {
 				if (isset($badguy['alwaysattacks']) && $badguy['alwaysattacks'] == true) {
 				} else {
@@ -352,6 +353,10 @@ if ($op != "newtarget") {
 			$companions = $newcompanions;
 			unset($newcompanions);
 
+			if ($surprised || $op == "run" || $op == "fight" || $op == "newtarget"){
+				$badguy = modulehook("endofround",$badguy);
+			}
+			
 			// If any A.I. script wants the current enemy to be deleted completely, we will obey.
 			// For multiple rounds/multiple A.I. scripts we will although unset this order.
 
@@ -365,9 +370,6 @@ if ($op != "newtarget") {
 		expire_buffs();
 		$creaturedmg=0;
 		$selfdmg=0;
-		if ($surprised || $op == "run" || $op == "fight" || $op == "newtarget"){
-			$badguy = modulehook("endofround",$badguy);
-		}
 		if (($count != 1 || ($needtostopfighting && $count > 1)) && $session['user']['hitpoints'] > 0 && count($enemies) > 0) {
 			output_notl("`2`bNext round:`b`n");
 		}

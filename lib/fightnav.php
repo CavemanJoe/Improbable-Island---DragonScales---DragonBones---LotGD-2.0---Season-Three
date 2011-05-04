@@ -21,6 +21,7 @@ function fightnav($allowspecial=true, $allowflee=true, $script=false, $blocktoth
 		$fight = "F?Torment";
 		$run = "R?Flee";
 	}
+	modulehook("fightnav-prenav", array("script"=>$script));
 	addnav("Standard Fighting");
 	addnav($fight,$script."op=fight");
 	if ($allowflee) {
@@ -32,12 +33,12 @@ function fightnav($allowspecial=true, $allowflee=true, $script=false, $blocktoth
 
 	if (getsetting("autofight",0)) {
 		addnav("Automatic Fighting");
-		addnav("5?For 5 Rounds", $script."op=fight&auto=five");
-		addnav("1?For 10 Rounds", $script."op=fight&auto=ten");
+		addnav("%?For 5 Rounds", $script."op=fight&auto=five");
+		addnav(")?For 10 Rounds", $script."op=fight&auto=ten");
 		if (!$blocktothedeath){
 			$auto = getsetting("autofightfull",0);
 			if (($auto == 1 || ($auto == 2 && !$allowflee)) && count($newenemies)==1) {
-				addnav("U?Until End", $script."op=fight&auto=full");
+				addnav("D?To the Death", $script."op=fight&auto=full");
 			} elseif ($auto == 1 || ($auto == 2 && !$allowflee)) {
 				addnav("U?Until current enemy dies", $script."op=fight&auto=full");
 			}

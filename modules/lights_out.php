@@ -153,6 +153,7 @@ function lights_out_switch($switch,$lights=false){
 		$lights[$switch]['status']=1;
 	}
 	set_module_pref("lights",serialize($lights),"lights_out");
+	debug($lights);
 	return $lights;
 }
 

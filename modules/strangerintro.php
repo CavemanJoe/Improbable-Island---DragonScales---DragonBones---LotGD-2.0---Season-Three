@@ -30,6 +30,7 @@ function strangerintro_dohook($hookname,$args){
 	switch($hookname){
 		case "forest":
 			if (get_module_pref("plotpoint3a","watcher_quests") && $session['user']['dragonkills'] >= 10 && $session['user']['hitpoints'] == $session['user']['maxhitpoints']){
+				debug("Watcher ok, dks ok, hp ok");
 				$data = unserialize(get_module_pref("data"));
 				if (!$data['plotpoint1'] || !isset($data['plotpoint1'])){
 					redirect("runmodule.php?module=strangerintro&step=1");

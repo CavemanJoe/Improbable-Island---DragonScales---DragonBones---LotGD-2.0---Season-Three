@@ -32,7 +32,7 @@ function timeandweather_dohook($hookname,$args){
 	global $session,$outdoors,$shady,$rainy,$brightness;
 	switch($hookname){
 		case "prerender":
-			debug($outdoors);
+			//debug($outdoors);
 			// $brightness = "darker";
 			// $brightness = "darkest";
 			// $brightness = "lighter";
@@ -52,7 +52,7 @@ function timeandweather_dohook($hookname,$args){
 						$weatherend .= "</div>";
 						$weatherstart .= "<div style='background:url(images/weather/rain3.png); background-position:".e_rand(0,100)."% ".e_rand(0,100)."%; background-repeat:no-repeat;'>";
 						$weatherend .= "</div>";
-						debug("rain");
+						//debug("rain");
 					}
 					if ($shady && $brightness!="darker" && $brightness!="darkest" && !$rainy){
 						$weatherstart .= "<div style='background:url(images/weather/tree-1.gif); background-repeat:no-repeat;'>";

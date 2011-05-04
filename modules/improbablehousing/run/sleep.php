@@ -12,7 +12,7 @@ page_header("Sleep");
 switch(httpget('sub')){
 	case "start":
 		//make sure the spot isn't occupied already
-		if ($house['data']['rooms'][$rid]['sleepslots'][$slot]['occupier']){
+		if ($house['data']['rooms'][$rid]['sleepslots'][$slot]['occupier'] && !$house['data']['rooms'][$rid]['sleepslots'][$slot]['multicapacity']){
 			output("You set up to take your rightful place in this sleeping spot, but someone else has already beaten you to it!  Bah!`n`n");
 		} else {
 			//set module pref for where the player's sleeping, letting us know where to look for them at newday

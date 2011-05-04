@@ -67,8 +67,8 @@ function pub_newpittsburgh_drinks_dohook($hookname,$args){
 						"wearoff"=>"You feel the effects of the Brain Hemorrhage fade away.",
 						"schema"=>"pub_newpittsburgh"
 					));
-					require_once "modules/staminasystem/lib/lib.php";
-					addstamina(5000);
+					//require_once "modules/staminasystem/lib/lib.php";
+					//addstamina(5000);
 				break;
 				case "monstermash":
 					$session['user']['gold'] -= 50;
@@ -84,13 +84,13 @@ function pub_newpittsburgh_drinks_dohook($hookname,$args){
 							"wearoff"=>"`4You feel the effects of the Monster Mash fade away.  Thank goodness for that.",
 							"schema"=>"pub_newpittsburgh"
 						));
-						require_once "modules/staminasystem/lib/lib.php";
-						addstamina(5000);
+						//require_once "modules/staminasystem/lib/lib.php";
+						//addstamina(5000);
 					} else {
 						output("You down the contents and lick your lips.`n`n");
 						output("You feel `2Energetic!`0`n`n");
-						require_once "modules/staminasystem/lib/lib.php";
-						addstamina(10000);
+						//require_once "modules/staminasystem/lib/lib.php";
+						//addstamina(10000);
 						increment_module_pref("nutrition",5,"staminafood");
 						apply_buff('pub_newpittsburgh_monstermash', array(
 							"name"=>"`2Monster Mash",

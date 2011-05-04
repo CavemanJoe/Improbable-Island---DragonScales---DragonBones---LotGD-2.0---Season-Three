@@ -154,6 +154,7 @@ function improbablehousing_furnitureshop_run(){
 			$house['data']['rooms'][$rid]['sleepslots'][$slot]['stamina']=get_item_pref("sleepslot_stamina",$itemid);
 			$house['data']['rooms'][$rid]['sleepslots'][$slot]['name']=get_item_pref("sleepslot_name",$itemid);
 			$house['data']['rooms'][$rid]['sleepslots'][$slot]['desc']=get_item_pref("sleepslot_desc",$itemid);
+			$house['data']['rooms'][$rid]['sleepslots'][$slot]['multicapacity']=get_item_pref("sleepslot_multicapacity",$itemid);
 			use_item($itemid);
 			improbablehousing_sethousedata($house);
 			addnav("Continue");
