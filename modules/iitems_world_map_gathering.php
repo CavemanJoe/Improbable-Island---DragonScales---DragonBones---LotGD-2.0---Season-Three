@@ -49,46 +49,55 @@ function iitems_world_map_gathering_run(){
 	page_header("Gathering Materials");
 	$type=httpget('mat');
 	$item=httpget('item');
+	$count=httpget('count');
+	if (!$count)
+		$count = 1;
 	require_once "modules/staminasystem/lib/lib.php";
 	if ($type=="wood"){
-		$lv = process_action("Logging");
-		$stam = get_stamina();
-		$rstam = get_stamina(0);
-		$failchance = e_rand(0,99);
-		if ($failchance<$stam){
-			give_item("wood");
-			use_item($item,"logging");
-			output("`0You hack away until you have what can only be described as a bloody enormous log, suitable as a part of a quaint little cabin.  It couldn't possibly fit into your backpack, but you stuff it in anyway.`n");
-			if ($lv['lvlinfo']['levelledup']==true){
-				output("`n`c`b`0You gained a level in Logging!  You are now level %s!  This action will cost fewer Stamina points now, so you can lumberjack more lumber each day!`b`c`n",$lv['lvlinfo']['newlvl']);
-			}
-		} else {
-			if ($failchance<$rstam){
-				output("You hack away until you have what can only be described as a whole shitload of matchsticks.  The wood just splintered into barely more than pulp under your clumsy, half-asleep paws.`n`nMaybe it'd be a good idea to rest a bit before you try this again.`n`n");
+		for ($i = 0; $i < $count; $i++) {
+			$lv = process_action("Logging");
+			$stam = get_stamina();
+			$rstam = get_stamina(0);
+			$failchance = e_rand(0,99);
+			if ($failchance<$stam){
+				give_item("wood");
+				use_item($item,"logging");
+				output("`0You hack away until you have what can only be described as a bloody enormous log, suitable as a part of a quaint little cabin.  It couldn't possibly fit into your backpack, but you stuff it in anyway.`n");
+				if ($lv['lvlinfo']['levelledup']==true){
+					output("`n`c`b`0You gained a level in Logging!  You are now level %s!  This action will cost fewer Stamina points now, so you can lumberjack more lumber each day!`b`c`n",$lv['lvlinfo']['newlvl']);
+				}
 			} else {
-				$fail = 1;
-				output("You hack away at the tree, your half-asleep mind blissfully ignorant of its wild swaying.  Ignorant, that is, until it falls on you.`n`nYou wake up, naturally, on the FailBoat.`n`n");
+				if ($failchance<$rstam){
+					output("You hack away until you have what can only be described as a whole shitload of matchsticks.  The wood just splintered into barely more than pulp under your clumsy, half-asleep paws.`n`nMaybe it'd be a good idea to rest a bit before you try this again.`n`n");
+				} else {
+					$fail = 1;
+					output("You hack away at the tree, your half-asleep mind blissfully ignorant of its wild swaying.  Ignorant, that is, until it falls on you.`n`nYou wake up, naturally, on the FailBoat.`n`n");
+					break;
+				}
 			}
 		}
 	} else if ($type=="stone"){
-		$lv = process_action("Stonecutting");
-		$stam = get_stamina();
-		$rstam = get_stamina(0);
-		$failchance = e_rand(0,99);
-		if ($failchance<$stam){
-			$success = 1;
-			give_item("stone");
-			use_item($item,"stonecutting");
-			output("`0You hack away until you have what can only be described as a huge-ass lump of stone, very heavy and cumbersome.  For some reason your backpack seems like a really good place to put it.`n");
-			if ($lv['lvlinfo']['levelledup']==true){
-				output("`n`c`b`0You gained a level in Stonecutting!  You are now level %s!  This action will cost fewer Stamina points now, so you can break more rocks each day!`b`c`n",$lv['lvlinfo']['newlvl']);
-			}
-		} else {
-			if ($failchance<$rstam){
-				output("You hack away until you have what can only be described as a whole shitload of gravel.  The rock just smashed into splinters under your clumsy, half-asleep paws.`n`nMaybe it'd be a good idea to rest a bit before you try this again.`n`n");
+		for ($i = 0; $i < $count; $i++) {
+			$lv = process_action("Stonecutting");
+			$stam = get_stamina();
+			$rstam = get_stamina(0);
+			$failchance = e_rand(0,99);
+			if ($failchance<$stam){
+				$success = 1;
+				give_item("stone");
+				use_item($item,"stonecutting");
+				output("`0You hack away until you have what can only be described as a huge-ass lump of stone, very heavy and cumbersome.  For some reason your backpack seems like a really good place to put it.`n");
+				if ($lv['lvlinfo']['levelledup']==true){
+					output("`n`c`b`0You gained a level in Stonecutting!  You are now level %s!  This action will cost fewer Stamina points now, so you can break more rocks each day!`b`c`n",$lv['lvlinfo']['newlvl']);
+				}
 			} else {
-				$fail = 1;
-				output("You hack away at the rock, blissfully unaware that another, larger rock is being gently dislodged by your half-asleep ministrations.  Another, larger rock that happens to be balanced precariously on an outcrop just above your head.`n`nYou wake up, naturally, on the FailBoat.`n`n");
+				if ($failchance<$rstam){
+					output("You hack away until you have what can only be described as a whole shitload of gravel.  The rock just smashed into splinters under your clumsy, half-asleep paws.`n`nMaybe it'd be a good idea to rest a bit before you try this again.`n`n");
+				} else {
+					$fail = 1;
+					output("You hack away at the rock, blissfully unaware that another, larger rock is being gently dislodged by your half-asleep ministrations.  Another, larger rock that happens to be balanced precariously on an outcrop just above your head.`n`nYou wake up, naturally, on the FailBoat.`n`n");
+					break;
+				}
 			}
 		}
 	}
@@ -124,6 +133,8 @@ function iitems_world_map_gathering_showgather($loc=false){
 			foreach($equipment AS $key => $vals){
 				debug($vals);
 				addnav(array("Cut wood using %s",$vals['verbosename']),"runmodule.php?module=iitems_world_map_gathering&mat=wood&item=".$vals['item']);
+				addnav("Cut a bunch of wood (x5)","runmodule.php?module=iitems_world_map_gathering&mat=wood&count=5&item=".$vals['item']);
+				addnav("Cut a whole shitload of wood (x10)","runmodule.php?module=iitems_world_map_gathering&mat=wood&count=10&item=".$vals['item']);
 			}
 		}
 	} else if ($terrain['type']=="Mount"){
@@ -134,6 +145,8 @@ function iitems_world_map_gathering_showgather($loc=false){
 			foreach($equipment AS $key => $vals){
 //				debug($vals);
 				addnav(array("Break stone using %s",$vals['verbosename']),"runmodule.php?module=iitems_world_map_gathering&mat=stone&item=".$vals['item']);
+				addnav("Break a bunch of stone (x5)", "runmodule.php?module=iitems_world_map_gathering&mat=stone&count=5&item=".$vals['item']);
+				addnav("Break a whole shitload of stone (x10)","runmodule.php?module=iitems_world_map_gathering&mat=stone&count=10&item=".$vals['item']);
 			}
 		}
 	}
