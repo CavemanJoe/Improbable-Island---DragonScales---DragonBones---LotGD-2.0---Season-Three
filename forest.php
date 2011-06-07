@@ -66,7 +66,7 @@ if ($op=="search"){
 		modulehook("forestsearch", array());
 		$args = array(
 			'soberval'=>0.9,
-			'sobermsg'=>"`&Faced with the prospect of death, you sober up a little.`n",
+			'sobermsg'=>"`&Faced with the prospect of death, you sober up a little.`0`n",
 			'schema'=>'forest');
 		modulehook("soberup", $args);
 		if (module_events("forest", getsetting("forestchance", 15)) != 0) {
