@@ -10,11 +10,11 @@ $titanid = httpget("titanid");
 $titan = titans_load_battle($titanid);
 titans_show_log($titan);
 if ($battle){
-	include_once("battle.php");
 	if (httpget('op')=="run"){
 		titans_leave_battle($titan);
 		redirect("runmodule.php?module=worldmapen&op=continue&fledtitan=true");
 	}
+	include_once("battle.php");
 	if ($victory || $titan['creature']['creaturehealth']<1){
 		//kill the titan
 		$titan = titans_kill_titan($titan);
