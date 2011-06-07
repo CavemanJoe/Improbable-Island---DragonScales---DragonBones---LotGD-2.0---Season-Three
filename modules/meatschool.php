@@ -59,6 +59,14 @@ function meatschool_run(){
 						addnav(array("Pay 10 Req for a Carcass Cleaning lesson (`Q%s%%`0)", $cleancost),"runmodule.php?module=meatschool&op=train&train=clean");
 						$cookcost = stamina_getdisplaycost("Cooking");
 						addnav(array("Pay 10 Req for a Cookery lesson (`Q%s%%`0)", $cookcost),"runmodule.php?module=meatschool&op=train&train=cook");
+						if ($session['user']['gold']>=50){
+							addnav(array("Pay 50 Req for an extended Carcass Cleaning lesson (`Q%s%%`0)", $cleancost * 5),"runmodule.php?module=meatschool&op=train&train=clean&iterations=5");
+							addnav(array("Pay 50 Req for an extended Cookery lesson (`Q%s%%`0)", $cookcost * 5),"runmodule.php?module=meatschool&op=train&train=cook&iterations=5");
+						}
+						if ($session['user']['gold']>=100){
+							addnav(array("Pay 100 Req for a full Carcass Cleaning course (`Q%s%%`0)", $cleancost * 10),"runmodule.php?module=meatschool&op=train&train=clean&iterations=10");
+							addnav(array("Pay 100 Req for a full Cookery course (`Q%s%%`0)", $cookcost * 10),"runmodule.php?module=meatschool&op=train&train=cook&iterations=10");
+						}
 					} else {
 						addnav("You don't have enough money.  No lessons for you.","");
 					}
@@ -74,43 +82,48 @@ function meatschool_run(){
 				require_once "modules/medals.php";
 				medals_award_medal("maiko_train","Maiko's Meat School","This player took lessons at Maiko's Meat School!","medal_maiko.png");
 			}
-			$session['user']['gold']-=10;
 			require_once("modules/staminasystem/lib/lib.php");
+			$training = "";
+			$text = "";
+			$levelup = "";
 			switch (httpget('train')){
 				case "clean":
-					apply_stamina_buff('maikoclean', array(
-						"name"=>"Maiko\'s Training",
-						"action"=>"Cleaning the Carcass",
-						"costmod"=>1,
-						"expmod"=>2.5,
-						"rounds"=>1,
-						"roundmsg"=>"",
-						"wearoffmsg"=>"",
-					));
-					output("Maiko shows you a big smile.  \"`%Another butchery lesson!  Great stuff.  Let's get started!`0\"`n`nMaiko grabs her knives and captive bolt pistol, you don your gloves, and the two of you spend the next little while up to your elbows in warm, still-twitching muscle.  Under Maiko's careful watch, her gentle hands occasionally guiding yours to make a difficult cut, you learn one or two things that you didn't know before.");
-					$return = process_action("Cleaning the Carcass");
-					output("You receive %s experience in Cleaning the Carcass.`n`n",$return['exp_earned']);
-					if ($return['lvlinfo']['levelledup']==true){
-						output("`c`b`0You gained a level in Cleaning Carcasses!  You are now level %s!  This action will cost fewer Stamina points now, so you can butcher more creatures each day!`b`c`n",$return['lvlinfo']['newlvl']);
-					}
+					$training = "Cleaning the Carcass";
+					$text = "Maiko shows you a big smile.  \"`%Another butchery lesson!  Great stuff.  Let's get started!`0\"`n`nMaiko grabs her knives and captive bolt pistol, you don your gloves, and the two of you spend the next little while up to your elbows in warm, still-twitching muscle.  Under Maiko's careful watch, her gentle hands occasionally guiding yours to make a difficult cut, you learn one or two things that you didn't know before.`n`n";
+					$levelup = "`c`b`0You gained a level in Cleaning Carcasses!  You are now level %s!  This action will cost fewer Stamina points now, so you can butcher more creatures each day!`b`c`n";
 				break;
 				case "cook":
-					apply_stamina_buff('maikocook', array(
-						"name"=>"Maiko\'s Training",
-						"action"=>"Cooking",
-						"costmod"=>1,
-						"expmod"=>2.5,
-						"rounds"=>1,
-						"roundmsg"=>"",
-						"wearoffmsg"=>"",
-					));
-					output("Maiko shows you a big smile.  \"`%Another cookery lesson!  Great stuff.  Let's get started!`0\"`n`nMaiko grabs her pans and some ingredients, and you don the 'hilarious' apron Maiko has so thoughtfully provided.  Under Maiko's helpful guidance, you learn one or two things that you didn't know before.");
-					$return = process_action("Cooking");
-					output("You receive %s experience in Cooking.`n`n",$return['exp_earned']);
-					if ($return['lvlinfo']['levelledup']==true){
-						output("`n`c`b`0You gained a level in Cooking!  You are now level %s!  This action will cost fewer Stamina points now, so you can cook more tasty meals each day!`b`c`n",$return['lvlinfo']['newlvl']);
-					}
+					$training = "Cooking";
+					$text = "Maiko shows you a big smile.  \"`%Another cookery lesson!  Great stuff.  Let's get started!`0\"`n`nMaiko grabs her pans and some ingredients, and you don the 'hilarious' apron Maiko has so thoughtfully provided.  Under Maiko's helpful guidance, you learn one or two things that you didn't know before.`n`n";
+					$levelup = "`n`c`b`0You gained a level in Cooking!  You are now level %s!  This action will cost fewer Stamina points now, so you can cook more tasty meals each day!`b`c`n";
 				break;
+			}
+			$iterations = httpget('iterations');
+			if (!$iterations)
+				$iterations = 1;
+			output($text);
+			for ($i = 0; $i < $iterations; $i++) {
+				$session['user']['gold']-=10;
+				apply_stamina_buff('maikotrain', array(
+					"name"=>"Maiko\'s Training",
+					"action"=>$training,
+					"costmod"=>1,
+					"expmod"=>2.5,
+					"rounds"=>1,
+					"roundmsg"=>"",
+					"wearoffmsg"=>"",
+				));
+				
+				$return = process_action($training);
+				output("You receive %s experience in %s.`n",$return['exp_earned'],$training);
+				if ($return['lvlinfo']['levelledup']==true){
+					output($levelup, $training, $return['lvlinfo']['newlvl']);
+				}
+				$amber = get_stamina();
+				if (($iterations > 1) && ($amber != 100)){
+					output("`0After several hours of training, you're far too tired to complete the course. However, you still gained a total of %s experience in %s from the course!`n", $return['exp_earned'] * ($i + 1),$training);
+					break;
+				}
 			}
 			$amber = get_stamina();
 			if ($amber == 100){
@@ -120,6 +133,14 @@ function meatschool_run(){
 					addnav(array("Pay 10 Req for a Carcass Cleaning lesson (`Q%s%%`0)", $cleancost),"runmodule.php?module=meatschool&op=train&train=clean");
 					$cookcost = stamina_getdisplaycost("Cooking");
 					addnav(array("Pay 10 Req for a Cookery lesson (`Q%s%%`0)", $cookcost),"runmodule.php?module=meatschool&op=train&train=cook");
+					if ($session['user']['gold']>=50){
+						addnav(array("Pay 50 Req for an extended Carcass Cleaning lesson (`Q%s%%`0)", $cleancost * 5),"runmodule.php?module=meatschool&op=train&train=clean&iterations=5");
+						addnav(array("Pay 50 Req for an extended Cookery lesson (`Q%s%%`0)", $cookcost * 5),"runmodule.php?module=meatschool&op=train&train=cook&iterations=5");
+					}
+					if ($session['user']['gold']>=100){
+						addnav(array("Pay 100 Req for a full Carcass Cleaning course (`Q%s%%`0)", $cleancost * 10),"runmodule.php?module=meatschool&op=train&train=clean&iterations=10");
+						addnav(array("Pay 100 Req for a full Cookery course (`Q%s%%`0)", $cookcost * 10),"runmodule.php?module=meatschool&op=train&train=cook&iterations=10");
+					}
 				} else {
 					addnav("You don't have enough money.  No more lessons for you.","");
 				}
