@@ -108,24 +108,24 @@ function implantservoarms_dohook($hookname,$args){
 			$script = $args['script'];
 			$battery = get_module_pref("battery");
 			$status = get_module_pref("status");
-			addnav(array("$ccode `bServo Arms`b",""));
-			addnav(array("$ccode Battery: %s", $battery),"");
+			addnav(array("$ccode `bServo Arms`b`0",""));
+			addnav(array("$ccode Battery: %s`0", $battery),"");
 			if ($status == 0 && $battery > 0){
-				addnav("$ccode Stance: Off","");
+				addnav("$ccode Stance: Off`0","");
 				addnav(array("$ccode Set to Offensive stance`0"),
 						$script."op=fight&skill=$spec&l=1", true);
 				addnav(array("$ccode Set to Defensive stance`0"),
 						$script."op=fight&skill=$spec&l=2", true);
 			}
 			if ($status == 1 && $battery > 0){
-				addnav("$ccode Stance: Offensive","");
+				addnav("$ccode Stance: Offensive`0","");
 				addnav(array("$ccode Set to Defensive stance`0"),
 						$script."op=fight&skill=$spec&l=2", true);
 				addnav(array("$ccode Turn Servos Off`0"),
 						$script."op=fight&skill=$spec&l=0", true);
 			}
 			if ($status == 2 && $battery > 0){
-				addnav("$ccode Stance: Defensive","");
+				addnav("$ccode Stance: Defensive`0","");
 				addnav(array("$ccode Set to Offensive stance`0"),
 						$script."op=fight&skill=$spec&l=1", true);
 				addnav(array("$ccode Turn Servos Off`0"),
