@@ -75,11 +75,17 @@ function insultschool_run(){
 					if ($session['user']['gold']>=25){
 						$coarsecost = stamina_getdisplaycost("Insults - Coarse");
 						addnav(array("Pay 25 Req for a lesson in Coarse Insults (`Q%s%%`0)", $coarsecost),"runmodule.php?module=insultschool&op=train&train=coarse");
+						addnav(array("Pay 125 Req for an extended lesson in Coarse Insults (`Q%s%%`0)", $coarsecost * 5),"runmodule.php?module=insultschool&op=train&train=coarse&iterations=5");
+						addnav(array("Pay 250 Req for a full course in Coarse Insults (`Q%s%%`0)", $coarsecost * 10),"runmodule.php?module=insultschool&op=train&train=coarse&iterations=10");
 						$confusingcost = stamina_getdisplaycost("Insults - Confusing");
 						addnav(array("Pay 25 Req for a lesson in Confusing Insults (`Q%s%%`0)", $confusingcost),"runmodule.php?module=insultschool&op=train&train=confusing");
+						addnav(array("Pay 125 Req for an extended lesson in Confusing Insults (`Q%s%%`0)", $confusingcost * 5),"runmodule.php?module=insultschool&op=train&train=confusing&iterations=5");
+						addnav(array("Pay 250 Req for a full course in Confusing Insults (`Q%s%%`0)", $confusingcost * 10),"runmodule.php?module=insultschool&op=train&train=confusing&iterations=10");
 						if (get_module_pref("ableclassy","insults")){
 							$classycost = stamina_getdisplaycost("Insults - Classy");
 							addnav(array("Pay 25 Req for a lesson in Classy Insults (`Q%s%%`0)", $classycost),"runmodule.php?module=insultschool&op=train&train=classy");
+							addnav(array("Pay 125 Req for an extended lesson in Classy Insults (`Q%s%%`0)", $classycost * 5),"runmodule.php?module=insultschool&op=train&train=classy");
+							addnav(array("Pay 250 Req for a full course in Classy Insults (`Q%s%%`0)", $classycost * 10),"runmodule.php?module=insultschool&op=train&train=classy");
 						}
 					} else {
 						addnav("You don't have enough Requisition to improve your existing Insults skills.","");
@@ -92,85 +98,83 @@ function insultschool_run(){
 			addnav("Return to Pleasantville","village.php");
 		break;
 		case "train":
-			$session['user']['gold']-=25;
+			
 			if (is_module_active("medals")){
 				require_once "modules/medals.php";
 				medals_award_medal("cuthbert_train","Cuthbert's Academy of Lingual Defence","This player took lessons at Cuthbert's Academy of Lingual Defence!","medal_cuthbert.png");
 			}
 			require_once("modules/staminasystem/lib/lib.php");
+			$training = "";
+			$pretraintext = "";
+			$traintext = "";
+			$levelup = "";
 			switch (httpget('train')){
 				case "coarse":
-					apply_stamina_buff('traincoarse', array(
-						"name"=>"Cuthbert's Training",
-						"action"=>"Insults - Coarse",
-						"costmod"=>1,
-						"expmod"=>2.5,
-						"rounds"=>1,
-						"roundmsg"=>"",
-						"wearoffmsg"=>"",
-					));
-					require_once "modules/insults.php";
-					$i1 = insults_coarse();
-					$i2 = insults_coarse();
-					$i3 = insults_coarse();
-					$i4 = insults_coarse();
-					$i5 = insults_coarse();
-					output("Cuthbert shows you a big smile.  \"`qIt's good to train with you again.  Coarse insults it is.  Let's get started!`0\"`n`nOutside the hut, for the next half an hour or so, people stop to listen to the bizzarre and filthy profanities spouted from within.`n`n");
-					output("`i\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`qVery good!`0\"",$i1,$i2,$i3,$i4,$i5);
-					$return = process_action("Insults - Coarse");
-					output("You receive %s experience in Coarse Insults.`n`n",$return['exp_earned']);
-					if ($return['lvlinfo']['levelledup']==true){
-						output("`c`b`0You gained a level in Coarse Insults!  You are now level %s!  This action will cost fewer Stamina points now, and you have a higher chance of casting a successful Insult!`b`c`n",$return['lvlinfo']['newlvl']);
-					}
+					$training = "Coarse";
+					$pretraintext = "Cuthbert shows you a big smile.  \"`qIt's good to train with you again.  Coarse insults it is.  Let's get started!`0\"`n`nOutside the hut, for the next half an hour or so, people stop to listen to the bizzarre and filthy profanities spouted from within.`n`n";
+					$traintext = "`i\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`qVery good!`0\"";
+					$levelup = "`c`b`0You gained a level in Coarse Insults!  You are now level %s!  This action will cost fewer Stamina points now, and you have a higher chance of casting a successful Insult!`b`c`n";
 				break;
 				case "confusing":
-					apply_stamina_buff('trainconfusing', array(
-						"name"=>"Cuthbert's Training",
-						"action"=>"Insults - Confusing",
-						"costmod"=>1,
-						"expmod"=>2.5,
-						"rounds"=>1,
-						"roundmsg"=>"",
-						"wearoffmsg"=>"",
-					));
-					require_once "modules/insults.php";
-					$i1 = insults_confusing();
-					$i2 = insults_confusing();
-					$i3 = insults_confusing();
-					$i4 = insults_confusing();
-					$i5 = insults_confusing();
-					output("Cuthbert shows you a big smile.  \"`qIt's good to train with you again.  Confusing insults it is.  Let's get started!`0\"`n`nOutside the hut, for the next half an hour or so, people stop to listen to the bizzarre and surreal propositions spouted from within.`n`n");
-					output("`i\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`qVery good!`0\"",$i1,$i2,$i3,$i4,$i5);
-					$return = process_action("Insults - Confusing");
-					output("You receive %s experience in Confusing Insults.`n`n",$return['exp_earned']);
-					if ($return['lvlinfo']['levelledup']==true){
-						output("`c`b`0You gained a level in Confusing Insults!  You are now level %s!  This action will cost fewer Stamina points now, and you have a higher chance of casting a successful Insult!`b`c`n",$return['lvlinfo']['newlvl']);
-					}
+					$training = "Confusing";
+					$pretraintext = "Cuthbert shows you a big smile.  \"`qIt's good to train with you again.  Confusing insults it is.  Let's get started!`0\"`n`nOutside the hut, for the next half an hour or so, people stop to listen to the bizzarre and surreal propositions spouted from within.`n`n";
+					$traintext = "`i\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`qVery good!`0\"";
+					$levelup = "`c`b`0You gained a level in Confusing Insults!  You are now level %s!  This action will cost fewer Stamina points now, and you have a higher chance of casting a successful Insult!`b`c`n";
 				break;
 				case "classy":
-					apply_stamina_buff('trainclassy', array(
+					$training = "Classy";
+					$pretraintext = "Cuthbert shows you a big smile.  \"`qIt's good to train with you again.  Classy insults it is.  Let's get started!`0\"`n`nOutside the hut, for the next half an hour or so, people stop to listen to the witty and scathing insults spouted from within.`n`n";
+					$traintext = "`i\"`#You %s!`0\"`n`n\"`qI retort that you are a %s!`0\"`n`n\"`#I've never seen such a %s!`0\"`n`n\"`qIt is a matter of public record that you are a %s!`0\"`n`n\"`#And proud of it!  You sir, on the other hand, are a %s!`0\"`n`n\"`qVery good!`0\"`n`n`i";
+					$levelup = "`c`b`0You gained a level in Classy Insults!  You are now level %s!  This action will cost fewer Stamina points now, and you have a higher chance of casting a successful Insult!`b`c`n";
+				break;
+			}
+			$iterations = httpget('iterations');
+			if (!$iterations)
+				$iterations = 1;
+			output($pretraintext);
+			require_once "modules/insults.php";
+			for ($i = 0; $i < $iterations; $i++) {
+				$session['user']['gold']-=25;
+				
+				apply_stamina_buff('traincourse', array(
 						"name"=>"Cuthbert's Training",
-						"action"=>"Insults - Classy",
+						"action"=>"Insults - " . $training,
 						"costmod"=>1,
 						"expmod"=>2.5,
 						"rounds"=>1,
 						"roundmsg"=>"",
 						"wearoffmsg"=>"",
 					));
-					require_once "modules/insults.php";
-					$i1 = insults_classy();
-					$i2 = insults_classy();
-					$i3 = insults_classy();
-					$i4 = insults_classy();
-					$i5 = insults_classy();
-					output("Cuthbert shows you a big smile.  \"`qIt's good to train with you again.  Classy insults it is.  Let's get started!`0\"`n`nOutside the hut, for the next half an hour or so, people stop to listen to the witty and scathing insults spouted from within.`n`n");
-					output("`i\"`#You %s!`0\"`n`n\"`qI retort that you are a %s!`0\"`n`n\"`#I've never seen such a %s!`0\"`n`n\"`qIt is a matter of public record that you are a %s!`0\"`n`n\"`#And proud of it!  You sir, on the other hand, are a %s!`0\"`n`n\"`qVery good!`0\"`n`n`i",$i1,$i2,$i3,$i4,$i5);
-					$return = process_action("Insults - Classy");
-					output("You receive %s experience in Classy Insults.`n`n",$return['exp_earned']);
-					if ($return['lvlinfo']['levelledup']==true){
-						output("`c`b`0You gained a level in Classy Insults!  You are now level %s!  This action will cost fewer Stamina points now, and you have a higher chance of casting a successful Insult!`b`c`n",$return['lvlinfo']['newlvl']);
-					}
-				break;
+				
+				$insults = array();
+				if ($training == "Coarse")
+				{
+					for ($j = 0; $j < 5; $j++)
+						$insults[] = insults_coarse();
+				}
+				else if ($training == "Confusing")
+				{
+					for ($j = 0; $j < 5; $j++)
+						$insults[] = insults_confusing();
+				}
+				else if ($training == "Classy")
+				{
+					for ($j = 0; $j < 5; $j++)
+						$insults[] = insults_classy();
+				}
+				
+				output("Cuthbert shows you a big smile.  \"`qIt's good to train with you again.  Coarse insults it is.  Let's get started!`0\"`n`nOutside the hut, for the next half an hour or so, people stop to listen to the bizzarre and filthy profanities spouted from within.`n`n");
+				output("`i\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`q%s!`0\"`n`n\"`#%s!`0\"`n`n\"`qVery good!`0\"",$insults[0],$insults[1],$insults[2],$insults[3],$insults[4]);
+				$return = process_action("Insults - " . $training);
+				output("You receive %s experience in %s Insults.`n`n",$return['exp_earned'], $training);
+				if ($return['lvlinfo']['levelledup']==true){
+					output($levelup,$return['lvlinfo']['newlvl']);
+				}
+				$amber = get_stamina();
+				if (($iterations > 1) && ($amber != 100)){
+					output("`0After several hours of training, you're far too tired to complete the course. However, you still gained a total of %s experience in %s from the course!`n", $return['exp_earned'] * ($i + 1),$training);
+					break;
+				}
 			}
 			$amber = get_stamina();
 			if ($amber == 100){
