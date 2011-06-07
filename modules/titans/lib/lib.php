@@ -375,6 +375,8 @@ function titans_kill_titan($titan){
 		$titan['battlelog']['killed']=1;
 		$now = time();
 		$titan['battlelog']['timeofdeath']=$now;
+		//Save that the Titan is dead, in the hopes that it will solve some issues with doubled-up req payouts as well as killing blow payouts. -HgB
+		titans_save_battle($titan);
 		
 		//determine lifetime, update averages, alter maximum Titan hitpoints if necessary
 		$lifetime = $now - $titan['battlelog']['timeofbirth'];
