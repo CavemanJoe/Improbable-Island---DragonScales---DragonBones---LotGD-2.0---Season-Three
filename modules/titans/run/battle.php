@@ -25,7 +25,7 @@ if ($battle){
 		require_once("lib/forestoutcomes.php");
 		//set the player's Location properly so they don't get bumped back to IC
 		$session['user']['location'] = get_module_pref("lastCity","worldmapen");
-		forestdefeat(array($badguy),", a Titan");		
+		forestdefeat(array($badguy),"by a Titan");		
 	} else {
 		require_once("lib/fightnav.php");
 		fightnav(true,true,"runmodule.php?module=titans&titanop=battle&titanid=".$titanid, true);
