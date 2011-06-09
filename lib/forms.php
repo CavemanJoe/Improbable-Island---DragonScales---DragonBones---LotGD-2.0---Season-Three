@@ -42,7 +42,9 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 					var y='';
 					var z='';
 					var max=document.getElementById('input$nid');
-					var charsleft='';");
+					var charsleft='';
+					var italics=0;
+					var bold=0;");
 	if ($talkline !== false) {
 		rawoutput("	if (t.substr(0,2)=='::'){
 						x=2;
@@ -246,8 +248,8 @@ function previewfield_countup($name,$maxchars=false,$default=""){
 					var y='';
 					var z='';
 					var charsleft = (t.length)+' Characters';
-					italics=0;
-					bold=0;
+					var italics=0;
+					var bold=0;
 					document.getElementById('charsleft$id').innerHTML=charsleft;
 					if (t.length==0){
 						out = '&nbsp';
