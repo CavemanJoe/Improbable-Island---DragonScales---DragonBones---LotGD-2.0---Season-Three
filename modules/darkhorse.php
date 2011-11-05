@@ -42,7 +42,7 @@ function darkhorse_install(){
 			return (darkhorse_tavernmount() ? 0 : 100);");
 	module_addeventhook("travel",
 			"require_once(\"modules/darkhorse.php\");
-			return (darkhorse_tavernmount() ? 0 : 20);");
+			return (darkhorse_tavernmount() ? 0 : 100);");
 	$sql = "DESCRIBE " . db_prefix("mounts");
 	$result = db_query($sql);
 	while($row = db_fetch_assoc($result)) {

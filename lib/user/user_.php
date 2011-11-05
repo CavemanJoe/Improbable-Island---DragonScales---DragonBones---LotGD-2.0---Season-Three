@@ -39,7 +39,7 @@ if ($display == 1){
 			(date("U") - strtotime($row['laston']) <
 			 getsetting("LOGINTIMEOUT",900) && $row['loggedin']);
 		if ($loggedin)
-			$laston=translate_inline("`3Online`0");
+			$laston=translate_inline("`#Online`0");
 		$row['laston']=$laston;
 		if ($row[$order]!=$oorder) $rn++;
 		$oorder = $row[$order];

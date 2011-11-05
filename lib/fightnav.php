@@ -2,7 +2,7 @@
 // translator ready
 // addnews ready
 // mail ready
-function fightnav($allowspecial=true, $allowflee=true, $script=false, $blocktothedeath=false){
+function fightnav($allowspecial=true, $allowflee=true,$script=false){
 	global $PHP_SELF,$session,$newenemies,$companions;
 	tlschema("fightnav");
 	if ($script===false){
@@ -21,8 +21,6 @@ function fightnav($allowspecial=true, $allowflee=true, $script=false, $blocktoth
 		$fight = "F?Torment";
 		$run = "R?Flee";
 	}
-	modulehook("fightnav-prenav", array("script"=>$script));
-	addnav("Standard Fighting");
 	addnav($fight,$script."op=fight");
 	if ($allowflee) {
 		addnav($run,$script."op=run");
@@ -33,29 +31,20 @@ function fightnav($allowspecial=true, $allowflee=true, $script=false, $blocktoth
 
 	if (getsetting("autofight",0)) {
 		addnav("Automatic Fighting");
-		addnav("%?For 5 Rounds", $script."op=fight&auto=five");
-		addnav(")?For 10 Rounds", $script."op=fight&auto=ten");
-		if (!$blocktothedeath){
-			$auto = getsetting("autofightfull",0);
-			if (($auto == 1 || ($auto == 2 && !$allowflee)) && count($newenemies)==1) {
-				addnav("D?To the Death", $script."op=fight&auto=full");
-			} elseif ($auto == 1 || ($auto == 2 && !$allowflee)) {
-				addnav("U?Until current enemy dies", $script."op=fight&auto=full");
-			}
+		addnav("5?For 5 Rounds", $script."op=fight&auto=five");
+		addnav("1?For 10 Rounds", $script."op=fight&auto=ten");
+		$auto = getsetting("autofightfull",0);
+		if (($auto == 1 || ($auto == 2 && !$allowflee)) && count($newenemies)==1) {
+			addnav("U?Until End", $script."op=fight&auto=full");
+		} elseif ($auto == 1 || ($auto == 2 && !$allowflee)) {
+			addnav("U?Until current enemy dies", $script."op=fight&auto=full");
 		}
 	}
 
-	//added hook for the Stamina system
-	if (!$session['user']['alive']){
-		modulehook("fightnav-graveyard", array("script"=>$script));
-	}
-	
 	if ($allowspecial) {
 		addnav("Special Abilities");
 		modulehook("fightnav-specialties", array("script"=>$script));
 
-		show_item_fightnavs($script);
-		
 		if ($session['user']['superuser'] & SU_DEVELOPER) {
 			addnav("`&Super user`0","");
 			addnav("!?`&&#149; __GOD MODE",$script."op=fight&skill=godmode",true);
@@ -67,7 +56,7 @@ function fightnav($allowspecial=true, $allowflee=true, $script=false, $blocktoth
 		addnav("Targets");
 		foreach ($newenemies as $index=>$badguy){
 			if ($badguy['creaturehealth'] <= 0 || (isset($badguy['dead']) && $badguy['dead'] == true)) continue;
-			addnav(array("%s%s`0",(isset($badguy['istarget'])&&$badguy['istarget'])?"`3*`0":"", $badguy['creaturename']), $script."op=fight&newtarget=$index");
+			addnav(array("%s%s`0",(isset($badguy['istarget'])&&$badguy['istarget'])?"`#*`0":"", $badguy['creaturename']), $script."op=fight&newtarget=$index");
 		}
 	}
 	tlschema();

@@ -9,7 +9,7 @@ function forest($noshowmessage=false) {
 	tlschema("forest");
 //	mass_module_prepare(array("forest", "validforestloc"));
 	addnav("Heal");
-	addnav("H?Hospital Tent","healer.php");
+	addnav("H?Healer's Hut","healer.php");
 	addnav("Fight");
 	addnav("L?Look for Something to Kill","forest.php?op=search");
 	if ($session['user']['level']>1)
@@ -40,18 +40,16 @@ function forest($noshowmessage=false) {
 	}
 	addnav("Other");
 	villagenav();
-	
 	if ($noshowmessage!=true){
-		$foresttext = array();
-		tlschema();
-		$foresttext[] = translate_inline("The Jungle, home to the vicious creatures of Doktor Improbable's obscene laboratories - and to various evildoers of all descriptions.`n`nThe thick foliage of the jungle restricts your view to only a few yards in most places.  The paths would be imperceptible except for your trained eye.  You move as silently as a soft breeze across the thick moss covering the ground, wary to avoid stepping on a twig or any of the numerous pieces of bleached bone that populate the jungle floor, lest you betray your presence to one of the vile beasts that wander this place.`n`nThen you think \"`#Sod it,`0\" and tear off looking for something to kill.`n`n");
-		$foresttext = modulehook("forest-desc",$foresttext);
-		output($foresttext);
+		output("`c`7`bThe Forest`b`0`c");
+		output("The Forest, home to evil creatures and evildoers of all sorts.`n`n");
+		output("The thick foliage of the forest restricts your view to only a few yards in most places.");
+		output("The paths would be imperceptible except for your trained eye.");
+		output("You move as silently as a soft breeze across the thick moss covering the ground, wary to avoid stepping on a twig or any of the numerous pieces of bleached bone that populate the forest floor, lest you betray your presence to one of the vile beasts that wander the forest.`n");
+		modulehook("forest-desc");
 	}
 	modulehook("forest", array());
 	module_display_events("forest", "forest.php");
-	addnav("Inventory");
-	addnav("View your Inventory","inventory.php?items_context=forest");
 	tlschema();
 }
 

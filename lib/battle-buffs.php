@@ -5,8 +5,8 @@
 /**
  *
  * 
- * @copyright Copyright © 2002-2005, Eric Stevens & JT Traub, © 2006-2007, Dragonprime Development Team
- * @version Lotgd 1.1.1 DragonPrime Edition
+ * @copyright Copyright Â© 2002-2005, Eric Stevens & JT Traub, Â© 2006-2009, Dragonprime Development Team
+ * @version Lotgd 1.1.2 DragonPrime Edition
  * @package Core
  * @subpackage Library
  * @license http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode
@@ -39,10 +39,10 @@ function activate_buffs($tag) {
 				$buff['startmsg'] = str_replace("`%", "`%%", $buff['startmsg']);
 				$msg = sprintf_translate($buff['startmsg']);
 				$msg = substitute("`5".$msg."`0`n");
-				output_notl($msg);
+				output_notl($msg); //Here it's already translated
 			}else{
-				$msg = substitute("`5".$buff['startmsg']."`0`n");
-				output_notl($msg);
+				$msg = substitute_array("`5".$buff['startmsg']."`0`n");
+				output($msg);
 			}
 			unset($session['bufflist'][$key]['startmsg']);
 		}
@@ -83,8 +83,8 @@ function activate_buffs($tag) {
 					$msg = substitute("`5".$msg."`0`n");
 					output_notl($msg); //Here it's already translated
 				}else{
-					$msg = substitute("`5".$buff['roundmsg']."`0`n");
-					output_notl($msg);
+					$msg = substitute_array("`5".$buff['roundmsg']."`0`n");
+					output($msg);
 				}
 			}
 		}
@@ -143,8 +143,8 @@ function activate_buffs($tag) {
 				$msg = substitute("`)".$msg."`0`n", array("{damage}"), array($hptoregen));
 				output_notl($msg); //Here it's already translated
 			}elseif ($msg!="") {
-				$msg = substitute("`)".$msg."`0`n", array("{damage}"), array($hptoregen));
-				output_notl($msg);
+				$msg = substitute_array("`)".$msg."`0`n", array("{damage}"), array($hptoregen));
+				output($msg);
 			}
 			if (isset($buff['aura']) && $buff['aura'] == true) {
 				global $companions;
@@ -158,12 +158,12 @@ function activate_buffs($tag) {
 						if ($companion['hitpoints'] < $companion['maxhitpoints'] && ($companion['hitpoints'] > 0 || ($companion['cannotdie'] == true && $auraeffect > 0))) {
 							$hptoregen = min($auraeffect, $companion['maxhitpoints']-$companion['hitpoints']);
 							$companion['hitpoints'] += $hptoregen;
-							$msg = substitute("`)".$buff['auramsg']."`0`n", array("{damage}","{companion}"),array($hptoregen,$companion['name']));
-							output_notl($msg);
+							$msg = substitute_array("`)".$buff['auramsg']."`0`n", array("{damage}","{companion}"),array($hptoregen,$companion['name']));
+							output($msg);
 							if ($hptoregen < 0 && $companion['hitpoints'] <= 0) {
 								if (isset($companion['dyingtext'])) {
 									tlschema("battle");
-									output_notl($companion['dyingtext']);
+									output($companion['dyingtext']);
 									tlschema();
 								}
 								if (isset($companion['cannotdie']) && $companion['cannotdie'] == true) {
@@ -216,8 +216,8 @@ function activate_buffs($tag) {
 					$msg = substitute("`)".$msg."`0`n", array("{damage}"), array(abs($damage)));
 					output_notl($msg); //Here it's already translated
 				}else if ($msg>"") {
-					$msg = substitute("`)".$msg."`0`n", array("{damage}"), array(abs($damage)));
-					output_notl($msg);
+					$msg = substitute_array("`)".$msg."`0`n", array("{damage}"), array(abs($damage)));
+					output($msg);
 				}
 				if ($badguy['dead'] == true) break;
 				$minioncounter++;
@@ -260,8 +260,8 @@ function process_lifetaps($ltaps, $damage) {
 			$msg = substitute("`)".$msg."`0`n", array("{damage}"), array($healhp));
 			output_notl($msg); //Here it's already translated
 		}else if ($msg>"") {
-			$msg = substitute("`)".$msg."`0`n", array("{damage}"), array($healhp));
-			output_notl($msg);
+			$msg = substitute_array("`)".$msg."`0`n", array("{damage}"), array($healhp));
+			output($msg);
 		}
 		if ($buff['schema']) tlschema();
 	}
@@ -303,8 +303,8 @@ function process_dmgshield($dshield, $damage) {
 			$msg = substitute("`)".$msg."`0`n", array("{damage}"), array($realdamage));
 			output_notl($msg); //Here it's already translated
 		}else if ($msg>"") {
-			$msg = substitute("`)".$msg."`0`n", array("{damage}"), array($realdamage));
-			output_notl($msg);
+			$msg = substitute_array("`)".$msg."`0`n", array("{damage}"), array($realdamage));
+			output($msg);
 		}
 		if ($buff['schema']) {
 			tlschema();
@@ -332,8 +332,8 @@ function expire_buffs() {
 						$msg = substitute("`5".$msg."`0`n");
 						output_notl($msg); //Here it's already translated
 					}else{
-						$msg = substitute("`5".$buff['wearoff']."`0`n");
-						output_notl($msg);
+						$msg = substitute_array("`5".$buff['wearoff']."`0`n");
+						output($msg);
 					}
 				}
 				//unset($session['bufflist'][$key]);

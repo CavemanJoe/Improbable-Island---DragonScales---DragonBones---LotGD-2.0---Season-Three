@@ -1,14 +1,11 @@
 <?php
 
 function db_query($sql, $die=true){
-	//debug("SQL Query: ".$sql);
  	if (defined("DB_NODB") && !defined("LINK")) return array();
-	global $session,$dbinfo,$allqueries,$allqueriesbyfile;
+	global $session,$dbinfo;
 	$dbinfo['queriesthishit']++;
 	$fname = DBTYPE."_query";
 	$starttime = getmicrotime();
-	$thisquery = array();
-	$thisquery['query']=$sql;
 	$r = $fname($sql, LINK);
 
 	if (!$r && $die === true) {
@@ -33,15 +30,6 @@ function db_query($sql, $die=true){
 		if (strlen($s) > 800) $s = substr($s,0,400)." ... ".substr($s,strlen($s)-400);
 		debug("Slow Query (".round($endtime-$starttime,2)."s): ".(HTMLEntities($s, ENT_COMPAT, getsetting("charset", "ISO-8859-1")))."`n");
 	}
-	$thisquery['time'] = round($endtime-$starttime,5);
-	$trace = debug_backtrace();
-	$thisquery['file1'] = $trace[0]['file'];
-	$thisquery['line1'] = $trace[0]['line'];
-	$thisquery['file2'] = $trace[1]['file'];
-	$thisquery['line2'] = $trace[1]['line'];
-	$allqueries[] = $thisquery;
-	$allqueriesbyfile[$thisquery['file1']]['time'] += $thisquery['time'];
-	$allqueriesbyfile[$thisquery['file1']]['hits'] += 1;
 	unset($dbinfo['affected_rows']);
 	$dbinfo['affected_rows']=db_affected_rows();
 	$dbinfo['querytime'] += $endtime-$starttime;
@@ -52,30 +40,17 @@ function db_query($sql, $die=true){
 //since it's possible this array is large, we'll save ourselves
 //the overhead of duplicating the array, then destroying the old
 //one by returning a reference instead.
-function &db_query_cached($sql,$name,$duration=900,$dir=false){
+function &db_query_cached($sql,$name,$duration=900){
 	//this function takes advantage of the data caching library to make
 	//all of the other db_functions act just like MySQL queries but rely
 	//instead on disk cached data.
 	//if (getsetting("usedatacache", 0) == 1) debug("DataCache: $name");
 	//standard is 15 minutes, als hooks don't need to be cached *that* often, normally you invalidate the cache properly
-	global $dbinfo,$cachedqueries,$allqueriesbyfile;
-	$starttime = getmicrotime();
-	$data = datacache($name,$duration,$dir);
+	global $dbinfo;
+	$data = datacache($name,$duration);
 	if (is_array($data)){
 		reset($data);
 		$dbinfo['affected_rows']=-1;
-		$dbinfo['cache_success']+=1;
-		// debug("Successful DC lookup: ".$sql,true);
-		$endtime = getmicrotime();
-		$extime = $endtime-$starttime;
-		$thisquery['time'] = round($extime,5);
-		$thisquery['sql'] = $sql;
-		$cachedqueries[] = $thisquery;
-		$trace = debug_backtrace();
-		$thisquery['file1'] = $trace[0]['file'];
-		$allqueriesbyfile[$thisquery['file1']]['time'] += $thisquery['time'];
-		$allqueriesbyfile[$thisquery['file1']]['hits'] += 1;
-		$dbinfo['cachetime'] += $extime;
 		return $data;
 	}else{
 		$result = db_query($sql);
@@ -83,10 +58,8 @@ function &db_query_cached($sql,$name,$duration=900,$dir=false){
 		while ($row = db_fetch_assoc($result)) {
 			$data[] = $row;
 		}
-		updatedatacache($name,$data,$dir);
+		updatedatacache($name,$data);
 		reset($data);
-		$dbinfo['cache_fail']+=1;
-		// debug("Failed DC lookup: ".$sql,true);
 		return $data;
 	}
 }
@@ -209,7 +182,7 @@ function db_prefix($tablename, $force=false) {
 		// do this unles you know EXACTLY what this means to you, your
 		// game, your county, your state, your nation, your planet and
 		// your universe!
-		//if (file_exists("prefixes.php")) require_once("prefixes.php");
+		if (file_exists("prefixes.php")) require_once("prefixes.php");
 
 		$prefix = $DB_PREFIX;
 		if (isset($special_prefixes[$tablename])) {

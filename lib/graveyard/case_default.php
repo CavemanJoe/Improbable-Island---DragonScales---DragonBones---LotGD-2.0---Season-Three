@@ -11,7 +11,6 @@ if (!$skipgraveyardtext) {
 }
 modulehook("graveyard");
 	if ($session['user']['gravefights']) {
-	addnav("Fight");
 	addnav("Look for Something to Torment","graveyard.php?op=search");
 }
 addnav("Places");

@@ -107,7 +107,7 @@ function report_power_move($crit, $dmg) {
 		}
 		if ($power) {
 			tlschema("battle");
-			output_fight_special($msg);
+			output($msg);
 			tlschema();
 
 			$dmg += e_rand($crit/4, $crit/2);

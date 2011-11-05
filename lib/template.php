@@ -39,9 +39,8 @@ function prepare_template($force=false){
 	if ($templatename=="" || !file_exists("templates/$templatename"))
 		$templatename="jade.htm";
 	$template = loadtemplate($templatename);
-	//CMJ edit: changed for performance
-//	if ($session['templatename'] == $templatename && $session['templatemtime']==filemtime("templates/$templatename")){
-	if ($session['templatename'] == $templatename){
+	if ($session['templatename'] == $templatename &&
+			$session['templatemtime']==filemtime("templates/$templatename")){
 		//We do not have to check that the template is valid since it has
 		//not changed.
 	}else{
@@ -75,7 +74,7 @@ function prepare_template($force=false){
 		}
 		if ($templatemessage==""){
 			$session['templatename'] = $templatename;
-			//$session['templatemtime'] = filemtime("templates/$templatename");
+			$session['templatemtime'] = filemtime("templates/$templatename");
 		}
 	}
 	if ($templatemessage!=""){

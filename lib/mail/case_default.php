@@ -6,7 +6,7 @@ if (isset($session['message'])) {
 $session['message']="";
 $mail = db_prefix("mail");
 $accounts = db_prefix("accounts");
-$sql = "SELECT subject,messageid,$accounts.name,msgfrom,seen,sent FROM $mail LEFT JOIN $accounts ON $accounts.acctid=$mail.msgfrom WHERE msgto=\"".$session['user']['acctid']."\" ORDER BY sent DESC";
+$sql = "SELECT subject,messageid,$accounts.name,msgfrom,seen,sent FROM $mail LEFT JOIN $accounts ON $accounts.acctid=$mail.msgfrom WHERE msgto=\"".$session['user']['acctid']."\" ORDER BY seen ASC, sent DESC";
 $result = db_query($sql);
 $db_num_rows = db_num_rows($result);
 if ($db_num_rows>0){
@@ -27,10 +27,12 @@ if ($db_num_rows>0){
 			$row_subject = @unserialize($row['subject']);
 			if ($row_subject !== false) {
 				$row['subject'] = call_user_func_array("sprintf_translate", $row_subject);
-			}
+			} else {
+         			$row['subject'] = translate_inline($row['subject']);
+        		}
 		}
 		// In one line so the Translator doesn't screw the Html up
-		output_notl("<a href='mail.php?op=read&id={$row['messageid']}'>".htmlentities(((trim($row['subject']))?$row['subject']:$no_subject), ENT_COMPAT, getsetting("charset", "ISO-8859-1"))."</a>", true);
+		output_notl("<a href='mail.php?op=read&id={$row['messageid']}'>".((trim($row['subject']))?$row['subject']:$no_subject)."</a>", true);
 		rawoutput("</td><td><a href='mail.php?op=read&id={$row['messageid']}'>");
 		output_notl($row['name']);
 		rawoutput("</a></td><td><a href='mail.php?op=read&id={$row['messageid']}'>".date("M d, h:i a",strtotime($row['sent']))."</a></td>");

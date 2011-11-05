@@ -19,13 +19,13 @@ $basetext=array(
 		"Naahw, wha' can oye do fer ya?`7\" he asks.",
 	),
 	"nosuchbeast"=>"`7\"`&Ach, thar dinnae be any such beestie here!`7\" shouts the dwarf!",
-	// "finebeast"=>array(
-		// "`7\"`&Aye, tha' be a foyne beastie indeed!`7\" comments the dwarf.`n`n",
-		// "`7\"`&Ye cert'nly have an oye fer quality!`7\" exclaims the dwarf.`n`n",
-		// "`7\"`&Och, this beastie will serve ye well indeed,`7\" says the dwarf.`n`n",
-		// "`7\"`&That beastie be one o' me finest!`7\" says the dwarf with pride.`n`n",
-		// "`7\"`&Ye couldnae hae made a foyner choice o' beasts!`7\" says the dwarf with pride.`n`n"
-	// ),
+	"finebeast"=>array(
+		"`7\"`&Aye, tha' be a foyne beastie indeed!`7\" comments the dwarf.`n`n",
+		"`7\"`&Ye cert'nly have an oye fer quality!`7\" exclaims the dwarf.`n`n",
+		"`7\"`&Och, this beastie will serve ye well indeed,`7\" says the dwarf.`n`n",
+		"`7\"`&That beastie be one o' me finest!`7\" says the dwarf with pride.`n`n",
+		"`7\"`&Ye couldnae hae made a foyner choice o' beasts!`7\" says the dwarf with pride.`n`n"
+	),
 	"toolittle"=>"`7Merick looks at you sorta sideways.  \"`&'Ere, whadday ya think yeer doin'?  Cannae ye see that %s`& costs `^%s`& gold an' `%%s`& gems?`7\"",
 	"replacemount"=>"`7You hand over the reins to %s`7 and the purchase price of your new critter, and Merick leads out a fine new `&%s`7 for you!`n`n",
 	"newmount"=>"`7You hand over the purchase price of your new critter, and Merick leads out a fine `&%s`7 for you!`n`n",
@@ -37,7 +37,7 @@ $basetext=array(
 	"nofeedgold"=>"`7You don't have enough gold with you to pay for the food. Merick refuses to feed your creature and advises you to look for somewhere else to let %s`7 graze for free, such as in the `@Forest`7.",
 	"confirmsale"=>"`n`n`7Merick whistles.  \"`&Yer mount shure is a foyne one, %s. Are ye sure ye wish t' part wae it?`7\"`n`nHe waits for your answer.`0",
 	"mountsold"=>"`7As sad as it is to do so, you give up your precious %s`7, and a lone tear escapes your eye.`n`nHowever, the moment you spot the %s, you find that you're feeling quite a bit better.",
-	"offer"=>"`n`nMerick offers you `^%s`& gold and `%%s`& gems for %s`7.",
+	"offer"=>"`n`n`&Merick offers you `^%s`& gold and `%%s`& gems for %s`7.",
 	"lass"=>"lass",
 	"lad"=>"lad",
 );
@@ -45,7 +45,7 @@ $schemas = array(
 	'title'=>'stables',
 	'desc'=>'stables',
 	'nosuchbeast'=>'stables',
-	// 'finebeast'=>'stables',
+	'finebeast'=>'stables',
 	'toolittle'=>'stables',
 	'replacemount'=>'stables',
 	'newmount'=>'stables',
@@ -111,10 +111,10 @@ if ($op==""){
 		tlschema();
 	}else{
 		// Idea taken from Robert of dragonprime.cawsquad.net
-		// $t = e_rand(0,count($texts['finebeast'])-1);
-		// tlschema($schemas['finebeast']);
-		// output($texts['finebeast'][$t]);
-		// tlschema();
+		$t = e_rand(0,count($texts['finebeast'])-1);
+		tlschema($schemas['finebeast']);
+		output($texts['finebeast'][$t]);
+		tlschema();
 		$mount = db_fetch_assoc($result);
 		output("`7Creature: `&%s`0`n", $mount['mountname']);
 		output("`7Description: `&%s`0`n", $mount['mountdesc']);
@@ -296,6 +296,5 @@ if ($confirm == 0) {
 	}
 }
 
-modulehook("stables_footer");
 page_footer();
 ?>

@@ -27,7 +27,7 @@
 			if ( nltoappon($row['clandesc']) != "" ) {
 
 				$subject = "Clan Application Reminder";
-				$mail = "`&Did you remember to read the description of the clan of your choice before applying?  Note that some clans may have requirements that you have to fulfill before you can become a member.  If you are not accepted into the clan of your choice anytime soon, it may be because you have not fulfilled these requirements.  For your convenience, the description of the clan you are applying to is reproduced below.`n`n`c`3%s`@ <`^%s`@>`0`c`n%s";
+				$mail = "`&Did you remember to read the description of the clan of your choice before applying?  Note that some clans may have requirements that you have to fulfill before you can become a member.  If you are not accepted into the clan of your choice anytime soon, it may be because you have not fulfilled these requirements.  For your convenience, the description of the clan you are applying to is reproduced below.`n`n`c`#%s`@ <`^%s`@>`0`c`n%s";
 
 				systemmail($session['user']['acctid'],array($subject),array($mail, $row['clanname'], $row['clanshort'], nltoappon($row['clandesc'])));
 			}

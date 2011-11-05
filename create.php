@@ -45,7 +45,10 @@ if ($op=="val"){
 			output("`^Characters that have reached level 2 at least once will be deleted after %s days of no activity.`n`0", $old);
 		}
 		//only set this if they are not doing a forgotten password.
-		if (substr($id,0,1)!="x") savesetting("newestplayer", $row['acctid']);
+		if (substr($id,0,1)!="x") {
+			savesetting("newestplayer", $row['acctid']);
+			invalidatedatacache('newest');
+		}
 	}else{
 		output("`#Your email could not be verified.");
 		output("This may be because you already validated your email.");
@@ -106,7 +109,7 @@ if (getsetting("allowcreation",1)==0){
 		$shortname = sanitize_name(getsetting("spaceinname", 0), httppost('name'));
 
 		if (soap($shortname)!=$shortname){
-			output("`\$Error`^: Something awful was found in your name, please consider revising it.`n");
+			output("`\$Error`^: Bad language was found in your name, please consider revising it.`n");
 			$op="";
 		}else{
 			$blockaccount=false;
@@ -269,7 +272,7 @@ if (getsetting("allowcreation",1)==0){
 		// better
 		rawoutput("<input type='hidden' name='passlen' id='passlen' value='0'>");
 		rawoutput("<table><tr valign='top'><td>");
-		output("How will you be known to this world?  Your name can be up to twenty-five characters in length and can contain letters and spaces.  No numbers please.");
+		output("How will you be known to this world? ");
 		rawoutput("</td><td><input name='name'></td></tr><tr valign='top'><td>");
 		output("Enter a password: ");
 		rawoutput("</td><td><input type='password' name='pass1' id='pass1'></td></tr><tr valign='top'><td>");
@@ -308,6 +311,6 @@ if (getsetting("allowcreation",1)==0){
 		rawoutput("</form>");
 	}
 }
-addnav("Login","index.php?r=".httpget('r'));
+addnav("Login","index.php");
 page_footer();
 ?>

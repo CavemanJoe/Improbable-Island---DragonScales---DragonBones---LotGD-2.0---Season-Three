@@ -34,7 +34,7 @@ function rawoutput($indata) {
 
 	if ($block_new_output) return;
 
-	$output .= $indata;
+	$output .= $indata . "\n";
 }
 
 /**
@@ -66,59 +66,13 @@ function output_notl($indata){
 		$out = str_replace("`%","`%%",$out);
 		$out = call_user_func_array("sprintf",$args);
 	}
+	//holiday text
+	if ($priv==false) $out = holidayize($out,'output');
 	//`1`2 etc color & formatting
 	$out = appoencode($out,$priv);
 	//apply to the page.
 	$output.=tlbutton_pop().$out;
-}
-
-//New Output statements for styling buff messages and combat messages, in order to distinguish between the two when players are fighting very quickly.
-function output_fight($text){
-	global $block_new_output;
-	if ($block_new_output) return;
-	$args = func_get_args();
-	if (is_array($args[0])) $args = $args[0];
-	if (is_bool($args[0]) && array_shift($args)) {
-		$schema= array_shift($args);
-		$args[0] = translate($args[0],$schema);
-	} else {
-		$args[0] = translate($args[0]);
-	}
-	$args[0] = "<span class=\"fightoutput\">".$args[0]."</span>";
-	$args[]=true;
-	call_user_func_array("output_notl",$args);
-}
-
-function output_fight_buff($text){
-	global $block_new_output;
-	if ($block_new_output) return;
-	$args = func_get_args();
-	if (is_array($args[0])) $args = $args[0];
-	if (is_bool($args[0]) && array_shift($args)) {
-		$schema= array_shift($args);
-		$args[0] = translate($args[0],$schema);
-	} else {
-		$args[0] = translate($args[0]);
-	}
-	$args[0] = "<span class=\"fightoutput_buff\">".$args[0]."</span>";
-	$args[]=true;
-	call_user_func_array("output_notl",$args);
-}
-
-function output_fight_special($text){
-	global $block_new_output;
-	if ($block_new_output) return;
-	$args = func_get_args();
-	if (is_array($args[0])) $args = $args[0];
-	if (is_bool($args[0]) && array_shift($args)) {
-		$schema= array_shift($args);
-		$args[0] = translate($args[0],$schema);
-	} else {
-		$args[0] = translate($args[0]);
-	}
-	$args[0] = "<span class=\"fightoutput_special\">".$args[0]."</span>";
-	$args[]=true;
-	call_user_func_array("output_notl",$args);
+	$output.="\n";
 }
 
 /**
@@ -130,8 +84,8 @@ function output_fight_special($text){
  *
  */
 function output(){
-	global $block_new_output,$output_time;
-	$start = microtime(true);
+	global $block_new_output;
+
 	if ($block_new_output) return;
 	$args = func_get_args();
 	if (is_array($args[0])) $args = $args[0];
@@ -142,9 +96,6 @@ function output(){
 		$args[0] = translate($args[0]);
 	}
 	call_user_func_array("output_notl",$args);
-	$end = microtime(true);
-	$tot = $end - $start;
-	$output_time += $tot;
 }
 
 /**
@@ -157,18 +108,12 @@ function debug($text, $force=false){
 	global $session, $block_new_output;
 	$temp = $block_new_output;
 	set_block_new_output(false);
-	
 	if ($force || $session['user']['superuser'] & SU_DEBUG_OUTPUT){
-		$trace = debug_backtrace();
 		if (is_array($text)){
 			require_once("lib/dump_item.php");
 			$text = appoencode(dump_item($text),true);
 		}
-		$file1 = $trace[0]['file'];
-		$line1 = $trace[0]['line'];
-		$file2 = $trace[1]['file'];
-		$line2 = $trace[1]['line'];
-		rawoutput("<div class='debug'>$file1, line $line1, from $file2, line $line2<br />$text</div>");
+		rawoutput("<div class='debug'>$text</div>");
 	}
 	set_block_new_output($temp);
 }
@@ -180,186 +125,6 @@ function debug($text, $force=false){
  * @param bool $priv Indicates if the passed string ($data) contains HTML
  * @return string An output (HTML) formatted string
  */
-
-function final_appoencode($data,$priv=false){
-	global $nestedtags,$session;
-	$start = 0;
-	$out="";
-	if( ($pos = strpos($data, "`")) !== false) {
-		global $nestedtags;
-		if (!isset($nestedtags['font'])) $nestedtags['font']=false;
-		if (!isset($nestedtags['div'])) $nestedtags['div']=false;
-		if (!isset($nestedtags['i'])) $nestedtags['i']=false;
-		if (!isset($nestedtags['b'])) $nestedtags['b']=false;
-		if (!isset($nestedtags['<'])) $nestedtags['<']=false;
-		if (!isset($nestedtags['>'])) $nestedtags['>']=false;
-		if (!isset($nestedtags['h'])) $nestedtags['h']=false;
-		
-		do {
-			++$pos;
-			if ($priv === false){
-				$out .= HTMLEntities(substr($data, $start, $pos - $start - 1), ENT_COMPAT, getsetting("charset", "ISO-8859-1"));
-			} else {
-				$out .= substr($data, $start, $pos - $start - 1);
-			}
-			$start = $pos + 2;
-			$code = substr($data, $pos, 2);
-			
-			if ($code!="0n" && $code!="0b" && $code!="00" && $code!="0i" && $code!="0c" && $code!="0h" && $code!="0>" && $code!="0<" && $code!="0H" && $code!="0W" && $code!="``"){
-				$out.="<span class='ac-".$code."'>";
-			} else {
-				switch($code){
-				case "0n":
-					$out.="<br>\n";
-					break;
-				case "00":
-					if ($nestedtags['font']) $out.="</span>";
-					$nestedtags['font'] = false;
-					break;
-				case "0b":
-					if ($nestedtags['b']){
-						$out.="</b>";
-						$nestedtags['b']=false;
-					}else{
-						$nestedtags['b']=true;
-						$out.="<b>";
-					}
-					break;
-				case "0i":
-					if ($nestedtags['i']) {
-						$out.="</i>";
-						$nestedtags['i']=false;
-					}else{
-						$nestedtags['i']=true;
-						$out.="<i>";
-					}
-					break;
-				case "0c":
-					if ($nestedtags['div']) {
-						$out.="</div>";
-						$nestedtags['div']=false;
-					}else{
-						$nestedtags['div']=true;
-						$out.="<div align='center'>";
-					}
-					break;
-				case "0h":
-					if ($nestedtags['h']) {
-						$out.="</em>";
-						$nestedtags['h']=false;
-					}else{
-						$nestedtags['h']=true;
-						$out.="<em>";
-					}
-					break;
-				case "0>":
-					if ($nestedtags['>']){
-						$nestedtags['>']=false;
-						$out.="</div>";
-					}else{
-						$nestedtags['>']=true;
-						$out.="<div style='float: right; clear: right;'>";
-					}
-					break;
-				case "0<":
-					if ($nestedtags['<']){
-						$nestedtags['<']=false;
-						$out.="</div>";
-					}else{
-						$nestedtags['<']=true;
-						$out.="<div style='float: left; clear: left;'>";
-					}
-					break;
-				case "0H":
-					if ($nestedtags['div']) {
-						$out.="</span>";
-						$nestedtags['div']=false;
-					}else{
-						$nestedtags['div']=true;
-						$out.="<span class='navhi'>";
-					}
-					break;
-				case "0w":
-					global $session;
-					if(!isset($session['user']['weapon']))
-						$session['user']['weapon']="";
-					$out.=$session['user']['weapon'];
-					break;
-				case "`":
-					$out.="`";
-					++$pos;
-					break;
-				default:
-					$out.="`".$data[$pos];
-				}
-			}
-		} while( ($pos = strpos($data, "`", $pos)) !== false);
-	}
-	if ($priv === false){
-		$out .= HTMLEntities(substr($data, $start), ENT_COMPAT, getsetting("charset", "ISO-8859-1"));
-	} else {
-		$out .= substr($data, $start);
-	}
-	
-	//add closing italics tag, so that players don't screw things up
-	
-	$out .= "</i>";
-	
-	return $out;
-}
-
-function getcolors($exclude=array()){
-	$colors = array(
-		"1" => "colDkBlue",
-		"2" => "colDkGreen",
-		"3" => "colDkCyan",
-		"4" => "colDkRed",
-		"5" => "colDkMagenta",
-		"6" => "colDkYellow",
-		"7" => "colDkWhite",
-		"~" => "colBlack",
-		"!" => "colLtBlue",
-		"@" => "colLtGreen",
-		"#" => "colLtCyan",
-		"\$" => "colLtRed",
-		"%" => "colLtMagenta",
-		"^" => "colLtYellow",
-		"&" => "colLtWhite",
-		")" => "colLtBlack",
-		"e" => "colDkRust",
-		"E" => "colLtRust",
-		"g" => "colXLtGreen",
-		"G" => "colXLtGreen",
-		"j" => "colMdGrey",
-		"J" => "colMdBlue",
-		"k" => "colaquamarine",
-		"K" => "coldarkseagreen",
-		"l" => "colDkLinkBlue",
-		"L" => "colLtLinkBlue",
-		"m" => "colwheat",
-		"M" => "coltan",
-		"p" => "collightsalmon",
-		"P" => "colsalmon",
-		"q" => "colDkOrange",
-		"Q" => "colLtOrange",
-		"R" => "colRose",
-		"T" => "colDkBrown",
-		"t" => "colLtBrown",
-		"V" => "colBlueViolet",
-		"v" => "coliceviolet",
-		"x" => "colburlywood",
-		"X" => "colbeige",
-		"y" => "colkhaki",
-		"Y" => "coldarkkhaki",
-	);
-	if (is_array($exclude) && count($exclude)){
-		foreach($exclude AS $drop){
-			unset($colors[$drop]);
-		}
-	}
-	return $colors;
-}
-
 function appoencode($data,$priv=false){
 	global $nestedtags,$session;
 	$start = 0;
@@ -367,7 +132,6 @@ function appoencode($data,$priv=false){
 	if( ($pos = strpos($data, "`")) !== false) {
 		global $nestedtags;
 		if (!isset($nestedtags['font'])) $nestedtags['font']=false;
-		if (!isset($nestedtags['typeface'])) $nestedtags['typeface']=false;
 		if (!isset($nestedtags['div'])) $nestedtags['div']=false;
 		if (!isset($nestedtags['i'])) $nestedtags['i']=false;
 		if (!isset($nestedtags['b'])) $nestedtags['b']=false;
@@ -375,8 +139,49 @@ function appoencode($data,$priv=false){
 		if (!isset($nestedtags['>'])) $nestedtags['>']=false;
 		if (!isset($nestedtags['h'])) $nestedtags['h']=false;
 
-		$colors = getcolors();
-		
+		static $colors = array(
+			"1" => "colDkBlue",
+			"2" => "colDkGreen",
+			"3" => "colDkCyan",
+			"4" => "colDkRed",
+			"5" => "colDkMagenta",
+			"6" => "colDkYellow",
+			"7" => "colDkWhite",
+			"~" => "colBlack",
+			"!" => "colLtBlue",
+			"@" => "colLtGreen",
+			"#" => "colLtCyan",
+			"\$" => "colLtRed",
+			"%" => "colLtMagenta",
+			"^" => "colLtYellow",
+			"&" => "colLtWhite",
+			")" => "colLtBlack",
+			"e" => "colDkRust",
+			"E" => "colLtRust",
+			"g" => "colXLtGreen",
+			"G" => "colXLtGreen",
+			"j" => "colMdGrey",
+			"J" => "colMdBlue",
+			"k" => "colaquamarine",
+			"K" => "coldarkseagreen",
+			"l" => "colDkLinkBlue",
+			"L" => "colLtLinkBlue",
+			"m" => "colwheat",
+			"M" => "coltan",
+			"p" => "collightsalmon",
+			"P" => "colsalmon",
+			"q" => "colDkOrange",
+			"Q" => "colLtOrange",
+			"R" => "colRose",
+			"T" => "colDkBrown",
+			"t" => "colLtBrown",
+			"V" => "colBlueViolet",
+			"v" => "coliceviolet",
+			"x" => "colburlywood",
+			"X" => "colbeige",
+			"y" => "colkhaki",
+			"Y" => "coldarkkhaki",
+ 		);
 		do {
 			++$pos;
 			if ($priv === false){
@@ -389,10 +194,6 @@ function appoencode($data,$priv=false){
 				if ($nestedtags['font']) $out.="</span>";
 				else $nestedtags['font']=true;
 				$out.="<span class='".$colors[$data[$pos]]."'>";
-			} else if (isset($typefaces[$data[$pos]])){
-				if ($nestedtags['typeface']) $out.="</span>";
-				else $nestedtags['typeface']=true;
-				$out.="<span class='".$typefaces[$data[$pos]]."'>";
 			} else {
 				switch($data[$pos]){
 				case "n":
@@ -469,7 +270,7 @@ function appoencode($data,$priv=false){
 					global $session;
 					if(!isset($session['user']['weapon']))
 						$session['user']['weapon']="";
-					$out.=$session['user']['weapon'];
+					$out.=appoencode($session['user']['weapon'],$priv);
 					break;
 				case "`":
 					$out.="`";
@@ -486,11 +287,6 @@ function appoencode($data,$priv=false){
 	} else {
 		$out .= substr($data, $start);
 	}
-	
-	//add closing italics tag, so that players don't screw things up
-	
-	$out .= "</i>";
-	
 	return $out;
 }
 
@@ -833,7 +629,7 @@ function buildnavs(){
 				// Generate the collapsable section header
 				$args = array("name"=>"nh-{$key}",
 						"title"=>($key ? $key : "Unnamed Navs"));
-				// $args = modulehook("collapse-nav{", $args);
+				$args = modulehook("collapse-nav{", $args);
 				if (isset($args['content']))
 					$collapseheader = $args['content'];
 				if (isset($args['style']))
@@ -852,11 +648,11 @@ function buildnavs(){
 			}//end while
 
 			// Generate the enclosing collapsable section footer
-			// if ($tkey > "" && (!array_key_exists($tkey,$navnocollapse) || !$navnocollapse[$tkey])) {
-				// // $args = modulehook("}collapse-nav");
-				// if (isset($args['content']))
-					// $collapsefooter = $args['content'];
-			// }
+			if ($tkey > "" && (!array_key_exists($tkey,$navnocollapse) || !$navnocollapse[$tkey])) {
+				$args = modulehook("}collapse-nav");
+				if (isset($args['content']))
+					$collapsefooter = $args['content'];
+			}
 
 			switch ($style) {
 			case "classic":
@@ -929,10 +725,10 @@ function private_addnav($text,$link=false,$priv=false,$pop=false,$popsize="500x3
 	$extra="";
 	$ignoreuntil="";
 	if ($link===false){
-		//$text = holidayize($text,'nav');
+		$text = holidayize($text,'nav');
 		$thisnav.=tlbutton_pop().templatereplace("navhead",array("title"=>appoencode($text,$priv)));
 	}elseif ($link === "") {
-		//$text = holidayize($text,'nav');
+		$text = holidayize($text,'nav');
 		$thisnav.=tlbutton_pop().templatereplace("navhelp",array("text"=>appoencode($text,$priv)));
 	} elseif ($link == "!!!addraw!!!") {
 		$thisnav .= $text;
@@ -953,12 +749,12 @@ function private_addnav($text,$link=false,$priv=false,$pop=false,$popsize="500x3
 				$hchar = strtolower($text[0]);
 				if ($hchar==' ' || array_key_exists($hchar,$accesskeys) && $accesskeys[$hchar]==1){
 					$text = substr($text,2);
-					//$text = holidayize($text,'nav');
+					$text = holidayize($text,'nav');
 					if ($hchar == ' ') $key = " ";
 				}else{
 					$key = $text[0];
 					$text = substr($text,2);
-					//$text = holidayize($text,'nav');
+					$text = holidayize($text,'nav');
 					$found=false;
 					$text_len = strlen($text);
 					for ($i=0;$i<$text_len; ++$i){
@@ -990,13 +786,12 @@ function private_addnav($text,$link=false,$priv=false,$pop=false,$popsize="500x3
 					}
 				}
 			} else {
-				//$text = holidayize($text,'nav');
+				$text = holidayize($text,'nav');
 			}
 
 			if ($key==""){
 				//we have no previously defined key.  Look for a new one.
-				$tlength = strlen($text);
-				for ($i=0;$i<$tlength; $i++){
+				for ($i=0;$i<strlen($text); $i++){
 					$char = substr($text,$i,1);
 					if ($ignoreuntil == $char) {
 						$ignoreuntil="";
@@ -1087,8 +882,6 @@ function navcount(){
  *
  */
 function clearnav(){
-	global $navbysection;
-	$navbysection = array();
 	$session['allowednavs']=array();
 }
 

@@ -20,10 +20,6 @@ $op = httpget("op");
 
 $battle = false;
 
-global $outdoors, $shady;
-$outdoors = true;
-$shady = true;
-
 if ($op=="run"){
 	if (e_rand()%3 == 0){
 		output ("`c`b`&You have successfully fled your opponent!`0`b`c`n");
@@ -44,7 +40,7 @@ if ($op=="dragon"){
 	require_once("lib/partner.php");
 	addnav("Enter the cave","dragon.php");
 	addnav("Run away like a baby","inn.php?op=fleedragon");
-	output("You approach the moss-covered entrance of a laboratory building deep in the jungle. The nearby trees are twisted into painful shapes, and discoloured in unlikely patterns.`n`n");
+	output("`\$You approach the blackened entrance of a cave deep in the forest, though the trees are scorched to stumps for a hundred yards all around.");
 	output("A thin tendril of smoke escapes the roof of the cave's entrance, and is whisked away by a suddenly cold and brisk wind.");
 	output("The mouth of the cave lies up a dozen feet from the forest floor, set in the side of a cliff, with debris making a conical ramp to the opening.");
 	output("Stalactites and stalagmites near the entrance trigger your imagination to inspire thoughts that the opening is really the mouth of a great leech.`n`n");
@@ -66,7 +62,7 @@ if ($op=="search"){
 		modulehook("forestsearch", array());
 		$args = array(
 			'soberval'=>0.9,
-			'sobermsg'=>"`&Faced with the prospect of death, you sober up a little.`0`n",
+			'sobermsg'=>"`&Faced with the prospect of death, you sober up a little.`n",
 			'schema'=>'forest');
 		modulehook("soberup", $args);
 		if (module_events("forest", getsetting("forestchance", 15)) != 0) {
@@ -157,7 +153,7 @@ if ($op=="search"){
 				$multi += $targetlevel - 17;
 				$targetlevel=17;
 			}
-			//debug("Creatures: $multi Targetlevel: $targetlevel Mintargetlevel: $mintargetlevel");
+			debug("Creatures: $multi Targetlevel: $targetlevel Mintargetlevel: $mintargetlevel");
 			if ($multi > 1) {
 				$packofmonsters = (bool)(e_rand(0,5) == 0 && getsetting("allowpackofmonsters", true)); // true or false
 				switch($packofmonsters) {
@@ -230,7 +226,6 @@ if ($op=="search"){
 					}
 				} else {
 					while ($badguy = db_fetch_assoc($result)) {
-						$badguy = modulehook("choosebadguy",$badguy);
 						$badguy['playerstarthp']=$session['user']['hitpoints'];
 						$badguy['diddamage']=0;
 						$badguy = buffbadguy($badguy);

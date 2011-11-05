@@ -138,31 +138,21 @@ function creature_exp($level){
 }
 
 function creature_gold($level){
-	//CMJ's rebalancing
-	if ($level==1){
-		$gold = 30;
-	} else if ($level!=17 && $level!=18){
-		$gold = ($level*10)+40;
-	} else {
-		$gold = 0;
+	switch($level){
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			$gold = round(-4.5*$level*$level*$level+22*$level*$level+26.5*$level-8);
+		break;
+		case 17:
+		case 18:
+			$gold = 0;
+		break;
+		default:
+			$gold = round(-0.1673326*$level*$level+36.590909*$level+19.904594);
+		break;
 	}
-	// switch($level){
-		// case 1:
-			// $gold = 
-		// break;
-		// case 2:
-		// case 3:
-		// case 4:
-			// $gold = round(-4.5*$level*$level*$level+22*$level*$level+26.5*$level-8);
-		// break;
-		// case 17:
-		// case 18:
-			// $gold = 0;
-		// break;
-		// default:
-			// $gold = round(-0.1673326*$level*$level+36.590909*$level+19.904594);
-		// break;
-	// }
 	return $gold;
 }
 ?>

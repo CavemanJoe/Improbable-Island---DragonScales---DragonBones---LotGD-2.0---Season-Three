@@ -8,14 +8,14 @@ require_once("lib/http.php");
 require_once("lib/villagenav.php");
 
 tlschema("news");
-$r=httpget('r');
+
 modulehook("news-intercept",array());
 
-// Commented out because we now expire news at every new game day
-// if ((int)getsetting("expirecontent",180)>0){
-	// $sql = "DELETE FROM " . db_prefix("news") . " WHERE newsdate<'".date("Y-m-d H:i:s",strtotime("-1 day"))."'";
-	// db_query($sql);
-// }
+if ((int)getsetting("expirecontent",180)>0){
+	$sql = "DELETE FROM " . db_prefix("news") . " WHERE newsdate<'".date("Y-m-d H:i:s",strtotime("-".getsetting("expirecontent",180)." days"))."'";
+	//echo $sql;
+	db_query($sql);
+}
 
 if ($session['user']['loggedin']) checkday();
 $newsperpage=50;
@@ -56,7 +56,7 @@ while ($row = db_fetch_assoc($result2)) {
 	}
 }
 output_notl("`n");
-output("`c`b`!News since the last new Game Day %s`0`b`c", $pagestr);
+output("`c`b`!News for %s %s`0`b`c", $date, $pagestr);
 
 while ($row = db_fetch_assoc($result)) {
 	output_notl("`c`2-=-`@=-=`2-=-`@=-=`2-=-`@=-=`2-=-`0`c");
@@ -79,8 +79,7 @@ while ($row = db_fetch_assoc($result)) {
 		$news = translate_inline($row['newstext']);
 	}
 	tlschema();
-	$time = reltime(strtotime($row['newsdate']));
-	output_notl("`0".$time.": ".$news."`n");
+	output_notl($news."`n");
 }
 if (db_num_rows($result)==0){
 	output_notl("`c`2-=-`@=-=`2-=-`@=-=`2-=-`@=-=`2-=-`0`c");
@@ -88,9 +87,8 @@ if (db_num_rows($result)==0){
 }
 output_notl("`c`2-=-`@=-=`2-=-`@=-=`2-=-`@=-=`2-=-`0`c");
 if (!$session['user']['loggedin']) {
-	addnav("Login Screen", "index.php?r=".$r);
+	addnav("Login Screen", "index.php");
 } else if ($session['user']['alive']){
-	addnav("Continue");
 	villagenav();
 }else{
 	tlschema("nav");
@@ -100,17 +98,17 @@ if (!$session['user']['loggedin']) {
 		addnav("`!`bYou're dead, Jim!`b`0");
 	}
 	addnav("S?Land of Shades","shades.php");
-	// addnav("G?The Graveyard","graveyard.php");
+	addnav("G?The Graveyard","graveyard.php");
 	require_once("lib/extended-battle.php");
 	suspend_companions("allowinshades", true);
 	addnav("Log out","login.php?op=logout");
 	tlschema();
 }
-// addnav("News");
-// addnav("Previous News","news.php?offset=".($offset+1)."&r=".$r);
-// if ($offset>0){
-	// addnav("Next News","news.php?offset=".($offset-1)."&r=".$r);
-// }
+addnav("News");
+addnav("Previous News","news.php?offset=".($offset+1));
+if ($offset>0){
+	addnav("Next News","news.php?offset=".($offset-1));
+}
 if ($session['user']['loggedin'])
 	addnav("Preferences","prefs.php");
 addnav("About this game","about.php");
@@ -130,15 +128,15 @@ if ($session['user']['superuser'] & SU_INFINITE_DAYS){
 }
 tlschema();
 
-addnav("","news.php?r=".$r);
+addnav("","news.php");
 if ($totaltoday>$newsperpage){
 	addnav("Today's news");
 	for ($i=0;$i<$totaltoday;$i+=$newsperpage){
 		$pnum = $i/$newsperpage+1;
 		if ($pnum == $page) {
-			addnav(array("`b`3Page %s`0`b", $pnum),"news.php?offset=$offset&page=$pnum&r=".$r);
+			addnav(array("`b`#Page %s`0`b", $pnum),"news.php?offset=$offset&page=$pnum");
 		} else {
-			addnav(array("Page %s", $pnum),"news.php?offset=$offset&page=$pnum&r=".$r);
+			addnav(array("Page %s", $pnum),"news.php?offset=$offset&page=$pnum");
 		}
 	}
 }

@@ -9,8 +9,6 @@ require_once("lib/villagenav.php");
 
 tlschema("list");
 
-$r=httpget('r');
-
 page_header("List Warriors");
 if ($session['user']['loggedin']) {
 	checkday();
@@ -27,14 +25,14 @@ if ($session['user']['loggedin']) {
 		}
 	}
 }else{
-	addnav("Login Screen","index.php?r=".$r);
-	addnav("Currently Online","list.php?r=".$r);
+	addnav("Login Screen","index.php");
+	addnav("Currently Online","list.php");
 }
 
 $playersperpage=50;
 
 $sql = "SELECT count(acctid) AS c FROM " . db_prefix("accounts") . " WHERE locked=0";
-$result = db_query_cached($sql,"numplayers",600);
+$result = db_query($sql);
 $row = db_fetch_assoc($result);
 $totalplayers = $row['c'];
 
@@ -63,9 +61,9 @@ addnav("Pages");
 for ($i=0;$i<$totalplayers;$i+=$playersperpage){
 	$pnum = $i/$playersperpage+1;
 	if ($page == $pnum) {
-		addnav(array(" ?`b`3Page %s`0 (%s-%s)`b", $pnum, $i+1, min($i+$playersperpage,$totalplayers)), "list.php?page=$pnum&r=".$r);
+		addnav(array(" ?`b`#Page %s`0 (%s-%s)`b", $pnum, $i+1, min($i+$playersperpage,$totalplayers)), "list.php?page=$pnum");
 	} else {
-		addnav(array(" ?Page %s (%s-%s)", $pnum, $i+1, min($i+$playersperpage,$totalplayers)), "list.php?page=$pnum&r=".$r);
+		addnav(array(" ?Page %s (%s-%s)", $pnum, $i+1, min($i+$playersperpage,$totalplayers)), "list.php?page=$pnum");
 	}
 }
 
@@ -75,11 +73,11 @@ for ($i=0;$i<$totalplayers;$i+=$playersperpage){
 if ($page=="" && $op==""){
 	$title = translate_inline("Warriors Currently Online");
 	$sql = "SELECT acctid,name,login,alive,location,race,sex,level,laston,loggedin,lastip,uniqueid FROM " . db_prefix("accounts") . " WHERE locked=0 AND loggedin=1 AND laston>'".date("Y-m-d H:i:s",strtotime("-".getsetting("LOGINTIMEOUT",900)." seconds"))."' ORDER BY level DESC, dragonkills DESC, login ASC";
-	$result = db_query_cached($sql,"list.php-warsonline",300);
+	$result = db_query_cached($sql,"list.php-warsonline");
 }elseif($op=='clan'){
 	$title = translate_inline("Clan Members Online");
 	$sql = "SELECT acctid,name,login,alive,location,race,sex,level,laston,loggedin,lastip,uniqueid FROM " . db_prefix("accounts") . " WHERE locked=0 AND loggedin=1 AND laston>'".date("Y-m-d H:i:s",strtotime("-".getsetting("LOGINTIMEOUT",900)." seconds"))."' AND clanid='{$session['user']['clanid']}' ORDER BY level DESC, dragonkills DESC, login ASC";
-	$result = db_query_cached($sql,"clanonline_".$session['user']['clanid'],300);
+	$result = db_query($sql);
 }else{
 	if ($totalplayers > $playersperpage && $op != "search") {
 		$title = sprintf_translate("Warriors of the realm (Page %s: %s-%s of %s)", ($pageoffset/$playersperpage+1), $from, $to, $totalplayers);
@@ -94,8 +92,8 @@ if ($session['user']['loggedin']){
 	$search = translate_inline("Search by name: ");
 	$search2 = translate_inline("Search");
 
-	rawoutput("<form action='list.php?op=search&r=$r' method='POST'>$search<input name='name'><input type='submit' class='button' value='$search2'></form>");
-	addnav("","list.php?op=search&r=".$r);
+	rawoutput("<form action='list.php?op=search' method='POST'>$search<input name='name'><input type='submit' class='button' value='$search2'></form>");
+	addnav("","list.php?op=search");
 }
 
 $max = db_num_rows($result);
@@ -151,7 +149,7 @@ for($i=0;$i<$max;$i++){
 	$loggedin=(date("U") - strtotime($row['laston']) < getsetting("LOGINTIMEOUT",900) && $row['loggedin']);
 	output_notl("`&%s`0", $row['location']);
 	if ($loggedin) {
-		$online = translate_inline("`3(Online)");
+		$online = translate_inline("`#(Online)");
 		output_notl("%s", $online);
 	}
 	rawoutput("</td><td>");

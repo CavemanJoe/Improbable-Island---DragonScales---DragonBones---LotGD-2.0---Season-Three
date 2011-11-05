@@ -3,7 +3,6 @@ $subject=httppost('subject');
 $body="";
 $row="";
 $replyto = (int)httpget('replyto');
-$quote = httpget('quote');
 if ($session['user']['superuser'] & SU_IS_GAMEMASTER) {
 	$from = httppost('from');
 }
@@ -49,7 +48,7 @@ if (is_array($row)){
 			$subject="RE: $subject";
 		}
 	}
-	if (isset($row['body']) && $row['body'] && $quote == 1){
+	if (isset($row['body']) && $row['body']){
 		$body="\n\n---".sprintf_translate(array("Original Message from %s (%s)",sanitize($row['name']),date("Y-m-d H:i:s",strtotime($row['sent']))))."---\n".$row['body'];
 	}
 }
@@ -129,7 +128,7 @@ previewfield("body", "`^", false, false, array("type"=>"textarea", "class"=>"inp
 $send = translate_inline("Send");
 rawoutput("<table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td><input type='submit' class='button' value='$send'></td><td align='right'><div id='sizemsg'></div></td></tr></table>");
 rawoutput("</form>");
-$sizemsg = "`3Max message size is `@%s`3, you have `^XX`3 characters left.";
+$sizemsg = "`#Max message size is `@%s`#, you have `^XX`# characters left.";
 $sizemsg = translate_inline($sizemsg);
 $sizemsg = sprintf($sizemsg,getsetting("mailsizelimit",1024));
 $sizemsgover = "`\$Max message size is `@%s`\$, you are over by `^XX`\$ characters!";

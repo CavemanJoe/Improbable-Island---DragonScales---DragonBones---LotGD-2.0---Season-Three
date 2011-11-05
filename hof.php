@@ -65,7 +65,7 @@ if ($totalplayers > $playersperpage) {
 		$min = ($i+1);
 		$max = min($i+$playersperpage,$totalplayers);
 		if ($page == $pnum) {
-			addnav(array("`b`3Page %s`0 (%s-%s)`b", $pnum, $min, $max), "hof.php?op=$op&subop=$subop&page=$pnum");
+			addnav(array("`b`#Page %s`0 (%s-%s)`b", $pnum, $min, $max), "hof.php?op=$op&subop=$subop&page=$pnum");
 		} else {
 			addnav(array("Page %s (%s-%s)", $pnum, $min, $max), "hof.php?op=$op&subop=$subop&page=$pnum");
 		}

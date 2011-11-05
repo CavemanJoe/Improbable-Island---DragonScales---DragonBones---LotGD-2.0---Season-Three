@@ -13,13 +13,14 @@ require_once("lib/http.php");
 require_once("lib/sanitize.php");
 
 tlschema("logdnet");
-$r=httpget('r');
+
 function lotgdsort($a, $b)
 {
 	// $a and $b are table rows.
 
 	global $logd_version;
 	$official_prefixes = array(
+		"1.1.2 Dragonprime Edition",
 		"1.1.1 Dragonprime Edition",
 		"1.1.0 Dragonprime Edition",
 		"1.0.6",
@@ -188,7 +189,7 @@ if ($op==""){
 	}
 }else{
 	page_header("LoGD Net");
-	addnav("Login page","index.php?r=".$r);
+	addnav("Login page","index.php");
 	output("`@Below are a list of other LoGD servers that have registered with the LoGD Net.`n");
 	output("`2It should be noted that this list is subject to editing and culling by the administrators of logdnet.logd.com. ");
 	output("Normally this list is a comprehensive list of all servers that have elected to register with LoGDnet, but I'm making changes to that. ");

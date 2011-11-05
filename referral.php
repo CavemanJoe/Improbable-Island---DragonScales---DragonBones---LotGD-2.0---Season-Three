@@ -16,7 +16,7 @@ if ($session['user']['loggedin']){
 		require_once("lib/villagenav.php");
 		villagenav();
 	}
-	output("You will automatically receive %s points for each person that you refer to this website who makes it to level %s.  You'll also get a further %s points for each person that `ithey`i refer, and who makes it to level %s.`n`n", getsetting("refereraward", 25), getsetting("referminlevel", 4),round(getsetting("refereraward", 25)/2),getsetting("referminlevel", 4));
+	output("You will automatically receive %s points for each person that you refer to this website who makes it to level %s.`n`n", getsetting("refereraward", 25), getsetting("referminlevel", 4));
 
 	$url = getsetting("serverurl",
 			"http://".$_SERVER['SERVER_NAME'] .
@@ -29,7 +29,7 @@ if ($session['user']['loggedin']){
 
 	output("How does the site know that I referred a person?`n");
 	output("Easy!  When you tell your friends about this site, give out the following link:`n`n");
-	output_notl("%shome.php?r=%s`n`n",$url,rawurlencode($session['user']['login']));
+	output_notl("%sreferral.php?r=%s`n`n",$url,rawurlencode($session['user']['login']));
 	output("If you do, the site will know that you were the one who sent them here.");
 	output("When they reach level %s for the first time, you'll get your points!", getsetting("referminlevel", 4));
 

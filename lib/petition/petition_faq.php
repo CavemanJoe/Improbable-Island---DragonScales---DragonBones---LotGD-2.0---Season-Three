@@ -9,7 +9,7 @@ output("People (who are mostly naked for some reason) throw things at you.");
 output("You escape by ducking into a nearby building and find a rack of pamphlets by the door.");
 output("The title of the pamphlet reads: `&\"Everything You Wanted to Know About the LotGD, but Were Afraid to Ask.\"");
 output("`@Looking furtively around to make sure nobody's watching, you open one and read:`n`n");
-output("\"`3So, you're a Newbie.  Welcome to the club.");
+output("\"`#So, you're a Newbie.  Welcome to the club.");
 output("Here you will find answers to the questions that plague you.");
 output("Well, actually you will find answers to the questions that plagued US.");
 output("So, here, read and learn, and leave us alone!`@\"`n`n");

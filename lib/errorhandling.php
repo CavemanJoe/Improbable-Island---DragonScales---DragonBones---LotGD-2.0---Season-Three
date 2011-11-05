@@ -3,8 +3,12 @@
 // translator ready
 // mail ready
 // Set error reporting to all but notice (for now)
-//error_reporting (E_ALL & ~E_DEPRECATED &~E_NOTICE);
-error_reporting (E_ALL & ~E_NOTICE);
+if (defined('E_DEPRECATED')) {
+	error_reporting (E_ALL ^ (E_NOTICE | E_DEPRECATED));
+} else {
+	error_reporting (E_ALL ^ E_NOTICE);
+}
+#error_reporting (E_ALL);
 
 function set_magic_quotes(&$vars) {
 	if (is_array($vars)) {
@@ -30,6 +34,5 @@ if (!get_magic_quotes_gpc()){
 }
 
 // magic_quotes_runtime is OFF
-//set_magic_quotes_runtime(0);
-ini_set("magic_quotes_runtime",0);
+set_magic_quotes_runtime(0);
 ?>

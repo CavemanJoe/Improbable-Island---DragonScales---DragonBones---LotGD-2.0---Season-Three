@@ -5,8 +5,8 @@
 /**
  * Contains information for all the tables
  * 
- * @copyright Copyright © 2002-2005, Eric Stevens & JT Traub, © 2006-2007, Dragonprime Development Team
- * @version Lotgd 1.1.1 DragonPrime Edition
+ * @copyright Copyright Â© 2002-2005, Eric Stevens & JT Traub, Â© 2006-2009, Dragonprime Development Team
+ * @version Lotgd 1.1.2 DragonPrime Edition
  * @package Core
  * @subpackage Library
  * @license http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode
@@ -234,7 +234,7 @@ return array(
 			'name'=>'referer', 'type'=>'int(11) unsigned', 'default'=>'0'
 			),
 		'refererawarded'=>array(
-			'name'=>'refererawarded', 'type'=>'int(11) unsigned', 'default'=>'0'
+			'name'=>'refererawarded', 'type'=>'tinyint(1)', 'default'=>'0'
 			),
 		'bio'=>array(
 			'name'=>'bio', 'type'=>'varchar(255)'
@@ -519,10 +519,14 @@ return array(
 		'lasthit'=>array(
 			'name'=>'lasthit', 'type'=>'datetime', 'default'=>'0000-00-00 00:00:00'
 			),
-		'key-PRIMARY'=>array(
-			'name'=>'PRIMARY',
-			'type'=>'primary key',
-			'columns'=>'banexpire'
+		'key-banexpire'=>array(
+			'name'=>'banexpire', 'type'=>'key', 'columns'=>'banexpire'
+			),
+		'key-uniqueid'=>array(
+			'name'=>'uniqueid', 'type'=>'key', 'columns'=>'uniqueid'
+			),
+		'key-ipfilter'=>array(
+			'name'=>'ipfilter', 'type'=>'key', 'columns'=>'ipfilter'
 			),
 		),
 	'clans'=>array(

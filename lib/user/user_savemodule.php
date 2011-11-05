@@ -15,7 +15,6 @@ if (isset($post['validation_error']) && $post['validation_error']) {
 	while (list($key,$val)=each($post)){
 		output("Setting %s to %s`n", $key, stripslashes($val));
 		$sql = "REPLACE INTO " . db_prefix("module_userprefs") . " (modulename,userid,setting,value) VALUES ('$module','$userid','$key','$val')";
-		invalidatedatacache("moduleprefs-".$userid."-".$module);
 		db_query($sql);
 	}
 	output("`^Preferences for module %s saved.`n", $module);

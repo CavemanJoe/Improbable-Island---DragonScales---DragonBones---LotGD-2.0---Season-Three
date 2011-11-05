@@ -51,19 +51,13 @@ function page_header(){
 		$arguments = array("Legend of the Green Dragon");
 	}
 	$title = call_user_func_array("sprintf_translate", $arguments);
-	// $title = holidayize($title,'title');
+	$title = holidayize($title,'title');
 	$title = sanitize($title);
 	calculate_buff_fields();
 
 	$header = $template['header'];
 	$header=str_replace("{title}",$title,$header);
 	$header.=tlbutton_pop();
-	
-	// $session['testhits']+=1;
-	// $session['totalpost'][]=$_POST;
-	// debug($session);
-	// debug($_POST,true);
-	// debug($_GET,true);
 }
 
 /**
@@ -132,7 +126,7 @@ function page_footer($saveuser=true){
 	restore_buff_fields();
 
 	$sql = "SELECT motddate FROM " . db_prefix("motd") . " ORDER BY motditem DESC LIMIT 1";
-	$result = db_query_cached($sql,"motd-dates");
+	$result = db_query($sql);
 	$row = db_fetch_assoc($result);
 	db_free_result($result);
 	$headscript = "";
@@ -140,7 +134,7 @@ function page_footer($saveuser=true){
 			($row['motddate']>$session['user']['lastmotd']) &&
 			(!isset($nopopup[$SCRIPT_NAME]) || $nopopups[$SCRIPT_NAME]!=1) &&
 			$session['user']['loggedin']){
-		// $headscript.=popup("motd.php");
+		$headscript.=popup("motd.php");
 		$session['needtoviewmotd']=true;
 	}else{
 		$session['needtoviewmotd']=false;
@@ -261,6 +255,21 @@ function page_footer($saveuser=true){
 <input type="image" src="images/paypal1.gif" border="0" name="submit" alt="Donate!">
 </form>';
 	}
+	// DP Donation button
+	$paypalstr .= '</td><td>';
+	$paypalstr .= '<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+<input type="hidden" name="cmd" value="_xclick">
+<input type="hidden" name="business" value="derbugmeister@shaw.ca">
+<input type="hidden" name="item_name" value="Legend of the Green Dragon DP Donation from '.full_sanitize($session['user']['name']).'">
+<input type="hidden" name="item_number" value="'.htmlentities($session['user']['login'].":".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], ENT_COMPAT, getsetting("charset", "ISO-8859-1")).'">
+<input type="hidden" name="no_shipping" value="1">
+<input type="hidden" name="notify_url" value="http://dragonprimelogd.net/payment.php">
+<input type="hidden" name="cn" value="Your Character Name">
+<input type="hidden" name="cs" value="1">
+<input type="hidden" name="currency_code" value="USD">
+<input type="hidden" name="tax" value="0">
+<input type="image" src="images/paypal3.gif" border="0" name="submit" alt="Donate!">
+</form>';
 	$paysite = getsetting("paypalemail", "");
 	if ($paysite != "") {
 		$paypalstr .= '</td></tr><tr><td colspan=\'2\' align=\'center\'>';
@@ -329,7 +338,7 @@ function page_footer($saveuser=true){
 			$p = "<a href='viewpetition.php'>$pet</a>";
 			addnav("", "viewpetition.php");
 		}
-		$p .= " `\${$petitions[5]}`0|`^{$petitions[4]}`0|`b{$petitions[0]}`b|{$petitions[1]}|`!{$petitions[3]}`0|`3{$petitions[7]}`0|`%{$petitions[6]}`0|`i{$petitions[2]}`i";
+		$p .= " `\${$petitions[5]}`0|`^{$petitions[4]}`0|`b{$petitions[0]}`b|{$petitions[1]}|`!{$petitions[3]}`0|`#{$petitions[7]}`0|`%{$petitions[6]}`0|`i{$petitions[2]}`i";
 		$pcount = templatereplace("petitioncount", array("petitioncount"=>appoencode($p, true)));
 		$footer = str_replace("{petitiondisplay}", $pcount, $footer);
 		$header = str_replace("{petitiondisplay}", $pcount, $header);
@@ -352,61 +361,16 @@ function page_footer($saveuser=true){
 	$gentime = getmicrotime()-$pagestarttime;
 	$session['user']['gentime']+=$gentime;
 	$session['user']['gentimecount']++;
-	// $load = exec("uptime");
-	// $load = split("load average:", $load);
-	// $load = split(", ", $load[1]);
-	$perfhook = array(
-		"gentime"=>$gentime,
-		"dbinfo"=>$dbinfo,
-		// "cpu"=>$load,
-		"script"=>$SCRIPT_NAME,
-		"request"=>$REQUEST_URI,
-	);
-	$perfhook = modulehook("footer-performance",$perfhook);
-	// $l1 = $load[0];
-	// $l5 = $load[1];
-	// $l15 = $load[2];
-	// $mem = memory_get_usage(true);
-	// if ($mem < 1024){
-		// $memdisp = $mem." bytes";
-	// } else if ($mem < 1048576){
-		// $memdisp = round($mem/1024,6)." kilobytes";
-	// } else {
-		// $memdisp = round($mem/1048576,6)." megabytes";
-	// }
-	if (!isset($dbinfo['cache_fail'])){
-		$dbinfo['cache_fail']=0;
-	}
-	global $output_time;
-	$footer=str_replace("{pagegen}","Page gen: ".round($gentime,3)."s / ".$dbinfo['queriesthishit']." queries (".round($dbinfo['querytime'],3)."s), cache ".$dbinfo['cache_success']." successful (".round($dbinfo['cachetime'],3)."s) / ".$dbinfo['cache_fail']." failed.  Average for this account: ".round($session['user']['gentime']/$session['user']['gentimecount'],3)."s - ".round($session['user']['gentime'],3)."/".round($session['user']['gentimecount'],3)."<br />",$footer);
+	$footer=str_replace("{pagegen}","Page gen: ".round($gentime,3)."s / ".$dbinfo['queriesthishit']." queries (".round($dbinfo['querytime'],3)."s), Ave: ".round($session['user']['gentime']/$session['user']['gentimecount'],3)."s - ".round($session['user']['gentime'],3)."/".round($session['user']['gentimecount'],3)."",$footer);
 
 	tlschema();
 
-	// global $allqueries;
-	// if (is_array($allqueries)){
-		// usort($allqueries,'timesort');
-	// }
-	// debug($allqueries);
-	// global $cachedqueries;
-	// if (is_array($cachedqueries)){
-		// usort($cachedqueries,'timesort');
-	// }
-	// debug($cachedqueries);
-	// global $moduleperformance;
-	// debug($moduleperformance);
-	//global $allqueriesbyfile;
-	//debug($allqueriesbyfile);
-	// global $updated_module_prefs;
-	// debug($updated_module_prefs);
-	// global $output_time;
-	// debug("Output time: ".$output_time);
 	//clean up spare {fields}s from header and footer (in case they're not used)
 	$footer = preg_replace("/{[^} \t\n\r]*}/i","",$footer);
 	$header = preg_replace("/{[^} \t\n\r]*}/i","",$header);
 
 	//finalize output
 	$output=$header.$output.$footer;
-	modulehook("prerender");
 	$session['user']['gensize']+=strlen($output);
 	$session['output']=$output;
 	if ($saveuser === true) {
@@ -416,12 +380,7 @@ function page_footer($saveuser=true){
 	//this somehow allows some frames to load before the user's navs say it can
 	//session_write_close();
 	echo $output;
-        $session['badnav']=0;
 	exit();
-}
-
-function timesort($a, $b){
-	return strnatcmp($b['time'], $a['time']);
 }
 
 /**
@@ -442,7 +401,7 @@ function popup_header($title="Legend of the Green Dragon"){
 		$arguments = array("Legend of the Green Dragon");
 	}
 	$title = call_user_func_array("sprintf_translate", $arguments);
-	// $title = holidayize($title,'title');
+	$title = holidayize($title,'title');
 
 	$header = $template['popuphead'];
 	$header = str_replace("{title}", $title, $header);
@@ -483,7 +442,6 @@ function popup_footer(){
 
 	$output=$header.$output.$footer;
 	saveuser();
-	$_SESSION['session'] = $session;
 	session_write_close();
 	echo $output;
 	exit();
@@ -625,8 +583,8 @@ function charstats(){
 		$u['hitpoints']=round($u['hitpoints'],0);
 		$u['experience']=round($u['experience'],0);
 		$u['maxhitpoints']=round($u['maxhitpoints'],0);
-		// $spirits=array(-6=>"Resurrected",-2=>"Very Low",-1=>"Low","0"=>"Normal",1=>"High",2=>"Very High");
-		// if ($u['alive']){ }else{ $spirits[(int)$u['spirits']] = "DEAD"; }
+		$spirits=array(-6=>"Resurrected",-2=>"Very Low",-1=>"Low","0"=>"Normal",1=>"High",2=>"Very High");
+		if ($u['alive']){ }else{ $spirits[(int)$u['spirits']] = "DEAD"; }
 		//calculate_buff_fields();
 		reset($session['bufflist']);
 		$atk=$u['attack'];
@@ -689,47 +647,28 @@ function charstats(){
 			$def = round($def, 1);
 		}
 
-		addcharstat("Vital Info");	
-		//health bar
-		if ($u['alive']){
-			$cur = $u['hitpoints'];
-			$realmax = $u['maxhitpoints'];
-			$cur_adjustment = check_temp_stat("hitpoints",1);
-			$max_adjustment = check_temp_stat("maxhitpoints",1);
-		} else {
-			$cur = $u['soulpoints'];
-			$realmax = $u['level'] * 5 + 50;
-			$cur_adjustment = check_temp_stat("soulpoints",1);
-			$max_adjustment = "";
-		}
-
-		if ($pct > 60) {
-			$ccode = "`@";
-		} elseif ($pct > 25) {
-			$ccode = "`^";
-		} else {
-			$ccode = "`$";
-		}
-		$hicode = "`&";
-		if (!$u['alive']) {
-			$ccode = "`7";
-		}
-		require_once "lib/bars.php";
-		$hpbar = fadebar($cur, $realmax);
-		$stat = "$ccode $cur $cur_adjustment `0/ $realmax $max_adjustment<br />".$hpbar;
-		
-		if ($u['alive']){
-			addcharstat("Hitpoints", $stat);
+		addcharstat("Vital Info");
+		addcharstat("Name", $u['name']);
+		addcharstat("Level", "`b".$u['level'].check_temp_stat("level",1)."`b");
+		if ($u['alive']) {
+			addcharstat("Hitpoints", $u['hitpoints'].check_temp_stat("hitpoints",1).
+									"`0/".$u['maxhitpoints'].check_temp_stat("maxhitpoints",1));
+			addcharstat("Turns", $u['turns'].check_temp_stat("turns",1));
 			addcharstat("Attack", $atk.check_temp_stat("attack",1));
-			addcharstat("Defence", $def.check_temp_stat("defense",1));
+			addcharstat("Defense", $def.check_temp_stat("defense",1));
 		} else {
-			addcharstat("Adrenaline", $stat);
-			addcharstat("Attack", 10+round(($u['level']-1)*1.5));
-			addcharstat("Defence", 10+round(($u['level']-1)*1.5));
+			$maxsoul = $u['level'] * 5 + 50;
+			addcharstat("Soulpoints", $u['soulpoints'].check_temp_stat("soulpoints",1)."`0/".$maxsoul);
+			addcharstat("Torments", $u['gravefights'].check_temp_stat("gravefights",1));
+			addcharstat("Psyche", 10+round(($u['level']-1)*1.5));
+			addcharstat("Spirit", 10+round(($u['level']-1)*1.5));
 		}
-		// addcharstat("Turns", $u['turns'].check_temp_stat("turns",1));
-		// addcharstat("Attack", $atk.check_temp_stat("attack",1));
-		// addcharstat("Defence", $def.check_temp_stat("defense",1));
+		addcharstat("Spirits", translate_inline("`b".$spirits[(int)$u['spirits']]."`b"));
+		if ($u['race'] != RACE_UNKNOWN) {
+			addcharstat("Race", translate_inline($u['race'],"race"));
+		}else {
+			addcharstat("Race", translate_inline(RACE_UNKNOWN,"race"));
+		}
 		if (count($companions)>0) {
 			addcharstat("Companions");
 			foreach ($companions as $name=>$companion) {
@@ -753,53 +692,18 @@ function charstats(){
 		}
 		addcharstat("Personal Info");
 		if ($u['alive']) {
-			addcharstat("Requisition", number_format($u['gold'].check_temp_stat("gold",1)));
-			addcharstat("Cigarettes", number_format($u['gems'].check_temp_stat("gems",1)));
+			addcharstat("Gold", $u['gold'].check_temp_stat("gold",1));
 		} else {
-			addcharstat("Cage Fights", $u['gravefights'].check_temp_stat("gravefights",1));
-			addcharstat("Favour", number_format($u['deathpower'].check_temp_stat("deathpower",1)));
+			addcharstat("Favor", $u['deathpower'].check_temp_stat("deathpower",1));
 		}
+		addcharstat("Gems", $u['gems'].check_temp_stat("gems",1));
+		addcharstat("Experience", $u['experience'].check_temp_stat("experience",1));
+		addcharstat("Equipment Info");
+		addcharstat("Weapon", $u['weapon']);
+		addcharstat("Armor", $u['armor']);
+		if ($u['hashorse'])
+			addcharstat("Creature", $playermount['mountname'] . "`0");
 
-		if ($u['alive']){
-			addcharstat("Level", "`b".$u['level'].check_temp_stat("level",1)."`b");	
-
-			//exp bar
-			require_once("lib/experience.php");
-			$min = exp_for_next_level($u['level']-1, $u['dragonkills']);
-			$req = exp_for_next_level($u['level'], $u['dragonkills']);
-			$exp = round($session['user']['experience'], 0) . check_temp_stat("experience",1);
-			if ($exp < $min) $min = $exp;
-			if ($req-$min > 0) $nonpct = floor(($req-$exp)/($req-$min) * 100);
-			else $nonpct = 0;
-			$pct = 100-$nonpct;
-			if ($pct > 100) {
-				$pct = 100;
-				$nonpct = 0;
-			}
-			if ($pct < 0) {
-				$pct = 0;
-				$nonpct = 100;
-			}
-			if ($exp >= $req) {
-				$color = "blue";
-				if ($session['user']['level']==1 && $session['user']['dragonkills']==0){
-					$expmsg = "<br />You have enough experience to level up!  Challenge your master in the Dojo!";
-				}
-			} else {
-				$color = "white";
-			}
-			addcharstat("Experience", number_format($u['experience'].check_temp_stat("experience",1))."/$req<br /><table style='border: solid 1px #000000;' bgcolor='red'  cellpadding='0' cellspacing='0' width='70' height='5'><tr><td width='$pct%' bgcolor='$color'></td><td width='$nonpct%'></td></tr></table>$expmsg");
-			addcharstat("Equipment Info");
-			addcharstat("Weapon", $u['weapon']);
-			addcharstat("Armour", $u['armor']);
-			if ($u['hashorse'])
-				addcharstat("Creature", $playermount['mountname'] . "`0");
-		}
-		require_once("lib/datetime.php");
-		$gt = gametimedetails();
-		addcharstat("Game State");
-		addcharstat("Game Time", gmdate("g:i a",$gt['gametime']));
-		addcharstat("New day in:", date("H:i:s",secondstonextgameday()));
 		modulehook("charstats");
 
 		$charstat = getcharstats($buffs);
@@ -848,7 +752,7 @@ function charstats(){
  * @todo Template Help
  */
 function loadtemplate($templatename){
-	if ($templatename=="" || !file_exists("templates/$templatename"))
+	if ($templatename=="" || !file_exists("templates/$templatename") || substr($templatename, -4) != '.htm')
 		$templatename=getsetting("defaultskin", "jade.htm");
 	if ($templatename=="" || !file_exists("templates/$templatename"))
 		$templatename="jade.htm";
@@ -858,8 +762,8 @@ function loadtemplate($templatename){
 		$fieldname=substr($val,0,strpos($val,"-->"));
 		if ($fieldname!=""){
 			$template[$fieldname]=substr($val,strpos($val,"-->")+3);
-			// modulehook("template-{$fieldname}",
-					// array("content"=>$template[$fieldname]));
+			modulehook("template-{$fieldname}",
+					array("content"=>$template[$fieldname]));
 		}
 	}
 	return $template;
@@ -873,15 +777,15 @@ function loadtemplate($templatename){
 function maillink(){
 	global $session;
 	$sql = "SELECT sum(if(seen=1,1,0)) AS seencount, sum(if(seen=0,1,0)) AS notseen FROM " . db_prefix("mail") . " WHERE msgto=\"".$session['user']['acctid']."\"";
-	$result = db_query_cached($sql,"mail/mail-{$session['user']['acctid']}",86400);
+	$result = db_query_cached($sql,"mail-{$session['user']['acctid']}",86400);
 	$row = db_fetch_assoc($result);
 	db_free_result($result);
 	$row['seencount']=(int)$row['seencount'];
 	$row['notseen']=(int)$row['notseen'];
 	if ($row['notseen']>0){
-		return sprintf("<a href='mail.php' target='_blank' onClick=\"".popup("mail.php").";return false;\" class='hotmotd'>Distractions: %s new, %s old</a>",$row['notseen'],$row['seencount']);
+		return sprintf("<a href='mail.php' target='_blank' onClick=\"".popup("mail.php").";return false;\" class='hotmotd'>".translate_inline("Ye Olde Mail: %s new, %s old", 'common')."</a>",$row['notseen'],$row['seencount']);
 	}else{
-		return sprintf("<a href='mail.php' target='_blank' onClick=\"".popup("mail.php").";return false;\" class='motd'>Distractions: %s new, %s old</a>",$row['notseen'],$row['seencount']);
+		return sprintf("<a href='mail.php' target='_blank' onClick=\"".popup("mail.php").";return false;\" class='motd'>".translate_inline("Ye Olde Mail: %s new, %s old", 'common')."</a>",$row['notseen'],$row['seencount']);
 	}
 }
 

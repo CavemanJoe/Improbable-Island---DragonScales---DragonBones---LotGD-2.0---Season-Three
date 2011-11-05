@@ -3,72 +3,67 @@ tlschema("petition");
 popup_header("Petition for Help");
 $post = httpallpost();
 if (count($post)>0){
-	//debug($post,true);
-	if (strpos($post['description'],"[link=") || strpos($post['description'],"bitcomet") || strpos($post['description'],"<a href=")){
-		output("Petition rejected as spam.  If you think this was in error, Petition again - without the links this time.`n`nHere's what you typed:`n`n%s",$post['description']);
-	} else {
-		$ip = explode(".",$_SERVER['REMOTE_ADDR']);
-		array_pop($ip);
-		$ip = join($ip,".").".";
-		$sql = "SELECT count(petitionid) AS c FROM ".db_prefix("petitions")." WHERE (ip LIKE '$ip%' OR id = '".addslashes($_COOKIE['lgi'])."') AND date > '".date("Y-m-d H:i:s",strtotime("-1 day"))."'";
-		$result = db_query($sql);
-		$row = db_fetch_assoc($result);
-		if ($row['c'] < 5 || (isset($session['user']['superuser']) && $session['user']['superuser']&~SU_DOESNT_GIVE_GROTTO)){
-			if (!isset($session['user']['acctid']))
-				$session['user']['acctid']=0;
-			if (!isset($session['user']['password']))
-				$session['user']['password']="";
-			$p = $session['user']['password'];
-			unset($session['user']['password']);
-			$date = date("Y-m-d H:i:s");
-			$post['cancelpetition'] = false;
-			$post['cancelreason'] = 'The admins here decided they didn\'t like something about how you submitted your petition.  They were also too lazy to give a real reason.';
-			$post = modulehook("addpetition",$post);
-			if (!$post['cancelpetition']){
-				unset($post['cancelpetition'], $post['cancelreason']);
-				$sql = "INSERT INTO " . db_prefix("petitions") . " (author,date,body,pageinfo,ip,id) VALUES (".(int)$session['user']['acctid'].",'$date',\"".addslashes(output_array($post))."\",\"".addslashes(output_array($session,"Session:"))."\",'{$_SERVER['REMOTE_ADDR']}','".addslashes($_COOKIE['lgi'])."')";
-				db_query($sql);
-				// Fix the counter
-				invalidatedatacache("petition_counts");
-				// If the admin wants it, email the petitions to them.
-				if (getsetting("emailpetitions", 0)) {
-					// Yeah, the format of this is ugly.
-					require_once("lib/sanitize.php");
-					$name = color_sanitize($session['user']['name']);
-					$url = getsetting("serverurl",
-						"http://".$_SERVER['SERVER_NAME'] .
-						($_SERVER['SERVER_PORT']==80?"":":".$_SERVER['SERVER_PORT']) .
-						dirname($_SERVER['REQUEST_URI']));
-					if (!preg_match("/\\/$/", $url)) {
-						$url = $url . "/";
-						savesetting("serverurl", $url);
-					}
-					$tl_server = translate_inline("Server");
-					$tl_author = translate_inline("Author");
-					$tl_date = translate_inline("Date");
-					$tl_body = translate_inline("Body");
-					$tl_subject = sprintf_translate("New LoGD Petition at %s", $url);
-
-					$msg  = "$tl_server: $url\n";
-					$msg .= "$tl_author: $name\n";
-					$msg .= "$tl_date : $date\n";
-					$msg .= "$tl_body :\n".output_array($post)."\n";
-					mail(getsetting("gameadminemail","postmaster@localhost.com"),$tl_subject, $msg);
+	$ip = explode(".",$_SERVER['REMOTE_ADDR']);
+	array_pop($ip);
+	$ip = join($ip,".").".";
+	$sql = "SELECT count(petitionid) AS c FROM ".db_prefix("petitions")." WHERE (ip LIKE '$ip%' OR id = '".addslashes($_COOKIE['lgi'])."') AND date > '".date("Y-m-d H:i:s",strtotime("-1 day"))."'";
+	$result = db_query($sql);
+	$row = db_fetch_assoc($result);
+	if ($row['c'] < 5 || (isset($session['user']['superuser']) && $session['user']['superuser']&~SU_DOESNT_GIVE_GROTTO)){
+		if (!isset($session['user']['acctid']))
+			$session['user']['acctid']=0;
+		if (!isset($session['user']['password']))
+			$session['user']['password']="";
+		$p = $session['user']['password'];
+		unset($session['user']['password']);
+		$date = date("Y-m-d H:i:s");
+		$post['cancelpetition'] = false;
+		$post['cancelreason'] = 'The admins here decided they didn\'t like something about how you submitted your petition.  They were also too lazy to give a real reason.';
+		$post = modulehook("addpetition",$post);
+		if (!$post['cancelpetition']){
+			unset($post['cancelpetition'], $post['cancelreason']);
+			$sql = "INSERT INTO " . db_prefix("petitions") . " (author,date,body,pageinfo,ip,id) VALUES (".(int)$session['user']['acctid'].",'$date',\"".addslashes(output_array($post))."\",\"".addslashes(output_array($session,"Session:"))."\",'{$_SERVER['REMOTE_ADDR']}','".addslashes($_COOKIE['lgi'])."')";
+			db_query($sql);
+			// Fix the counter
+			invalidatedatacache("petitioncounts");
+			// If the admin wants it, email the petitions to them.
+			if (getsetting("emailpetitions", 0)) {
+				// Yeah, the format of this is ugly.
+				require_once("lib/sanitize.php");
+				$name = color_sanitize($session['user']['name']);
+				$url = getsetting("serverurl",
+					"http://".$_SERVER['SERVER_NAME'] .
+					($_SERVER['SERVER_PORT']==80?"":":".$_SERVER['SERVER_PORT']) .
+					dirname($_SERVER['REQUEST_URI']));
+				if (!preg_match("/\\/$/", $url)) {
+					$url = $url . "/";
+					savesetting("serverurl", $url);
 				}
-				$session['user']['password']=$p;
-				output("Your petition has been sent to the server admin.");
-				output("Please be patient, most server admins have jobs and obligations beyond their game, so sometimes responses will take a while to be received.");
-			} else {
-				output("`\$There was a problem with your petition!`n");
-				output("`@Please read the information below carefully; there was a problem with your petition, and it was not submitted.\n");
-				rawoutput("<blockquote>");
-				output($post['cancelreason']);
-				rawoutput("</blockquote>");
+				$tl_server = translate_inline("Server");
+				$tl_author = translate_inline("Author");
+				$tl_date = translate_inline("Date");
+				$tl_body = translate_inline("Body");
+				$tl_subject = sprintf_translate("New LoGD Petition at %s", $url);
+
+				$msg  = "$tl_server: $url\n";
+				$msg .= "$tl_author: $name\n";
+				$msg .= "$tl_date : $date\n";
+				$msg .= "$tl_body :\n".output_array($post)."\n";
+				mail(getsetting("gameadminemail","postmaster@localhost.com"),$tl_subject, $msg);
 			}
-		}else{
-			output("`\$`bError:`b There have already been %s petitions filed from your network in the last day; to prevent abuse of the petition system, you must wait until there have been 5 or fewer within the last 24 hours.",$row['c']);
-			output("If you have multiple issues to bring up with the staff of this server, you might think about consolidating those issues to reduce the overall number of petitions you file.");
+			$session['user']['password']=$p;
+			output("Your petition has been sent to the server admin.");
+			output("Please be patient, most server admins have jobs and obligations beyond their game, so sometimes responses will take a while to be received.");
+		} else {
+			output("`\$There was a problem with your petition!`n");
+			output("`@Please read the information below carefully; there was a problem with your petition, and it was not submitted.\n");
+			rawoutput("<blockquote>");
+			output($post['cancelreason']);
+			rawoutput("</blockquote>");
 		}
+	}else{
+		output("`\$`bError:`b There have already been %s petitions filed from your network in the last day; to prevent abuse of the petition system, you must wait until there have been 5 or fewer within the last 24 hours.",$row['c']);
+		output("If you have multiple issues to bring up with the staff of this server, you might think about consolidating those issues to reduce the overall number of petitions you file.");
 	}
 }else{
 	output("`c`b`\$Before sending a petition, please make sure you have read the motd.`n");

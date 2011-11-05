@@ -7,13 +7,12 @@
  * also contains a way in which a server admin
  * can display information about his/her server.
  * 
- * @copyright Copyright © 2002-2005, Eric Stevens & JT Traub, © 2006-2007, Dragonprime Development Team
- * @version Lotgd 1.1.1 DragonPrime Edition
+ * @copyright Copyright Â© 2002-2005, Eric Stevens & JT Traub, Â© 2006-2009, Dragonprime Development Team
+ * @version Lotgd 1.1.2 DragonPrime Edition
  * @package Core
  * @subpackage Library
  * @license http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode
  */
-$r=httpget('r');
 $order=array("1","2");
 while (list($key,$val)=each($order)){
 	switch($val){
@@ -94,8 +93,8 @@ while (list($key,$val)=each($order)){
 	}
 }
 addnav("About LoGD");
-addnav("Game Setup Info","about.php?op=setup&r=".$r);
-addnav("Module Info","about.php?op=listmodules&r=".$r);
-addnav("License Info", "about.php?op=license&r=".$r);
+addnav("Game Setup Info","about.php?op=setup");
+addnav("Module Info","about.php?op=listmodules");
+addnav("License Info", "about.php?op=license");
 modulehook("about");
 ?>

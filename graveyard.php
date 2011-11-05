@@ -14,7 +14,7 @@ $skipgraveyardtext = handle_event("graveyard");
 $deathoverlord=getsetting('deathoverlord','`$Ramius');
 if (!$skipgraveyardtext) {
 	if ($session['user']['alive']) {
-		redirect("village.php","Redirecting from Shades because the player isn't dead!");
+		redirect("village.php");
 	}
 
 	checkday();
@@ -69,16 +69,14 @@ if ($battle){
 	$session['user']['defense'] = $originaldefense;
 	$session['user']['soulpoints'] = $session['user']['hitpoints'];
 	$session['user']['hitpoints'] = $originalhitpoints;
-	if (($victory || $defeat) && !isset($badguy['creaturename'])) {
-		$badguy = $newenemies[0]; // Only one badguy
-	}
+	if ($victory || $defeat) $badguy = $newenemies[0]; // Only one badguy
 	if ($victory) {
 		tlschema("battle");
 		$msg = translate_inline($badguy['creaturelose']);
 		tlschema();
 		output_notl("`b`&%s`0`b`n", $msg);
 		output("`b`\$You have tormented %s!`0`b`n", $badguy['creaturename']);
-		output("`3You receive `^%s`3 favor with `\$%s`3!`n`0", $badguy['creatureexp'],$deathoverlord);
+		output("`#You receive `^%s`# favor with `\$%s`#!`n`0", $badguy['creatureexp'],$deathoverlord);
 		$session['user']['deathpower']+=$badguy['creatureexp'];
 		$op = "";
 		httpset('op', "");

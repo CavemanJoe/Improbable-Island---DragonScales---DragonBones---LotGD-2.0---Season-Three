@@ -142,7 +142,7 @@ function sethsong_sing()
 	case 0:
 		output("`@Green Dragon`^ is green,`n`@Green Dragon`^ is fierce.`n");
 		output("I fancy for a`n`@Green Dragon`^ to pierce.`n`n");
-		output("`0You gain some Stamina!");
+		output("`0You gain TWO forest fights for today!");
 		$session['user']['turns'] += 2;
 		break;
 	case 1:
@@ -157,7 +157,7 @@ function sethsong_sing()
 		}
 		output("%s, I scoff at thee and tickleth your toes.`n", $name);
 		output("For they smell most foul and seethe a stench far greater than you know!`n`n");
-		output("`0You feel jovial and enthusiastic, and gain some Stamina.");
+		output("`0You feel jovial, and gain an extra forest fight.");
 		$session['user']['turns']++;
 		break;
 	case 2:
@@ -167,11 +167,11 @@ function sethsong_sing()
 		output("Membrane Man.`n`n");
 		output("`0You're not quite sure what to make of this.");
 		output("You merely back away, and think you'll visit %s`0 when he's feeling better.", getsetting("bard", "`^Seth"));
-		output("Having rested a while though, you think you could face another jungle creature.  You gain some Stamina.");
+		output("Having rested a while though, you think you could face another forest creature.");
 		$session['user']['turns']++;
 		break;
 	case 3:
-		output("Gather 'round and I'll tell you a tale`nmost terrible and dark`nof %s`0 and his unclean beer`nand how he hates this bard!`n`n", getsetting('barkeep', '`tCedrik'));
+		output("Gather 'round and I'll tell you a tale`nmost terrible and dark`nof %s`^ and his unclean beer`nand how he hates this bard!`n`n", getsetting('barkeep', '`tCedrik'));
 		output("`0You realize he's right, %s`0's beer really is nasty.", getsetting('barkeep', '`tCedrik'));
 		output("That's why most patrons prefer his ale.");
 		output("Though you don't really gain anything from the tale from %s`0, you do happen to notice a few gold on the ground!", getsetting("bard", "`^Seth"));
@@ -188,7 +188,7 @@ function sethsong_sing()
 		break;
 	case 5:
 		output("Listen close and hear me well: every second we draw even closer to death.  *wink*`n`n");
-		output("`0Depressed, you head for home... and lose some Stamina.");
+		output("`0Depressed, you head for home... and lose a forest fight!");
 		$session['user']['turns']--;
 		if ($session['user']['turns']<0)
 			$session['user']['turns']=0;
@@ -225,7 +225,7 @@ function sethsong_sing()
 		$gems=e_rand($leastgems,$mostgems);
 		output("What do you call a fish with no eyes?`n`n");
 		output("A fsshh.`n`n");
-		output("You groan as %s`0 laughs heartily.", getsetting("bard", "`^Seth"));
+		output("`0You groan as %s`0 laughs heartily.", getsetting("bard", "`^Seth"));
 		if($gems==0){
 			output("Shaking your head, you turn to go back to the inn.");
 		}
@@ -266,16 +266,16 @@ function sethsong_sing()
 		output("There once was a lady from Venus, her body was shaped like a ...`n`n");
 		if ($session['user']['sex']==SEX_FEMALE){
 			output("%s`0 is cut short by a curt slap across his face!", getsetting("bard", "`^Seth"));
-			output("Feeling rowdy, you gain some Stamina.");
+			output("Feeling rowdy, you gain a forest fight.");
 		}else{
 			output("%s`0 is cut short as you burst out in laughter, not even having to hear the end of the rhyme.", getsetting("bard", "`^Seth"));
-			output("Feeling inspired, you gain some Stamina.");
+			output("Feeling inspired, you gain a forest fight.");
 		}
 		$session['user']['turns']++;
 		break;
 	case 14:
 		output("%s`0 plays a rousing call-to-battle that wakes the warrior spirit inside of you.`n`n", getsetting("bard", "`^Seth"));
-		output("`0You gain some Stamina!");
+		output("`0You gain a forest fight!");
 		$session['user']['turns']++;
 		break;
 	case 15:
@@ -285,7 +285,7 @@ function sethsong_sing()
 			$session['user']['charm']++;
 		}else{
 			output("`0Furious, you stomp out of the bar!");
-			output("You gain some Stamina in your fury.");
+			output("You gain a forest fight in your fury.");
 			$session['user']['turns']++;
 		}
 		break;

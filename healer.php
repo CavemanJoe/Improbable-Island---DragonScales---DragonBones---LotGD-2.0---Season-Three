@@ -14,7 +14,8 @@ $config = unserialize($session['user']['donationconfig']);
 $return = httpget("return");
 $returnline = $return>""?"&return=$return":"";
 
-page_header("Hospital Tent");
+page_header("Healer's Hut");
+output("`#`b`cHealer's Hut`c`b`n");
 
 $cost = log($session['user']['level']) * (($session['user']['maxhitpoints']-$session['user']['hitpoints']) + 10);
 $result=modulehook("healmultiply",array("alterpct"=>1.0));
@@ -24,17 +25,21 @@ $cost = round($cost,0);
 $op = httpget('op');
 if ($op==""){
   	checkday();
-	output("`3You duck into the pitiful tent.  The overpowering odour of blood, disinfectant and crankcase oil makes you cough, attracting the attention of a grizzled old person that does a remarkable job of reminding you of a rock, which probably explains why you didn't notice them until now.`n`n");
+	output("`3You duck into the small smoke-filled grass hut.");
+	output("The pungent aroma makes you cough, attracting the attention of a grizzled old person that does a remarkable job of reminding you of a rock, which probably explains why you didn't notice them until now.");
+	output("Couldn't be your failure as a warrior.");
+	output("Nope, definitely not.`n`n");
 	if ($session['user']['hitpoints'] < $session['user']['maxhitpoints']){
 		output("\"`6See you, I do.  Before you did see me, I think, hmm?`3\" the old thing remarks.");
 		output("\"`6Know you, I do; healing you seek.  Willing to heal am I, but only if willing to pay are you.`3\"`n`n");
 		output("\"`5Uh, um.  How much?`3\" you ask, ready to be rid of the smelly old thing.`n`n");
 		output("The old being thumps your ribs with a gnarly staff.  \"`6For you... `$`b%s`b`6 gold pieces for a complete heal!!`3\" it says as it bends over and pulls a clay vial from behind a pile of skulls sitting in the corner.", $cost);
 		output("The view of the thing bending over to remove the vial almost does enough mental damage to require a larger potion.");
-		output("\"`6O' course, I could jus' hand you over to the work-experience lads,`3\" he continues, gesturing at a table of eager-looking youths.  \"`3They'll be cheaper, but I dunno if they'll do as good a job.`6\"");
+		output("\"`6I also have some, erm... 'bargain' potions available,`3\" it says as it gestures at a pile of dusty, cracked vials.");
+		output("\"`6They'll heal a certain percent of your `idamage`i.`3\"");
 	}elseif($session['user']['hitpoints'] == $session['user']['maxhitpoints']){
 		output("`3The old creature grunts as it looks your way. \"`6Need a potion, you do not.  Wonder why you bother me, I do.`3\" says the hideous thing.");
-		output("The stench of antiseptic and crankcase oil makes you wish you hadn't come in here in the first place.  You think you had best leave.");
+		output("The aroma of its breath makes you wish you hadn't come in here in the first place.  You think you had best leave.");
 	}else{
 		output("`3The old creature glances at you, then in a `^whirlwind of movement`3 that catches you completely off guard, brings its gnarled staff squarely in contact with the back of your head.");
 		output("You gasp as you collapse to the ground.`n`n");
@@ -59,7 +64,11 @@ if ($op==""){
 			output("`3With a grimace, you up-end the potion the creature hands you, and despite the foul flavor, you feel a warmth spreading through your veins.");
 			output("Staggering some you are ready to be out of here.");
 		}
-		output("`n`n`3You have been healed for %s points!", $diff);
+		if($diff == 1) {
+			output("`n`n`#You have been healed for one point!", $diff);
+		} else {
+			output("`n`n`#You have been healed for %s points!", $diff);
+		}
 	}else{
 		output("`3The old creature pierces you with a gaze hard and cruel.");
 		output("Your lightning quick reflexes enable you to dodge the blow from its gnarled staff.");

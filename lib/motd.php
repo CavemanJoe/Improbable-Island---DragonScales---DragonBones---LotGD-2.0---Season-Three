@@ -18,6 +18,8 @@ function motd_admin($id, $poll=false) {
 }
 
 function motditem($subject,$body,$author,$date,$id){
+	if ($date)
+		rawoutput("<a name='motd".date("YmdHis",strtotime($date))."'>");
 	output_notl("`b`^%s`0`b", $subject);
 	if ($id > "") {
 		motd_admin($id);
@@ -27,10 +29,11 @@ function motditem($subject,$body,$author,$date,$id){
 		output_notl("`3%s`0", $author);
 	}
 	if ($date>"")
-		output_notl("`0 &#150; `3%s`0", $date, true);
+		output_notl("`0 &#150; `#%s`0", $date, true);
 	if ($date || $author) output_notl("`n");
 
 	output_notl("`2%s`0", nltoappon($body), true);
+	if ($date) rawoutput("</a>");
 	rawoutput("<hr>");
 }
 
@@ -49,7 +52,7 @@ function pollitem($id,$subject,$body,$author,$date,$showpoll=true){
 	}
 	output_notl("`b`&%s `^%s`0`b", $poll, $subject);
 	if ($showpoll) motd_admin($id, true);
-	output_notl("`n`3%s`0 &#150; `3%s`0`n", $author, $date, true);
+	output_notl("`n`3%s`0 &#150; `#%s`0`n", $author, $date, true);
 	output_notl("`2%s`0`n", stripslashes($body['body']));
 	$sql = "SELECT count(resultid) AS c, choice FROM " . db_prefix("pollresults") . " WHERE motditem='$id' GROUP BY choice ORDER BY choice";
 	$result = db_query_cached($sql,"poll-$id");

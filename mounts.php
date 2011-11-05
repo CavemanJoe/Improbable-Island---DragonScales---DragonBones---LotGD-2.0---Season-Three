@@ -227,7 +227,7 @@ if ($op==""){
 		rawoutput("</td><td nowrap>");
 		$file = "mounts.php?op=xml&id=".$row['mountid'];
 		rawoutput("<div id='mountusers$i'><a href='$file' target='_blank' onClick=\"getUserInfo('".$row{'mountid'}."', $i); return false\">");
- 		output_notl("`3%s`0", $mounts[$row['mountid']]);
+ 		output_notl("`#%s`0", $mounts[$row['mountid']]);
 		addnav("", $file);
 		rawoutput("</a></div>");
 		rawoutput("</td></tr>");

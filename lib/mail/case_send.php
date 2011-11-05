@@ -30,12 +30,8 @@ if(db_num_rows($result)>0){
 		$body = str_replace("\r","\n",$body);
 		$body = addslashes(substr(stripslashes($body),0,(int)getsetting("mailsizelimit",1024)));
 		require_once("lib/systemmail.php");
-		
-		//sneaky bit of code to thwart spammers
-		if (!strpos(strtolower($body),"lotgd-rl.co.uk") && !strpos(strtolower($body),"finalfantasylive.co.uk") && !strpos(strtolower($body),"abandonedcity.net") && !strpos(strtolower($body),"gold and gems to start house casino marriage chapel item shop lots o")){
-			systemmail($row1['acctid'],$subject,$body,$from);
-			invalidatedatacache("mail/mail-{$row1['acctid']}");
-		}
+		systemmail($row1['acctid'],$subject,$body,$from);
+		invalidatedatacache("mail-{$row1['acctid']}");
 		output("Your message was sent!`n");
 	}
 }else{

@@ -4,7 +4,7 @@
 // mail ready
 
 function sanitize($in){
-	$out = preg_replace("/[`][1234567890!@#\$%^&)~QqRVvGgTtjJeElLxXyYkKpPmM?*AabicnHw;:\[\{\]\}]/", "", $in);
+	$out = preg_replace("/[`][1234567890!@#\$%^&)~QqRVvGgTtjJeElLxXyYkKpPmM?*AabicnHw]/", "", $in);
 	return $out;
 }
 
@@ -14,14 +14,14 @@ function newline_sanitize($in){
 }
 
 function color_sanitize($in){
-	$out = preg_replace("/[`][1234567890!@#\$%^&)~QqRVvGgTtjJeElLxXyYkKpPmM?*AabisSdDfF;:\[\{\]\}]/", "", $in);
+	$out = preg_replace("/[`][1234567890!@#\$%^&)~QqRVvGgTtjJeElLxXyYkKpPmM?*Aabi]/", "", $in);
 	return $out;
 }
 
 function comment_sanitize($in) {
 	// to keep the regexp from boinging this, we need to make sure
 	// that we're not replacing in with the ` mark.
-	$out=preg_replace("/[`](?=[^1234567890!@#\$%^&)~QqRVvGgTteEjlLxXyYkKpPmM?*AasSdDfFi;:\[\{\]\}])/", chr(1).chr(1), $in);
+	$out=preg_replace("/[`](?=[^1234567890!@#\$%^&)~QqRVvGgTteEjJlLxXyYkKpPmM?*Aa])/", chr(1).chr(1), $in);
 	$out = str_replace(chr(1),"`",$out);
 	return $out;
 }

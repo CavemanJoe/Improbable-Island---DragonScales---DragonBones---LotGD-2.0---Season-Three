@@ -1,79 +1,59 @@
 <?php
-function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=true, $info=false, $default=false, $jsec=false, $ucol=false, $focus=false) {
-	global $schema,$session,$chatsonpage;
+function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=true, $info=false, $default=false) {
+	global $schema,$session;
 	$talkline = translate_inline($talkline, $schema);
 	$youhave = translate_inline("You have ");
 	$charsleft = translate_inline(" characters left.");
-	$chatsonpage+=1;
-	
-	//figure out whether to handle absolute or relative time
-	if (!array_key_exists('commentary_autocomplete', $session['user']['prefs'])){
-		$session['user']['prefs']['commentary_autocomplete'] = 0;
-	}
-	
-	if ($session['user']['prefs']['commentary_autocomplete']){
-		$autocomplete = "";
-	} else {
-		$autocomplete = "autocomplete='off'";
-	}
-	
-	if (!$jsec){
-		$nid = $name.$chatsonpage;
-	} else {
-		$nid = $jsec;
-	}
-	//debug($nid);
-	
-	if ($ucol!==false){
-		$exclude = array("J");
-		$colors = getcolors($exclude);
-		$usercol = $colors[$ucol];
-	} else {
-		$usercol = "colLtCyan";
-	}
-	
+
 	if ($startdiv === false)
 		$startdiv = "";
 	rawoutput("<script language='JavaScript'>
-				function previewtext$nid(t,l){
-					var out = \"<span class=\\'colLtWhite\\'>".addslashes(appoencode($startdiv))."\";
+				function previewtext$name(t,l){
+					var out = \"<span class=\\'colLtWhite\\'>".addslashes(appoencode($startdiv))." \";
 					var end = '</span>';
 					var x=0;
 					var y='';
 					var z='';
-					var max=document.getElementById('input$nid');
-					var charsleft='';
-					var italics=0;
-					var bold=0;");
+					var max=document.getElementById('input$name');
+					var charsleft='';");
 	if ($talkline !== false) {
 		rawoutput("	if (t.substr(0,2)=='::'){
 						x=2;
+						out += '</span><span class=\\'colLtWhite\\'>';
 					}else if (t.substr(0,1)==':'){
 						x=1;
+						out += '</span><span class=\\'colLtWhite\\'>';
 					}else if (t.substr(0,3)=='/me'){
-						x=3;");
+						x=3;
+						out += '</span><span class=\\'colLtWhite\\'>';");
 		if ($session['user']['superuser']&SU_IS_GAMEMASTER) {
 			rawoutput("
 					}else if (t.substr(0,5)=='/game'){
-						x=5;");
+						x=5;
+						out = '<span class=\\'colLtWhite\\'>';");
 		}
 		rawoutput("	}else{
-						out += '</span><span class=\\'colDkCyan\\'> ".addslashes(appoencode($talkline))." \"</span><span class=\\'$usercol\\'>';
+						out += '</span><span class=\\'colDkCyan\\'>".addslashes(appoencode($talkline)).", \"</span><span class=\\'colLtCyan\\'>';
 						end += '</span><span class=\\'colDkCyan\\'>\"';
 					}");
 	}
 	if ($showcharsleft == true) {
+/*		if (translate_inline($talkline,$schema)!="says")
+		$tll = strlen(translate_inline($talkline,$schema))+11;
+		else $tll=0;  // Don't know why needed
 		rawoutput("	if (x!=0) {
-						if (max.maxLength!=255) max.maxLength=255;
-						l=255;
+						if (max.maxlength!=200-$tll) max.maxlength=200-$tll;
+						l=200-$tll; */ // Don't know why needed
+		rawoutput("	if (x!=0) {
+						if (max.maxLength!=200) max.maxLength=200;
+						l=200;
 					} else {
 						max.maxLength=l;
 					}
 					if (l-t.length<0) charsleft +='<span class=\\'colLtRed\\'>';
 					charsleft += '".$youhave."'+(l-t.length)+'".$charsleft."<br>';
 					if (l-t.length<0) charsleft +='</span>';
-					italics=0;
-					document.getElementById('charsleft$nid').innerHTML=charsleft+'<br/>';");
+					document.getElementById('charsleft$name').innerHTML=charsleft+'<br/>';");
 	}
 	rawoutput("		for (; x < t.length; x++){
 						y = t.substr(x,1);
@@ -145,6 +125,8 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 									out += '</span><span class=\\'colBlack\\'>';
 								}else if (z=='j'){
 									out += '</span><span class=\\'colMdGrey\\'>';
+								}else if (z=='J'){
+									out += '</span><span class=\\'colMdBlue\\'>';
 								}else if (z=='e'){
 									out += '</span><span class=\\'colDkRust\\'>';
 								}else if (z=='E'){
@@ -174,43 +156,35 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 								}else if (z=='M'){
 									out += '</span><span class=\\'coltan\\'>';
 								}
-								else if (z=='i'){
-									italics += 1;
-									inum = italics;
-									if (inum%2){
-										out += '<i>';
-									} else {
-										out += '</i>';
-									}
-								}
 								x++;
 							}
 						}else{
 							out += y;
 						}
 					}
-					document.getElementById(\"previewtext$nid\").innerHTML=out+end+'<br/>';
-				}</script>
+					document.getElementById(\"previewtext$name\").innerHTML=out+end+'<br/>';
+				}
+				</script>
 				");
 	if ($charsleft == true) {
-		rawoutput("<span id='charsleft$nid'></span>");
+		rawoutput("<span id='charsleft$name'></span>");
 	}
 	if (!is_array($info)) {
 		if ($default) {
-			rawoutput("<input name='$name' id='input$nid' ".$autocomplete." maxlength='255' onKeyUp='previewtext$nid(document.getElementById(\"input$nid\").value,255);' value='$default'>");
+			rawoutput("<input name='$name' id='input$name' maxlength='255' onKeyUp='previewtext$name(document.getElementById(\"input$name\").value,200);' value='$default'>");
 		} else {
-			rawoutput("<input name='$name' id='input$nid' ".$autocomplete." maxlength='255' onKeyUp='previewtext$nid(document.getElementById(\"input$nid\").value,255);'>");
+			rawoutput("<input name='$name' id='input$name' maxlength='255' onKeyUp='previewtext$name(document.getElementById(\"input$name\").value,200);'>");
 		}
 	} else {
 		if (isset($info['maxlength'])) {
 			$l = $info['maxlength'];
 		} else {
-			$l=255;
+			$l=200;
 		}
 		if (isset($info['type']) && $info['type'] == 'textarea') {
-			rawoutput("<textarea name='$name' id='input$nid' onKeyUp='previewtext$nid(document.getElementById(\"input$nid\").value,$l);' ");
+			rawoutput("<textarea name='$name' id='input$name' onKeyUp='previewtext$name(document.getElementById(\"input$name\").value,$l);' ");
 		} else {
-			rawoutput("<input name='$name' id='input$nid' ".$autocomplete." onKeyUp='previewtext$nid(document.getElementById(\"input$nid\").value,$l);' ");
+			rawoutput("<input name='$name' id='input$name' onKeyUp='previewtext$name(document.getElementById(\"input$name\").value,$l);' ");
 		}
 		foreach ($info as $key=>$val){
 			rawoutput("$key='$val'");
@@ -229,92 +203,6 @@ function previewfield($name, $startdiv=false, $talkline="says", $showcharsleft=t
 			}
 		}
 	}
-	rawoutput("<div id='previewtext$nid'></div>");
-	if ($focus){
-		rawoutput("<script language='javascript'>document.getElementById('input".$nid."').focus();</script>");
-	}
+	rawoutput("<div id='previewtext$name'></div>");
 }
-
-function previewfield_countup($name,$maxchars=false,$default=""){
-	global $session;
-	$id = $name;
-	$exclude = array("J");
-	$colors = getcolors($exclude);
-	rawoutput("<script language='JavaScript'>
-				function previewtext$id(t){
-					var out = '';
-					var end = '';
-					var x=0;
-					var y='';
-					var z='';
-					var charsleft = (t.length)+' Characters';
-					var italics=0;
-					var bold=0;
-					document.getElementById('charsleft$id').innerHTML=charsleft;
-					if (t.length==0){
-						out = '&nbsp';
-					}
-					for (; x < t.length; x++){
-						y = t.substr(x,1);
-						teststring = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-=_+;:,./?`~ \'\"[]{}\\\|<>£';
-						testpos = teststring.indexOf(y);
-						if (y=='<'){
-							out += '&lt;';
-							continue;
-						}else if(y=='>'){
-							out += '&gt;';
-							continue;
-						}else if(y=='\\n'){
-							out = '<span class=\\'colLtRed\\'><strong>Use `n rather than Enter to drop down a line</strong></span>';
-							continue;
-						}else if (y=='`'){
-							if (x < t.length-1){
-								z = t.substr(x+1,1);
-								if (z=='0'){
-									out += '</span>';");
-	foreach($colors AS $code=>$class){
-		rawoutput("				}else if (z=='".$code."'){
-									out += '</span><span class=\\'".$class."\\'>';");
-	}
-	rawoutput("
-								}
-								else if (z=='i'){
-									italics += 1;
-									inum = italics;
-									if (inum%2){
-										out += '<em>';
-									} else {
-										out += '</em>';
-									}
-								} else if (z=='n'){
-									out += '<br />';
-								} else if (z=='b'){
-									bold += 1;
-									bnum = bold;
-									if (bnum%2){
-										out += '<strong>';
-									} else {
-										out += '</strong>';
-									}
-								} else if (z=='`'){
-									out += '`';
-								} else {
-									out = '<span class=\\'colLtRed\\'><strong>That\'s not a colour code you can use here!</strong></span>';
-								}
-								x++;
-							}
-						} else if (testpos==-1){
-							out = '<span class=\\'colLtRed\\'><strong>Did you type this in a word processor?  There\'s a character in there that\'s going to cause problems.  It could be a smart quote, or a single-character ellipsis, or some wacky hyphen.  You can only use characters that you can see on your keyboard.  Please check and try again.</strong></span>';
-						} else {
-							out += y;
-						}
-					}
-					document.getElementById(\"previewtext$id\").innerHTML=out;
-				}</script>
-				");
-	rawoutput("<div id='previewtext$id'>&nbsp;</div>");
-	rawoutput("<span id='charsleft$id'>0 Characters</span><br />");
-	rawoutput("<textarea name='$name' id='input$id' cols='60' rows='6' onKeyUp='previewtext$id(document.getElementById(\"input$id\").value);'>".$default."</textarea>");
-}
-
 ?>

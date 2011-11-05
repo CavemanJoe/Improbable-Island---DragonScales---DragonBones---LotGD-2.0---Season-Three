@@ -23,7 +23,7 @@ if (db_num_rows($result)>0){
 		}
 	}
 	if (!$row['seen']) {
-		output("`b`3NEW`b`n");
+		output("`b`#NEW`b`n");
 	}else{
 		output("`n");
 	}
@@ -35,16 +35,15 @@ if (db_num_rows($result)>0){
 	output_notl("`n<img src='images/lscroll.GIF' width='182px' height='11px' alt='' align='center'>`n",true);
 	$sql = "UPDATE " . db_prefix("mail") . " SET seen=1 WHERE  msgto=\"".$session['user']['acctid']."\" AND messageid=\"".$id."\"";
 	db_query($sql);
-	invalidatedatacache("mail/mail-{$session['user']['acctid']}");
+	invalidatedatacache("mail-{$session['user']['acctid']}");
 	$reply = translate_inline("Reply");
-	$quotereply = translate_inline("Reply with Original Text");
 	$del = translate_inline("Delete");
 	$unread = translate_inline("Mark Unread");
 	$report = translate_inline("Report to Admin");
 	$problem = "Abusive Email Report:\nFrom: {$row['name']}\nSubject: {$row['subject']}\nSent: {$row['sent']}\nID: {$row['messageid']}\nBody:\n{$row['body']}";
 	rawoutput("<table width='50%' border='0' cellpadding='0' cellspacing='5'><tr>");
 	if ($row['msgfrom'] > 0 && is_numeric($row['msgfrom'])) {
-		rawoutput("<td><a href='mail.php?op=write&replyto={$row['messageid']}' class='motd'>$reply</a><br /><a href='mail.php?op=write&replyto={$row['messageid']}&quote=1' class='motd'>$quotereply</a></td>");
+		rawoutput("<td><a href='mail.php?op=write&replyto={$row['messageid']}' class='motd'>$reply</a></td>");
 	} else {
 		rawoutput("<td>&nbsp;</td>");
 	}

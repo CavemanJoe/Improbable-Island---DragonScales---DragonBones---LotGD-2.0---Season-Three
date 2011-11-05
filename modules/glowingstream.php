@@ -15,6 +15,7 @@ function glowingstream_getmoduleinfo(){
 debug("glowingstream");
 function glowingstream_install(){
 	module_addeventhook("forest", "return 100;");
+	module_addeventhook("travel", "return 100;");
 	return true;
 }
 
@@ -72,7 +73,7 @@ function glowingstream_runevent($type,$link)
 			output("As you exhale your last breath, you distantly hear a tiny giggle.");
 			output("You find the strength to open your eyes, and find yourself staring at a tiny fairy who, flying just above your face is inadvertently sprinkling its fairy dust all over you, granting you the power to crawl once again to your feet.");
 			output("The lurch to your feet startles the tiny creature, and before you have a chance to thank it, it flits off.`n`n");
-			output("`^You narrowly avoid death, you lose some Stamina, and most of your hitpoints.");
+			output("`^You narrowly avoid death, you lose a forest fight, and most of your hitpoints.");
 			if ($session['user']['turns']>0) $session['user']['turns']--;
 			if ($session['user']['hitpoints'] >
 					($session['user']['maxhitpoints']*.1))
@@ -83,7 +84,7 @@ function glowingstream_runevent($type,$link)
 			break;
 		case 3:
 			output("You feel INVIGORATED!`n`n");
-			output("`^Your hitpoints have been restored to full, and you gain some Stamina.");
+			output("`^Your hitpoints have been restored to full, and you feel the energy for another turn in the forest.");
 			if ($session['user']['hitpoints'] <
 					$session['user']['maxhitpoints'])
 				$session['user']['hitpoints'] =
@@ -101,7 +102,7 @@ function glowingstream_runevent($type,$link)
 		case 6:
 		case 7:
 			output("You feel ENERGETIC!`n`n");
-			output("`^You gain some Stamina!");
+			output("`^You receive an extra forest fight!");
 			$session['user']['turns']++;
 			break;
 		default:

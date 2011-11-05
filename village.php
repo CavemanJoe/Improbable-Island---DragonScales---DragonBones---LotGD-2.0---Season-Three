@@ -21,35 +21,30 @@ if (!isset($valid_loc[$session['user']['location']])) {
 	$session['user']['location']=$vname;
 }
 
-// $newestname = "";
-// $newestplayer = getsetting("newestplayer", "");
-// if ($newestplayer == $session['user']['acctid']) {
-	// $newtext = "`nYou're the newest member of the village.  As such, you wander around, gaping at the sights, and generally looking lost.";
-	// $newestname = $session['user']['name'];
-// } else {
-	// $newtext = "`n`2Wandering near the inn is `&%s`2, looking completely lost.";
-	// if ((int)$newestplayer != 0) {
-		// $sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$newestplayer'";
-		// //$result = db_query_cached($sql, "newest");
-		// $result = db_query_cached($sql,"playernames/playername_".$newestplayer);
-		// if (db_num_rows($result) == 1) {
-			// $row = db_fetch_assoc($result);
-			// $newestname = $row['name'];
-		// } else {
-			// $newestplayer = "";
-		// }
-	// } else {
-		// if ($newestplayer > "") {
-			// $newestname = $newestplayer;
-		// } else {
-			// $newestname = "";
-		// }
-	// }
-// }
-
-// if (!$session['user']['dragonkills'] && !$session['user']['experience'] && $session['user']['hitpoints'] == $session['user']['maxhitpoints'] && $session['user']['age'] < 2 && $session['user']['gold']==80){
-	// output("`J`bConfused?`b`nDon't worry.  A lot of new players tend to react to NewHome with cries of 'LOOK AT ALL THOSE LINKS HOLY BALLS WHAT DO I DO,' so you're in good company.  First, you should head into the Council Offices and grab your free stuff for today.  After that, there's no easy answer to the question of 'what do I do' - but we can give you some hints.`n`nIf you're the sort who enjoys beating up monsters, levelling up, inching your way up the Hall O' Fame, you might want to check out the Jungle.  It'd be a good idea to visit Sheila's Shack O' Shiny first, and get yourself some sort of weapon or, y'know, clothing.`nIf you enjoy exploration, there's an awful lot of stuff you can see on the World Map, a lot of which was built by our own players.  Some folks like to just wander around gawping at all the interesting buildings that people have put together.  A can of Monster Repellent Spray from eBoy's Trading Station will make you less likely to be set upon by monsters while you're out looking around.`nIf you want to know more about the world in which Improbable Island is set, or if you're more in the mood to be told a story or to play a quest than to leap straight towards the levelling-up, then the Museum is a good bet.`nIf the accumulation of wealth is what interests you, then it's worth pointing out that the prices at eBoy's Trading Station are different in every Outpost and affected by supply and demand, so it's possible to make a tidy profit buying low and selling high.`nAre you the kind of player who believes that playing with other human beings can be far more fun?  You're absolutely right.  Introduce yourself in the Banter Channel - as web games go, Improbable Island's players are unusually friendly.`nRemember, you can always revisit Basic Training from NewHome if you need to, and don't hesitate to ask questions in the Banter channel or Location Four.`nThis message will disappear after you fight a monster, spend or earn some Requisition, or trigger a new Game Day.`n`n");
-// }
+$newestname = "";
+$newestplayer = getsetting("newestplayer", "");
+if ($newestplayer == $session['user']['acctid']) {
+	$newtext = "`nYou're the newest member of the village.  As such, you wander around, gaping at the sights, and generally looking lost.";
+	$newestname = $session['user']['name'];
+} else {
+	$newtext = "`n`2Wandering near the inn is `&%s`2, looking completely lost.";
+	if ((int)$newestplayer != 0) {
+		$sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$newestplayer'";
+		$result = db_query_cached($sql, "newest");
+		if (db_num_rows($result) == 1) {
+			$row = db_fetch_assoc($result);
+			$newestname = $row['name'];
+		} else {
+			$newestplayer = "";
+		}
+	} else {
+		if ($newestplayer > "") {
+			$newestname = $newestplayer;
+		} else {
+			$newestname = "";
+		}
+	}
+}
 
 $basetext = array(
 	"`@`c`b%s Square`b`cThe village of %s hustles and bustles.  No one really notices that you're standing there.  ".
@@ -73,7 +68,7 @@ $origtexts = array(
 	"othernav"=>"Other",
 	"section"=>"village",
 	"innname"=>$iname,
-	"stablename"=>"Mike's Chop Shop",
+	"stablename"=>"Merick's Stables",
 	"mercenarycamp"=>"Mercenary Camp",
 	"armorshop"=>"Pegasus Armor",
 	"weaponshop"=>"MightyE's Weaponry"
@@ -109,7 +104,7 @@ $origtexts['schemas'] = $schemas;
 // ambience.
 $texts = modulehook("villagetext",$origtexts);
 //and now a special hook for the village
-//$texts = modulehook("villagetext-{$session['user']['location']}",$texts);
+$texts = modulehook("villagetext-{$session['user']['location']}",$texts);
 $schemas = $texts['schemas'];
 
 tlschema($schemas['title']);
@@ -126,7 +121,7 @@ if ($session['user']['slaydragon'] == 1) {
 
 
 if ($session['user']['alive']){ }else{
-	redirect("shades.php","Player in village but not alive");
+	redirect("shades.php");
 }
 
 if (getsetting("automaster",1) && $session['user']['seenmaster']!=1){
@@ -136,7 +131,7 @@ if (getsetting("automaster",1) && $session['user']['seenmaster']!=1){
 	$expreqd = exp_for_next_level($level, $dks);
 	if ($session['user']['experience']>$expreqd &&
 			$session['user']['level']<15){
-		redirect("train.php?op=autochallenge","Master auto-challenge");
+		redirect("train.php?op=autochallenge");
 	}
 }
 
@@ -181,22 +176,22 @@ if (getsetting("enablecompanions",true)) {
 tlschema($schemas['fightnav']);
 addnav($texts['fightnav']);
 tlschema();
-addnav("D?Joe's Dojo","train.php");
+addnav("u?Bluspring's Warrior Training","train.php");
 if (@file_exists("lodge.php")) {
-	addnav("H?The Hunter's Lodge","lodge.php");
+	addnav("J?JCP's Hunter Lodge","lodge.php");
 }
 
 tlschema($schemas['marketnav']);
 addnav($texts['marketnav']);
 tlschema();
-//tlschema($schemas['weaponshop']);
-//addnav("W?".$texts['weaponshop'],"weapons.php");
-//tlschema();
-//tlschema($schemas['armorshop']);
-//addnav("A?".$texts['armorshop'],"armor.php");
+tlschema($schemas['weaponshop']);
+addnav("W?".$texts['weaponshop'],"weapons.php");
 tlschema();
-addnav("B?Bank of Improbable","bank.php");
-addnav("Comms Tent","gypsy.php");
+tlschema($schemas['armorshop']);
+addnav("A?".$texts['armorshop'],"armor.php");
+tlschema();
+addnav("B?Ye Olde Bank","bank.php");
+addnav("Z?Ze Gypsy Tent","gypsy.php");
 if (getsetting("betaperplayer", 1) == 1 && @file_exists("pavilion.php")) {
 	addnav("E?Eye-catching Pavilion","pavilion.php");
 }
@@ -211,15 +206,16 @@ tlschema($schemas['stablename']);
 addnav("M?".$texts['stablename']."`0","stables.php");
 tlschema();
 
-addnav("Common Ground", "gardens.php");
+addnav("G?The Gardens", "gardens.php");
 addnav("R?Curious Looking Rock", "rock.php");
 if (getsetting("allowclans",1)) addnav("C?Clan Halls","clan.php");
 
 tlschema($schemas['infonav']);
 addnav($texts['infonav']);
 tlschema();
+addnav("??F.A.Q. (newbies start here)", "petition.php?op=faq",false,true);
 addnav("N?Daily News","news.php");
-addnav("L?List Contestants","list.php");
+addnav("L?List Warriors","list.php");
 addnav("o?Hall o' Fame","hof.php");
 
 tlschema($schemas['othernav']);
@@ -242,24 +238,39 @@ if ($session['user']['superuser'] & SU_INFINITE_DAYS){
   addnav("/?New Day","newday.php");
 }
 tlschema();
+//let users try to cheat, we protect against this and will know if they try.
+addnav("","superuser.php");
+addnav("","user.php");
+addnav("","taunt.php");
+addnav("","creatures.php");
+addnav("","configuration.php");
+addnav("","badword.php");
+addnav("","armoreditor.php");
+addnav("","bios.php");
+addnav("","badword.php");
+addnav("","donators.php");
+addnav("","referers.php");
+addnav("","retitle.php");
+addnav("","stats.php");
+addnav("","viewpetition.php");
+addnav("","weaponeditor.php");
 
 if (!$skipvillagedesc) {
-	//debug($texts);
-	//modulehook("collapse{", array("name"=>"villagedesc-".$session['user']['location']));
+	modulehook("collapse{", array("name"=>"villagedesc-".$session['user']['location']));
 	tlschema($schemas['text']);
 	output($texts['text']);
 	tlschema();
-	//modulehook("}collapse");
-	//modulehook("collapse{", array("name"=>"villageclock-".$session['user']['location']));
+	modulehook("}collapse");
+	modulehook("collapse{", array("name"=>"villageclock-".$session['user']['location']));
 	tlschema($schemas['clock']);
 	output($texts['clock'],getgametime());
 	tlschema();
-	//modulehook("}collapse");
+	modulehook("}collapse");
 	modulehook("village-desc",$texts);
 	//support for a special village-only hook
-	//modulehook("village-desc-{$session['user']['location']}",$texts);
+	modulehook("village-desc-{$session['user']['location']}",$texts);
 	if ($texts['newestplayer'] > "" && $texts['newest']) {
-		//modulehook("collapse{", array("name"=>"villagenewest-".$session['user']['location']));
+		modulehook("collapse{", array("name"=>"villagenewest-".$session['user']['location']));
 		tlschema($schemas['newest']);
 		output($texts['newest'], $texts['newestplayer']);
 		tlschema();
@@ -270,12 +281,12 @@ if (!$skipvillagedesc) {
 			addnav("","user.php?op=edit&userid=$id");
 		}
 		output_notl("`n");
-		//modulehook("}collapse");
+		modulehook("}collapse");
 	}
 }
 modulehook("village",$texts);
 //special hook for all villages... saves queries...
-//modulehook("village-{$session['user']['location']}",$texts);
+modulehook("village-{$session['user']['location']}",$texts);
 
 if ($skipvillagedesc) output("`n");
 
@@ -284,17 +295,9 @@ if (!isset($args['block']) || $args['block'] != 'yes') {
 		tlschema($schemas['talk']);
 		output($texts['talk']);
 		tlschema();
-		$start = microtime(true);
-		dualcommentary($texts['section'],"Speak",25,$texts['sayline'], $schemas['sayline']);
-		$end = microtime(true);
-		$tot = $end - $start;
-		//debug("Commentary time: ".$tot);
+		commentdisplay("",$texts['section'],"Speak",25,$texts['sayline'], $schemas['sayline']);
 }
 
 module_display_events("village", "village.php");
-
-addnav("Inventory");
-addnav("View your Inventory","inventory.php?items_context=village");
-
 page_footer();
 ?>
