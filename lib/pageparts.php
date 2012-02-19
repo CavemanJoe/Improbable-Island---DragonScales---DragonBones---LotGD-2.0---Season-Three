@@ -653,7 +653,7 @@ function charstats(){
 		if ($u['alive']) {
 			addcharstat("Hitpoints", $u['hitpoints'].check_temp_stat("hitpoints",1).
 									"`0/".$u['maxhitpoints'].check_temp_stat("maxhitpoints",1));
-			addcharstat("Turns", $u['turns'].check_temp_stat("turns",1));
+			//addcharstat("Turns", $u['turns'].check_temp_stat("turns",1));
 			addcharstat("Attack", $atk.check_temp_stat("attack",1));
 			addcharstat("Defense", $def.check_temp_stat("defense",1));
 		} else {
