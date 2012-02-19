@@ -24,6 +24,7 @@ function iitems_eboy_intelligent_uninstall(){
 
 function iitems_eboy_intelligent_dohook($hookname,$args){
 	global $session;
+	require_once("modules/iitems/lib/lib.php");
 	switch($hookname){
 		case "village":
 			tlschema($args['schemas']['marketnav']);
@@ -82,9 +83,11 @@ function iitems_eboy_intelligent_dohook($hookname,$args){
 }
 
 function iitems_eboy_intelligent_run(){
+	require_once("modules/iitems/lib/lib.php");
 	global $session, $inventory;
 	if (!isset($inventory)){
-		load_inventory();
+		//iitems_load_inventory();
+		iitems_get_player_inventory();
 	}
 	page_header("eBoy's Trading Station");
 	addnav("Buy Items");
@@ -99,8 +102,9 @@ function iitems_eboy_intelligent_run(){
 	}
 	
 	eboy_updateprices();
-	$eboy_info = get_items_with_settings("eboy");
-	
+	//$eboy_info = get_items_with_settings("eboy");
+	$eboy_info = iitems_get_item_details("eboy");	
+
 	if (httpget('op')=="start"){
 		output("Already fearing the worst, you head into eBoy's Trading Station.`n`nYour fears are well-founded.  The place is packed with the heaving, sweaty bodies of the hardcore capitalist, shouting \"`iBuy, buy!`i\" and \"`iSell, sell!`i\" and \"`iPut down the chainsaw and let's talk about this!`i\"`n`neBoy himself - although you suspect that this place, like Mike's Chop Shop, is a franchise of which you'll find one in every outpost, so is his name really eBoy?  Whoever he is, he stands on an elevated section of floor behind a tall mahogany counter, grabbing money with one hand and tossing grenades and ration packs over his shoulder with the other.  His arms are a blur.  His speech is the unintelligible, rapid-fire gabble of a professional auctioneer.  His eyes bulge and swivel.  You know he's loving this.`n`n");
 	}
@@ -152,8 +156,9 @@ function iitems_eboy_intelligent_run(){
 	}
 	
 	eboy_updateprices();
-	$eboy_info = get_items_with_settings("eboy");
-	
+	//$eboy_info = get_items_with_settings("eboy");
+	$eboy_info = iitems_get_item_details("eboy");	
+
 	//inventory-type display routine
 	rawoutput("<table width=100% style='border: dotted 1px #000000;'>");
 	$classcount=1;
@@ -231,12 +236,12 @@ function iitems_eboy_intelligent_run(){
 	
 	return true;
 }
-
 function eboy_updateprices(){
 	global $session;
 	
-	$eboy_info = get_items_with_settings("eboy");
-	
+	//$eboy_info = get_items_with_settings("eboy");
+	$eboy_info = iitems_get_item_details("eboy");	
+
 	require_once "modules/cityprefs/lib.php";
 	$cid = get_cityprefs_cityid("location",$session['user']['location']);
 	

@@ -45,7 +45,7 @@ function iitems_world_map_gathering_dohook($hookname,$args){
 }
 function iitems_world_map_gathering_run(){
 	global $session;
-
+	require_once("modules/iitems/lib/lib.php");
 	page_header("Gathering Materials");
 	$type=httpget('mat');
 	$item=httpget('item');
@@ -127,7 +127,8 @@ function iitems_world_map_gathering_showgather($loc=false){
 	$terrain = worldmapen_getTerrain($worldmapX,$worldmapY,$worldmapZ);
 	if ($terrain['type']=="Forest"){
 		require_once "modules/iitems/lib/lib.php";
-		$equipment = get_items_with_prefs("treechopping");
+		//$equipment = get_items_with_prefs("treechopping");
+		$equipment = iitems_get_item_details("treechopping");
 		if (is_array($equipment)){
 			addnav("Material Gathering");
 			foreach($equipment AS $key => $vals){

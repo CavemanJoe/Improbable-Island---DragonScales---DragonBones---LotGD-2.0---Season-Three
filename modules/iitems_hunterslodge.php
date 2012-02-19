@@ -71,7 +71,7 @@ function iitems_hunterslodge_dohook($hookname,$args){
 function iitems_hunterslodge_run(){
 	global $session;
 	page_header("Hunter's Lodge");
-	
+	require_once("modules/iitems/lib/lib.php");
 	$op = httpget('op');
 	
 	$pointsleft = $session['user']['donation']-$session['user']['donationspent'];
@@ -182,9 +182,9 @@ function iitems_hunterslodge_run(){
 		case "start":
 			output("You head into the Hunter's Lodge.  It's a bright, shiny place, with many expensive-looking items arranged inside glass cabinets.  The proprietor, a snappily-dressed male Joker, grins at you from behind the counter.`n`n");
 			
-			if (!has_item("lodgebag")){
+			if (!iitems_has_item("lodgebag")){
 				output("The joker silently hands you a small bag, with a look that suggests you put your purchases inside.`n`n");
-				give_item("lodgebag");
+				iitems_give_item("lodgebag");
 			}
 			
 			output("`0You have `b`5%s`0`b Supporter Points left, out of `5%s`0 accumulated in total.`n`n",number_format($pointsleft),number_format($pointstotal));
@@ -192,7 +192,8 @@ function iitems_hunterslodge_run(){
 			addnav("What's all this about, then?");
 			addnav("How do I get supporter points, or give presents to people?","runmodule.php?module=iitems_hunterslodge&op=explain");
 			
-			$lodgeitems = get_items_with_settings("lodge");
+			//$lodgeitems = get_items_with_settings("lodge");
+			$lodgeitems = iitems_get_item_details("lodge");
 			//debug($lodgeitems);
 			
 			rawoutput("<table width=100% style='border: dotted 1px #000000;'>");
