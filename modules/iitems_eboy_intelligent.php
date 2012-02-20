@@ -39,8 +39,9 @@ function iitems_eboy_intelligent_dohook($hookname,$args){
 			// break;
 		case "newday-runonce":
 			
-			$eboyitems = get_items_with_settings("eboy");
-			
+			//$eboyitems = get_items_with_settings("eboy");
+			$eboyitems = iitems_get_item_details("eboy");
+
 			//get number of players
 			$sql = "SELECT count(acctid) AS c FROM " . db_prefix("accounts") . " WHERE locked=0";
 			$result = db_query_cached($sql,"numplayers",600);
