@@ -125,10 +125,9 @@ function clanbuffs_dohook($hookname,$args){
         case "footer-clan":
              if($session['user']['clanid']!=0 and httpget("op")==""){
                 if($session['user']['clanrank']>0){
-<<<<<<< HEAD
-                   addnav("~");
-=======
->>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
+
+                   //addnav("~");
+
                    addnav("Clan Buffs","runmodule.php?module=clanbuffs&op=enter");
                 }
              }

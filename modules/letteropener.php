@@ -92,11 +92,10 @@ function letteropener_run(){
         $login = $rowz['login'];
         
         addnav("Read Someone else's mail","runmodule.php?module=letteropener");
-<<<<<<< HEAD
+
 		addnav("~");
-=======
-		//addnav("~");
->>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
+
+
 		addnav(array("All YOMs to %s",$login),"runmodule.php?module=letteropener&op=to&to=$login");
         addnav(array("All YOMs from %s",$login),"runmodule.php?module=letteropener&op=from&from=$login");
         $sql = "SELECT " . db_prefix($maildb) . ".*,". db_prefix("accounts"). ".name,login FROM " . db_prefix($maildb) ." LEFT JOIN " . db_prefix("accounts") . " ON ". db_prefix("accounts") . ".acctid=" . db_prefix($maildb). ".msgfrom WHERE msgto=\"".$acctid."\" AND messageid=\"".$id."\"";

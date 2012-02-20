@@ -317,13 +317,12 @@ function worldmapen_viewsmallmap(){
 	if (get_module_pref("user_blindoutput","worldmapen")){
 		output_notl("%s",$blindoutput);
 	}
-<<<<<<< HEAD
+
 	modulehook("worldmap_belowmap");
-	worldmapen_viewmapkey(true, false);
-=======
+
 	//modulehook("worldmap_belowmap");
 	//worldmapen_viewmapkey(true, false);
->>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
+
 }
 
 

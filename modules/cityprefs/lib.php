@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 <?php
-=======
-<?PHP
->>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
+
 function get_cityprefs_module($lookup,$value,$player=false){
 	if($player>0){
 		$sql1="select location from ".db_prefix("accounts")." where acctid=$player";
@@ -55,8 +52,6 @@ function get_cityprefs_cityname($lookup,$value,$player=false){
 	$row=db_fetch_assoc($res);
 	return $row['cityname'];
 }
-<<<<<<< HEAD
+
+
 ?>
-=======
-?>
->>>>>>> 8b5d92281350005db7709911b00777e80705dd6e

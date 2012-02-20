@@ -543,7 +543,7 @@ if ($session['user']['superuser'] & SU_INFINITE_DAYS){
   addnav("/?New Day","newday.php");
 }
 tlschema();
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 //let users try to cheat, we protect against this and will know if they try.
 addnav("","superuser.php");
 addnav("","user.php");
@@ -560,8 +560,7 @@ addnav("","retitle.php");
 addnav("","stats.php");
 addnav("","viewpetition.php");
 addnav("","weaponeditor.php");
-=======
->>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
+=======*///come in from git
 
 if (!$skipvillagedesc) {
 	//debug($texts);
@@ -618,4 +617,3 @@ addnav("View your Inventory","inventory.php?items_context=village");
 
 page_footer();
 ?>
->>>>>>> 21abd68fb452a6b78fe46353ebbb891fb2273d4b
