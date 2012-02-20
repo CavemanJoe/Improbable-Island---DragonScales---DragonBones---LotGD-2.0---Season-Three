@@ -92,11 +92,19 @@ function ratemonster_run(){
 			$info = unserialize(get_module_pref("info"));
 			$info['ratedmonsters'][]=$cid;
 			$rated = $info['ratedmonsters'];
+<<<<<<< HEAD
+			if (count($rated)>=100 && !$info['gotdps']){
+				$session['user']['donation']+=1000;
+				$info['gotdps']=true;
+				output("`c`bYou have Donator Points!`c`bThank you so much for rating all those monsters!  Here's a 1000 Donator Point bonus.  Have fun with that!`n`n");
+			}
+=======
 //			if (count($rated)>=100 && !$info['gotdps']){
 //				$session['user']['donation']+=1000;
 //				$info['gotdps']=true;
 //				output("`c`bYou have Donator Points!`c`bThank you so much for rating all those monsters!  Here's a 1000 Donator Point bonus.  Have fun with that!`n`n");
 //			}
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 			set_module_pref("info",serialize($info));
 		break;
 		case "superuser":

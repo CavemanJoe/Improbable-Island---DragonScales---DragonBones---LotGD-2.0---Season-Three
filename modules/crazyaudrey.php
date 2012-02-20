@@ -60,7 +60,7 @@ function crazyaudrey_dohook($hookname,$args){
 	switch($hookname){
 	case "village-desc":
 		if (e_rand(1, 100) <= get_module_setting("villagepercent")) {
-			output("`n`%Crazy Audrey is here with her `#%s`%!`n",$lcanimals);
+			output("`%Crazy Audrey is here with her `3%s`%!`n`n",$lcanimals);
 			$args['doaudrey'] = 1;
 		}
 
@@ -72,7 +72,7 @@ function crazyaudrey_dohook($hookname,$args){
 			tlschema($args['schemas']['marketnav']);
 			addnav($args["marketnav"]);
 			tlschema();
-			addnav(array(" ?Pet Crazy Audrey's %s`0 (`^%s gold`0)",$animals,$cost),"runmodule.php?module=crazyaudrey&op=pet");
+			addnav(array(" ?Pet Crazy Audrey's %s`0 (`^%s Req`0)",$animals,$cost),"runmodule.php?module=crazyaudrey&op=pet");
 		}
 		break;
 	case "newday":
@@ -187,26 +187,34 @@ function crazyaudrey_baskets($type)
 				$where = translate_inline($type=="forest"?"forest":"crowd");
 				output("\"`%Hedgehogs?  HEDGEHOGS??  Hahahahaha, HEDGEHOGS!!!!`5\" shouts Crazy Audrey as she snatches them up in glee and runs cheering into the %s.", $where);
 				output("You notice that she has dropped a full BAG of those wonderful salves.`n`n");
-				output("`^You gain FIVE forest fights!");
+				output("`^You gain a whole LOAD of Stamina!");
 				$session['user']['turns']+=5;
+				if (is_module_active("medals")){
+					require_once "modules/medals.php";
+					medals_award_medal("audrey-hedgehogs","Friend of the Hedgehogs","This player was fortunate enough to find hedgehogs in Crazy Audrey's baskets!","medal_audreyhedgie.png");
+				}
 			}else{
 				output("\"`%Argh, you are ALL very bad %s`%!`5\" shouts Crazy Audrey before hugging her shoulder %s`5 and putting it back in the basket.", $lcplural, $lcanimal);
 				output("\"`%Because my %s`% all were alike, I grant you TWO salves.`5\"`n`n", $lcplural);
 				output("You rub the salves on your toes.`n`n");
-				output("`^You gain TWO forest fights!");
+				output("`^You gain LOTS of Stamina!");
 				$session['user']['turns']+=2;
+				if (is_module_active("medals")){
+					require_once "modules/medals.php";
+					medals_award_medal("audrey-kittens","Pervy Kitten Fancier","This player was fortunate enough to find five kittens of the same colour!","medal_audreykitty.png");
+				}
 			}
 		}elseif ($c1==$c2 || $c2==$c3 || $c1==$c3){
 			output("\"`%Garr, you crazy %s`%, what do you know?  Why I ought to paint you all different colors!`5\"", $lcplural);
 			output("Despite her threatening words, Crazy Audrey pets the %s`5 on her shoulder and places it back in the basket, before giving you your salve, which you rub all over your toes.`n`n", $lcanimal);
-			output("`^You gain a forest fight!");
+			output("`^You gain some Stamina!");
 			$session['user']['turns']++;
 		}else{
 			output("\"`%Well done my pretties!`5\" shouts Crazy Audrey.");
 			output("Just then her shoulder-mounted %s`5 leaps at you.", $lcanimal);
 			if ($session['user']['turns'] > 0) {
 				output("In fending it off, you lose some energy.");
-				$msg = "`^You lose a forest fight!";
+				$msg = "`^You lose some Stamina!";
 				$session['user']['turns']--;
 			} else {
 				output("In fending it off, you get a nasty scratch along one side of your face.");
@@ -271,3 +279,4 @@ function crazyaudrey_run(){
 	page_footer();
 }
 ?>
+

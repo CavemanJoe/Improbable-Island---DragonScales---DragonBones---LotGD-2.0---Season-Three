@@ -2,6 +2,19 @@
 function clanmembercap_getmoduleinfo(){
     $info = array(
 		"name"=>"Clan Member Cap",
+<<<<<<< HEAD
+		"version"=>"20070207",
+		"author"=>"<a href='http://www.joshuadhall.com' target=_new>Sixf00t4</a>",
+		"category"=>"Clan",
+		"download"=>"http://dragonprime.net/index.php?module=Downloads;sa=dlview;id=1204",
+		"vertxtloc"=>"http://www.legendofsix.com/",
+		"description"=>"Limits the number of members a clan can have",
+        "settings"=>array(
+            "clan member cap - Settings,title",
+			"lim"=>"How many members are allowed per clan?,int|30",
+			"apps"=>"Do applicants count as members?,bool|0",
+        ),		
+=======
 		"version"=>"20101018",
 		"author"=>"Dan Hall, based on original Clan Member Cap by Sixf00t4",
 		"category"=>"Clan",
@@ -20,13 +33,17 @@ function clanmembercap_getmoduleinfo(){
 			"costfornext"=>"Cost in gems for next new member,int|0",
 			"bank"=>"Gems currently in the Member Cap bank,int|0",
 		),
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
     );
     return $info;
 }
 
 function clanmembercap_install(){
 	module_addhook_priority("header-clan",100);
+<<<<<<< HEAD
+=======
 	module_addhook("footer-clan");
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
     return true;
 }
 
@@ -38,6 +55,18 @@ function clanmembercap_dohook($hookname,$args){
     global $session;
     $to=httpget('to');
     $op=httpget('op');
+<<<<<<< HEAD
+    if($op=="apply" && $to>0){
+        $apps="";
+        if(get_module_setting("apps")==0) $apps="and clanrank>1";
+        $sql="select clanid from ".db_prefix("accounts")." where clanid=$to $apps";
+        $res=db_query($sql);
+        $count=db_num_rows($res);
+        if($count>=get_module_setting("lim")){
+            redirect("runmodule.php?module=clanmembercap");
+        }
+    }
+=======
 	
 	switch($hookname){
 		case "header-clan":
@@ -67,11 +96,18 @@ function clanmembercap_dohook($hookname,$args){
 		break;
 	}
 	
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
     return $args;
 }
 
 function clanmembercap_run() {
     global $session;
+<<<<<<< HEAD
+	page_header("Clan Full");
+    output("This Clan has reached full capacity at %s members.",get_module_setting("lim"));
+    addnav("Back to Clan hall","clan.php");
+	villagenav();
+=======
 	
 	$op = httpget('op');
 	$clanid = $session['user']['clanid'];
@@ -146,6 +182,7 @@ function clanmembercap_run() {
 			addnav("Back to Clan hall","clan.php");
 		break;
 	}
+>>>>>>> 8b5d92281350005db7709911b00777e80705dd6e
 	page_footer();
 }
 ?>
