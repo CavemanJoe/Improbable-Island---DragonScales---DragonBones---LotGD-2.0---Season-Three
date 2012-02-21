@@ -4,7 +4,8 @@ function worldmapwn_run_real(){
 	
 	global $session
 	
-	switch (http("op"){
+	switch (httpget("op"){
+			global $session;
 			case "beginjourney":break;
 				
 			case "gypsy":
@@ -31,6 +32,34 @@ function worldmapwn_run_real(){
 						villagenav();
 					}
 				}break;
+
+			case "travel"://This is the main part of worldmapwn, the traveling part
+
+				switch (httpget("dir"){//This sets the users new location
+					case "n": 
+						$start=$session['user']['location']
+						$startloc=explode(",",$start);
+						$locchange=$startloc[2]-1;
+						$newloc=$startloc[0].",".$startloc[1].",".$locchange;
+						$session['user']['location']=$newloc
+						break;
+					case "ne": break;
+					case "nw": break;
+					case "s":
+						$start=$session['user']['location']
+						$startloc=explode(",",$start);
+						$locchange=$startloc[2]+1;
+						$newloc=$startloc[0].",".$startloc[1].",".$locchange;
+						$session['user']['location']=$newloc
+						break;
+					case "se": break;
+					case "sw": break;
+					case "begin":break;
+					}
+
+				$currentloc=$session['user']['location'];
+				$locsplit=explode(",",$currentloc);
+				
 			default:
 				break;
 			}

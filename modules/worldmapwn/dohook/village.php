@@ -5,6 +5,6 @@
 	// blocknav("forest.php");
 
 addnav($args["gatenav"]);
-addnav("Journey","runmodule.php?module=worldmapwn&op=beginjourney");
+addnav("Journey","runmodule.php?module=worldmapwn&op=travel&dir=begin");
 blocknav("runmodule.php?module=worldmapen&op=beginjourney");//block old map system
 ?>
