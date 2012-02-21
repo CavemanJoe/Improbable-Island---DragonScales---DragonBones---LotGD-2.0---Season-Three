@@ -3,7 +3,7 @@
 $DB_HOST = 'localhost';
 $DB_USER = 'root';
 $DB_PASS = 'password';
-$DB_NAME = 'dragonprime';
+$DB_NAME = 'development';
 $DB_PREFIX = 'free_';
 $DB_USEDATACACHE = 0;
 $DB_DATACACHEPATH = 'datacache';
