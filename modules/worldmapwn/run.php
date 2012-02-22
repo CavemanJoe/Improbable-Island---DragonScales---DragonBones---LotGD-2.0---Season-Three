@@ -34,32 +34,98 @@ function worldmapwn_run_real(){
 				}break;
 
 			case "travel"://This is the main part of worldmapwn, the traveling part
-
 				switch (httpget("dir"){//This sets the users new location
-					case "n": 
-						$start=$session['user']['location']
+					case "n":
+						$start=$session['user']['location'];
 						$startloc=explode(",",$start);
 						$locchange=$startloc[2]-1;
-						$newloc=$startloc[0].",".$startloc[1].",".$locchange;
-						$session['user']['location']=$newloc
+						$newloc=$startloc[0].",".$locchange.",".$startloc[2];
+						$session['user']['location']=$newloc;
 						break;
 					case "ne": break;
+						$start=$session['user']['location'];
+						$startloc=explode(",",$start);
+						$locchangex=$startloc[0]-1;
+						if ($starloc[0] % 2 ==0){
+							$locchangey=$startloc[0];
+						} else {
+							$locchangey=$startloc[0]-1;
+						}
+						$newloc=$locchangex.",".$locchangey.",".$startloc[2];
+						$session['user']['location']=$newloc;
 					case "nw": break;
+						$start=$session['user']['location'];
+						$startloc=explode(",",$start);
+						$locchangex=$startloc[0]+1;
+						if ($starloc[0] % 2 ==0){
+							$locchangey=$startloc[0];
+						} else {
+							$locchangey=$startloc[0]-1;
+						}
+						$newloc=$locchangex.",".$locchangey.",".$startloc[2];
+						$session['user']['location']=$newloc;
 					case "s":
-						$start=$session['user']['location']
+						$start=$session['user']['location'];
 						$startloc=explode(",",$start);
 						$locchange=$startloc[2]+1;
 						$newloc=$startloc[0].",".$startloc[1].",".$locchange;
-						$session['user']['location']=$newloc
+						$session['user']['location']=$newloc;
 						break;
 					case "se": break;
+						$start=$session['user']['location'];
+						$startloc=explode(",",$start);
+						$locchangex=$startloc[0]+1;
+						if ($starloc[0] % 2 ==0){
+							$locchangey=$startloc[0]+1;
+						} else {
+							$locchangey=$startloc[0];
+						}
+						$newloc=$locchangex.",".$locchangey.",".$startloc[2];
+						$session['user']['location']=$newloc;
 					case "sw": break;
-					case "begin":break;
+						$start=$session['user']['location'];
+						$startloc=explode(",",$start);
+						$locchangex=$startloc[0]+1;
+						if ($starloc[0] % 2 ==0){
+							$locchangey=$startloc[0]+1;
+						} else {
+							$locchangey=$startloc[0];
+						}
+						$newloc=$locchangex.",".$locchangey.",".$startloc[2];
+						$session['user']['location']=$newloc;
+					case "begin":
+						
+						break;
 					}
 
 				$currentloc=$session['user']['location'];
-				$locsplit=explode(",",$currentloc);
+				list($x,$y,$z)=explode(",",$currentloc);
+				require_once("modules/worldmapwn/lib/readmap.php");
+				$map=worldmapwn_map_array($z);
+				$maxx=count($map)-4;
+				$maxy=count($map[1]-2);//rectangular maps only, no jagged ones.
+				addnav("Journey")
+				if ($y!=1){
+					addnav("Travel North","runmodule.php?module=worldmapwn&op=travel&dir=n");
+					
+					if ($x!=1){
+					addnav("Travel North-West","runmodule.php?module=worldmapwn&op=travel&dir=nw");}
+					if ($x!=$maxx){
+					addnav("Travel North-East","runmodule.php?module=worldmapwn&op=travel&dir=ne");}
+				}
+				if ($y!=$maxy){
+					addnav("Travel South","runmodule.php?module=worldmapwn&op=travel&dir=s");
+					
+					if ($x!=1){
+					addnav("Travel South-West","runmodule.php?module=worldmapwn&op=travel&dir=sw");}
+					if ($x!=$maxx){
+					addnav("Travel South-East","runmodule.php?module=worldmapwn&op=travel&dir=se");}
+				}
 				
+					
+								
+				
+
 			default:
 				break;
 			}

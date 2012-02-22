@@ -15,7 +15,7 @@
 function worldmapwn_getmoduleinfo(){
 	$info = array(
 	"name"=>"World Map",
-	"version"=>"0.1",
+	"version"=>"0.2",
 	"author"=>"Cousjava",
 	"category"=>"Map",
 	"download"=>"",
@@ -56,9 +56,12 @@ function worldmapwn_getmoduleinfo(){
 				),
 			),
 		
-		//"Other Settings,title"
+		"Other Settings,title"
+		"wraptype"=>"What type of wrap is there at edge of map?,int|0",
+		'0 is for no wrap; 1 is for wrap east-west; 2 is for wrap north-south; 3 is for wrap east-west and north-south ,note',
 		
-		/*
+
+/*
 		"manualmove"=>"Turn on Superuser manual movement?,bool|0",
 		"viewRadius"=>"How many squares far can a player see while traveling?,range,0,10,2",
 		"worldmapAcquire"=>"Can the world map be purchased?,bool|1",
@@ -125,7 +128,7 @@ function worldmapen_install(){
 	if (!is_module_installed("staminasystem")) {
 		output("`b`^***** This module requires the stamina system to be installed. *****`b`7");
 		return false;
-	} else {
+	}
 		module_addhook("village");
 		module_addhook("villagenav");
 		module_addhook("mundanenav");
@@ -137,7 +140,17 @@ function worldmapen_install(){
 		//module_addhook("boughtmount"); Not top piority
 		module_addhook("newday");
 		module_addhook("items-returnlinks");
-	}
+	
+		$map = array(		//this bit is based on improbablehousing
+		'id'=>array('name'=>'id', 'type'=>'int(11) unsigned', 'extra'=>'auto_increment'),
+		'desc'=>array('name'=>'ownedby', 'type'=>'int(11) unsigned'),
+		'location'=>array('name'=>'location', 'type'=>'text'),
+		'data'=>array('name'=>'data', 'type'=>'mediumtext'),
+		'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'id'),
+		);
+	
+		synctable(db_prefix('map'), $map,true);//*/
+		
 		require_once('modules/staminasystem/lib/lib.php');
 		install_action("Travelling - Plains",array(
 			"maxcost"=>5000,
