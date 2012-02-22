@@ -94,6 +94,18 @@ function worldmapwn_run_real(){
 						$newloc=$locchangex.",".$locchangey.",".$startloc[2];
 						$session['user']['location']=$newloc;
 					case "begin":
+						$cid = get_cityprefs_cityid("location",$session['user']['location']);
+						$cname=$session['user']['location'];
+						$cityloc = get_module_objpref("city",$cid,"location");
+						$session['user']['location']=$cityloc;
+						$outmess=e_rand(1,5)
+						switch ($outmess){
+							case 1:output("`b`&The gates of %s close behind you. A shiver runs down your back as you face the wilderness around you.`0`b",$cname);
+							case 2:output("`b`&The gates of %s close behind you. You're all alone now...`0`b",$cname);
+							case 3:output("`b`&The gates of %s close behind you. The sound of the wilderness settles in around you as you think to yourself what evil must lurk within.`0`b",$cname);	
+							case 4:output("`b`&The gates of %s close behind you. Perhaps you should go back in...`0`b",$cname);
+							case 5:output("`b`&The gates of %s close behind you. A howling noise bellows from deep within the forest.  You hear the guards from the other side of the gates yell \"Good Luck!\" and what sounds like \"they'll never make it.`0`b",$cname);
+						}
 						
 						break;
 					}
@@ -106,26 +118,31 @@ function worldmapwn_run_real(){
 				$maxy=count($map[1]-2);//rectangular maps only, no jagged ones.
 				addnav("Journey")
 				if ($y!=1){
-					addnav("Travel North","runmodule.php?module=worldmapwn&op=travel&dir=n");
-					
+					addnav("Travel North","runmodule.php?module=worldmapwn&op=travel&dir=n");					
 					if ($x!=1){
 					addnav("Travel North-West","runmodule.php?module=worldmapwn&op=travel&dir=nw");}
 					if ($x!=$maxx){
 					addnav("Travel North-East","runmodule.php?module=worldmapwn&op=travel&dir=ne");}
 				}
 				if ($y!=$maxy){
-					addnav("Travel South","runmodule.php?module=worldmapwn&op=travel&dir=s");
-					
+					addnav("Travel South","runmodule.php?module=worldmapwn&op=travel&dir=s");					
 					if ($x!=1){
 					addnav("Travel South-West","runmodule.php?module=worldmapwn&op=travel&dir=sw");}
 					if ($x!=$maxx){
 					addnav("Travel South-East","runmodule.php?module=worldmapwn&op=travel&dir=se");}
 				}
 				
+			case "admin":		
+				if (httpget("admin"==true){
+					page_header("Worldmapwn Settings");
 					
-								
-				
-
+					output("`bMap File Settings`b");
+					
+					output("`bCity Locations`b");
+				}				
+				addnav("");
+				addnav("Return to the Grotto","superuser.php");
+				addnav("Return to the Mundane","village.php");
 			default:
 				break;
 			}

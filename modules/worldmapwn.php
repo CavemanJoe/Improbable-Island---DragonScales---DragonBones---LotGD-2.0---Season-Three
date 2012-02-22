@@ -7,7 +7,7 @@
  Updates & Maintenance by: Dan Hall - Caveman Joe (cavemanjoe@gmail.com)
  Rewritten by: Cousjava (outingbrains-websitesgeneric@yahoo.co.uk)
  http://www.dragonprime.net
- Updated: Feb 23, 2008
+ Updated: Feb 22, 2012
  ************************************************/
 
 //require_once('modules/worldmapwn/lib.php');
@@ -106,6 +106,9 @@ function worldmapwn_getmoduleinfo(){
 		"fuel"=>"The reduced-cost moves that a player has left because of his Mount,int|0",
 		"user_blindoutput"=>"BETA OPTION for blind or visually impaired players using a screen reader - Show textual information about your location on the World Map?,bool|0",
 	),
+	"prefs-city"=>array(
+			"location"=>"The location of the city (seperated by commas)|1,1,1",
+		),
 	/*"prefs-mounts"=>array(
 		"World Map Mount Preferences,title",
 		"All values are expressed as a decimal value of normal,note",
