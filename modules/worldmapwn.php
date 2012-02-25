@@ -17,7 +17,7 @@ function worldmapwn_getmoduleinfo(){
 	"name"=>"World Map",
 	"version"=>"0.2",
 	"author"=>"Cousjava",
-	"category"=>"Map",
+	"category"=>"World Map",
 	"download"=>"",
 	"vertxtloc"=>"",
 	"requires"=>array("cities"=>"1.0|This module requires the Multiple Cities module to be installed"),
@@ -34,11 +34,11 @@ function worldmapwn_getmoduleinfo(){
 		"randevent"=>"Random Event -Don't Edit,text|forest",
 		"randchance"=>"Percent chance you will get a travel module instead of forest,range,5,100,5",
 
-		"Boundary Messages,title",
+		/*"Boundary Messages,title",
 		"nBoundary"=>"Northern boundary,text|To the north are the impenetrable mountains of Loa.",
 		"eBoundary"=>"Eastern boundary,text|The vast ocean of silence lay to your east.  Long before you can remember ships stopped sailing across to the other continents.  But why?",
 		"sBoundary"=>"Southern boundary,text|To the south you can see a great ravine that seems to stretch on forever.",
-		"wBoundary"=>"Western boundary,text|To the west lays the barren wasteland of the Goiu desert.  No one has ever survived out there.",
+		"wBoundary"=>"Western boundary,text|To the west lays the barren wasteland of the Goiu desert.  No one has ever survived out there.", //*/
 		
 		"Gate Messages,title",
 		"LeaveGates1"=>"Leave gates of village. (1)|A shiver runs down your back as you face the forest around you.",
@@ -144,15 +144,18 @@ function worldmapen_install(){
 		module_addhook("newday");
 		module_addhook("items-returnlinks");
 	
-		$map = array(		//this bit is based on improbablehousing
-		'id'=>array('name'=>'id', 'type'=>'int(11) unsigned', 'extra'=>'auto_increment'),
-		'desc'=>array('name'=>'ownedby', 'type'=>'int(11) unsigned'),
-		'location'=>array('name'=>'location', 'type'=>'text'),
-		'data'=>array('name'=>'data', 'type'=>'mediumtext'),
-		'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'id'),
-		);
-	
-		synctable(db_prefix('map'), $map,true);//*/
+		require_once("lib/tabledescriptor.php");
+		$hexprefs = array(
+			'hexid'=>array('name'=>'hexid', 'type'=>'int unsigned',	'extra'=>'not null auto_increment'),
+			'hexcoord'=>array('name'=>'hexcoord', 'type'=>'varchar(55)'),
+			'module'=>array('name'=>'module', 'type'=>'varchar(255)'),
+			'hexdesc'=>array('name'=>'hexdesc', 'type'=>'varchar(255)', 'extra'=>'not null'),
+			'hexcode'=>array('name'=>'hexcode', 'type'=>'varchar(255)'),
+			'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'cityid'),
+			'index-hexid'=>array('name'=>'hexid', 'type'=>'index', 'columns'=>'hexid'),
+			'index-module'=>array('name'=>'module', 'type'=>'index', 'columns'=>'module'),
+			'index-cityname'=>array('name'=>'cityname', 'type'=>'index', 'columns'=>'cityname'));
+    		synctable(db_prefix('hexprefs'), $hexprefs, true);
 		
 		require_once('modules/staminasystem/lib/lib.php');
 		install_action("Travelling - Plains",array(
