@@ -23,7 +23,7 @@ function get_worldmapwn_hexid($lookup,$value,$player=false){
 		$sql1="select location from ".db_prefix("accounts")." where acctid=$player";
 		$res1=db_query($sql1);
 		$row1=db_fetch_assoc($res1);
-		$lookup="cityname";
+		$lookup="hexcoord";
 		$value=$row1['location'];
 	}
 	

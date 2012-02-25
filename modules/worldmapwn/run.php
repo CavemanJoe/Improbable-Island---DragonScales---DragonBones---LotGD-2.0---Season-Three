@@ -36,6 +36,9 @@ function worldmapwn_run_real(){
 			case "travel"://This is the main part of worldmapwn, the traveling part
 				page_header("Journey")
 				switch (httpget("dir"){//This sets the users new location
+					case "setloc":
+						$loc=httpget('loc');
+						$session['user']['location'];
 					case "n":
 						$start=$session['user']['location'];
 						$startloc=explode(",",$start);
