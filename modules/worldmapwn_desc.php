@@ -33,7 +33,7 @@ function worldmap_desc_dohook($hookname,$args){
 				output("`n`n`0%s",$desc);
 				if ($session['user']['superuser']==true && get_module_pref("cannedit","worldmapwn")==true){
 					addnav("Superuser");
-					addnav("runmodule.php?module=worldmapwn_desc&op=locdesc");
+					addnav("Change Description","runmodule.php?module=worldmapwn_desc&op=locdesc");
 				}
 				break;
 			}
@@ -45,8 +45,8 @@ function worldmap_desc_run(){
 	page_header("World Map Hex Descriptions");
 		switch (httpget('op')){
 			case "locdesc":
-				addnav("Continue traveling","runmodule.php?module=worldmapwn&op=travel");
-				addnav("Go to the Grotto","superuser.php");
+				addnav("T?Continue traveling","runmodule.php?module=worldmapwn&op=travel");
+				addnav("X?Go to the Grotto","superuser.php");
 				$hexid=get_worldmapwn_hexid();
 				if ($_POST['sumbit']==true){
 					$desc=$_POST['newdesc'];
@@ -56,7 +56,7 @@ function worldmap_desc_run(){
 					$desc = get_module_objpref("worldmapwn",$hexid,"hexdesc");
 				}
 				output("Enter new hex description for your current location below (max 255 chars):");
-				rawoutput('<form><textarea name="newdesc" rows="3" cols="30" value='."$desc".'> </textarea> <input type="submit" name="submit" value="Go"></form>');
+				rawoutput('<form action="runmodule.php?module=worldmapwn&op=locdesc" method="post"><textarea name="newdesc" rows="3" cols="30" value='."$desc".'> </textarea> <input type="submit" name="submit" value="Go"></form>');
 		}
 
 

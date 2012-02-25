@@ -20,7 +20,7 @@ function worldmapwn_getmoduleinfo(){
 	"category"=>"World Map",
 	"download"=>"",
 	"vertxtloc"=>"",
-	"requires"=>array("cities"=>"1.0|This module requires the Multiple Cities module to be installed"),
+	"requires"=>array("staminasystem"=>"1.0|This module requires the Stamina System module to be installed"),
 	"settings"=>array(
 		"World Map Settings,title",
 		"viewRadius"=>"How many squares far can a player see while traveling?,range,0,10,2",
@@ -157,6 +157,18 @@ function worldmapen_install(){
 			'index-cityname'=>array('name'=>'cityname', 'type'=>'index', 'columns'=>'cityname'));
     		synctable(db_prefix('hexprefs'), $hexprefs, true);
 		
+		/*$mapprefs = array(
+			'mapid'=>array('name'=>'hexid', 'type'=>'int unsigned',	'extra'=>'not null auto_increment'),
+			'hexcoord'=>array('name'=>'hexcoord', 'type'=>'varchar(55)'),
+			'module'=>array('name'=>'module', 'type'=>'varchar(255)'),
+			'hexdesc'=>array('name'=>'hexdesc', 'type'=>'varchar(255)', 'extra'=>'not null'),
+			'hexcode'=>array('name'=>'hexcode', 'type'=>'varchar(255)'),
+			'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'cityid'),
+			'index-hexid'=>array('name'=>'hexid', 'type'=>'index', 'columns'=>'hexid'),
+			'index-module'=>array('name'=>'module', 'type'=>'index', 'columns'=>'module'),
+			'index-cityname'=>array('name'=>'cityname', 'type'=>'index', 'columns'=>'cityname'));
+    		synctable(db_prefix('hexprefs'), $hexprefs, true);*/
+
 		require_once('modules/staminasystem/lib/lib.php');
 		install_action("Travelling - Plains",array(
 			"maxcost"=>5000,

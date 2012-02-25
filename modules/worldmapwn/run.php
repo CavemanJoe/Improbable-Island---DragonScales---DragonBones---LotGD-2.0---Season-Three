@@ -6,8 +6,12 @@ function worldmapwn_run_real(){
 	
 	switch (httpget("op"){
 			global $session;
-			case "beginjourney":break;
-				
+			case "continue":
+				$loc=get_module_pref("worldXYZ",$house['location'],"worldmapen");
+				$session['user']['location']=$loc;
+				redirect("runmodule.php?module=worldmapwn&op=travel");break;
+			case "beginjourney":
+				redirect("runmodule.php?module=worldmapen&op=travel");break;
 			case "gypsy":
 				$buymap=httpget("buymap");
 				$worldmapCostGold=get_module_setting("worldmapCostGold");
@@ -41,61 +45,61 @@ function worldmapwn_run_real(){
 						$session['user']['location'];
 					case "n":
 						$start=$session['user']['location'];
-						$startloc=explode(",",$start);
-						$locchange=$startloc[2]-1;
-						$newloc=$startloc[0].",".$locchange.",".$startloc[2];
+						list($x,$y,$z)=explode(",",$start);
+						$locchange=$y-1;
+						$newloc=$x.",".$locchange.",".$z];
 						$session['user']['location']=$newloc;
 						break;
 					case "ne": break;
 						$start=$session['user']['location'];
-						$startloc=explode(",",$start);
-						$locchangex=$startloc[0]-1;
-						if ($starloc[0] % 2 ==0){
-							$locchangey=$startloc[0];
+						list($x,$y,$z)=explode(",",$start);
+						$locchangex=$x+1;
+						if ($x % 2 ==0){
+							$locchangey=$y;
 						} else {
-							$locchangey=$startloc[0]-1;
+							$locchangey=$y-1;
 						}
-						$newloc=$locchangex.",".$locchangey.",".$startloc[2];
+						$newloc=$locchangex.",".$locchangey.",".$z;
 						$session['user']['location']=$newloc;
 					case "nw": break;
 						$start=$session['user']['location'];
-						$startloc=explode(",",$start);
-						$locchangex=$startloc[0]+1;
-						if ($starloc[0] % 2 ==0){
-							$locchangey=$startloc[0];
+						list($x,$y,$z)=explode(",",$start);
+						$locchangex=$x+1;
+						if ($x % 2 ==0){
+							$locchangey=$y;
 						} else {
-							$locchangey=$startloc[0]-1;
+							$locchangey=$y-1;
 						}
-						$newloc=$locchangex.",".$locchangey.",".$startloc[2];
+						$newloc=$locchangex.",".$locchangey.",".$z;
 						$session['user']['location']=$newloc;
 					case "s":
 						$start=$session['user']['location'];
-						$startloc=explode(",",$start);
-						$locchange=$startloc[2]+1;
-						$newloc=$startloc[0].",".$startloc[1].",".$locchange;
+						list($x,$y,$z)=explode(",",$start);
+						$locchange=$y+1;
+						$newloc=$x.",".$locchange.",".$z;
 						$session['user']['location']=$newloc;
 						break;
 					case "se": break;
 						$start=$session['user']['location'];
-						$startloc=explode(",",$start);
-						$locchangex=$startloc[0]+1;
-						if ($starloc[0] % 2 ==0){
-							$locchangey=$startloc[0]+1;
+						list($x,$y,$z)=explode(",",$start);
+						$locchangex=$x+1;
+						if ($x % 2 ==0){
+							$locchangey=$y+1;
 						} else {
-							$locchangey=$startloc[0];
+							$locchangey=$y;
 						}
-						$newloc=$locchangex.",".$locchangey.",".$startloc[2];
+						$newloc=$locchangex.",".$locchangey.",".$z;
 						$session['user']['location']=$newloc;
 					case "sw": break;
 						$start=$session['user']['location'];
-						$startloc=explode(",",$start);
-						$locchangex=$startloc[0]+1;
-						if ($starloc[0] % 2 ==0){
-							$locchangey=$startloc[0]+1;
+						list($x,$y,$z)=explode(",",$start);
+						$locchangex=$x+1;
+						if ($x % 2 ==0){
+							$locchangey=$y+1;
 						} else {
-							$locchangey=$startloc[0];
+							$locchangey=$y;
 						}
-						$newloc=$locchangex.",".$locchangey.",".$startloc[2];
+						$newloc=$locchangex.",".$locchangey.",".$z;
 						$session['user']['location']=$newloc;
 					case "begin":
 						$cid = get_cityprefs_cityid("location",$session['user']['location']);
@@ -110,17 +114,21 @@ function worldmapwn_run_real(){
 							case 4:output("`b`&The gates of %s close behind you. Perhaps you should go back in...`0`b",$cname);
 							case 5:output("`b`&The gates of %s close behind you. A howling noise bellows from deep within the forest.  You hear the guards from the other side of the gates yell \"Good Luck!\" and what sounds like \"they'll never make it.`0`b",$cname);
 						}
-						
+						modulehook("worldmapwn-travel");
 						break;
 					}
 
 				$currentloc=$session['user']['location'];
 				list($x,$y,$z)=explode(",",$currentloc);
+				addnav("Journey");
 				require_once("modules/worldmapwn/lib/readmap.php");
 				$map=worldmapwn_map_array($z);
+				if ($map==false){
+					page_footer();
+					break;}
 				$maxx=count($map)-4;
 				$maxy=count($map[1]-2);//rectangular maps only, no jagged ones.
-				addnav("Journey")
+				
 				if ($y!=1){
 					addnav("Travel North","runmodule.php?module=worldmapwn&op=travel&dir=n");					
 					if ($x!=1){
@@ -136,17 +144,20 @@ function worldmapwn_run_real(){
 					addnav("Travel South-East","runmodule.php?module=worldmapwn&op=travel&dir=se");}
 				}
 				
-			case "admin":		
-				if (httpget("admin"==true){
-					page_header("Worldmapwn Settings");
-					
+			case "admin":
+				page_header("Worldmapwn Settings");		
+				$canedit=get_module_pref("cannedit");
+				if (httpget("admin"==true && $session['user']['superuser']==true && $canedit==true){
 					output("`bMap File Settings`b");
-					
+					rawoutput("<form>");
+
 					output("`bCity Locations`b");
+					
 				}				
 				addnav("");
-				addnav("Return to the Grotto","superuser.php");
-				addnav("Return to the Mundane","village.php");
+				addnav("X?Return to the Grotto","superuser.php");
+				addnav("M?Return to the Mundane","village.php");
+				page_footer();
 			default:
 				break;
 			}
