@@ -167,7 +167,33 @@ function worldmapen_install(){
 			'index-module'=>array('name'=>'module', 'type'=>'index', 'columns'=>'module'),
 			'index-cityname'=>array('name'=>'cityname', 'type'=>'index', 'columns'=>'cityname'));
     		synctable(db_prefix('hexprefs'), $hexprefs, true);*/
+		
 
+		//enable combatibility with worldmapwn
+		//note:this is probably memory intensive, as if you have several cities this is a lot of mysql queries.
+		if (is_module_installed("worldmapwn") == true){
+			$sql="SELECT * FROM ".db_prefix("cityprefs");
+			$res=db_query($sql);
+			$row=db_fetch_assoc($res);
+			foreach($row as $cid=>$cities){
+				$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='worldmapen' AND setting='".$cities["cityname"]."X";
+				$res=db_query($sql);
+				$nrow=db_fetch_assoc($res);
+				$x=$nrow[0]["value"];
+$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='worldmapen' AND setting='".$cities["cityname"]."Y";
+				$res=db_query($sql);
+				$nrow=db_fetch_assoc($res);
+				$y=$nrow[0]["value"];
+$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='worldmapen' AND setting='".$cities["cityname"]."Z";
+				$res=db_query($sql);
+				$nrow=db_fetch_assoc($res);
+				$z=$nrow[0]["value"];
+				$cityxyz="$x,$y,$z";
+				$sql="INSERT INTO ".db_prefix("module_objprefs")." (modulename, objtype, setting, objid, value) VALUES ('worldmapwn',city,worldXYZ,$cid,$cityxyz)";
+				$res=db_query($sql);
+			}
+		}
+		
 		require_once('modules/staminasystem/lib/lib.php');
 		install_action("Travelling - Flat",array(
 			"maxcost"=>5000,
@@ -249,7 +275,7 @@ function worldmapen_install(){
 			"costreduction"=>175,
 			"class"=>"Travelling"
 		));
-		install_action("Travelling - Flying",array(
+		install_action("Travelling - Flying",array(//flying rather than unwalkable, as you're flying to get over unwalkable
 			"maxcost"=>15000,
 			"mincost"=>5000,
 			"firstlvlexp"=>500,
@@ -266,8 +292,8 @@ function worldmapwn_uninstall(){
 }
 
 function worldmapwn_run() {
-	require_once('modules/worldmapen/run.php');
-	return worldmapen_run_real();
+	require_once('modules/worldmapwn/run.php');
+	return worldmapwn_run_real();
 }
 
 function worldmapwn_dohook($hookname,$args){
@@ -277,8 +303,8 @@ function worldmapwn_dohook($hookname,$args){
 	if (!is_module_active("staminasystem")) 
 		return $args;
 	
-	if (file_exists("modules/worldmapen/dohook/{$hookname}.php")) {
-		require("modules/worldmapen/dohook/{$hookname}.php");
+	if (file_exists("modules/worldmapwn/dohook/{$hookname}.php")) {
+		require("modules/worldmapwn/dohook/{$hookname}.php");
 	} else {
 		debug("Sorry, I don't have the hook '{$hookname}' programmed.");
 	}
