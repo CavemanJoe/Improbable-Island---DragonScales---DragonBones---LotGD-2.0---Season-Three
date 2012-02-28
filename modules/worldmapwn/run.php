@@ -6,6 +6,11 @@ function worldmapwn_run_real(){
 	
 	switch (httpget("op"){
 			global $session;
+			case "arrive":
+				$dest=httpget("dest");
+				$session['user']['location']=$dest;
+				redirect("village.php");
+				break;
 			case "continue":
 				$loc=get_module_pref("worldXYZ",$house['location'],"worldmapen");
 				$session['user']['location']=$loc;
@@ -42,7 +47,7 @@ function worldmapwn_run_real(){
 				switch (httpget("dir"){//This sets the users new location
 					case "setloc":
 						$loc=httpget('loc');
-						$session['user']['location'];
+						$session['user']['location']=$loc;
 					case "n":
 						$start=$session['user']['location'];
 						list($x,$y,$z)=explode(",",$start);
@@ -106,7 +111,7 @@ function worldmapwn_run_real(){
 						$cname=$session['user']['location'];
 						$cityloc = get_module_objpref("city",$cid,"location");
 						$session['user']['location']=$cityloc;
-						$outmess=e_rand(1,5)
+						$outmess=e_rand(1,5);
 						switch ($outmess){
 							case 1:output("`b`&The gates of %s close behind you. A shiver runs down your back as you face the wilderness around you.`0`b",$cname);
 							case 2:output("`b`&The gates of %s close behind you. You're all alone now...`0`b",$cname);
@@ -120,10 +125,25 @@ function worldmapwn_run_real(){
 
 				$currentloc=$session['user']['location'];
 				list($x,$y,$z)=explode(",",$currentloc);
+				if ($session['user']['superuser']&~SU_DOESNT_GIVE_GROTTO){
+					addnav("X?`bSuperuser Grotto`b","superuser.php");
+				}
+				require_once("modules/worldmapwm/lib/lib.php");
+				$cities=worldmapwn_findcities($currentloc);
+				for ($cities as $dest){
+					if ($dest==$currentloc){
+						addnav("Cities");
+						addnav(array("O?Enter %s", $dest), "runmodule.php?module=worldmapwn&op=city&city=$dest");
+					}
+				}
 				addnav("Journey");
 				require_once("modules/worldmapwn/lib/readmap.php");
 				$map=worldmapwn_map_array($z);
 				if ($map==false){
+					output("`0You look out and see what looks like a strange building site. To your right there are what appear to be men in orange worksuits laying rocks, while to your left another appears to be creating a lake using a giant hosepipe. It does not look like something to travel across, but maybe later.");
+					if ($session['user']['superuser']==true){
+						output("`n`n1ops! There doesn't seem to be any map created. If you have created a map but are still seeing this message, make sure it is in modules/worldmapwn/maps and it is listed in the settings with a valid ID. Alternativly, the user has been told to open a mapid that isn't there.");}
+					}
 					page_footer();
 					break;}
 				$maxx=count($map)-4;
@@ -152,7 +172,7 @@ function worldmapwn_run_real(){
 					rawoutput("<form>");
 
 					output("`bCity Locations`b");
-					
+					rawoutput("</form>");
 				}				
 				addnav("");
 				addnav("X?Return to the Grotto","superuser.php");

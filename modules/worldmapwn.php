@@ -15,7 +15,7 @@
 function worldmapwn_getmoduleinfo(){
 	$info = array(
 	"name"=>"World Map",
-	"version"=>"0.2",
+	"version"=>"0.3",
 	"author"=>"Cousjava",
 	"category"=>"World Map",
 	"download"=>"",
@@ -58,15 +58,12 @@ function worldmapwn_getmoduleinfo(){
 		
 		"Other Settings,title"
 		"wraptype"=>"What type of wrap is there at edge of map?,int|0",
-		'0 is for no wrap; 1 is for wrap east-west; 2 is for wrap north-south; 3 is for wrap east-west and north-south ,note',
+		'0 is for no wrap; 1 is for wrap east-west; 2 is for wrap north-south; 3 is for wrap east-west and north-south ,note',//not yet implemented
 		
 
 /*
 		"manualmove"=>"Turn on Superuser manual movement?,bool|0",
 		"viewRadius"=>"How many squares far can a player see while traveling?,range,0,10,2",
-		"worldmapAcquire"=>"Can the world map be purchased?,bool|1",
-		"worldmapCostGold"=>"How much gold does the World Map cost?,int|10000",
-		"enableTerrains"=>"Enable Terrains?,bool|1",
 		"showcompass"=>"Show images/compass.png?,bool|0",
 		"compasspoints"=>"8 point compass?,bool|0",
 		"showcities"=>"Show the cities in the key? / Will show all cities,bool|0",
@@ -104,24 +101,26 @@ function worldmapwn_getmoduleinfo(){
 		"worldmapbuy"=>"Did user buy map?,bool|0",
 		"encounterchance"=>"Player's encounter chance expressed as a percentage of normal,int|100",
 		"fuel"=>"The reduced-cost moves that a player has left because of his Mount,int|0",
+		"canfly"="Can the user cross unwalkable terrain,bool|0",
 		"user_blindoutput"=>"BETA OPTION for blind or visually impaired players using a screen reader - Show textual information about your location on the World Map?,bool|0",
 	),
 	"prefs-city"=>array(
-			"location"=>"The location of the city (seperated by commas)|1,1,1",
+			"worldXYZ"=>"The location of the city (seperated by commas)|1,1,1",
 		),
 	/*"prefs-mounts"=>array(
 		"World Map Mount Preferences,title",
 		"All values are expressed as a decimal value of normal,note",
-		"encounterPlains"=>"Encounter rate for crossing plains?,float|1",
-		"encounterForest"=>"Encounter rate for crossing dense forests?,float|1",
-		"encounterRiver"=>"Encounter rate for crossing rivers?,float|1",
-		"encounterOcean"=>"Encounter rate for crossing oceans?,float|1",
-		"encounterDesert"=>"Encounter rate for crossing deserts?,float|1",
+		"encounterFlat"=>"Encounter rate for crossing flat?,float|1",
+		"encounterForest"=>"Encounter rate for crossing forests?,float|1",
+		"encounterShallowWater"=>"Encounter rate for crossing shallow water?,float|1",
+		"encounterDeepWater"=>"Encounter rate for crossing deep water?,float|1",
+		"encounterSand"=>"Encounter rate for crossing sand?,float|1",
 		"encounterSwamp"=>"Encounter rate for crossing swamps?,float|1",
+		"encounterHill"=>"Encounter rate for crossing hills?,float|1",
 		"encounterMount"=>"Encounter rate for crossing mountains?,float|1",
-		"encounterSnow"=>"Encounter rate for crossing snow?,float|1",
-		"encounterEarth"=>"Encounter rate for crossing earth?,float|1",
-		"encounterAir"=>"Encounter rates for crossing air?,float|1",
+		"encounterFrozen"=>"Encounter rate for crossing frozen ground?,float|1",
+		"encounterCave"=>"Encounter rate for crossing cave?,float|1",
+		"encounterAir"=>"Encounter rates for crossing unwalkable?,float|1",
 	)
 	);*/
 	return $info;
@@ -151,10 +150,10 @@ function worldmapen_install(){
 			'module'=>array('name'=>'module', 'type'=>'varchar(255)'),
 			'hexdesc'=>array('name'=>'hexdesc', 'type'=>'varchar(255)', 'extra'=>'not null'),
 			'hexcode'=>array('name'=>'hexcode', 'type'=>'varchar(255)'),
-			'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'cityid'),
+			'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'hexid'),
 			'index-hexid'=>array('name'=>'hexid', 'type'=>'index', 'columns'=>'hexid'),
+			'index-hexcoord'=>array('name'=>'hexcoord', 'type'=>'index', 'columns'=>'hexcoord'),
 			'index-module'=>array('name'=>'module', 'type'=>'index', 'columns'=>'module'),
-			'index-cityname'=>array('name'=>'cityname', 'type'=>'index', 'columns'=>'cityname'));
     		synctable(db_prefix('hexprefs'), $hexprefs, true);
 		
 		/*$mapprefs = array(
@@ -170,7 +169,7 @@ function worldmapen_install(){
     		synctable(db_prefix('hexprefs'), $hexprefs, true);*/
 
 		require_once('modules/staminasystem/lib/lib.php');
-		install_action("Travelling - Plains",array(
+		install_action("Travelling - Flat",array(
 			"maxcost"=>5000,
 			"mincost"=>2500,
 			"firstlvlexp"=>500,

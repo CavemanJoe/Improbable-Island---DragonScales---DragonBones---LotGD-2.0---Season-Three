@@ -5,11 +5,14 @@
 //surronding hexes to $location
 //----------------------------------------------------
 
-//NOTE: Need to fix ne/nw/se/sw x & y changes
 function worldmapwn_surround($location=false,$map=false){
+	global $session;
 	if ($location=false){$location=$session['user']['location'];}
 	list($x,$y,$z)=explode(",",$location);
 	if ($map==false){$map=worldmapwn_map_array($z);}
+	if ($map==false){
+	$surrond=array("nw"=>"X","n"=>"X","ne"=>"X","se"=>"X","s"=>"X","sw"=>"X");}//no map avaliable for that z, then all is impassable
+
 	$maxx=count($map)-4;
 	$maxy=count($map[1]-2);//rectangular maps only, no jagged ones.				
 	if ($y!=1){
@@ -17,22 +20,23 @@ function worldmapwn_surround($location=false,$map=false){
 		$surrond["n"]=$map[$x][$newy+2];					
 		if ($x!=1){
 			$newx=$x-1;
-			if ($y % 2 ==0){
+			if ($x % 2 ==0){
 				$newy=$y;
 			} else {
 				$newy=$y-1;
 			}
 			$surrond["nw"]=$map[$newx-1][$newy+2];
-		}
+		} else {$surrond["nw"]="X";}
 		if ($x!=$maxx){
 			$newx=$x+1;
-			if ($y % 2 ==0){
+			if ($x % 2 == 0){
 				$newy=$y;
 			} else {
 				$newy=$y-1;
 			}
 			$surrond["ne"]=$map[$newx-1][$newy+2];
-			addnav("Travel North-East","runmodule.php?module=worldmapwn&op=travel&dir=ne");}
+			addnav("Travel North-East","runmodule.php?module=worldmapwn&op=travel&dir=ne");
+		}else {$surrond["ne"]="X";}
 	} else {
 		$surrond["n"]="X";
 		if (($x % 2)==0){
@@ -44,9 +48,24 @@ function worldmapwn_surround($location=false,$map=false){
 		$newy=$y+1;
 		$surrond["s"]=$map[$x][$newy+2];				
 		if ($x!=1){
-			addnav("Travel South-West","runmodule.php?module=worldmapwn&op=travel&dir=sw");}
+			$newx=$x-1;
+			if ($x % 2 == 1){
+				$newy=$y;
+			} else {
+				$newy=$y-1;
+			}
+			$surrond["sw"]=$map[$newx-1][$newy+2];
+		} else {$surrond["sw"]="X";}
 		if ($x!=$maxx){
-			addnav("Travel South-East","runmodule.php?module=worldmapwn&op=travel&dir=se");}
+			1){
+			$newx=$x+1;
+			if ($x % 2 == 1){
+				$newy=$y;
+			} else {
+				$newy=$y-1;
+			}
+			$surrond["se"]=$map[$newx-1][$newy+2];
+		} else {$surrond["se"]="X";}
 	}else {
 		$surrond["s"]="X";
 		if (($x % 2)==1){
@@ -59,6 +78,11 @@ function worldmapwn_surround($location=false,$map=false){
 }
 
 //-----------------------------------------------------
+//	END - worldmapwn_surrond
+//-----------------------------------------------------
+//
+//-----------------------------------------------------
+//	BEGIN - worldmapwn_map_array
 //Returns an array containing the world map, in the form
 //of $array[x][y], with the co-ordinates (1,1) equal to
 //$array[4][1]. If the map is not found it returns false.
@@ -72,13 +96,8 @@ function worldmapwn_map_array($mapid=1){
 	//$mapopen=fopen($maploca,"r");
 	$mapopen=fopen("maps/improbableisland.map","r");
 	if ($mapopen=false){
-		output("You look out and see what looks like a strange building site. To your right there are what appear to be men in orange worksuits laying rocks, while to your left another appears to be creating a lake using a giant hosepipe. It does not look like something to travel across, but maybe later.");
-		if ($session['user']['superuser']==true){
-			output("`nOops! There doesn't seem to be any map created. If you have created a map but are still seeing this message, make sure it is in modules/worldmapwn/maps and it is listed in the settings with a valid ID. Alternativly, the user has been told to open a mapid that isn't there.");}
-		}
 		return false;
-	else {
-		
+	}		
 				
 		fclose($maploca);		
 		
@@ -86,10 +105,12 @@ function worldmapwn_map_array($mapid=1){
 	foreach(file($maploca) as $line => $content) {
 		$values[$line] = explode(',',$content);
 	}
-	return $values
-	}
+	return $values;
+	
 }
 
-
+//-----------------------------------------------------
+//	END - worldmapwn_map_array
+//-----------------------------------------------------
 
 ?>

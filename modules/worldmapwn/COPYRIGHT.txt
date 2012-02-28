@@ -2,6 +2,6 @@ The different parts of this module are under two different lisences.
 
 All PHP files are under the Creative Commons Sharealike Non-Commercial, and are distibuted under the same lisence as the rest of the dragonprime game enigne.
 
-All IMAGES and other files within the images folder are distibuted under the GNU Public Lisence. They were created by Battle for Wesnoth (http://www.wesnoth.org/).
+All IMAGES, CONFIG files, MAP files and any other files within the images folder are distibuted under the GNU Public Lisence. They were created by Battle for Wesnoth (http://www.wesnoth.org/).
 
 The CONFIG files in the config folder are also under the GNU Public Lisence, and are part of Battle for Wesnoth.
