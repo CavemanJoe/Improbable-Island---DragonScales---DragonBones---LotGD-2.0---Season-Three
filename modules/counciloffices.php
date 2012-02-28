@@ -4,12 +4,12 @@ function counciloffices_getmoduleinfo(){
 	$info = array(
 		"name"=>"Council Offices",
 		"author"=>"Cousjava",
-		"version"=>"2010-12-10",
+		"version"=>"2012-02-25",
 		"category"=>"Council Offices",
 		"download"=>"",
 		"settings"=>array(
 			"baseprice"=>"The base amount to be paid,int|50",
-			"distancepayout"=>"Average payout per square per level,int|10",)
+			"distancepayout"=>"Average payout per square per level,int|10",),
 		"prefs"=>array(
 			"deliveredtoday"=>"Has the user delivered a parcel today,bool|0",
 			"hasparcel"=>"The user has a parcel in their posession,bool|0",
@@ -44,6 +44,7 @@ function counciloffices_dohook($hookname,$args){
 			break;
 		case "newday":
 			set_module_pref("deliveredtoday",0);
+		break;
 	}
 	return $args;
 }
@@ -79,6 +80,7 @@ function counciloffices_run(){
 					output("The \"Council Offices\" of this Outpost amount to a tiny hut with a man inside reading a newspaper behind a desk.  He looks up as you come in.`n`n\"`1Can I help you?`0\"`n`n");
 					break;
 			}
+			modulehook("counciloffices");
 			addnav("State your business.");
 			addnav("You know, I don't have a clue what I came in here for.  Back to the Outpost.","village.php");
 			$delivered=get_module_pref("deliveredtoday");
@@ -99,15 +101,15 @@ function counciloffices_run(){
 			"Kittania"=>array("NewHome"=>9,"Squat Hole"=>10,"New Pittsburgh"=>16,"Improbable Central"=>7,"Pleasantville"=>12,"AceHigh"=>18,"Cyber City 404"=>26),
 			"Squat Hole"=>array("NewHome"=>12,"Kittania"=>10,"New Pittsburgh"=>6,"Improbable Central"=>6,"AceHigh"=>13,"Pleasantville"=>7,"Cyber City 404"=>21),
 			"New Pittsburgh"=>array("NewHome"=>10,"Kittania"=>16,"Squat Hole"=>6,"Improbable Central"=>9,"Pleasantville"=>10,"AceHigh"=>15,"Cyber City 404"=>23),
-			"Improbable Central"=>array("NewHome"=>6,"Kittania"=>7,"Squat Hole"=>6,"New Pittsburgh"=>9,"AceHigh"=>19,"Pleasantville"=>13,"Cyber City 404"=>27)
-			"Pleasantville"=>array("NewHome"=>19,"Kittania"=>12,"Squat Hole"=>7,"New Pittsburgh"=>10,"Improbable Central"=>13,"AceHigh"=>6,"Cyber City 404"=>14)
-			"AceHigh"=>array("NewHome"=>25,"Kittania"=>18,"New Pittsburgh"=>15,"Squat Hole"=>13,"Improbable Central"=>19,"Pleasantville"=>6,"Cyber City 404"=>12)
-			"Cyber City 404"=>array("NewHome"=>33,"Kittania"=>26,"New Pittsburgh"=>23,"Squat Hole"=>21,"Improbable Central"=>27,"Pleasantville"=>14,"AceHigh"=>12)
+			"Improbable Central"=>array("NewHome"=>6,"Kittania"=>7,"Squat Hole"=>6,"New Pittsburgh"=>9,"AceHigh"=>19,"Pleasantville"=>13,"Cyber City 404"=>27),
+			"Pleasantville"=>array("NewHome"=>19,"Kittania"=>12,"Squat Hole"=>7,"New Pittsburgh"=>10,"Improbable Central"=>13,"AceHigh"=>6,"Cyber City 404"=>14),
+			"AceHigh"=>array("NewHome"=>25,"Kittania"=>18,"New Pittsburgh"=>15,"Squat Hole"=>13,"Improbable Central"=>19,"Pleasantville"=>6,"Cyber City 404"=>12),
+			"Cyber City 404"=>array("NewHome"=>33,"Kittania"=>26,"New Pittsburgh"=>23,"Squat Hole"=>21,"Improbable Central"=>27,"Pleasantville"=>14,"AceHigh"=>12),
 			);
 			$baseprice=get_module_setting("baseprice");
 			$distprice=get_module_setting("distancepayout");
 			$pay=$baseprice+$distprice*$session['user']['level']*$distances[$session['user']['location']][$dest];
-			output("`1\"We need this delivered within 3 days to %s. Get it there, and you'll be paid %s. Do you want it?`0\"",$dest,$pay)
+			output("`1\"We need this delivered within 3 days to %s. Get it there, and you'll be paid %s. Do you want it?`0\"",$dest,$pay);
 			addnav("Take parcel");
 			addnav("Yes","runmodule.php?module=counciloffices&councilop=take&dest=$dest&pay=$pay");
 			addnav("No","runmodule.php?module=counciloffices&councilop=enter");
@@ -117,10 +119,10 @@ function counciloffices_run(){
 			addnav("Return to Outpost","village.php");
 			$dest=httpget('dest');
 			$pay=httpget('pay');
-			output("\"`1Here's the parcel. Remember to take it to %s quickly.`0\"",$dest)
+			output("\"`1Here's the parcel. Remember to take it to %s quickly.`0\"",$dest);
 			set_module_pref("hasparcel",1);
 			set_module_pref("destination",$dest);
-			set_module_pref("deliveryprice"=>$pay)
+			set_module_pref("deliveryprice",$pay);
 			break;
 		case "deliver":
 			addnav("What now?");
@@ -133,16 +135,18 @@ function counciloffices_run(){
 			set_module_pref("deliveredtoday",1);
 			increment_module_pref("parcelsdelivered",1);
 			break;
+	}
 	modulehook("counciloffices");
 	page_footer();
 }
 
 function counciloffices_randcity($cid){
-	$sql='SELECT * FROM ".db_prefix("cityprefs")." WHERE cityid=!="'.$cid.'" ORDER BY RAND() LIMIT 1';	
+	$sql="SELECT * FROM ".db_prefix("cityprefs")." WHERE cityid=!='$cid' ORDER BY RAND() LIMIT 1";	
 	$result=mysql_query($sql);
 	//$num=mysql_num_rows($result);	
-	$res=mysql_result($result,0,'cityname');	
+	//$res=mysql_result($result,0,'cityname');	
 	return $res;
 	
 }
+
 ?>
