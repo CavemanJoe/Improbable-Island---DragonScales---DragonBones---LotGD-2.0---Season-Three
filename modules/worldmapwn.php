@@ -283,6 +283,11 @@ $sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='world
 			"costreduction"=>76,
 			"class"=>"Travelling"
 		));
+		//For terrains in BfW not independant action here:
+		//Coastal Reef   = Shallow Water
+		//Mushroom Grove = Forest
+		//Village        = Flat
+		//Castle         = Flat
 	
 	return true;
 }
