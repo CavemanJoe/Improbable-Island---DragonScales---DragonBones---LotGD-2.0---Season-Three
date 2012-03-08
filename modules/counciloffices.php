@@ -80,7 +80,7 @@ function counciloffices_run(){
 					output("The \"Council Offices\" of this Outpost amount to a tiny hut with a man inside reading a newspaper behind a desk.  He looks up as you come in.`n`n\"`1Can I help you?`0\"`n`n");
 					break;
 			}
-			modulehook("counciloffices");
+			//modulehook("counciloffices");
 			addnav("State your business.");
 			addnav("You know, I don't have a clue what I came in here for.  Back to the Outpost.","village.php");
 			$delivered=get_module_pref("deliveredtoday");
@@ -93,8 +93,9 @@ function counciloffices_run(){
 			break;
 		case "getparcel":
 			
-			require_once "modules/cityprefs/lib.php";
-			$cid = get_cityprefs_cityid("location",$session['user']['location']);
+			require_once("modules/cityprefs/lib.php");
+			$cid = get_cityprefs_cityid("city",$session['user']['location']);
+			output("cid is $cid");
 			$dest=counciloffices_randcity($cid);
 			$distances=array(//this is contains the presumed distances traveled. all terrains are given equal weight. Feel free to change.
 			"NewHome"=>array("Kittania"=>9,"Squat Hole"=>12,"New Pittsburgh"=>10,"Improbable Central"=>6,"Pleasantville"=>19,"AceHigh"=>25,"Cyber City 404"=>33),
@@ -108,7 +109,15 @@ function counciloffices_run(){
 			);
 			$baseprice=get_module_setting("baseprice");
 			$distprice=get_module_setting("distancepayout");
-			$pay=$baseprice+$distprice*$session['user']['level']*$distances[$session['user']['location']][$dest];
+			if ($distances[$session['user']['location']][$dest]){
+				$pay=$baseprice+$distprice*$session['user']['level']*$distances[$session['user']['location']][$dest];
+			} else {
+				$defaultdistance=5;
+				$pay=$baseprice+$distprice*$session['user']['level']*$defaultdistance;
+			}
+			//for debugging, delete later
+			output("Deliver to dest $dest");
+
 			output("`1\"We need this delivered within 3 days to %s. Get it there, and you'll be paid %s. Do you want it?`0\"",$dest,$pay);
 			addnav("Take parcel");
 			addnav("Yes","runmodule.php?module=counciloffices&councilop=take&dest=$dest&pay=$pay");
@@ -129,7 +138,7 @@ function counciloffices_run(){
 			addnav("Return to Outpost","village.php");
 			addnav("Hang around","runmodule.php?module=counciloffices&councilop=enter");
 			$pay=get_module_pref("deliveryprice");
-			output("You hand over the parcel, and get %s requisition tokens in return.",$pay);
+			output("You hand over the parcel, and get %s requisition tokens in return.`n`n",$pay);
 			$session['user']['gold']+=$pay;
 			set_module_pref("hasparcel",0);
 			set_module_pref("deliveredtoday",1);
@@ -141,10 +150,13 @@ function counciloffices_run(){
 }
 
 function counciloffices_randcity($cid){
-	$sql="SELECT * FROM ".db_prefix("cityprefs")." WHERE cityid=!='$cid' ORDER BY RAND() LIMIT 1";	
+	$sql="SELECT cityname FROM ".db_prefix("cityprefs")." WHERE cityid!='$cid' ORDER BY RAND() LIMIT 1";	
 	$result=mysql_query($sql);
+	if (!$result) {
+    		output('Could not query:' . mysql_error());
+	}
 	//$num=mysql_num_rows($result);	
-	//$res=mysql_result($result,0,'cityname');	
+	$res=mysql_result($result,0);	
 	return $res;
 	
 }

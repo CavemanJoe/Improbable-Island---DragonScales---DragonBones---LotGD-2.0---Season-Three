@@ -168,7 +168,8 @@ addnav("M?Back to the Island Map","runmodule.php?module=improbablehousing&op=exi
 //Is a particular location stakeable?  That is, are there fewer than four houses already here, and is the terrain suitable?
 function improbablehousing_stakeable($loc){
 	global $session;
-	if (has_item('housing_stake')){
+	require_once("modules/iitems/lib/lib.php");
+	if (iitems_has_item('housing_stake')){
 		//debug("Has Stake");
 		list($worldmapX, $worldmapY, $worldmapZ) = explode(",", $loc);
 		require_once "modules/worldmapen/lib.php";
