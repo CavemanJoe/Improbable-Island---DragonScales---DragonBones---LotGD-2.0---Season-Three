@@ -697,6 +697,13 @@ function removestamina($amount, $userid = false){
 	return $newstamina;
 }
 
+/*
+
+*******************************************************
+ADD AND HOF
+Creates a Hall of Fame for stamina actions
+*******************************************************
+*/
 function stamina_minihof($action,$userid=false){
 	global $session;
 	if ($userid === false) $userid = $session['user']['acctid'];

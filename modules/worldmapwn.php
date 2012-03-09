@@ -47,8 +47,8 @@ function worldmapwn_getmoduleinfo(){
 		"LeaveGates4"=>"Leave gates of village. (4)|Perhaps I should go back in...",
 		"LeaveGates5"=>"Leave gates of village. (5)|A howling noise bellows from deep within the forest.  You hear the guards from the other side of the gates yell \"Good Luck!\" and what sounds like \"they'll never make it.",
 		
+		"roadbonus"=>"Reduction in stamina cost for travelling by road as a decimal,float|0.75",
 		'Stamina costs are hard-coded in for the default values. However this can be changed on a per-map basis.,note',
-
 
 		"Map array,title"
 		//This is array containing the map files and their settings. This may be moved into their own table later.

@@ -6,6 +6,8 @@ function worldmapwn_run_real(){
 	
 	switch (httpget("op"){
 			global $session;
+			require_once("modules/worldmapwn/config/terrains.php");
+			
 			case "arrive":
 				$dest=httpget("dest");
 				$session['user']['location']=$dest;
@@ -163,7 +165,8 @@ function worldmapwn_run_real(){
 					if ($x!=$maxx){
 					addnav("Travel South-East","runmodule.php?module=worldmapwn&op=travel&dir=se");}
 				}
-				
+				page_footer();
+				break;
 			case "admin":
 				page_header("Worldmapwn Settings");		
 				$canedit=get_module_pref("cannedit");
@@ -178,6 +181,7 @@ function worldmapwn_run_real(){
 				addnav("X?Return to the Grotto","superuser.php");
 				addnav("M?Return to the Mundane","village.php");
 				page_footer();
+				break;
 			default:
 				break;
 			}

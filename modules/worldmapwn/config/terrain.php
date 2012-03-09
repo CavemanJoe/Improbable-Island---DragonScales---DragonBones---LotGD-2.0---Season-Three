@@ -6,7 +6,7 @@
 //
 //Formats terrain.cfg as an array.
 //It works on the process $array[$string][$property][$value]
-$terrains=array(
+global $terrains=array(
 
 //BEGIN: WATER (12)
 //
