@@ -86,6 +86,8 @@ $recommended_modules = array(
 	"specialtydarkarts",
 	"specialtymysticpower",
 	"specialtythiefskills",
+	"staminasystem",
+	"staminacorecombat",
 	"statue",
 	"stocks",
 	"stonehenge",

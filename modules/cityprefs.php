@@ -53,11 +53,11 @@ function cityprefs_install(){
 }
 
 function cityprefs_uninstall(){
-    output("`4Un-Installing cityprefs Module.`n");
-    $sql = "DROP TABLE ".db_prefix("cityprefs");
-    db_query($sql);
-    $sql = "delete from ".db_prefix("module_objprefs")." where objtype='city'";
-    db_query($sql);
+    //output("`4Un-Installing cityprefs Module.`n");
+    //$sql = "DROP TABLE ".db_prefix("cityprefs");
+    //db_query($sql);
+    //$sql = "delete from ".db_prefix("module_objprefs")." where objtype='city'";
+    //db_query($sql);
 	return true;
 }
 
@@ -178,6 +178,7 @@ function cityprefs_run() {
 				module_objpref_edit("city", $mdule, $cityid);
 				rawoutput("</form>");
 				addnav("","runmodule.php?module=cityprefs&op=editmodulesave&cityid=$cityid&mdule=$mdule");
+
 				//code from clan editor by CortalUX
 			}
  			addnav("Module Prefs");

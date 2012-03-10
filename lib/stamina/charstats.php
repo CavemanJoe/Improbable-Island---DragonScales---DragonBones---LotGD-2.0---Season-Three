@@ -57,7 +57,8 @@ $session['user']['turns'] = 10;
 
 
 //Display the actual Stamina bar
-require_once("lib/stamina/stamina.php");
+//require_once("lib/stamina/stamina.php");
+require_once("stamina.php");
 $stamina = get_module_pref("stamina");
 $daystamina = 1000000;
 $redpoint = get_module_pref("red");

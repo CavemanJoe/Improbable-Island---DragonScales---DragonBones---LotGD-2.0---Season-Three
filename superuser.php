@@ -21,24 +21,31 @@ if ($op=="keepalive"){
 	global $REQUEST_URI;
 	echo '<html><meta http-equiv="Refresh" content="30;url='.$REQUEST_URI.'"></html><body>'.date("Y-m-d H:i:s")."</body></html>";
 	exit();
-}elseif ($op=="newsdelete"){
+} elseif ($op=="newsdelete"){
 	$sql = "DELETE FROM " . db_prefix("news") . " WHERE newsid='".httpget('newsid')."'";
 	db_query($sql);
 	$return = httpget('return');
 	$return = cmd_sanitize($return);
 	$return = substr($return,strrpos($return,"/")+1);
 	redirect($return);
-}
+} elseif ($op=="stamina") {
+	require_once("lib/stamina/superuser.php");
+} elseif ($op=="stamina") {
+	require_once("lib/stamina/editplayer.php");
+} elseif ($op=="cityprefs") {
+	require_once("lib/cityeditor.php");
+} else {
 
-page_header("Superuser Grotto");
+	page_header("Superuser Grotto");
 
-output("`^You duck into a secret cave that few know about. ");
-if ($session['user']['sex']){
-  	output("Inside you are greeted by the sight of numerous muscular bare-chested men who wave palm fronds at you and offer to feed you grapes as you lounge on Greco-Roman couches draped with silk.`n`n");
-}else{
-	output("Inside you are greeted by the sight of numerous scantily clad buxom women who wave palm fronds at you and offer to feed you grapes as you lounge on Greco-Roman couches draped with silk.`n`n");
+	output("`^You duck into a secret cave that few know about. ");
+	if ($session['user']['sex']){
+  		output("Inside you are greeted by the sight of numerous muscular bare-chested men who wave palm fronds at you and offer to feed you grapes as you lounge on Greco-Roman couches draped with silk.`n`n");
+	}else{
+		output("Inside you are greeted by the sight of numerous scantily clad buxom women who wave palm fronds at you and offer to feed you grapes as you lounge on Greco-Roman couches draped with silk.`n`n");
+	}
+	commentdisplay("", "superuser","Engage in idle conversation with other gods:",25);
 }
-commentdisplay("", "superuser","Engage in idle conversation with other gods:",25);
 addnav("Actions");
 if ($session['user']['superuser'] & SU_EDIT_PETITIONS) addnav("Petition Viewer","viewpetition.php");
 if ($session['user']['superuser'] & SU_EDIT_COMMENTS) addnav("C?Recent Commentary","moderate.php");
@@ -66,13 +73,14 @@ if (file_exists("looteditor.php") &&
 if ($session['user']['superuser'] & SU_EDIT_EQUIPMENT) addnav("Weapon Editor","weaponeditor.php");
 if ($session['user']['superuser'] & SU_EDIT_EQUIPMENT) addnav("Armor Editor","armoreditor.php");
 if ($session['user']['superuser'] & SU_EDIT_COMMENTS) addnav("Nasty Word Editor","badword.php");
+if ($session['user']['superuser'] & SU_EDIT_CONFIG)	addnav("City Prefs","superuser.php?op=cityprefs&cop=su");
 if ($session['user']['superuser'] & SU_MANAGE_MODULES) addnav("Manage Modules","modules.php");
 
 if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Mechanics");
 if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Game Settings","configuration.php");
 if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Referring URLs","referers.php");
 if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Stats","stats.php");
-if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Stamina Actions management","runmodule.php?module=staminasystem&op=superuser");
+if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Stamina Actions management","superuser.php?op=stamina");
 
 /*//*/if (file_exists("gamelog.php") &&
 /*//*/		$session['user']['superuser'] & SU_EDIT_CONFIG) {

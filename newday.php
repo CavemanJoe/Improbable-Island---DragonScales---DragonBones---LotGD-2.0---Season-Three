@@ -314,10 +314,10 @@ if ($dp < $dkills) {
 		}
 
 	}
-	require_once("lib/stamina/stamina.php");
-	stamina_process_newday();
 	$args = modulehook("newday",
 			array("resurrection"=>$resurrection, "turnstoday"=>$turnstoday));
+	require_once("lib/stamina/stamina.php");
+	stamina_process_newday();
 	$turnstoday = $args['turnstoday'];
 	debuglog("New Day Turns: $turnstoday");
 

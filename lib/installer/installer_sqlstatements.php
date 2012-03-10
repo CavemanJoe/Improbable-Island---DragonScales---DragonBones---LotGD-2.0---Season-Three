@@ -874,6 +874,13 @@ $sql_upgrade_statements = array(
 "1.1.2 Dragonprime Edition"=>array(
 ),
 "1.1.3 Dragonscales Edition"=>array(
+//cityprefs module table
+"CREATE TABLE IF NOT EXISTS ".dbprefix("cityprefs"). " (  `cityid` int(10) unsigned NOT NULL AUTO_INCREMENT,  `module` varchar(255) NOT NULL,  `cityname` varchar(255) NOT NULL,  PRIMARY KEY (`cityid`),  KEY `cityid` (`cityid`),  KEY `module` (`module`),  KEY `cityname` (`cityname`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12",
+"INSERT IGNORE INTO " . db_prefix("cityprefs") . " (`cityid`, `module`, `cityname`) VALUES (1, 'none', '".getsetting("villagename", LOCATION_FIELDS)."')",
+
+//"CREATE TABLE IF NOT EXISTS" . dbprefix("stamina")." (`actionid` int(10) unsigned NOT NULL AUTO_INCREMENT, `actionname` varchar(255) NOT NULL, `maxcost` int(11) NOT NULL, `mincost` int(11) NOT NULL, `firstlvlexp` int(11) NOT NULL, `expincrement` float(3,3) NOT NULL, `costreduction` int(11) NOT NULL, `class` varchar(255) NOT NULL, ",
+
 ),
 );
 ?>

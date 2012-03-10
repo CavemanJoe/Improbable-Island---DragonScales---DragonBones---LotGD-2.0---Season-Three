@@ -706,6 +706,7 @@ function charstats(){
 		
 		require_once("lib/stamina/charstats.php");
 		modulehook("charstats");
+		
 
 		$charstat = getcharstats($buffs);
 
