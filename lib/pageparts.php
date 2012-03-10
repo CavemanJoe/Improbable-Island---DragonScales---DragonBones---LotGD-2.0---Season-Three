@@ -703,7 +703,8 @@ function charstats(){
 		addcharstat("Armor", $u['armor']);
 		if ($u['hashorse'])
 			addcharstat("Creature", $playermount['mountname'] . "`0");
-
+		
+		require_once("lib/stamina/charstats.php");
 		modulehook("charstats");
 
 		$charstat = getcharstats($buffs);

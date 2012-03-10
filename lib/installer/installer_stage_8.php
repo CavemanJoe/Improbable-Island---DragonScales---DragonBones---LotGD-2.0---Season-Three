@@ -22,6 +22,7 @@ if (return_bytes($phpram) < 12582912 && $phpram!=-1 && !$session['overridememory
 	// enter this ONLY if it's not an upgrade and if the limit is really too low
 	output("`n`n`\$Warning: Your PHP memory limit is set to a very low level.");
 	output("Smaller servers should not be affected by this during normal gameplay but for this installation step you should assign at least 12 Megabytes of RAM for your PHP process.");
+	
 	output("For now we will skip this step, but before installing any module, make sure to increase you memory limit.");
 	output("`nYou can proceed at your own risk. Be aware that a blank screen indicates you *must* increase the memory limit.");
 	output("`n`nTo override click again on \"Set Up Modules\".");

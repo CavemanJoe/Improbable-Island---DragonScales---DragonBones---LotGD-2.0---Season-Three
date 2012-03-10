@@ -2,7 +2,7 @@
 
 function racedwarf_getmoduleinfo(){
 	$info = array(
-		"name"=>"Race - Mutant",
+		"name"=>"Race - Dwarf",
 		"version"=>"2008-11-08",
 		"author"=>"Cousjava, based on the Humans race by Eric Stevens",//Dwarf race by Eric Stevens and Mutant Race by Dan Hall were also used in the construction of this race.
 		"category"=>"Races",

@@ -4,7 +4,7 @@ function homepage_getmoduleinfo(){
 	$info=array(
 		"name"=>"Improbable Island Home Page",
 		"version"=>"2009-07-08",
-		"author"=>"Dan Hall, aka Caveman Joe, improbableisland.com",
+		"author"=>"Dan Hall, text modifications by Cousjava",
 		"category"=>"Administrative",
 		"download"=>"",
 		"allowanonymous"=>"true",

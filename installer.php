@@ -38,7 +38,7 @@ $recommended_modules = array(
 	"breakin",
 	"calendar",
 	"cedrikspotions",
-//	"cities", //I don't think this is good for most people.
+	"cities", //Included, this for advanced users, like me (Cousjava)
 	"collapse",
 	"crazyaudrey",
 	"crying",
