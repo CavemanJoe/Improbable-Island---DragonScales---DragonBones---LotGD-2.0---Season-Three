@@ -68,13 +68,13 @@ function racemutant_dohook($hookname,$args){
 				" SET location='" . addslashes($args['new']) .
 				"' WHERE location='" . addslashes($args['old']) . "'";
 			db_query($sql);
-			if (is_module_active("cities")) {
-				$sql = "UPDATE " . db_prefix("module_userprefs") .
-					" SET value='" . addslashes($args['new']) .
-					"' WHERE modulename='cities' AND setting='homecity'" .
-					"AND value='" . addslashes($args['old']) . "'";
-				db_query($sql);
-			}
+			
+			$sql = "UPDATE " . db_prefix("module_userprefs") .
+				" SET value='" . addslashes($args['new']) .
+				"' WHERE modulename='cities' AND setting='homecity'" .
+				"AND value='" . addslashes($args['old']) . "'";
+			db_query($sql);
+			
 		}
 		break;
 	case "chooserace":
@@ -87,11 +87,11 @@ function racemutant_dohook($hookname,$args){
 	case "setrace":
 		if ($session['user']['race']==$race){
 			output("`0The gatekeeper puts on his glasses.  \"`6Oh,`0\" he says, quietly.`n`n\"`#Yes,`0\" you reply.  \"`#Oh.`0\"`n`nYou stare at each other for a moment.  The colour slowly drains from the gatekeeper's face.`n`n\"`6Well,`0\" says the gatekeeper, to break the silence.  \"`6Let's get you signed in, shall we?`0\"  He swallows uncomfortably, and takes out his ledger.  \"`6Em, you, tee, you, enn, tee.  Mu-hluck!`0\"  He swallows again, wiping his mouth on the back of his sleeve.  \"`6Mutant.  Sorry.  Have you been like this all your li... blugh.`0\"  A little blob of vomit plops onto his ledger.  He takes a deep breath.  \"`6Have you been like this all your life?`0\"`n`n\"`#Yes,`0\" you reply.  \"`#Since my dear mother first excreted me from her poor, wretched womb, looked down, screamed \"Dear God what IS that `iTHING`i\" and died immediately from a combination of horror, shame and embarrassment, I have been the hideous abomination that you see before you now.  And you needn't apologise, I'm used to it.`0\"  You shake your head sadly.  \"`#So, so very used to it.`0\"`n`n\"`6Well, that's... hruuuu`iuuuuuuuuu`iuuuurgh!  Oh, sweet Jesus Mary and Joseph!`0\"`n`n\"`#That's okay, let it all out.  Isn't it strange how there's always carrots in there?`0\" you ask.  \"`#You don't have to look up if you don't want to.  I know that the sight of your own expulsions are preferable to my horrendous visage.`0\"`n`n\"`6Blarghle,`0\" says the gatekeeper.`n`n\"`#Like I say, I'm used to it.`0\"  You turn and head toward the gate, leaving a trail of slime behind you.");
-			if (is_module_active("cities")) {
-				set_module_pref("homecity",$city,"cities");
-				if ($session['user']['age'] == 0)
-					$session['user']['location']=$city;
-			}
+			
+			set_module_pref("homecity",$city,"cities");
+			if ($session['user']['age'] == 0)
+				$session['user']['location']=$city;
+			
 		}
 		break;
 	case "stamina-newday":
@@ -213,15 +213,12 @@ function racemutant_dohook($hookname,$args){
 
 	case "validforestloc":
 	case "validlocation":
-		if (is_module_active("cities"))
 			$args[$city]="village-$race";
 		break;
 	case "moderate":
-		if (is_module_active("cities")) {
 			tlschema("commentary");
 			$args["village-$race"]=sprintf_translate("City of %s", $city);
 			tlschema();
-		}
 		break;
 	case "villagetext":
 		racemutant_checkcity();
@@ -312,7 +309,7 @@ function racemutant_checkcity(){
 	$race="Mutant";
 	$city="Pleasantville";
 
-	if ($session['user']['race']==$race && is_module_active("cities")){
+	if ($session['user']['race']==$race){
 		//if they're this race and their home city isn't right, set it up.
 		if (get_module_pref("homecity","cities")!=$city){ //home city is wrong
 			set_module_pref("homecity",$city,"cities");

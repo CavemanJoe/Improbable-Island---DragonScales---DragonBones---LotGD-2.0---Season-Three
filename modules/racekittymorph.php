@@ -62,13 +62,13 @@ function racekittymorph_dohook($hookname,$args){
 				" SET location='" . addslashes($args['new']) .
 				"' WHERE location='" . addslashes($args['old']) . "'";
 			db_query($sql);
-			if (is_module_active("cities")) {
+			
 				$sql = "UPDATE " . db_prefix("module_userprefs") .
 					" SET value='" . addslashes($args['new']) .
 					"' WHERE modulename='cities' AND setting='homecity'" .
 					"AND value='" . addslashes($args['old']) . "'";
 				db_query($sql);
-			}
+			
 		}
 		break;
 	case "chooserace":
@@ -82,10 +82,9 @@ function racekittymorph_dohook($hookname,$args){
 	case "setrace":
 		if ($session['user']['race']==$race){
 			output("\"`6Oh, I see, right,`0\" says the gatekeeper, looking down at his ledger.  \"`6A kittymorph, then, okay, let's see, here...  Kay, eye, tee, ee, em, oh, are, eff.  Kittymorph.`0\"  He looks up again.  \"`6Um.  You can turn around again, now.`0\"`n`nYou oblige.  \"`#Sorry.`0\"`n`n\"`6Don't worry about it.  Have you always been like this?`0\"`n`n\"`#Since I was a kitten,`0\" you reply.  \"`#I don't know what that crazy woman back there was talking about; she says I fell out of a plane and hit my head.  Rubbish.`0\"`n`n\"`6Of course,`0\" says the gatekeeper, smiling.  \"`6You would have landed on your feet, wouldn't you?`0\"`n`n\"`#That's right.  Although...`0\"  You look down, puzzled.  \"`#Some things just don't add up...`0\" you mutter.`n`n\"`6Well, don't worry,`0\" says the gatekeeper.  \"`6Just head into town and get some nice clothes, and you'll sort everything out, I'm sure.  If you wear clothes, that is.`0\"`n`nYou grin.  \"`#When it suits me.`0\"  You saunter off through the gates.  You don't really know how to walk any other way.");
-			if (is_module_active("cities")) {
 				set_module_pref("homecity",$city,"cities");
 				if ($session['user']['age'] == 0) $session['user']['location']=$city;
-			}
+			
 		}
 		break;
 	case "alternativeresurrect":
@@ -211,15 +210,12 @@ function racekittymorph_dohook($hookname,$args){
 		break;
 	case "validforestloc":
 	case "validlocation":
-		if (is_module_active("cities"))
 			$args[$city]="village-$race";
 		break;
-	case "moderate":
-		if (is_module_active("cities")) {
+	case "moderate":		
 			tlschema("commentary");
 			$args["village-$race"]=sprintf_translate("City of %s", $city);
 			tlschema();
-		}
 		break;
 	case "villagetext":
 		racekittymorph_checkcity();
@@ -309,7 +305,7 @@ function racekittymorph_checkcity(){
 	$race="Kittymorph";
 	$city="Kittania";
 
-	if ($session['user']['race']==$race && is_module_active("cities")){
+	if ($session['user']['race']==$race){
 		//if they're this race and their home city isn't right, set it up.
 		if (get_module_pref("homecity","cities")!=$city){ //home city is wrong
 			set_module_pref("homecity",$city,"cities");

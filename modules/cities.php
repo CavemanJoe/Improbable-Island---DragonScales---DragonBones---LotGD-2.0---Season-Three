@@ -16,22 +16,18 @@ function cities_getmoduleinfo(){
 			"Cities User Preferences,title",
 			//"traveltoday"=>"How many times did they travel today?,int|0",
 			"homecity"=>"User's current home city.|",
-		),
-		"prefs-drinks"=>array(
-			"Cities Drink Preferences,title",
-			"servedcapital"=>"Is this drink served in the capital?,bool|1",
-		),
+		),i
 	);
 	return $info;
 }
 
 function cities_install(){
-	module_addhook("villagetext");
-	module_addhook("validatesettings");
-	module_addhook("drinks-check");
-	module_addhook("stablelocs");
-	module_addhook("camplocs");
-	module_addhook("master-autochallenge");
+	//module_addhook("villagetext");//Now in core.
+	//module_addhook("validatesettings");
+	//module_addhook("drinks-check");
+	//module_addhook("stablelocs");
+	//module_addhook("camplocs");
+	//module_addhook("master-autochallenge");
 	return true;
 }
 
@@ -40,23 +36,24 @@ function cities_uninstall(){
 	// load it could get the location, uninstall the cities and then
 	// save their location from their session back into the database
 	// I think I have a patch however :)
-	$city = getsetting("villagename", LOCATION_FIELDS);
-	$inn = getsetting("innname", LOCATION_INN);
-	$sql = "UPDATE " . db_prefix("accounts") . " SET location='".addslashes($city)."' WHERE location!='".addslashes($inn)."'";
-	db_query($sql);
-	$session['user']['location']=$city;
+	//$city = getsetting("villagename", LOCATION_FIELDS);
+	//$inn = getsetting("innname", LOCATION_INN);
+	//$sql = "UPDATE " . db_prefix("accounts") . " SET location='".addslashes($city)."' WHERE location!='".addslashes($inn)."'";
+	//db_query($sql);
+	//$session['user']['location']=$city;
 	return true;
 }
 
 function cities_dohook($hookname,$args){
-	global $session;
+	/*global $session;
+
 	$city = getsetting("villagename", LOCATION_FIELDS);
 	$home = $session['user']['location']==get_module_pref("homecity");
 	$capital = $session['user']['location']==$city;
 	switch($hookname){
     case "validatesettings":
 		if ($args['dangerchance'] < $args['safechance']) {
-			$args['validation_error'] = "Danger chance must be equal to or greater than the safe chance.";
+			$args['validation_error'] = "Danger chance must be equal to or greater than the safe chance. I think.";
 		}
 		break;
 	case "drinks-check":
@@ -81,7 +78,7 @@ function cities_dohook($hookname,$args){
 			}
 		}
 		break;
-	case "villagetext":
+	/*case "villagetext":
 		if ($session['user']['location'] == $city){
 			// The city needs a name still, but at least now it's a bit
 			// more descriptive
@@ -136,7 +133,7 @@ function cities_dohook($hookname,$args){
 	case "camplocs":
 		$args[$city] = sprintf_translate("The City of %s", $city);
 		break;
-	}
+	}*/
 	return $args;
 }
 

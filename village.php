@@ -10,14 +10,18 @@ require_once("lib/events.php");
 require_once("lib/experience.php");
 
 tlschema('village');
+global $session;
 //mass_module_prepare(array("village","validlocation","villagetext","village-desc"));
 // See if the user is in a valid location and if not, put them back to
 // a place which is valid
 $valid_loc = array();
-$vname = getsetting("villagename", LOCATION_FIELDS);
+$vname = getsetting("villagename", LOCATION_FIELDS);//name of default villlage
 $iname = getsetting("innname", LOCATION_INN);
 $valid_loc[$vname]="village";
 $valid_loc = modulehook("validlocation", $valid_loc);
+if($vname==$session['user']['location']){
+	$deftexts=true;
+}
 if (!isset($valid_loc[$session['user']['location']])) {
 	$session['user']['location']=$vname;
 }
@@ -103,6 +107,11 @@ $origtexts['schemas'] = $schemas;
 // instead.
 // This hook is specifically to allow modules that do other villages to create
 // ambience.
+//$city = getsetting("villagename", LOCATION_
+//$city=$vname;
+
+require_once("lib/cities.php");
+cities_villagetext();
 $texts = modulehook("villagetext",$origtexts);
 //and now a special hook for the village
 $texts = modulehook("villagetext-{$session['user']['location']}",$texts);
@@ -304,6 +313,7 @@ page_footer();
 ?>
 =======
 <?php
+/*
 // translator ready
 // addnews ready
 // mail ready
@@ -407,6 +417,9 @@ $origtexts['schemas'] = $schemas;
 // instead.
 // This hook is specifically to allow modules that do other villages to create
 // ambience.
+require_once("lib/cities.php");
+cities_villagetext();
+
 $texts = modulehook("villagetext",$origtexts);
 //and now a special hook for the village
 //$texts = modulehook("villagetext-{$session['user']['location']}",$texts);
@@ -561,7 +574,7 @@ addnav("","stats.php");
 addnav("","viewpetition.php");
 addnav("","weaponeditor.php");
 =======*///come in from git
-
+/*
 if (!$skipvillagedesc) {
 	//debug($texts);
 	//modulehook("collapse{", array("name"=>"villagedesc-".$session['user']['location']));
@@ -615,5 +628,5 @@ module_display_events("village", "village.php");
 addnav("Inventory");
 addnav("View your Inventory","inventory.php?items_context=village");
 
-page_footer();
+page_footer();*/
 ?>

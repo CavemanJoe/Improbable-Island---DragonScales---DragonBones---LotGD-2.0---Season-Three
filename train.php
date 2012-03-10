@@ -147,6 +147,7 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 			output("`n`nBeing a fair person, your master gives you a healing potion before the fight begins.");
 			$session['user']['hitpoints']=$session['user']['maxhitpoints'];
 		}
+		
 		modulehook("master-autochallenge");
 		if (getsetting('displaymasternews',1)) addnews("`3%s`3 was hunted down by their master, `^%s`3, for being truant.",$session['user']['name'],$master['creaturename']);
 	}

@@ -76,12 +76,11 @@ function racegobot_dohook($hookname,$args){
 		break;
 	case "setrace":
 		if ($session['user']['race']==$race){
-			output("\"Aha,\" says the gatekeeper, taking out his ledger.  \"Say no more.  Gee...\"`nThe roar of your engine cuts him off, and he looks up.`nHe stares in annoyance at the rapidly-diffusing cloud of dust stretching from his hut to the outpost gate.`n\"Well, that's just bloody rude,\" mutters the gatekeeper.  \"I didn't even get to see its face when I mis-spelled its race.  Ah, well...  Can't insult 'em all, I guess.\"`nHe goes back to his crossword.");
-			if (is_module_active("cities")) {
+			output("\"Aha,\" says the gatekeeper, taking out his ledger.  \"Say no more.  Gee...\"`nThe roar of your engine cuts him off, and he looks up.`nHe stares in annoyance at the rapidly-diffusing cloud of dust stretching from his hut to the outpost gate.`n\"Well, that's just bloody rude,\" mutters the gatekeeper.  \"I didn't even get to see its face when I mis-spelled its race.  Ah, well...  Can't insult 'em all, I guess.\"`nHe goes back to his crossword.");			
 				set_module_pref("homecity",$city,"cities");
 				if ($session['user']['age'] == 0)
 					$session['user']['location']=$city;
-			}
+			
 		}
 		break;
 //	case "newday-intercept":
@@ -280,7 +279,6 @@ function racegobot_dohook($hookname,$args){
 
 	case "validforestloc":
 	case "validlocation":
-		if (is_module_active("cities"))
 			$args[$city]="village-$race";
 		break;
 	case "count-travels":
@@ -330,7 +328,7 @@ function racegobot_checkcity(){
 		$city = getsetting("villagename", LOCATION_FIELDS);
 	}
 
-	if ($session['user']['race']==$race && is_module_active("cities")){
+	if ($session['user']['race']==$race){
 		//if they're this race and their home city isn't right, set it up.
 		if (get_module_pref("homecity","cities")!=$city){ //home city is wrong
 			set_module_pref("homecity",$city,"cities");

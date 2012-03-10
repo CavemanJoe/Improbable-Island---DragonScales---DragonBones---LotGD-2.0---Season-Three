@@ -347,6 +347,7 @@ function mountform($mount){
 	// Some later module can remove them however.
 	$vname = getsetting('villagename', LOCATION_FIELDS);
 	$locs = array($vname => sprintf_translate("The Village of %s", $vname));
+	$args[$city] = sprintf_translate("The City of %s", $city);
 	$locs = modulehook("stablelocs", $locs);
 	$locs['all'] = translate_inline("Everywhere");
 	ksort($locs);

@@ -229,8 +229,8 @@ function worldmapen_dohook($hookname,$args){
 	global $session;
 	
 	// If the cities module is deactivated, we do nothing.
-	if (!is_module_active("cities")) 
-		return $args;
+	//if (!is_module_active("cities")) 
+		//return $args;
 	
 	if (file_exists("modules/worldmapen/dohook/{$hookname}.php")) {
 		require("modules/worldmapen/dohook/{$hookname}.php");

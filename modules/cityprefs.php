@@ -37,7 +37,7 @@ function cityprefs_install(){
 		ksort($vloc);
 		reset($vloc);
 		foreach($vloc as $loc=>$val) {
-			$sql = "select modulename from ".db_prefix("module_settings")." where value='".addslashes($loc)."' and setting='villagename'";
+			$sql = "select modulename from ".db_prefix("module_settings")." where value='".xaddslashes($loc)."' and setting='villagename'";
 			$result=db_query($sql);
 			$row = db_fetch_assoc($result);
 			$sql = "INSERT INTO ".db_prefix("cityprefs")." (module,cityname) VALUES ('".$row['modulename']."','".addslashes($loc)."')";
@@ -47,8 +47,8 @@ function cityprefs_install(){
         if ($session['user']['superuser']&~SU_DOESNT_GIVE_GROTTO) output("`4Updating cityprefs Module.`n");
     }
 
-    module_addhook("superuser");
-    module_addhook("changesetting");
+    //module_addhook("superuser");
+    //module_addhook("changesetting");
 	return true;
 }
 
@@ -71,7 +71,9 @@ function cityprefs_dohook($hookname,$args){
             }
 			break;
         case "superuser":
-			if ($session['user']['superuser'] & SU_EDIT_USERS) {
+			
+
+		if ($session['user']['superuser'] & SU_EDIT_USERS) {
 				addnav("Editors");
 				addnav("City Prefs","runmodule.php?module=cityprefs&op=su");
 			}
