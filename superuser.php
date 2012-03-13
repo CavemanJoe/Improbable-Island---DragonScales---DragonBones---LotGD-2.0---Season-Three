@@ -80,7 +80,7 @@ if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Mechanics");
 if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Game Settings","configuration.php");
 if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Referring URLs","referers.php");
 if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Stats","stats.php");
-if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Stamina Actions management","superuser.php?op=stamina");
+if ($session['user']['superuser'] & SU_EDIT_CONFIG) addnav("Stamina Actions management","stamina.php?op=superuser");
 
 /*//*/if (file_exists("gamelog.php") &&
 /*//*/		$session['user']['superuser'] & SU_EDIT_CONFIG) {

@@ -67,7 +67,8 @@ $redpct = get_stamina(0);
 $amberpct = get_stamina(1);
 $greenpct = get_stamina(2);
 
-$stat = "<a href='runmodule.php?module=staminasystem&op=show' target='_blank' onclick=\"".popup("runmodule.php?module=staminasystem&op=show").";return false;\">Stamina</a>";
+//$stat = "<a href='runmodule.php?module=staminasystem&op=show' target='_blank' onclick=\"".popup("runmodule.php?module=staminasystem&op=show").";return false;\">Stamina</a>";
+$stat = "<a href='stamina.php?op=show' target='_blank' onclick=\"".popup("stamina.php?op=show").";return false;\">Stamina</a>";
 
 $pctoftotal = round($stamina / $daystamina * 100, 2);
 
@@ -113,7 +114,8 @@ setcharstat("Vital Info", $stat, $new);
 
 //Add the "Show Actions" bit
 // addcharstat("Vital Info");
-// addcharstat("Stamina Details", "<a href='runmodule.php?module=staminasystem&op=show' target='_blank' onclick=\"".popup("runmodule.php?module=staminasystem&op=show").";return false;\">".translate_inline("Show")."</a>");
-addnav("","runmodule.php?module=staminasystem&op=show");
+// addcharstat("Stamina Details", "<a href='lib/stamina/show.php' target='_blank' onclick=\"".popup("runmodule.php?module=staminasystem&op=show").";return false;\">".translate_inline("Show")."</a>");
+//addnav("","runmodule.php?module=staminasystem&op=show");
 
+addnav("","stamina.php?op=show");
 ?>

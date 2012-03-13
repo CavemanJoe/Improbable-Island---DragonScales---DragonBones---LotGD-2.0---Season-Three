@@ -54,7 +54,7 @@ function iitems_eboy_intelligent_dohook($hookname,$args){
 			for ($i = 0; $i < $numrows; $i++){
 				$row = db_fetch_assoc($result);
 				$cid = $row['cityid'];
-				foreach($eboyitems AS $item => $settings){
+				foreach($eboyitems as $item => $settings){
 					//Advance Multiplier
 					if ($settings['eboy_multiplier_'.$cid]){
 						if ($settings['stock'] < ($numplayers/10)){

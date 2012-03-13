@@ -7,6 +7,7 @@ if (httppost("type")>""){
 	}else{
 		$session['fromversion']=httppost("version");
 		$session['dbinfo']['upgrade']=true;
+		//if ($session['fromversion']<"1.2.0 Dragonbones Edition"){}
 	}
 }
 
