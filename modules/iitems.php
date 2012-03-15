@@ -114,6 +114,9 @@ function iitems_run(){
 		case "discarditem":			
 			iitems_discard_item($key);
 		break;
+		case "inventory":
+			iitems_show_inventory_new($from);
+		break;
 	}
 	modulehook("iitems-show-inventory");
 	// iitems_show_inventory($from,"main");

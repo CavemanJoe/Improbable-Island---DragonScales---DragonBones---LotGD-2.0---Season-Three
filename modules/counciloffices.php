@@ -26,6 +26,7 @@ function counciloffices_getmoduleinfo(){
 function counciloffices_install(){
 	module_addhook("village");
 	module_addhook("newday");
+	module_addhook("oneshotteleporter");
 	return true;
 }
 
@@ -44,7 +45,13 @@ function counciloffices_dohook($hookname,$args){
 			break;
 		case "newday":
 			set_module_pref("deliveredtoday",0);
-		break;
+			increment_module_pref("dayslost",1);
+			break;
+		case "oneshotteleporter":
+			set_module_pref("hasparcel",0);
+			set_module_pref("dayslost",0);
+			increment_module_pref("parcelslost",1);
+			break;
 	}
 	return $args;
 }
