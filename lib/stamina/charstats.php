@@ -1,7 +1,7 @@
 <?php
 
 global $charstat_info, $badguy, $actions_used;
-
+require_once("lib/stamina/stamina.php");
 //Look at the number of Turns we're missing.  Default is ten, and we'll add or remove some Stamina depending, as long as we're not in a fight.
 if (get_module_setting("turns_emulation_base","staminasystem")!=0 ){
 	if (!isset($badguy)){

@@ -161,6 +161,7 @@ function getimprobablestuff_runevent($type,$link){
 		}
 		if ($get6>=80){
 			output("`0You found a `#One-Shot Teleporter!`0`n`n");
+
 			output("A One-Shot Teleporter can be used while fighting in the Jungle.  It allows you to instantly escape from any fight and teleport back to the Outpost!  Beware, though - if you use it while fighting a monster on the World Map, you'll be instantly transported to Improbable Central.`n`n");
 			$teleporter++;
 			$foundsomething=1;
