@@ -2,6 +2,7 @@
 
 function worldmapwn_run_real(){
 	
+
 	global $session;
 	//require_once("modules/worldmapwn/config/terrains.php");
 	switch (httpget("op")){
@@ -54,11 +55,13 @@ function worldmapwn_run_real(){
 						require_once("lib/villagenav.php");
 						villagenav();
 					}
+
 				}
 				break;
 			case "travel"://This is the main part of worldmapwn, the traveling part
 				page_header("Journey");
 				switch (httpget("dir")){//This sets the users new location
+
 					case "setloc":
 						$loc=httpget('loc');
 						$session['user']['location']=$loc;
@@ -121,6 +124,7 @@ function worldmapwn_run_real(){
 						$newloc=$locchangex.",".$locchangey.",".$z;
 						$session['user']['location']=$newloc;
 					case "begin":
+
 						require_once("lib/cityprefs.php");
 						$cid = get_cityprefs_cityid("location",$session['user']['location']);
 						$cname=$session['user']['location'];
@@ -135,6 +139,7 @@ function worldmapwn_run_real(){
 							case 3:output("`b`&The gates of %s close behind you. The sound of the wilderness settles in around you as you think to yourself what evil must lurk within.`0`b",$cname);break;
 							case 4:output("`b`&The gates of %s close behind you. Perhaps you should go back in...`0`b",$cname);break;
 							case 5:output("`b`&The gates of %s close behind you. A howling noise bellows from deep within the forest.  You hear the guards from the other side of the gates yell \"Good Luck!\" and what sounds like \"they'll never make it.`0`b",$cname);break;
+
 						}
 						modulehook("worldmapwn-travel");
 						break;
@@ -145,16 +150,19 @@ function worldmapwn_run_real(){
 				if ($session['user']['superuser']&~SU_DOESNT_GIVE_GROTTO){
 					addnav("X?`bSuperuser Grotto`b","superuser.php");
 				}
+
 				require_once("modules/worldmapwn/lib/lib.php");
 				$cities=worldmapwn_findcity($currentloc);
 				debug($cities);
 				//for ($cities as $dest){
 					//for now,delete later once for loop is working
 					$dest="htddthtd";
+
 					if ($dest==$currentloc){
 						addnav("Cities");
 						addnav(array("O?Enter %s", $dest), "runmodule.php?module=worldmapwn&op=city&city=$dest");
 					}
+
 				//}
 				addnav("Journey");
 				require_once("modules/worldmapwn/lib/readmap.php");
@@ -169,6 +177,7 @@ function worldmapwn_run_real(){
 					break;}
 				$maxx=count($map)-4;
 				$maxy=count($map[1])-2;//rectangular maps only, no jagged ones.
+
 				
 				if ($y!=1){
 					addnav("Travel North","runmodule.php?module=worldmapwn&op=travel&dir=n");					
@@ -205,6 +214,7 @@ function worldmapwn_run_real(){
 
 				page_footer();
 				break;
+
 			}
 
 

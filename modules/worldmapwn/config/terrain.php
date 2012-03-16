@@ -8,6 +8,7 @@
 //It works on the process $array[$string][$property][$value]
 $terrains=array(
 
+
 //BEGIN: WATER (12)
 //
 //BEGIN: Deep Water (12)
@@ -501,7 +502,7 @@ $terrains=array(
 		"name"=>"Mountains",
 		"editor_name"=>"Snowy Mountains",    
 		"editor_group"=>"rough",
-		"terraintype"=>"Mountains"),//+frozen
+		"terraintype"=>"Mountains"),
 
 //END: MOUNTAINS (680)
 //
@@ -514,6 +515,7 @@ $terrains=array(
 		"image"=>"interior/wood-regular",
 		"id"=>"desert_mountains",
 		"name"=>"Basic Wooden Floor",
+
 		"editor_name"=>"Basic Wooden Floor",    
 		"editor_group"=>"flat",
 		"terraintype"=>"Flat"),
@@ -531,6 +533,7 @@ $terrains=array(
 		"image"=>"cave/floor6",
 		"id"=>"cave",
 		"name"=>"Cave",
+
 		"editor_name"=>"Cave Floor",    
 		"editor_group"=>"cave",
 		"terraintype"=>"Cave"),
@@ -617,6 +620,7 @@ $terrains=array(
 		"image"=>"chasm/earthy-tile",
 		"id"=>"cave",
 		"name"=>"Chasm",
+
 		"editor_name"=>"Earthy Chasm",    
 		"editor_group"=>"cave, obstacle",
 		"terraintype"=>"Flying"),
@@ -631,6 +635,7 @@ $terrains=array(
 		"image"=>"unwalkable/lava-chasm-tile",
 		"id"=>"cave",
 		"name"=>"Chasm",
+
 		"editor_name"=>"Lava Chasm",    
 		"editor_group"=>"cave, obstacle",
 		"terraintype"=>"Flying"),
@@ -661,7 +666,6 @@ $terrains=array(
 		"name"=>"Chasm",
 		"editor_name"=>"Regular Impassable Mountains",    
 		"editor_group"=>"rough, obstacle",
-		"terraintype"=>"Flying"),
 	"Md^Xm"=>array(
 		"image"=>"mountains/cloud-desert-tile",
 		"id"=>"clouddesert",
@@ -841,6 +845,7 @@ $terrains=array(
 		"image"=>"village/human-city-tile",
 		"id"=>"city_village",
 		"name"=>"Village",
+
 		"editor_name"=>"Human City",    
 		"editor_group"=>"village",
 		"terraintype"=>"Flat"),
@@ -1239,7 +1244,7 @@ $terrains=array(
 		"image"=>"bridge/stonebridge-n-s-tile",
 		"id"=>"stone_bridge",
 		"name"=>"Bridge",
-		"editor_name"=>"Basic Stone Bridge",    
+		"editor_name"=>"Basic Stone Bridge",
 		"editor_group"=>"bridge, water",
 		"terraintype"=>"Flat"),//+Shallow Water
 	"Bsb\\"=>array(

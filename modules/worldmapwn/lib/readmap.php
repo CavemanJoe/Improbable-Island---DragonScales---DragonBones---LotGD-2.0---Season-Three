@@ -57,7 +57,7 @@ function worldmapwn_surround($location=false,$map=false){
 			$surrond["sw"]=$map[$newx-1][$newy+2];
 		} else {$surrond["sw"]="X";}
 		if ($x!=$maxx){
-			
+
 			$newx=$x+1;
 			if ($x % 2 == 1){
 				$newy=$y;
@@ -108,6 +108,7 @@ function worldmapwn_map_array($mapid=1){
 	
 
 	//fclose($mapopen);
+
 	return $values;
 	
 }

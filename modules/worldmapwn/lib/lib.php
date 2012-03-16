@@ -20,6 +20,7 @@ function worldmapwn_findcity($location=false){
 	$result=db_query($sql);
 	$rows=db_num_rows($result);
 	require_once("modules/cityprefs/lib.php");
+
 	//$cnames[];
 	for ($i=0;$i<$rows;$i++){
 			$row = db_fetch_assoc($result);

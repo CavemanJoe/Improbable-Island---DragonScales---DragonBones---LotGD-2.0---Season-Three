@@ -4,6 +4,7 @@
 //Coords must be in the format x,y,z.
 //-----------------------------------------------------
 
+
 function worldmapwn_terraincode_coords($coords,$map=false){
 	require_once("modules/worldmapwn/lib/readmap.php");
 	list($x,$y,$z)=explode(",",$coords);
@@ -56,4 +57,5 @@ function worldmapwn_image($hexcode){
 	$imageloc="modules/worldmapwn/images/" . $image;
 	return $imageloc;
 }
+
 ?>

@@ -50,6 +50,7 @@ function worldmapwn_getmoduleinfo(){
 		"roadbonus"=>"Reduction in stamina cost for travelling by road as a decimal,float|0.75",
 		'Stamina costs are hard-coded in for the default values. However this can be changed on a per-map basis.,note',
 
+
 		"Map array,title",
 		//This is array containing the map files and their settings. This may be moved into their own table later.
 		"maps"=>array(1=>array("location"=>"default","moverate"=>1),
@@ -100,6 +101,7 @@ function worldmapwn_getmoduleinfo(){
 		"worldmapbuy"=>"Did user buy map?,bool|0",
 		"encounterchance"=>"Player's encounter chance expressed as a percentage of normal,int|100",
 		"fuel"=>"The reduced-cost moves that a player has left because of his Mount,int|0",
+
 		"canfly"=>"Can the user cross unwalkable terrain,bool|0",
 		"user_blindoutput"=>"BETA OPTION for blind or visually impaired players using a screen reader - Show textual information about your location on the World Map?,bool|0",
 	),
@@ -126,6 +128,7 @@ function worldmapwn_getmoduleinfo(){
 }
 
 function worldmapwn_install(){
+
 	if (!is_module_installed("staminasystem")) {
 		output("`b`^***** This module requires the stamina system to be installed. *****`b`7");
 		return false;
@@ -154,22 +157,11 @@ function worldmapwn_install(){
 			'index-hexcoord'=>array('name'=>'hexcoord', 'type'=>'index', 'columns'=>'hexcoord'),
 			'index-module'=>array('name'=>'module', 'type'=>'index', 'columns'=>'module'),
 		);
+
     		synctable(db_prefix('hexprefs'), $hexprefs, true);
 		
-		/*$mapprefs = array(
-			'mapid'=>array('name'=>'hexid', 'type'=>'int unsigned',	'extra'=>'not null auto_increment'),
-			'hexcoord'=>array('name'=>'hexcoord', 'type'=>'varchar(55)'),
-			'module'=>array('name'=>'module', 'type'=>'varchar(255)'),
-			'hexdesc'=>array('name'=>'hexdesc', 'type'=>'varchar(255)', 'extra'=>'not null'),
-			'hexcode'=>array('name'=>'hexcode', 'type'=>'varchar(255)'),
-			'key-PRIMARY'=>array('name'=>'PRIMARY', 'type'=>'primary key',	'unique'=>'1', 'columns'=>'cityid'),
-			'index-hexid'=>array('name'=>'hexid', 'type'=>'index', 'columns'=>'hexid'),
-			'index-module'=>array('name'=>'module', 'type'=>'index', 'columns'=>'module'),
-			'index-cityname'=>array('name'=>'cityname', 'type'=>'index', 'columns'=>'cityname'));
-    		synctable(db_prefix('hexprefs'), $hexprefs, true);*/
-		
-
 		//enable combatibility with worldmapwn
+
 		if (is_module_installed("worldmapen") == true){
 			$sql="SELECT * FROM ". db_prefix("cityprefs");
 			$result=db_query($sql);
@@ -208,27 +200,6 @@ $sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='world
 				debug("rows affected are $affectedrows");
 				debug(db_error());
 			}
-
-			/*foreach($res as $cid=>$cities){
-				debug($cid);
-				debug($cities);
-				$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='worldmapen' AND setting='".$cities["cityname"]."X";
-				$res=db_query($sql);
-				$nrow=db_fetch_assoc($res);
-				$x=$nrow[0]["value"];
-$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='worldmapen' AND setting='".$cities["cityname"]."Y";
-				$res=db_query($sql);
-				$nrow=db_fetch_assoc($res);
-				$y=$nrow[0]["value"];
-$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='worldmapen' AND setting='".$cities["cityname"]."Z";
-				$res=db_query($sql);
-				$nrow=db_fetch_assoc($res);
-				$z=$nrow[0]["value"];
-				$cityxyz="$x,$y,$z";
-				debug("The location of city {$cities["cityname"]} is $cityxyz.");
-				$sql="INSERT INTO ".db_prefix("module_objprefs")." (modulename, objtype, setting, objid, value) VALUES ('worldmapwn',city,worldXYZ,$cid,$cityxyz)";
-				$res=db_query($sql);
-			}*/
 		}
 		
 		require_once('modules/staminasystem/lib/lib.php');
