@@ -12,6 +12,7 @@ function worldmapwn_findcityloc($cid){
 // This function finds a city with the coords $location
 //
 function worldmapwn_findcity($location=false){
+/*	//this has been fully debugged and works as of 16/03/12 */
 	if ($location==false){
 		global $session;
 		$location=$session['user']['location'];
@@ -20,13 +21,15 @@ function worldmapwn_findcity($location=false){
 	$result=db_query($sql);
 	$rows=db_num_rows($result);
 	require_once("modules/cityprefs/lib.php");
-
+	//debug("rows of citys from findcity is $rows");
 	//$cnames[];
-	for ($i=0;$i<$rows;$i++){
-			$row = db_fetch_assoc($result);
-			$cnames[]=get_cityprefs_cityname($row);
+	while ($row = db_fetch_assoc($result)) {
+			
+			//debug("row fetched is");
+			//if ($row==null)debug("null");
+			$cnames[]["name"]=get_cityprefs_cityname("cityid",$row["objid"]);
+			$cnames[]["id"]=$row["objid"];
 	}
-	
 	return $cnames;
 }
 ?>

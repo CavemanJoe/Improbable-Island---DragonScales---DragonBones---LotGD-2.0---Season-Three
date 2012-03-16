@@ -23,7 +23,9 @@ function worldmapwn_run_real(){
 				break;
 			case "arrive":
 				$dest=httpget("dest");
-				$session['user']['location']=$dest;
+				require_once("lib/cityprefs.php");
+				$city=get_cityprefs_cityname("cityid",$dest);
+				$session['user']['location']=$city;
 				redirect("village.php");
 				break;
 			case "continue":
@@ -127,9 +129,10 @@ function worldmapwn_run_real(){
 
 						require_once("lib/cityprefs.php");
 						$cid = get_cityprefs_cityid("location",$session['user']['location']);
+						debug($cid);
 						$cname=$session['user']['location'];
-						$cityloc = get_module_objpref("city",$cid,"location");
-						
+						debug($cname);
+						$cityloc = get_module_objpref("city",$cid,"worldXYZ");
 						debug($cityloc);
 						$session['user']['location']=$cityloc;
 						$outmess=e_rand(1,5);
@@ -153,17 +156,19 @@ function worldmapwn_run_real(){
 
 				require_once("modules/worldmapwn/lib/lib.php");
 				$cities=worldmapwn_findcity($currentloc);
+				debug("findcity results");
 				debug($cities);
-				//for ($cities as $dest){
+				foreach($cities as $dest){
 					//for now,delete later once for loop is working
-					$dest="htddthtd";
-
-					if ($dest==$currentloc){
+					//$dest="htddthtd";
+					debug($dest);
+					$destid=$dest["id"];
+					$destname=$dest["name"];				
 						addnav("Cities");
-						addnav(array("O?Enter %s", $dest), "runmodule.php?module=worldmapwn&op=city&city=$dest");
-					}
+						addnav(array("O?Enter %s", $destname), "runmodule.php?module=worldmapwn&op=arrive&dest=$destid");
+					
 
-				//}
+				}
 				addnav("Journey");
 				require_once("modules/worldmapwn/lib/readmap.php");
 				$map=worldmapwn_map_array($z);
@@ -211,7 +216,8 @@ function worldmapwn_run_real(){
 						if ($image2!=false||$image2!=null){				
 						rawoutput("<img style=\"position:absolute; top:35px; left:170px\" src=\"$image1\"");}
 						rawoutput("</div>");
-
+				
+				require_once("modules/worldmapwn/run/supertravel.php");
 				page_footer();
 				break;
 

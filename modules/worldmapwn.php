@@ -172,7 +172,7 @@ function worldmapwn_install(){
 			if ($rows==null)debug("rows is null");
 			
 			require_once("modules/cityprefs/lib.php");
-			while ($row = mysql_fetch_assoc($result)) {
+			while ($row = db_fetch_assoc($result)) {
 				$cities = $row;
 				$cid=$cities["cityid"];
 				debug("cities is");
