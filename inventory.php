@@ -5,13 +5,65 @@ global $session,$inventory;
 
 page_header("Inventory");
 
-//$op = httpget("op");
+$op = httpget("op");
+$from = httpget('from');
+$key = httpget('key');
+$transferto = httpget('transferto');
+$invloc = httpget('invloc');
+
 $items_useitem = httpget("items_useitem");
 $items_discarditem = httpget("items_discarditem");
 $items_transferitem = httpget("items_transferitem");
 $items_transferto = httpget("items_transferto");
 $context = httpget("items_context");
 
+require_once("lib/modules/superuser.php");
+
+switch($op){
+		case "superuser":
+			require_once("modules/iitems/lib/superuser.php");
+			iitems_superuser();
+		break;
+		case "useitem":			
+			iitems_use_item($key,false,$invloc);
+		break;
+		case "transferitem":			
+			iitems_transfer_item($key,$transferto);
+		break;
+		case "discarditem":			
+			iitems_discard_item($key);
+		break;
+}
+
+modulehook("iitems-show-inventory");
+// iitems_show_inventory($from,"main");
+// if (get_module_setting("fightinventory")){
+	// output_notl("`n`n");
+	// iitems_show_inventory($from,"fight");
+// }
+iitems_show_inventory_new($from);
+switch ($from){
+	case "village":
+		addnav("Return");
+		addnav("Return to the Outpost","village.php");
+		break;
+	case "forest":
+		addnav("Return");
+		addnav("Return to the Jungle","forest.php");
+		break;
+	case "worldnav":
+		addnav("Return");
+		addnav("Return to the World Map","runmodule.php?module=worldmapen&op=continue");
+		break;
+	case "lodge":
+		addnav("Return");
+		addnav("Return to the Hunter's Lodge","runmodule.php?module=iitems_hunterslodge&op=start");
+}
+modulehook("iitems_inventory_from");
+
+page_footer();
+
+/*
 //handle moving, using, discarding, and contexts
 if ($items_transferitem && $items_transferto){
 	move_item($items_transferitem,$items_transferto);
@@ -197,7 +249,7 @@ foreach($dinv as $carrier => $cvals){
 
 //handle return links
 addnav("Return");
-addnav("Back to where you came from",/*iitems_return_link($context)*/"village.php");
-
+//addnav("Back to where you came from",iitems_return_link($context)"village.php");
+//addnav("Back to where you came from",iitems_return_link($context)"village.php");*/
 page_footer();
 ?>

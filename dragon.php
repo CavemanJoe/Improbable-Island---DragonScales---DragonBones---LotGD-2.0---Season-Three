@@ -245,7 +245,17 @@ if ($op==""){
 	output("`^You gain FIVE charm points for having defeated the dragon!`n");
 	debuglog("slew the dragon and starts with {$session['user']['gold']} gold and {$session['user']['gems']} gems");
 
-	// Moved this hear to make some things easier.
+	require_once("lib/iitems/iitems.php");
+	$oldinventory = iitems_get_player_inventory();
+			$newinventory = array();
+			foreach ($oldinventory AS $key => $vals){
+				$details = iitems_get_item_details($vals['itemid']);
+				if ($details['dkpersist']){
+					$newinventory[$key] = $vals;
+				}
+			}
+			set_module_pref("items", serialize($newinventory), "iitems");
+	// Moved this here to make some things easier.
 	modulehook("dragonkill", array());
 	invalidatedatacache("list.php-warsonline");
 }

@@ -2,10 +2,10 @@
  
 popup_header("Your Stamina statistics");
 
-$stamina = get_module_pref("stamina");
+$stamina = get_module_pref("stamina","staminasystem");
 $daystamina = 1000000;
-$redpoint = get_module_pref("red");
-$amberpoint = get_module_pref("amber");
+$redpoint = get_module_pref("red","staminasystem");
+$amberpoint = get_module_pref("amber","staminasystem");
 $redpct = get_stamina(0);
 $amberpct = get_stamina(1);
 $greenpct = get_stamina(2);

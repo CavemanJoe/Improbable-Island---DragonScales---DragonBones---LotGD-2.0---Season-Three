@@ -3,9 +3,9 @@
 global $charstat_info, $badguy, $actions_used;
 
 //Look at the number of Turns we're missing.  Default is ten, and we'll add or remove some Stamina depending, as long as we're not in a fight.
-if (get_module_setting("turns_emulation_base")!=0 ){
+if (get_module_setting("turns_emulation_base","staminasystem")!=0 ){
 	if (!isset($badguy)){
-		$stamina = e_rand(get_module_setting("turns_emulation_base"),get_module_setting("turns_emulation_ceiling"));
+		$stamina = e_rand(get_module_setting("turns_emulation_base","staminasystem"),get_module_setting("turns_emulation_ceiling","staminasystem"));
 		while ($session['user']['turns'] < 10){
 			$session['user']['turns']++;
 			debug("Turns Removed");
@@ -38,7 +38,7 @@ if (isset($actions_used)){
 		$disp = "Lv".$actions_used[$action]['lvlinfo']['lvl']." (+`@".$actions_used[$action]['exp_earned']."`^ xp)<table style='border: solid 1px #000000;' bgcolor='red'  cellpadding='0' cellspacing='0' width='70' height='5'><tr><td width='$pct%' bgcolor='white'></td><td width='$nonpct%'></td></tr></table>";
 		setcharstat("Recent Actions",$action,$disp);
 		
-		if (get_module_pref("user_minihof")){
+		if (get_module_pref("user_minihof","staminasystem")){
 			$st = microtime(true);
 			stamina_minihof($action);
 			$en = microtime(true);
@@ -58,11 +58,11 @@ $session['user']['turns'] = 10;
 
 //Display the actual Stamina bar
 //require_once("lib/stamina/stamina.php");
-require_once("stamina.php");
-$stamina = get_module_pref("stamina");
+require_once("lib/stamina/stamina.php");
+$stamina = get_module_pref("stamina","staminasystem");
 $daystamina = 1000000;
-$redpoint = get_module_pref("red");
-$amberpoint = get_module_pref("amber");
+$redpoint = get_module_pref("red","staminasystem");
+$amberpoint = get_module_pref("amber","staminasystem");
 $redpct = get_stamina(0);
 $amberpct = get_stamina(1);
 $greenpct = get_stamina(2);

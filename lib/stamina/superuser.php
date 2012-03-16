@@ -22,6 +22,8 @@ switch ($stamop)
 		}
 		rawoutput("</table>");
 		addnav("Edit Player","stamina.php?op=superuser&stam=editplayer");
+		addnav("Edit Abilities","stamina.php?op=superuser&stam=editabis");
+		addnav("Edit Actions","stamina.php?op=superuser&stam=editactions");
 		superusernav();
 	
 		debug($actions);

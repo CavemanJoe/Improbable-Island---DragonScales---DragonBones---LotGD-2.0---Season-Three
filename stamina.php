@@ -18,7 +18,14 @@ $op=httpget("op");
 			superusernav();
 			require_once("lib/stamina/superuser.php");
 			break;
-
-}
+			
+		case "editabis":
+			require_once("lib/stamina/editabis.php");
+			break;
+		
+		default:
+			
+		break;
+	}
 
 ?>
