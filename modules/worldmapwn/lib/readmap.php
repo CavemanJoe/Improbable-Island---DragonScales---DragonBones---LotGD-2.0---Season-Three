@@ -10,11 +10,12 @@ function worldmapwn_surround($location=false,$map=false){
 	if ($location=false){$location=$session['user']['location'];}
 	list($x,$y,$z)=explode(",",$location);
 	if ($map==false){$map=worldmapwn_map_array($z);}
-	if ($map==false){
-	$surrond=array("nw"=>"X","n"=>"X","ne"=>"X","se"=>"X","s"=>"X","sw"=>"X");}//no map avaliable for that z, then all is impassable
+	if ($map==false){//maparray failed to return
+	$surrond=array("nw"=>"X","n"=>"X","ne"=>"X","se"=>"X","s"=>"X","sw"=>"X");//no map avaliable for that z, then all is impassable
+	return $surround;}
 
 	$maxx=count($map)-4;
-	$maxy=count($map[1]-2);//rectangular maps only, no jagged ones.				
+	$maxy=count($map[1])-1;//rectangular maps only, no jagged ones.				
 	if ($y!=1){
 		$newy=$y-1;
 		$surrond["n"]=$map[$x][$newy+2];					

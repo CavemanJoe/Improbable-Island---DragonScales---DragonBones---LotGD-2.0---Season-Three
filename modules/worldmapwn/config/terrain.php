@@ -1,11 +1,14 @@
 <?php
 //
-//NOTE: This file is under the GPL.
+//NOTE: This file is under the GPL, as it is based upon the config files from Battle for Wesnoth.
 //
 //NOTE: This file would probably be good to cache.
 //
 //Formats terrain.cfg as an array.
 //It works on the process $array[$string][$property][$value]
+
+function worldmapwn_terrainsinfo(){
+
 $terrainsinfo=array(
 
 
@@ -1389,4 +1392,6 @@ $terrainsinfo=array(
 //END: BfW TERRAINS
 );
 
+return $terrainsinfo;
+}
 ?>

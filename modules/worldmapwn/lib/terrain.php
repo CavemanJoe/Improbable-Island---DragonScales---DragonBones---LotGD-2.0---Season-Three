@@ -25,9 +25,10 @@ function worldmapwn_terraincode_coords($coords,$map=false){
 //Coords must be in the format $x, $y and $z and seperate arguments.
 //-----------------------------------------------------
 
-function worldmapwn_terraincodexyz($x,$y,$z=1){
+function worldmapwn_terraincodexyz($x,$y,$z=1,$map=false){
+	if ($map==false){
 	require_once("modules/worldmapwn/lib/readmap.php");
-	$map=worldmapwn_map_array($z);
+	$map=worldmapwn_map_array($z);}
 	if ($map==false){return false;}
 	$x=$x+4;
 	$code=$map[$x][$y];
@@ -41,6 +42,7 @@ function worldmapwn_terraincodexyz($x,$y,$z=1){
 function worldmapwn_staminacost($hexcode,$terrainsinfo=false){
 	if ($terrainsinfo==false){
 	require_once("modules/worldmapwn/config/terrain.php");
+	$terrainsinfo=worldmapwn_terrainsinfo();
 	}//global $terrainsinfo;
 	list($code1,$code2)=explode("^",$hexcode);
 	$terrain1=$terrainsinfo[$code1]["terraintype"];
@@ -55,26 +57,20 @@ function worldmapwn_staminacost($hexcode,$terrainsinfo=false){
 function worldmapwn_image($hexcode,$terrainsinfo=false){
 	if ($terrainsinfo==false){
 	require_once("modules/worldmapwn/config/terrain.php");
-	}//global $terrainsinfo;
-	if ($hexcode=="Ft"){
-	debug("1,The hexcode really is Ft.");}
+	}	
+	//global $terrainsinfo;
+	//if ($hexcode=="Ft"){
+	//debug("1,The hexcode really is Ft.");}
 	//debug($terrainsinfo);
-	debug("hexcode for image is $hexcode.");
+	//debug("hexcode for image is $hexcode.");
 	$hexcode = str_replace(' ', '', $hexcode);
-	debug($hexcode);
-	if ($terrainsinfo /*&&/$terrainsinfo!=null*/)debug("terrainsinfo exists.");
-	if ($hexcode=="Ft"){
-	debug("2,The hexcode really is Ft.");
-	//debug($terrainsinfo);
-	}
+	//debug($hexcode);
+//	if ($terrainsinfo /*&&/$terrainsinfo!=null*/)debug("terrainsinfo exists.");
 	$image=$terrainsinfo["$hexcode"]['image'];
-	debug($terrainsinfo['Ft']);
-	debug($terrainsinfo['Ft']['image']);
-	debug($terrainsinfo["Ft"]);
-	debug($terrainsinfo["$hexcode"]);
-	debug("Image is $image");
+	//debug($terrainsinfo["$hexcode"]);
+	//debug("Image is $image");
 	$imageloc="modules/worldmapwn/images/" . $image . ".png";
-	debug($imageloc);
+	//debug($imageloc);
 	return $imageloc;
 }
 

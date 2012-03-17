@@ -2,7 +2,7 @@
 
 function worldmapwn_run_real(){
 	require_once('modules/worldmapwn/lib/lib.php');
-	require_once("modules/worldmapwn/config/terrain.php");
+	//require_once("modules/worldmapwn/config/terrain.php");
 	//global $terrainsinfo;
 	global $session;
 	//require_once("modules/worldmapwn/config/terrains.php");
@@ -65,24 +65,29 @@ function worldmapwn_run_real(){
 
 				}
 				break;
+			case "worldmap":
+				require_once("modules/worldmapwn/run/worldmap.php");
+				//page_footer();
+				break;
 			case "travel"://This is the main part of worldmapwn, the traveling part
 				page_header("Journey");
 				
+				//sets the players location
 				require_once("modules/worldmapwn/run/dir.php");
 
 				$currentloc=$session['user']['location'];
+				debug("You care currently at $currentloc");
 				list($x,$y,$z)=explode(",",$currentloc);
 				if ($session['user']['superuser']&~SU_DOESNT_GIVE_GROTTO){
 					addnav("X?`bSuperuser Grotto`b","superuser.php");
 				}
+				addnav("World Map","runmodule.php?module=worldmapwn&op=worldmap");
 
 				require_once("modules/worldmapwn/lib/lib.php");
 				$cities=worldmapwn_findcity($currentloc);
 				debug("findcity results");
 				debug($cities);
 				foreach($cities as $dest){
-					//for now,delete later once for loop is working
-					//$dest="htddthtd";
 					debug($dest);
 					$destid=$dest["id"];
 					$destname=$dest["name"];				
@@ -100,51 +105,42 @@ function worldmapwn_run_real(){
 					if ($session['user']['superuser']==true){
 						output("`n`n`1Oops! There doesn't seem to be any map created. If you have created a map but are still seeing this message, make sure it is in modules/worldmapwn/maps and it is listed in the settings with a valid ID. Alternativly, the user has been told to open a mapid that isn't there.");}
 					}
-					//page_footer();
+					page_footer();
 					break;}
 				$maxx=count($map)-4;
 				$maxy=count($map[1])-2;//rectangular maps only, no jagged ones.
-
+				require_once("modules/worldmapwn/lib/readmap.php");
+				$surrondings=worldmapwn_surround($currentloc,$map);
 				
-				if ($y!=1){
-					addnav("Travel North","runmodule.php?module=worldmapwn&op=travel&dir=n");					
-					if ($x!=1){
-					addnav("Travel North-West","runmodule.php?module=worldmapwn&op=travel&dir=nw");}
-					if ($x!=$maxx){
-					addnav("Travel North-East","runmodule.php?module=worldmapwn&op=travel&dir=ne");}
-				}
-				if ($y!=$maxy){
-					addnav("Travel South","runmodule.php?module=worldmapwn&op=travel&dir=s");					
-					if ($x!=1){
-					addnav("Travel South-West","runmodule.php?module=worldmapwn&op=travel&dir=sw");}
-					if ($x!=$maxx){
-					addnav("Travel South-East","runmodule.php?module=worldmapwn&op=travel&dir=se");}
-				}
+
+				if ($surrondings["n"]!="X")addnav("Travel North","runmodule.php?module=worldmapwn&op=travel&dir=n");
+				if ($surrondings["ne"]!="X")addnav("Travel North-East","runmodule.php?module=worldmapwn&op=travel&dir=ne");
+				if ($surrondings["nw"]!="X")addnav("Travel North-West","runmodule.php?module=worldmapwn&op=travel&dir=nw");
+				if ($surrondings["s"]!="X")addnav("Travel South","runmodule.php?module=worldmapwn&op=travel&dir=s");
+				if ($surrondings["se"]!="X")addnav("Travel South-East","runmodule.php?module=worldmapwn&op=travel&dir=se");
+				if ($surrondings["sw"]!="X")addnav("Travel South-West","runmodule.php?module=worldmapwn&op=travel&dir=sw");
 
 				require_once("modules/worldmapwn/lib/terrain.php");
 				$terraincode=worldmapwn_terraincode_coords($currentloc,$map);
 				debug($terraincode);
 				modulehook("worldmapwn-travel");
 				
-				list($code1,$code2)=explode("^",$terraincode);
-				debug("The parts of the terraincode are $code1 and $code2.");
-				$image1=worldmapwn_image($code1,$terrainsinfo);
+				//displays map of local area
+				require_once("modules/worldmapwn/run/images.php");
 				
-				if ($code2){
-					$image2=worldmapwn_image($code2,$terrainsinfo);}
-				debug("Image1 is $image1.");
-				debug("Image2 is $image2.");				
-				//this is where the images are displayed
-				//<IMG STYLE="position:absolute; TOP:35px; LEFT:170px; WIDTH:50px; HEIGHT:50px" SRC="circle.gif">
-						rawoutput("<div style=\" position:relative;\">");
-						rawoutput("<img style=\"position:absolute; top:35px; left:250px z-index:0;\" src=\"$image1\" alt=\"$currentloc\"/>");
-						if ($image2!=false && $image2!=null){				
-						rawoutput("<img style=\"position:absolute; top:35px; left:300px z-index:1;\" src=\"$image2\"/>");
-						} else {
-						debug("image2 fails");}
-						rawoutput("</div>");
-				
-				require_once("modules/worldmapwn/run/supertravel.php");
+				//Adds links for superusers
+				if ($session['user']['superuser']==true){
+	addnav("Instant Superuser Travel");
+	$sql="SELECT * FROM " .db_prefix("cityprefs"); 
+	$result=db_query($sql);
+	while ($row = db_fetch_assoc($result)) {
+			$cityname=$row["cityname"];
+			$cityid=$row["cityid"];
+			addnav(array("Go to %s", $cityname), "runmodule.php?module=worldmapwn&op=arrive&dest=$cityid");
+	}
+	modulehook("worldmapwn-travel-superuser");
+}
+				//require_once("modules/worldmapwn/run/supertravel.php");
 				page_footer();
 				break;
 
