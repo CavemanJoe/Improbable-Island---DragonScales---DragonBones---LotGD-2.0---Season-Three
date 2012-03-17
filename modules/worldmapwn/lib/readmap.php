@@ -89,8 +89,9 @@ function worldmapwn_surround($location=false,$map=false){
 //-----------------------------------------------------
 
 function worldmapwn_map_array($mapid=1){
-	$mapfilearray=get_module_setting("maps");
-	$maploc=$mapfilearray[$mapid]["location"];
+	//$mapfilearray=get_module_setting("maps");
+	//$mapfiles=unserialise($mapfilearray))
+	//$maploc=$mapfilearray[$mapid]["location"];
 	$maploc="improbableisland";
 	$maploca="modules/worldmapwn/maps/". $maploc;
 	//$mapopen=fopen($maploca,"r");

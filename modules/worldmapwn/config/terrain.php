@@ -6,7 +6,7 @@
 //
 //Formats terrain.cfg as an array.
 //It works on the process $array[$string][$property][$value]
-$terrains=array(
+$terrainsinfo=array(
 
 
 //BEGIN: WATER (12)
@@ -21,14 +21,14 @@ $terrains=array(
 		"editorgroup"=>"water",
 		"terraintype"=>"Deep Water"),
 	"Wo"=>array(
-		"image"=>"water/water/ocean-tile",
+		"image"=>"water/ocean-tile",
 		"id"=>"deep_water",
 		"name"=>"Deep Water",
 		"editorname"=>"Medium Deep Water",
 		"editorgroup"=>"water",
 		"terraintype"=>"Deep Water"),
 	"Wot"=>array(
-		"image"=>"water/water/ocean-tropical-tile",
+		"image"=>"water/ocean-tropical-tile",
 		"id"=>"deep_water_tropical",
 		"name"=>"Deep Water",
 		"editorname"=>"Tropical Deep Water",

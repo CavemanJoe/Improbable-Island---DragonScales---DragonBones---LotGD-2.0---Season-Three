@@ -53,8 +53,18 @@ function worldmapwn_staminacost($hexcode){
 
 function worldmapwn_image($hexcode){
 	require_once("modules/worldmapwn/config/terrain.php");
-	$image=$terrainsinfo[$hexcodes]["image"];
+	debug("hexcode for image is $hexcode.");
+	$hexcode = str_replace(' ', '', $hexcode);
+
+	if ($hexcode=="Gg")debug("The hexcode really is Gg.");
+	$image=$terrainsinfo["$hexcode"]['image'];
+	//debug($terrainsinfo['Gg']);
+	//debug($terrainsinfo['Gg']['image']);
+	//debug($terrainsinfo);
+	debug($terrainsinfo["$hexcode"]);
+	debug("Image is $image");
 	$imageloc="modules/worldmapwn/images/" . $image;
+	debug($imageloc);
 	return $imageloc;
 }
 

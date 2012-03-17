@@ -24,7 +24,11 @@ function worldmapwn_run_real(){
 			case "arrive":
 				$dest=httpget("dest");
 				require_once("lib/cityprefs.php");
+				if ($dest==null||$dest==""){
+				$city=getsetting("villagename");
+				} else {
 				$city=get_cityprefs_cityname("cityid",$dest);
+				}
 				$session['user']['location']=$city;
 				redirect("village.php");
 				break;
@@ -62,91 +66,8 @@ function worldmapwn_run_real(){
 				break;
 			case "travel"://This is the main part of worldmapwn, the traveling part
 				page_header("Journey");
-				switch (httpget("dir")){//This sets the users new location
-
-					case "setloc":
-						$loc=httpget('loc');
-						$session['user']['location']=$loc;
-					case "n":
-						$start=$session['user']['location'];
-						list($x,$y,$z)=explode(",",$start);
-						$locchange=$y-1;
-						$newloc=$x.",".$locchange.",".$z;
-						$session['user']['location']=$newloc;
-						break;
-					case "ne": break;
-						$start=$session['user']['location'];
-						list($x,$y,$z)=explode(",",$start);
-						$locchangex=$x+1;
-						if ($x % 2 ==0){
-							$locchangey=$y;
-						} else {
-							$locchangey=$y-1;
-						}
-						$newloc=$locchangex.",".$locchangey.",".$z;
-						$session['user']['location']=$newloc;
-					case "nw": break;
-						$start=$session['user']['location'];
-						list($x,$y,$z)=explode(",",$start);
-						$locchangex=$x+1;
-						if ($x % 2 ==0){
-							$locchangey=$y;
-						} else {
-							$locchangey=$y-1;
-						}
-						$newloc=$locchangex.",".$locchangey.",".$z;
-						$session['user']['location']=$newloc;
-					case "s":
-						$start=$session['user']['location'];
-						list($x,$y,$z)=explode(",",$start);
-						$locchange=$y+1;
-						$newloc=$x.",".$locchange.",".$z;
-						$session['user']['location']=$newloc;
-						break;
-					case "se": break;
-						$start=$session['user']['location'];
-						list($x,$y,$z)=explode(",",$start);
-						$locchangex=$x+1;
-						if ($x % 2 ==0){
-							$locchangey=$y+1;
-						} else {
-							$locchangey=$y;
-						}
-						$newloc=$locchangex.",".$locchangey.",".$z;
-						$session['user']['location']=$newloc;
-					case "sw": break;
-						$start=$session['user']['location'];
-						list($x,$y,$z)=explode(",",$start);
-						$locchangex=$x+1;
-						if ($x % 2 ==0){
-							$locchangey=$y+1;
-						} else {
-							$locchangey=$y;
-						}
-						$newloc=$locchangex.",".$locchangey.",".$z;
-						$session['user']['location']=$newloc;
-					case "begin":
-
-						require_once("lib/cityprefs.php");
-						$cid = get_cityprefs_cityid("location",$session['user']['location']);
-						debug($cid);
-						$cname=$session['user']['location'];
-						debug($cname);
-						$cityloc = get_module_objpref("city",$cid,"worldXYZ");
-						debug($cityloc);
-						$session['user']['location']=$cityloc;
-						$outmess=e_rand(1,5);
-						switch ($outmess){
-							case 1:output("`b`&The gates of %s close behind you. A shiver runs down your back as you face the wilderness around you.`0`b",$cname);break;
-							case 2:output("`b`&The gates of %s close behind you. You're all alone now...`0`b",$cname);break;
-							case 3:output("`b`&The gates of %s close behind you. The sound of the wilderness settles in around you as you think to yourself what evil must lurk within.`0`b",$cname);break;
-							case 4:output("`b`&The gates of %s close behind you. Perhaps you should go back in...`0`b",$cname);break;
-							case 5:output("`b`&The gates of %s close behind you. A howling noise bellows from deep within the forest.  You hear the guards from the other side of the gates yell \"Good Luck!\" and what sounds like \"they'll never make it.`0`b",$cname);break;
-
-						}
-						modulehook("worldmapwn-travel");
-						break;
-					}
+				
+				require_once("modules/worldmapwn/run/dir.php");
 
 				$currentloc=$session['user']['location'];
 				list($x,$y,$z)=explode(",",$currentloc);
@@ -172,7 +93,7 @@ function worldmapwn_run_real(){
 				addnav("Journey");
 				require_once("modules/worldmapwn/lib/readmap.php");
 				$map=worldmapwn_map_array($z);
-				debug($map);
+				//debug($map);
 				if ($map==false){
 					output("`0You look out and see what looks like a strange building site. To your right there are what appear to be men in orange worksuits laying rocks, while to your left another appears to be creating a lake using a giant hosepipe. It does not look like something to travel across, but maybe later.");
 					if ($session['user']['superuser']==true){
@@ -205,13 +126,14 @@ function worldmapwn_run_real(){
 				modulehook("worldmapwn-travel");
 				
 				list($code1,$code2)=explode("^",$terraincode);
+				debug("The parts of the terraincode are $code1 and $code2.");
 				$image1=worldmapwn_image($code1);
 				debug($image1);
 				if ($code2){
 					$image2=worldmapwn_image($code2);}				
 				//this is where the images are displayed
 				//<IMG STYLE="position:absolute; TOP:35px; LEFT:170px; WIDTH:50px; HEIGHT:50px" SRC="circle.gif">
-						rawoutput("<div>");
+						rawoutput("<div style=\"\">");
 						rawoutput("<img style=\"position:absolute; top:35px; left:170px\" src=\"$image1\"");
 						if ($image2!=false||$image2!=null){				
 						rawoutput("<img style=\"position:absolute; top:35px; left:170px\" src=\"$image1\"");}

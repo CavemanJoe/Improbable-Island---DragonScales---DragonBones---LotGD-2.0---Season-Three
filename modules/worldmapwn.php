@@ -15,7 +15,7 @@
 function worldmapwn_getmoduleinfo(){
 	$info = array(
 	"name"=>"World Map",
-	"version"=>"0.3.2",
+	"version"=>"0.4.0",
 	"author"=>"Cousjava",
 	"category"=>"World Map",
 	"download"=>"",
@@ -26,7 +26,7 @@ function worldmapwn_getmoduleinfo(){
 		"viewRadius"=>"How many squares far can a player see while traveling?,range,0,10,2",
 		"worldmapAcquire"=>"Can the world map be purchased?,bool|1",
 		"worldmapCostGold"=>"How much gold does the World Map cost?,int|10000",
-		'The world map is not yet avaliable in this version. It can be bought but not viewed, but once the functionality will be added,note',
+		'The world map is not yet avaliable in this version. It can be bought but not viewed, but once the functionality will be added.,note',
 		"showcompass"=>"Show images/compass.png?,bool|0",
 		"compasspoints"=>"8 point compass?,bool|0",
 		"showforestnav"=>"Show the forest link in village?,bool|0",
@@ -134,7 +134,7 @@ function worldmapwn_install(){
 		return false;
 	}
 		module_addhook("village");
-		module_addhook("villagenav");
+		//module_addhook("villagenav");
 		module_addhook("mundanenav");
 		module_addhook("superuser");
 		//module_addhook("pvpcount"); We're ignoring PvP for now. It will be one of the last things to be added.
