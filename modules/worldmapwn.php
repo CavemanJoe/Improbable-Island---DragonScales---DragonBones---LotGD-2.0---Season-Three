@@ -12,6 +12,8 @@
 
 //require_once('modules/worldmapwn/lib.php');
 
+//require_once("modules/worldmapwn/config/terrain.php");
+
 function worldmapwn_getmoduleinfo(){
 	$info = array(
 	"name"=>"World Map",

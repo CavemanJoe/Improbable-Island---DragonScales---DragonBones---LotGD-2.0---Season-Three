@@ -1,8 +1,9 @@
 <?php
 
 function worldmapwn_run_real(){
-	
-
+	require_once('modules/worldmapwn/lib/lib.php');
+	require_once("modules/worldmapwn/config/terrain.php");
+	//global $terrainsinfo;
 	global $session;
 	//require_once("modules/worldmapwn/config/terrains.php");
 	switch (httpget("op")){
@@ -127,16 +128,20 @@ function worldmapwn_run_real(){
 				
 				list($code1,$code2)=explode("^",$terraincode);
 				debug("The parts of the terraincode are $code1 and $code2.");
-				$image1=worldmapwn_image($code1);
-				debug($image1);
+				$image1=worldmapwn_image($code1,$terrainsinfo);
+				
 				if ($code2){
-					$image2=worldmapwn_image($code2);}				
+					$image2=worldmapwn_image($code2,$terrainsinfo);}
+				debug("Image1 is $image1.");
+				debug("Image2 is $image2.");				
 				//this is where the images are displayed
 				//<IMG STYLE="position:absolute; TOP:35px; LEFT:170px; WIDTH:50px; HEIGHT:50px" SRC="circle.gif">
-						rawoutput("<div style=\"\">");
-						rawoutput("<img style=\"position:absolute; top:35px; left:170px\" src=\"$image1\"");
-						if ($image2!=false||$image2!=null){				
-						rawoutput("<img style=\"position:absolute; top:35px; left:170px\" src=\"$image1\"");}
+						rawoutput("<div style=\" position:relative;\">");
+						rawoutput("<img style=\"position:absolute; top:35px; left:250px z-index:0;\" src=\"$image1\" alt=\"$currentloc\"/>");
+						if ($image2!=false && $image2!=null){				
+						rawoutput("<img style=\"position:absolute; top:35px; left:300px z-index:1;\" src=\"$image2\"/>");
+						} else {
+						debug("image2 fails");}
 						rawoutput("</div>");
 				
 				require_once("modules/worldmapwn/run/supertravel.php");

@@ -38,32 +38,42 @@ function worldmapwn_terraincodexyz($x,$y,$z=1){
 // Returns the stamina cost for a paticular hex code
 //
 //----------------------------------------------------
-function worldmapwn_staminacost($hexcode){
+function worldmapwn_staminacost($hexcode,$terrainsinfo=false){
+	if ($terrainsinfo==false){
 	require_once("modules/worldmapwn/config/terrain.php");
-	global $terrains;
+	}//global $terrainsinfo;
 	list($code1,$code2)=explode("^",$hexcode);
-	$terrain1=$terrains[$code1]["terraintype"];
+	$terrain1=$terrainsinfo[$code1]["terraintype"];
 	require_once("modules/staminasystem/lib/lib.php");
 	$cost1=stamina_calculate_buffed_cost($terrain1);
-	$terrain2=$terrains[$code2]["terraintype"];
+	$terrain2=$terrainsinfo[$code2]["terraintype"];
 	$cost2=stamina_calculate_buffed_cost($terrain2);
 	$cost=($cost1+$cost2) / 2;
 	return $cost;
 }
 
-function worldmapwn_image($hexcode){
+function worldmapwn_image($hexcode,$terrainsinfo=false){
+	if ($terrainsinfo==false){
 	require_once("modules/worldmapwn/config/terrain.php");
+	}//global $terrainsinfo;
+	if ($hexcode=="Ft"){
+	debug("1,The hexcode really is Ft.");}
+	//debug($terrainsinfo);
 	debug("hexcode for image is $hexcode.");
 	$hexcode = str_replace(' ', '', $hexcode);
-
-	if ($hexcode=="Gg")debug("The hexcode really is Gg.");
-	$image=$terrainsinfo["$hexcode"]['image'];
-	//debug($terrainsinfo['Gg']);
-	//debug($terrainsinfo['Gg']['image']);
+	debug($hexcode);
+	if ($terrainsinfo /*&&/$terrainsinfo!=null*/)debug("terrainsinfo exists.");
+	if ($hexcode=="Ft"){
+	debug("2,The hexcode really is Ft.");
 	//debug($terrainsinfo);
+	}
+	$image=$terrainsinfo["$hexcode"]['image'];
+	debug($terrainsinfo['Ft']);
+	debug($terrainsinfo['Ft']['image']);
+	debug($terrainsinfo["Ft"]);
 	debug($terrainsinfo["$hexcode"]);
 	debug("Image is $image");
-	$imageloc="modules/worldmapwn/images/" . $image;
+	$imageloc="modules/worldmapwn/images/" . $image . ".png";
 	debug($imageloc);
 	return $imageloc;
 }

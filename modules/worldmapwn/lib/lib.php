@@ -1,4 +1,5 @@
 <?php
+//require_once("modules/worldmapwn/config/terrain.php");
 
 //FUNCTION: Findcityloc
 //This function find the location of a city, based on its id
