@@ -80,6 +80,15 @@ function worldmapwn_run_real(){
 				list($x,$y,$z)=explode(",",$currentloc);
 				if ($session['user']['superuser']&~SU_DOESNT_GIVE_GROTTO){
 					addnav("X?`bSuperuser Grotto`b","superuser.php");
+					addnav("Instant Superuser Travel");
+					$sql="SELECT * FROM " .db_prefix("cityprefs"); 
+					$result=db_query($sql);
+					while ($row = db_fetch_assoc($result)) {
+						$cityname=$row["cityname"];
+						$cityid=$row["cityid"];
+					addnav(array("Go to %s", $cityname), "runmodule.php?module=worldmapwn&op=arrive&dest=$cityid");
+					}
+				modulehook("worldmapwn-travel-superuser");
 				}
 				addnav("World Map","runmodule.php?module=worldmapwn&op=worldmap");
 
@@ -107,11 +116,11 @@ function worldmapwn_run_real(){
 					}
 					page_footer();
 					break;}
-				$maxx=count($map)-4;
+				//$maxx=count($map)-4;
 				$maxy=count($map[1])-2;//rectangular maps only, no jagged ones.
-				require_once("modules/worldmapwn/lib/readmap.php");
+				//require_once("modules/worldmapwn/lib/readmap.php");
 				$surrondings=worldmapwn_surround($currentloc,$map);
-				
+				debug($surrondings);
 
 				if ($surrondings["n"]!="X")addnav("Travel North","runmodule.php?module=worldmapwn&op=travel&dir=n");
 				if ($surrondings["ne"]!="X")addnav("Travel North-East","runmodule.php?module=worldmapwn&op=travel&dir=ne");
@@ -130,16 +139,8 @@ function worldmapwn_run_real(){
 				
 				//Adds links for superusers
 				if ($session['user']['superuser']==true){
-	addnav("Instant Superuser Travel");
-	$sql="SELECT * FROM " .db_prefix("cityprefs"); 
-	$result=db_query($sql);
-	while ($row = db_fetch_assoc($result)) {
-			$cityname=$row["cityname"];
-			$cityid=$row["cityid"];
-			addnav(array("Go to %s", $cityname), "runmodule.php?module=worldmapwn&op=arrive&dest=$cityid");
-	}
-	modulehook("worldmapwn-travel-superuser");
-}
+				
+				}
 				//require_once("modules/worldmapwn/run/supertravel.php");
 				page_footer();
 				break;

@@ -3,8 +3,8 @@
 function onslaught_getmoduleinfo(){
 	$info = array(
 		"name"=>"Onslaught",
-		"version"=>"2010-02-22",
-		"author"=>"Dan Hall",
+		"version"=>"2012-03-17",
+		"author"=>"Dan Hall, modified by Cousjava",
 		"category"=>"Improbable",
 		"download"=>"",
 		"settings"=>array(
@@ -14,6 +14,7 @@ function onslaught_getmoduleinfo(){
 			"lastspawn"=>"Timestamp of last Monster Spawn,int|0",
 			"testmode"=>"Onslaught is in Test Mode and no output will be generated,bool|1",
 			"damagemultiplier"=>"Damage multiplier for Outpost walls,float|1.0",
+			"maxcityhealth"=>"Maximum hitpoints a city can have. -1 for no limit.,int|100000000",
 		),
 		"prefs-city"=>array(
 			"breachpoint"=>"Number of Creatures that must be present before this Outpost's walls begin taking damage,int|1000",
@@ -550,7 +551,14 @@ function onslaught_run(){
 			$lv = onslaught_checkmonsters();
 			$num = onslaught_nummonsters();
 			$def = onslaught_checkwalls();
-			output("`0You take a look at the Outpost walls.  Fortunately there are some lengths of timber, a hammer, and some nails sat conveniently next to a portion that's looking a little worse for wear.`n`nThis Outpost's hitpoints: `b%s`b`n`n",number_format($def));
+			$maxwalls=get_module_setting("maxcityhealth");
+			if ($def>=$maxwalls && $maxwalls!=-1){
+				output("`0You take a look at the Outpost walls. You search for any weaknesses, but cannot find any. There is nothing to do here.");
+				addnav("What will you do?");
+				addnav("Return to the Outpost","village.php");
+			} else {
+				output("`0You take a look at the Outpost walls.  Fortunately there are some lengths of timber, a hammer, and some nails sat conveniently next to a portion that's looking a little worse for wear.`n`nThis Outpost's hitpoints: `b%s`b`n`n",number_format($def));
+			
 			$stopchance = e_rand(0,100);
 			if ($lv>100 && $def<$num && $stopchance > 80){
 				output("Before you have a chance to pick up the hammer, you hear the sound of approaching thunderous footsteps from behind you!  You whirl around, dropping the hammer and drawing your weapon, to see a slavering beast bearing down upon you!`n`n");
@@ -560,8 +568,10 @@ function onslaught_run(){
 				addnav("What will you do?");
 				require_once "modules/staminasystem/lib/lib.php";
 				$cost = stamina_getdisplaycost("Reinforcement");
+				if ($noreinforce!=true)
 				addnav(array("Reinforce the defences (`Q%s%%`0)",$cost),"runmodule.php?module=onslaught&op=reinforceconfirm");
 				addnav("Return to the Outpost","village.php");
+			}
 			}
 		break;
 		case "reinforceconfirm":
@@ -612,6 +622,11 @@ function onslaught_run(){
 						$definc = e_rand($actlvl*0.8,$actlvl*1.2);
 						if ($definc < 2) $definc = 2;
 						$newdef = $def+$definc;
+						$maxwalls=get_module_setting("maxcityhealth");
+						if ($newdef>=$maxwalls && $maxwalls!=-1){
+						$newdef=$maxwalls;
+						$definc=$maxwalls-$def;
+						}
 						output("You hammer the board to the walls, reinforcing them quite nicely and adding %s hitpoints to this Outpost's defences.`n`nThis Outpost's hitpoints: `b%s`b`n`n",$definc,number_format($newdef));
 						require_once "modules/cityprefs/lib.php";
 						$cid = get_cityprefs_cityid("location",$session['user']['location']);
