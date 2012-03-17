@@ -26,9 +26,9 @@ function worldmapwn_run_real(){
 				$dest=httpget("dest");
 				require_once("lib/cityprefs.php");
 				if ($dest==null||$dest==""){
-				$city=getsetting("villagename");
+					$city=getsetting("villagename");
 				} else {
-				$city=get_cityprefs_cityname("cityid",$dest);
+					$city=get_cityprefs_cityname("cityid",$dest);
 				}
 				$session['user']['location']=$city;
 				redirect("village.php");
@@ -79,16 +79,7 @@ function worldmapwn_run_real(){
 				debug("You care currently at $currentloc");
 				list($x,$y,$z)=explode(",",$currentloc);
 				if ($session['user']['superuser']&~SU_DOESNT_GIVE_GROTTO){
-					addnav("X?`bSuperuser Grotto`b","superuser.php");
-					addnav("Instant Superuser Travel");
-					$sql="SELECT * FROM " .db_prefix("cityprefs"); 
-					$result=db_query($sql);
-					while ($row = db_fetch_assoc($result)) {
-						$cityname=$row["cityname"];
-						$cityid=$row["cityid"];
-					addnav(array("Go to %s", $cityname), "runmodule.php?module=worldmapwn&op=arrive&dest=$cityid");
-					}
-				modulehook("worldmapwn-travel-superuser");
+					addnav("X?`bSuperuser Grotto`b","superuser.php");				
 				}
 				addnav("World Map","runmodule.php?module=worldmapwn&op=worldmap");
 
@@ -100,8 +91,8 @@ function worldmapwn_run_real(){
 					debug($dest);
 					$destid=$dest["id"];
 					$destname=$dest["name"];				
-						addnav("Cities");
-						addnav(array("O?Enter %s", $destname), "runmodule.php?module=worldmapwn&op=arrive&dest=$destid");
+					addnav("Cities");
+					addnav(array("O?Enter %s", $destname), "runmodule.php?module=worldmapwn&op=arrive&dest=$destid");
 					
 
 				}
@@ -112,10 +103,12 @@ function worldmapwn_run_real(){
 				if ($map==false){
 					output("`0You look out and see what looks like a strange building site. To your right there are what appear to be men in orange worksuits laying rocks, while to your left another appears to be creating a lake using a giant hosepipe. It does not look like something to travel across, but maybe later.");
 					if ($session['user']['superuser']==true){
-						output("`n`n`1Oops! There doesn't seem to be any map created. If you have created a map but are still seeing this message, make sure it is in modules/worldmapwn/maps and it is listed in the settings with a valid ID. Alternativly, the user has been told to open a mapid that isn't there.");}
+						output("`n`n`1Oops! There doesn't seem to be any map created. If you have created a map but are still seeing this message, make sure it is in modules/worldmapwn/maps and it is listed in the settings with a valid ID. Alternativly, the user has been told to open a mapid that isn't there.");
 					}
-					page_footer();
-					break;}
+					//debug("Footer should be called here.");
+					//page_footer();
+					//break;
+				}
 				//$maxx=count($map)-4;
 				$maxy=count($map[1])-2;//rectangular maps only, no jagged ones.
 				//require_once("modules/worldmapwn/lib/readmap.php");
@@ -138,14 +131,11 @@ function worldmapwn_run_real(){
 				require_once("modules/worldmapwn/run/images.php");
 				
 				//Adds links for superusers
-				if ($session['user']['superuser']==true){
-				
-				}
-				//require_once("modules/worldmapwn/run/supertravel.php");
+				require_once("modules/worldmapwn/run/supertravel.php");
 				page_footer();
 				break;
 
-			}
+		}
 
-
+}
 ?>

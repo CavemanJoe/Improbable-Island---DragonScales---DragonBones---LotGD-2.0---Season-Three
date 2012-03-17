@@ -24,8 +24,13 @@ foreach($map as $rownum=>$rows){
 		if ($code2){
 			$image2=worldmapwn_image($code2,$terrainsinfo);
 		}
+		if ($colnum % 2 ==0){
 		$toplevel=$rownum*72;
-		$leftlevel=$colnum*72;
+		$leftlevel=$colnum*54;
+		} else {
+		$toplevel=$rownum*72+36;//this +bit is correct now, left is the only that needs changing
+		$leftlevel=$colnum*54;
+		}
 		//debug($leftlevel);
 		rawoutput("<img style=\"position:absolute; top:".$toplevel."px; left:".$leftlevel."px; z-index:0;\" src=\"$image1\" alt=\"$rownum,$colnum,$z\" />");
 		//rawoutput("<img style=\"position:absolute; top:".$toplevel."px; left:".$leftlevel."px; z-index:0;\" src=\"modules/worldmapwn/images/light.png\" alt=\"$currentloc\"/>");

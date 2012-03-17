@@ -17,7 +17,7 @@
 function worldmapwn_getmoduleinfo(){
 	$info = array(
 	"name"=>"World Map",
-	"version"=>"0.4.0",
+	"version"=>"0.4.1",
 	"author"=>"Cousjava",
 	"category"=>"World Map",
 	"download"=>"",
