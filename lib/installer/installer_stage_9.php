@@ -27,10 +27,6 @@ reset($sql_upgrade_statements);
 while (list($key,$val)=each($sql_upgrade_statements)){
 	if ($dosql){
 		output("`3Version `#%s`3: %s SQL statements...`n",$key,count($val));
-		if ($key>="1.2.0"){
-			require_once("lib/installer/sql_dragonbones.php");
-			dragonbones_sql($key);
-		}
 		if (count($val)>0){
 			output("`^Doing: `6");
 			reset($val);
@@ -45,6 +41,10 @@ while (list($key,$val)=each($sql_upgrade_statements)){
 				// upgrades from previous versions.
 				if (!$session['dbinfo']['upgrade'] && $onlyupgrade) {
 					continue;
+				}
+				if ($key>="1.2.0"){
+					require_once("lib/installer/installer_sql_elvenhall.php");
+					elvenhall_sql($key);
 				}
 				$count++;
 				if ($count%10==0 && $count!=count($val))
