@@ -30,7 +30,7 @@ function worldmapwn_terraincodexyz($x,$y,$z=1,$map=false){
 	require_once("modules/worldmapwn/lib/readmap.php");
 	$map=worldmapwn_map_array($z);}
 	if ($map==false){return false;}
-	$x=$x+4;
+	//$x=$x+1;
 	$code=$map[$x][$y];
 	return $code;
 }

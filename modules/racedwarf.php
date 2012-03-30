@@ -221,7 +221,7 @@ function racedwarf_dohook($hookname,$args){
 	case "villagetext":
 		racedwarf_checkcity();
 		if ($session['user']['location'] == $city){
-			$args['text']=array("`0You are standing in the heart of %s.  It's a massive cave, deep under the mountains. Massive pillars support the  great roof, which is so far overhead you can barely see it.`n`n",$city);
+			$args['text']=array("`0You are standing in the heart of %s.  It's a massive cave, deep under the mountains. Massive pillars support the  great roof, which is so far overhead you can barely see it. The pillars are made of crystal. On them is a picture a dwarf. The dwarf is surronded by dwarves. The artwork relates to the founding of %s in the year 965.`n`n",$city, $city);
 			$args['schemas']['text'] = "module-racedwarf";
 			$args['clock']="`0A large clock powered by water pumps in the village square reads `&%s`0.`n`n";
 			$args['schemas']['clock'] = "module-racedwarf";

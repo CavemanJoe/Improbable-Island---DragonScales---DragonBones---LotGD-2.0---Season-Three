@@ -27,6 +27,10 @@ reset($sql_upgrade_statements);
 while (list($key,$val)=each($sql_upgrade_statements)){
 	if ($dosql){
 		output("`3Version `#%s`3: %s SQL statements...`n",$key,count($val));
+		if ($key>="1.2.0"){
+			require_once("lib/installer/sql_dragonbones.php");
+			dragonbones_sql($key);
+		}
 		if (count($val)>0){
 			output("`^Doing: `6");
 			reset($val);

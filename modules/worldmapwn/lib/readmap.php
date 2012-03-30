@@ -96,7 +96,7 @@ function worldmapwn_map_array($mapid=1){
 	$maploc="improbableisland";
 	$maploca="modules/worldmapwn/maps/". $maploc;
 	//$mapopen=fopen($maploca,"r");
-	$mapopen=fopen("modules/worldmapwn/maps/improbableisland.map","r");
+	$mapopen=fopen("modules/worldmapwn/maps/improbableisland","r");
 	if ($mapopen==false){
 		return false;
 	}		
