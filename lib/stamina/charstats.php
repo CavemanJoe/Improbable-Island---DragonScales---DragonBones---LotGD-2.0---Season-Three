@@ -2,10 +2,20 @@
 
 global $charstat_info, $badguy, $actions_used;
 require_once("lib/stamina/stamina.php");
+require_once("lib/userprefs.php");
+$version=getsetting("installer_version","1.1.1");
+if ($version<"1.2.1.2") $ismodule=true;
 //Look at the number of Turns we're missing.  Default is ten, and we'll add or remove some Stamina depending, as long as we're not in a fight.
-if (get_module_setting("turns_emulation_base","staminasystem")!=0 ){
+if ($ismodule=true){
+	$turnsemulationbase=get_module_setting("turns_emulation_base","staminasystem");
+	$turnsemulationceiling=get_module_setting("turns_emulation_ceiling","staminasystem");
+}else {
+	$turnsemulationbase=getsetting("staminasystem_turns_emulation_base","20000");
+	$turnsemulationceiling=getsetting("staminasystem_turns_emulation_ceiling","20000");
+}
+if ($turnsemulationbase!=0 ){
 	if (!isset($badguy)){
-		$stamina = e_rand(get_module_setting("turns_emulation_base","staminasystem"),get_module_setting("turns_emulation_ceiling","staminasystem"));
+		$stamina = e_rand($turnsemulationbase,$turnsemulationceiling);
 		while ($session['user']['turns'] < 10){
 			$session['user']['turns']++;
 			debug("Turns Removed");
@@ -59,10 +69,14 @@ $session['user']['turns'] = 10;
 //Display the actual Stamina bar
 //require_once("lib/stamina/stamina.php");
 require_once("lib/stamina/stamina.php");
-$stamina = get_module_pref("stamina","staminasystem");
+if ($ismodule=true){
+	$redpoint = get_module_pref("red","staminasystem");
+	$amberpoint = get_module_pref("amber","staminasystem");
+}else {
+	$redpoint = get_userpref("staminasystem_red",200000);
+	$amberpoint = get_userpref("staminasystem_amber",400000);
+}
 $daystamina = 1000000;
-$redpoint = get_module_pref("red","staminasystem");
-$amberpoint = get_module_pref("amber","staminasystem");
 $redpct = get_stamina(0);
 $amberpct = get_stamina(1);
 $greenpct = get_stamina(2);

@@ -6,7 +6,7 @@ function elvenhall_sql($version){
 		$result = db_query($sql);
 		$rownums=db_num_rows($result);
 
-		$sql="INSERT INTO ".db_prefix("userprefs")." (, `setting`, `userid`, `value`) VALUES ";
+		$sql="INSERT INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ";
 		$currentrow=0;
 		while($row=db_fetch_array($result)){
 			$currentrow++;

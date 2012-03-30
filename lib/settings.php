@@ -69,4 +69,8 @@ function getsetting($settingname,$default){
 		return $settings[$settingname];
 	}
 }
+
+function setsetting($settingname,$value){
+	return savesetting($settingname,$value);
+}
 ?>

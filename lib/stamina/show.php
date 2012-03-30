@@ -1,11 +1,18 @@
 <?php
  
 popup_header("Your Stamina statistics");
-
-$stamina = get_module_pref("stamina","staminasystem");
+require_once("lib/stamina/stamina.php");
+require_once("lib/userprefs.php");
+$version=getsetting("installer_version","1.1.1");
+if ($version<"1.2.1.2") $ismodule=true;
+if ($ismodule=true){
+	$redpoint = get_module_pref("red","staminasystem");
+	$amberpoint = get_module_pref("amber","staminasystem");
+}else {
+	$redpoint = get_userpref("staminasystem_red",200000);
+	$amberpoint = get_userpref("staminasystem_amber",400000);
+}
 $daystamina = 1000000;
-$redpoint = get_module_pref("red","staminasystem");
-$amberpoint = get_module_pref("amber","staminasystem");
 $redpct = get_stamina(0);
 $amberpct = get_stamina(1);
 $greenpct = get_stamina(2);

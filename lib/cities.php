@@ -3,7 +3,13 @@
 function cities_villagetext(){
 	global $session;
 	$city = getsetting("villagename", LOCATION_FIELDS);
-	if ($session['user']['location']==get_module_pref("homecity","cities")){$home = true;}
+	require_once("lib/userprefs.php");
+	$version=getsetting("installer_version","1.1.1");
+	if ($version<"1.2.0"){
+		if ($session['user']['location']==get_userpref("homecity","cities")){$home = true;}
+	} else {
+		if ($session['user']['location']==get_userpref("homecity")){$home = true;}
+	}
 	if ($session['user']['location']==$city){$capital = true;}
 	if ($session['user']['location'] == $city){
 			// The city needs a name still, but at least now it's a bit

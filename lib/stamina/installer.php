@@ -1,6 +1,6 @@
 <?php
 
-function staminasystem_getmoduleinfo(){
+function staminasystem_ocre__getmoduleinfo(){
 	$info=array(
 		"name"=>"Expanded Stamina System - Core",
 		"version"=>"20090329",

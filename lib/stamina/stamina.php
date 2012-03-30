@@ -17,14 +17,23 @@ GET DEFAULT ACTION LIST
 Returns arrays for every Action default.
 =======================================================
 */
-
+$version=getsetting("installer_version","1.1.1");
+if ($version<"1.2.1.2") $ismodule=true;
 function get_default_action_list() {
+	if ($ismodule==true){
 	$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
+	} else {$actions=unserialize(getsetting("staminasystem_actionsarray", ""));
 	if (!is_array($actions)) {
 		$actions = array();
+		if ($ismodule==true){
 		set_module_setting("actionsarray", serialize($actions), "staminasystem");
+		}else{
+		setsetting("staminasystem_actionsarray", serialize($actions));
+		}
 	}
+	if ($ismodule==true){
 	$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
+	} else {$actions=unserialize(getsetting("staminasystem_actionsarray", ""));
 	return $actions;
 }
 
@@ -38,7 +47,9 @@ Returns arrays for every action for the given player.
 function get_player_action_list($userid=false) {
 	global $session;
 	if ($userid === false) $userid = $session['user']['acctid'];
-	$actions = unserialize(get_module_pref("actions", "staminasystem", $userid));
+	if ($ismodule==true){
+	$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
+	} else {$actions=unserialize(getsetting("staminasystem_actionsarray", ""));
 	if (!is_array($actions)) {
 		$actions = array();
 		set_module_pref("actions", serialize($actions), "staminasystem", $userid);
@@ -90,7 +101,11 @@ function install_action($actionname, $action){
 	global $session;
 	$defaultactions = get_default_action_list();
 	$defaultactions[$actionname] = $action;
-	set_module_setting("actionsarray",serialize($defaultactions),"staminasystem");
+	if ($ismodule==true){
+		set_module_setting("actionsarray", serialize($actions), "staminasystem");
+		}else{
+		setsetting("staminasystem_actionsarray", serialize($actions));
+		}
 	return true;
 }
 
@@ -105,7 +120,11 @@ function uninstall_action($actionname) {
 	//Remove information from the actions array
 	$defaultactions = get_default_action_list();
 	unset($defaultactions[$actionname]);
-	set_module_setting("actionsarray",serialize($defaultactions),"staminasystem");
+	if ($ismodule==true){
+		set_module_setting("actionsarray", serialize($actions), "staminasystem");
+	}else{
+		setsetting("staminasystem_actionsarray", serialize($actions));
+	}
 	//Now remove the action from each user's modulepref
 	$sql = "SELECT acctid FROM ".db_prefix("accounts")."";
 	$results = db_query($sql);
@@ -113,7 +132,11 @@ function uninstall_action($actionname) {
 		$row = db_fetch_assoc($results);
 		$playeractions = unserialize(get_module_pref("actions","staminasystem",$row['acctid']));
 		unset($playeractions[$actionname]);
-		set_module_pref("actions",serialize($playeractions),"staminasystem",$row['acctid']);
+		if ($ismodule==true){
+			set_module_setting("actionsarray", serialize($actions), "staminasystem");
+		}else{
+			setsetting("staminasystem_actionsarray", serialize($actions));
+		}
 	}
 	return true;
 }
