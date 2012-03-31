@@ -873,10 +873,10 @@ $sql_upgrade_statements = array(
 ),
 "1.1.2 Dragonprime Edition"=>array(
 ),
-"1.2.0 Elvenhall Edition"=>array(
+"2.0.0 Elvenhall Edition"=>array(
 "INSERT IGNORE INTO " . db_prefix("cityprefs") . " VALUES (1, 'none', '".getsetting("villagename", LOCATION_FIELDS)."')",
 ),
-"1.2.1.0 Elvenhall Edition"=>array(
+"2.1.0 Elvenhall Edition"=>array(
 //will siphon off userinfo into here that's not part of a module or login info. Create table in this version.
 //"CREATE TABLE ".db_prefix("userprefs")." ('userid' int(10) unsigned NOT NULL, 'setting' varchar(100), 'value'  text NOT NULL, PRIMARY KEY ('setting','userid'), KEY 'userid' ('userid') ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12",
 //"CREATE TABLE ".db_prefix("accounts_info")." (`accid` int(11) UNSIGNED NOT NULL, `login` varchar(50) NOT NULL,`password` varchar(32) NOT NULL, `emailaddress` varchar(128) NOT NULL, `emailvalidation` varchar(32) NOT NULL, PRIMARY KEY (accid))",
@@ -885,8 +885,8 @@ $sql_upgrade_statements = array(
 //"CREATE TABLE" . dbprefix("stamina")." (`actionid` int(10) unsigned NOT NULL AUTO_INCREMENT, `actionname` varchar(255) NOT NULL, `maxcost` int(11) NOT NULL, `mincost` int(11) NOT NULL, `firstlvlexp` int(11) NOT NULL, `expincrement` float(3,3) NOT NULL, `costreduction` int(11) NOT NULL, `class` varchar(255) NOT NULL, ",
 
 ),
-"1.2.1.1 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for cities
-"1.2.1.2 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina settings
-"1.2.1.3 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina userprefs
+"2.1.1 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for cities
+"2.1.2 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina settings
+"2.1.3 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina userprefs
 );
 ?>

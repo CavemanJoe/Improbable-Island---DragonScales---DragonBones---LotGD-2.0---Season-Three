@@ -27,6 +27,11 @@ reset($sql_upgrade_statements);
 while (list($key,$val)=each($sql_upgrade_statements)){
 	if ($dosql){
 		output("`3Version `#%s`3: %s SQL statements...`n",$key,count($val));
+		if ($key>="2.0.0"){
+			output("Doing elvenhall statements...");
+			require_once("lib/installer/installer_sql_elvenhall.php");
+			elvenhall_sql($key);
+		}
 		if (count($val)>0){
 			output("`^Doing: `6");
 			reset($val);
@@ -42,13 +47,7 @@ while (list($key,$val)=each($sql_upgrade_statements)){
 				if (!$session['dbinfo']['upgrade'] && $onlyupgrade) {
 					continue;
 				}
-				if ($key>="1.2.0"){
-					output("Doing elvenhall statements...");
-					require_once("lib/installer/installer_sql_elvenhall.php");
-					elvenhall_sql($key);
-				} else {
-					output("No elvenhall statements executing.");
-				}
+				
 				$count++;
 				if ($count%10==0 && $count!=count($val))
 				output_notl("`6$count...");
