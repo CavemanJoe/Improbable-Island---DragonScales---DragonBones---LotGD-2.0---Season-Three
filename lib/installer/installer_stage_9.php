@@ -43,8 +43,11 @@ while (list($key,$val)=each($sql_upgrade_statements)){
 					continue;
 				}
 				if ($key>="1.2.0"){
+					output("Doing elvenhall statements...");
 					require_once("lib/installer/installer_sql_elvenhall.php");
 					elvenhall_sql($key);
+				} else {
+					output("No elvenhall statements executing.");
 				}
 				$count++;
 				if ($count%10==0 && $count!=count($val))

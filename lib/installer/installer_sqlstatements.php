@@ -874,14 +874,11 @@ $sql_upgrade_statements = array(
 "1.1.2 Dragonprime Edition"=>array(
 ),
 "1.2.0 Elvenhall Edition"=>array(
-//cityprefs module table
-"CREATE TABLE IF NOT EXISTS ".db_prefix("cityprefs"). " (  `cityid` int(10) unsigned NOT NULL AUTO_INCREMENT,  `module` varchar(255) NOT NULL,  `cityname` varchar(255) NOT NULL,  PRIMARY KEY (`cityid`),  KEY `cityid` (`cityid`),  KEY `module` (`module`),  KEY `cityname` (`cityname`)
-//) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12",
-"INSERT IGNORE INTO " . db_prefix("cityprefs") . " (`cityid`, `module`, `cityname`) VALUES (1, 'none', '".getsetting("villagename", LOCATION_FIELDS)."')",
+"INSERT IGNORE INTO " . db_prefix("cityprefs") . " VALUES (1, 'none', '".getsetting("villagename", LOCATION_FIELDS)."')",
 ),
 "1.2.1.0 Elvenhall Edition"=>array(
 //will siphon off userinfo into here that's not part of a module or login info. Create table in this version.
-"CREATE TABLE ".db_prefix("userprefs")." (`userid` int(10) unsigned NOT NULL, `setting` varchar(100), `value`  text NOT NULL, PRIMARY KEY (`setting`,`userid`), KEY `userid` (`userid`)",
+//"CREATE TABLE ".db_prefix("userprefs")." ('userid' int(10) unsigned NOT NULL, 'setting' varchar(100), 'value'  text NOT NULL, PRIMARY KEY ('setting','userid'), KEY 'userid' ('userid') ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12",
 //"CREATE TABLE ".db_prefix("accounts_info")." (`accid` int(11) UNSIGNED NOT NULL, `login` varchar(50) NOT NULL,`password` varchar(32) NOT NULL, `emailaddress` varchar(128) NOT NULL, `emailvalidation` varchar(32) NOT NULL, PRIMARY KEY (accid))",
 //this is to spilt off login info from everything else, making it easier to have othere things use the same info.
 
@@ -890,6 +887,6 @@ $sql_upgrade_statements = array(
 ),
 "1.2.1.1 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for cities
 "1.2.1.2 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina settings
-//"1.2.1.3 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina userprefs
+"1.2.1.3 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina userprefs
 );
 ?>

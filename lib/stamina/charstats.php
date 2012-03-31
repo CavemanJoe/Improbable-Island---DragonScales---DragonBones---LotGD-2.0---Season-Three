@@ -4,9 +4,9 @@ global $charstat_info, $badguy, $actions_used;
 require_once("lib/stamina/stamina.php");
 require_once("lib/userprefs.php");
 $version=getsetting("installer_version","1.1.1");
-if ($version<"1.2.1.2") $ismodule=true;
+if ($version<"1.2.1.2") {$ismodule=true;}
 //Look at the number of Turns we're missing.  Default is ten, and we'll add or remove some Stamina depending, as long as we're not in a fight.
-if ($ismodule=true){
+if ($ismodule==true){
 	$turnsemulationbase=get_module_setting("turns_emulation_base","staminasystem");
 	$turnsemulationceiling=get_module_setting("turns_emulation_ceiling","staminasystem");
 }else {
@@ -48,13 +48,22 @@ if (isset($actions_used)){
 		$disp = "Lv".$actions_used[$action]['lvlinfo']['lvl']." (+`@".$actions_used[$action]['exp_earned']."`^ xp)<table style='border: solid 1px #000000;' bgcolor='red'  cellpadding='0' cellspacing='0' width='70' height='5'><tr><td width='$pct%' bgcolor='white'></td><td width='$nonpct%'></td></tr></table>";
 		setcharstat("Recent Actions",$action,$disp);
 		
-		if (get_module_pref("user_minihof","staminasystem")){
-			$st = microtime(true);
-			stamina_minihof($action);
-			$en = microtime(true);
-			$to = $en - $st;
-			debug("Minihof: ".$to);
-		}
+		if ($ismodule==true){
+			if (get_module_pref("user_minihof","staminasystem")){
+				$st = microtime(true);
+				stamina_minihof($action);
+				$en = microtime(true);
+				$to = $en - $st;
+				debug("Minihof: ".$to);
+			} else {
+				if (get_userpref("stamina_minihof")){
+				$st = microtime(true);
+				stamina_minihof($action);
+				$en = microtime(true);
+				$to = $en - $st;
+				debug("Minihof: ".$to);
+				}
+		}	}
 	}
 }
 
@@ -63,18 +72,18 @@ if (isset($actions_used)){
 
 //Then, since Turns are pretty well baked into core and we don't want to be playing around with adding turns just as they're needed for core to operate, we'll just add ten turns here and forget all about it...
 $session['user']['turns'] = 10;
-
+//these will be go in version 1.3
 
 
 //Display the actual Stamina bar
 //require_once("lib/stamina/stamina.php");
 require_once("lib/stamina/stamina.php");
-if ($ismodule=true){
+if ($ismodule==true){
 	$redpoint = get_module_pref("red","staminasystem");
 	$amberpoint = get_module_pref("amber","staminasystem");
 }else {
-	$redpoint = get_userpref("staminasystem_red",200000);
-	$amberpoint = get_userpref("staminasystem_amber",400000);
+	$redpoint = get_userpref("stamina_red",200000);
+	$amberpoint = get_userpref("stamina_amber",400000);
 }
 $daystamina = 1000000;
 $redpct = get_stamina(0);

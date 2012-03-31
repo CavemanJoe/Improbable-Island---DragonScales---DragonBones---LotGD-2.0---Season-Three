@@ -1486,7 +1486,47 @@ return array(
 			'columns' => 'dk',
 			),
 		),
+	'cityprefs'=>array(
+		'cityid'=>array(
+			'name'=>'cityid', 'type'=>'int(10) unsigned',
+			'extra'=>'auto_increment'
+			),
+		'module'=>array(
+			'name'=>'module', 'type'=>'varchar(255)', 'default'=>""
+			),
+		'cityname'=>array(
+			'name'=>'cityname', 'type'=>'varchar(255)', 'null'=>'1', 'default'=>""
+			),
+		'key-PRIMARY'=>array(
+			'name'=>'PRIMARY',
+			'type'=>'primary key',
+			'unique'=>'1',
+			'columns'=>'cityid',
+			),
+		'key-cityid'=>array(
+			'name'=>'cityid',
+			'type'=>'key',
+			'columns'=>'cityid',
+			),
+		'key-module'=>array(
+			'name'=>'module',
+			'type'=>'key',
+			'columns'=>'module',
+			),
+		'key-cityname'=>array(
+			'name'=>'cityname',
+			'type'=>'key',
+			'columns'=>'cityname',
+			),
+		),
 
+/*"CREATE TABLE IF NOT EXISTS ".db_prefix("cityprefs"). " (  'cityid' int(10) unsigned NOT NULL AUTO_INCREMENT,  'module' varchar(255) NOT NULL,  'cityname' varchar(255) NOT NULL,  PRIMARY KEY ('cityid'),  KEY 'cityid' ('cityid'),  KEY 'module' 'module'),  KEY 'cityname' ('cityname')
+//) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12",
+"INSERT IGNORE INTO " . db_prefix("cityprefs") . " ('cityid', 'module', 'cityname') VALUES (1, 'none', '".getsetting("villagename", LOCATION_FIELDS)."')",
+),
+"1.2.1.0 Elvenhall Edition"=>array(
+//will siphon off userinfo into here that's not part of a module or login info. Create table in this version.
+"CREATE TABLE ".db_prefix("userprefs")." ('userid' int(10) unsigned NOT NULL, 'setting' varchar(100), `value`  text NOT NULL, PRIMARY KEY ('setting`,`userid'), KEY 'userid' ('userid')",*/
 );
 }
 ?>

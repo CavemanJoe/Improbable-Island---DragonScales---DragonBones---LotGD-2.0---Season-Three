@@ -286,7 +286,7 @@ function appoencode($data,$priv=false){
 					break;
 				case "s"://subjective i.e.he, she
 					global $session;
-					if(is_module_activated("gender")){
+					if(is_module_active("gender")){
 						$out.=get_module_pref("user_Subjective","gender");
 					}else{
 						if($session['user']['sex']==0){
@@ -294,36 +294,36 @@ function appoencode($data,$priv=false){
 					}break;
 				case "o"://objective i.e. him, her
 					global $session;
-					if(is_module_activated("gender")){
-						$out.=get_module_pref("user_Objective","gender");
-					}else{
+					//if(is_module_activated("gender")){
+					//	$out.=get_module_pref("user_Objective","gender");
+					//}else{
 						if($session['user']['sex']==0){
-							$out.="him";}else{$out.="her";}
-					}break;
+							$out.="him";}else{$out.="her";}//}
+					break;
 				case "r"://reflexive i.e.himself, herself
 					global $session;
-					if(is_module_activated("gender")){
-						$out.=get_module_pref("user_Reflexive","gender");
-					}else{
+					//if(is_module_activated("gender")){
+					//	$out.=get_module_pref("user_Reflexive","gender");
+					//}else{
 						if($session['user']['sex']==0){
-							$out.="himself";}else{$out.="herself";}
-					}break;
+							$out.="himself";}else{$out.="herself";}//}
+					break;
 				case "d"://posessive pronoun i.e. his, hers
 					global $session;
-					if(is_module_activated("gender")){
-						$out.=get_module_pref("user_Posessive_Pronoun","gender");
-					}else{
+					//if(is_module_activated("gender")){
+					//	$out.=get_module_pref("user_Posessive_Pronoun","gender");
+					//}else{
 						if($session['user']['sex']==0){
-							$out.="his";}else{$out.="hers";}
-					}break;
+							$out.="his";}else{$out.="hers";}//}
+					break;
 				case "D"://posessive determiner i.e. his, her
 					global $session;
-					if(is_module_activated("gender")){
-						$out.=get_module_pref("user_Posessive_Determiner","gender");
-					}else{
+					//if(is_module_activated("gender")){
+					//	$out.=get_module_pref("user_Posessive_Determiner","gender");
+					//}else{
 						if($session['user']['sex']==0){
-							$out.="his";}else{$out.="her";}
-					}break;
+							$out.="his";}else{$out.="her";}//}
+					break;
 				case "`":
 					$out.="`";
 					++$pos;
