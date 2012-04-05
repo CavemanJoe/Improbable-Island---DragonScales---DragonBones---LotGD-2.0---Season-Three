@@ -54,6 +54,7 @@ if ($session['user']['loggedin'] && $session['loggedin']){
 	$session['user']['allowednavs']=$session['allowednavs'];
 	$session['badnav']+=1;
 	//echo($session['badnav']);
+	modulehook("badnav");
 	saveuser();
 }else{
 	$session=array();

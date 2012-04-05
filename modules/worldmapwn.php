@@ -312,11 +312,12 @@ function worldmapwn_run() {
 }
 
 function worldmapwn_dohook($hookname,$args){
-	global $session;
-	
-	// If there is no stamina system module, we do nothing.
-	//if ((!is_module_active("staminasystem"))||($logd_version<"2.1.0 Elvenhall Edition")){
-	//	return $args;}
+	global $session, $logd_version;
+
+	//If there is no stamina system avaliable, we do nothing.
+	if ((!is_module_active("staminasystem"))&&($logd_version<"2.1.0 Elvenhall Edition")){
+		return $args;
+	} 
 	
 	
 	if (file_exists("modules/worldmapwn/dohook/{$hookname}.php")) {

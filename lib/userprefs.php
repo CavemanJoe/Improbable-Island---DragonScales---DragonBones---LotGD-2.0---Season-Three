@@ -22,12 +22,15 @@ function get_userpref($name,$user=false){
 		if(isset($session['user']['loggedin']) && $session['user']['loggedin']) $user = $session['user']['acctid'];
 		else $user = 0;
 	}
-
+	//if ($session['user']['userprefs'][$name]){
+	//	return $session['user']['userprefs'][$name];
+	//}
 	$sql="SELECT value FROM ".db_prefix("userprefs")." WHERE userid='$user' AND setting='$name'";
 	$r=db_query($sql);
 	$row=db_fetch_assoc($r);
 	$return=$row['value'];
-	//debug($return);
+	//$session['user']['userprefs'][$name]=$return;
+	//debug("$name is $return where user is $user");
 	return $return;
 }
 
