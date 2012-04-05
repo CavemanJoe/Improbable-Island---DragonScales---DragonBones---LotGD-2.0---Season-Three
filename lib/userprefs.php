@@ -26,11 +26,13 @@ function get_userpref($name,$user=false){
 	$sql="SELECT value FROM ".db_prefix("userprefs")." WHERE userid='$user' AND setting='$name'";
 	$r=db_query($sql);
 	$row=db_fetch_assoc($r);
-	return $row['value'];
+	$return=$row['value'];
+	//debug($return);
+	return $return;
 }
 
 function set_userpref($name,$value,$user=false){
-	global $module_prefs,$session;
+	global $session;
 	if ($user === false) $uid=$session['user']['acctid'];
 	else $uid = $user;
 

@@ -72,7 +72,7 @@ if (isset($actions_used)){
 
 //Then, since Turns are pretty well baked into core and we don't want to be playing around with adding turns just as they're needed for core to operate, we'll just add ten turns here and forget all about it...
 $session['user']['turns'] = 10;
-//these will be go in version 1.3
+//these will be go in version 3.0
 
 
 //Display the actual Stamina bar

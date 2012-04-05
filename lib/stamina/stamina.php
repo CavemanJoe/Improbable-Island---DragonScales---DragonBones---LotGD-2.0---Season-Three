@@ -264,7 +264,7 @@ function stamina_get_active_buffs($action, $userid=false){
 SUSPEND / RESTORE A BUFF / ALL BUFFS
 Temporarily suspends a Stamina buff.  Restore it afterwards, because this is saved back to the modulepref.  God this needs baking into core and rewriting.
 *******************************************************
-It's now been baked, but still needs reqriting as it now just a fancy modulepref. Oh, and who wants biscuits?
+TODO:It's now been baked, but still needs rewriting as it now just a fancy modulepref. Oh, and who wants cake?
 *******************************************************
 */
 
@@ -592,6 +592,7 @@ function get_stamina($type = 1, $realvalue = false, $userid = false) {
 	$amberpoint = get_module_pref("amber", "staminasystem", $userid);
 	} else {
 	$totalstamina = get_userpref("stamina_amount", $userid);
+	debug($totalstamina);
 	$maxstamina = 1000000;
 	$totalpct = ($totalstamina/$maxstamina)*100;
 	$redpoint = get_userpref("stamina_red", $userid);
@@ -760,6 +761,7 @@ function stamina_process_newday($userid = false) {
 	set_module_pref("amber",400000,"staminasystem",$userid);
 	set_module_pref("red",200000,"staminasystem",$userid);
 	} else {
+	debug("Setting stamina to $startingstamina");
 	set_userpref("stamina_amount",$startingstamina,$userid);
 	set_userpref("stamina_amber",400000, $userid);
 	set_userpref("stamina_red",200000,$userid);
@@ -827,7 +829,7 @@ function removestamina($amount, $userid = false){
 		}
 		set_module_pref("stamina",$newstamina,"staminasystem",$userid);
 	} else {
-		$newstamina = get_userpref("stamina_amount", "", $userid) - $amount;
+		$newstamina = get_userpref("stamina_amount",$userid) - $amount;
 		if ($newstamina < 0){
 			$newstamina = 0;
 		}

@@ -157,6 +157,7 @@ function elvenhall_sql($version){
 		}
 		$result = db_query($sql);
 	}//*/
+	
 	return true;
 }
 

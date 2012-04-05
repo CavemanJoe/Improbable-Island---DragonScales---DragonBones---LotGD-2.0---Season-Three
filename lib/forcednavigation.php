@@ -57,7 +57,9 @@ function do_forced_nav($anonymous,$overrideforced){
 			gentimecount
 			gensize
 		*/
-		$sql = "SELECT allowednavs,laston,gentime,gentimecount,gensize FROM ".db_prefix("accounts_everypage")." WHERE acctid = '".$session['user']['acctid']."'";
+		//This info is currently in the accounts table
+		//TODO: This could be moved into accounts_everypage, which was linked to in the code before.
+		$sql = "SELECT allowednavs,laston,gentime,gentimecount,gensize FROM ".db_prefix("accounts")." WHERE acctid = '".$session['user']['acctid']."'";
 		$result = db_query($sql);
 		if (db_num_rows($result)==1){
 			//debug("Getting fresh info from accounts_everypage");

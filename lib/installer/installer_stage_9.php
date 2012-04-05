@@ -2,6 +2,7 @@
 require_once("lib/installer/installer_sqlstatements.php");
 require_once("lib/installer/installer_functions.php");
 require_once("lib/installer/installer_default_settings.php");
+require_once("lib/settings.php");
 output("`@`c`bBuilding the Tables`b`c");
 output("`2I'm now going to build the tables.");
 output("If this is an upgrade, your current tables will be brought in line with the current version.");

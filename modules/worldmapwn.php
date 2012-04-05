@@ -17,7 +17,7 @@
 function worldmapwn_getmoduleinfo(){
 	$info = array(
 	"name"=>"World Map",
-	"version"=>"0.4.1",
+	"version"=>"0.4.2",
 	"author"=>"Cousjava",
 	"category"=>"World Map",
 	"download"=>"",
@@ -314,11 +314,13 @@ function worldmapwn_run() {
 function worldmapwn_dohook($hookname,$args){
 	global $session;
 	
-	// If the stamina system module is deactivated, we do nothing.
-	if (!is_module_active("staminasystem")) 
-		return $args;
+	// If there is no stamina system module, we do nothing.
+	//if ((!is_module_active("staminasystem"))||($logd_version<"2.1.0 Elvenhall Edition")){
+	//	return $args;}
+	
 	
 	if (file_exists("modules/worldmapwn/dohook/{$hookname}.php")) {
+		//debug("Doing worldmapwn hook $hookname");
 		require("modules/worldmapwn/dohook/{$hookname}.php");
 	} else {
 		debug("Sorry, I don't have the hook '{$hookname}' programmed.");
