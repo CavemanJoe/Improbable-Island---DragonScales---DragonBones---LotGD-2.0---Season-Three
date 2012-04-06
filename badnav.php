@@ -12,6 +12,7 @@ if ($session['user']['loggedin'] && $session['loggedin']){
 	if (strpos($session['output'],"<!--CheckNewDay()-->")){
 		checkday();
 	}
+	modulehook("badnav");
 	//echo($session['badnav']);
 	while (list($key,$val)=each($session['allowednavs'])){
 		//hack-tastic.
@@ -54,7 +55,7 @@ if ($session['user']['loggedin'] && $session['loggedin']){
 	$session['user']['allowednavs']=$session['allowednavs'];
 	$session['badnav']+=1;
 	//echo($session['badnav']);
-	modulehook("badnav");
+	
 	saveuser();
 }else{
 	$session=array();

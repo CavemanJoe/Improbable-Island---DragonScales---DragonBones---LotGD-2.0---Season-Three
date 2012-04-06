@@ -96,20 +96,23 @@ function worldmapwn_map_array($mapid=1){
 	$maploc="improbableisland";
 	$maploca="modules/worldmapwn/maps/". $maploc;
 	//$mapopen=fopen($maploca,"r");
-	$mapopen=fopen("modules/worldmapwn/maps/improbableisland","r");
+	$mapopen=fopen($maploca,"r");
 	if ($mapopen==false){
 		return false;
-	}		
+	}
+			
 				
 				
 		
 	$values = array();
-	foreach(file($maploca) as $line => $content) {
+	$line=0;
+	while($content=fgets($maploca)) {
 		$values[$line] = explode(',',$content);
+		$line++;
 	}
 	
 
-	//fclose($mapopen);
+	fclose($mapopen);
 
 	return $values;
 	

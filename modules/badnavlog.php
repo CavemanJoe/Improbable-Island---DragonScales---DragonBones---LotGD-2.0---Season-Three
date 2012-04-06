@@ -43,6 +43,7 @@ function badnavlog_dohook($hookname,$args){
     return $args;
 	$userid=$session['user']['acctid'];
 	$allowednavs=$session['allowednavs'];
+	debug("Debugging badnav...");
 	$sql="SELECT output FROM ".db_prefix("accounts_prefix")." WHERE acctid='$userid'";
 	$r=db_query($sql);
 	$accountsoutput=db_fetch_assoc($r);
