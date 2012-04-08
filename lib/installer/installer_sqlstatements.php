@@ -888,6 +888,6 @@ $sql_upgrade_statements = array(
 "2.1.1 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for cities
 "2.1.2 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina settings
 "2.1.3 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina userprefs
-"2.2.0 Elvenhall Edition"=>array(),
+"2.2.0 Elvenhall Edition"=>array(),//stamina battle actions install
 );
 ?>

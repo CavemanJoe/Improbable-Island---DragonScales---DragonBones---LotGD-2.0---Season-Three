@@ -98,9 +98,9 @@ function staminacorecombat_uninstall(){
 	uninstall_action("Hunting - Big Trouble");
 	uninstall_action("Hunting - Easy Fights");
 	uninstall_action("Hunting - Suicidal");
-	uninstall_action("Fighting - Standard");
-	uninstall_action("Running Away");
-	uninstall_action("Taking It on the Chin");
+	//uninstall_action("Fighting - Standard");
+	//uninstall_action("Running Away");
+	//uninstall_action("Taking It on the Chin");
 	return true;
 }
 function staminacorecombat_dohook($hookname,$args){
@@ -108,6 +108,34 @@ function staminacorecombat_dohook($hookname,$args){
 	static $damagestart = 0;
 	switch($hookname){
 	case "forest":
+		$op=httpget("op");
+		if ($op=="search"){
+			$type=httpget("type");
+			if ($type=="slum"){
+				$return = process_action("Hunting - Easy Fights");
+				if ($return['lvlinfo']['levelledup']==true){
+					output("`c`b`0You gained a level in Looking for Easy Fights!  This action costs fewer Stamina points now, so you can pick on more small creatures!`b`c`n`n");
+				}
+			} else if ($type=="thrill"){
+				$return = process_action("Hunting - Big Trouble");
+				if ($return['lvlinfo']['levelledup']==true){
+					output("`c`b`0You gained a level in Looking for Big Trouble!  This action costs fewer Stamina points now, so you can throw yourself on the mercy of large creatures more often!`b`c`n`n");
+				}
+			} else if ($type=="suicide"){
+				$return = process_action("Hunting - Suicidal");
+				if ($return['lvlinfo']['levelledup']==true){
+					output("`c`b`0You gained a level in Looking for Really Big Trouble!  This action costs fewer Stamina points now, so you can put yourself in mortal danger more often!`b`c`n`n");
+				}
+
+			} else {
+				$return = process_action("Hunting - Normal");
+				if ($return['lvlinfo']['levelledup']==true){
+					output("`c`b`0You gained a level in Looking for Trouble!  This action costs fewer Stamina points now, so you can find more beasties to aggress!`b`c`n`n");
+				}
+			}
+
+
+		}
 		blocknav("forest.php?op=search");
 		blocknav("forest.php?op=search&type=slum");
 		blocknav("forest.php?op=search&type=thrill");
@@ -130,7 +158,7 @@ function staminacorecombat_dohook($hookname,$args){
 		break;
 	case "fightnav-graveyard":
 	case "fightnav":
-		$script = $args['script'];
+		/*$script = $args['script'];
 		$fightcost = stamina_getdisplaycost("Fighting - Standard");
 		$runcost = stamina_getdisplaycost("Running Away");
 
@@ -138,7 +166,7 @@ function staminacorecombat_dohook($hookname,$args){
 		blocknav($script."op=run");
 		addnav("Standard Fighting");
 		addnav(array("F?Fight (`Q%s%%`0)", $fightcost),$script."op=fight&stam=fight");
-		addnav(array("R?Run (`Q%s%%`0)", $runcost),$script."op=run&stam=run");
+		addnav(array("R?Run (`Q%s%%`0)", $runcost),$script."op=run&stam=run");*/
 		break;
 	case "startofround-prebuffs":
 		$process = httpget("stam");
@@ -175,7 +203,7 @@ function staminacorecombat_dohook($hookname,$args){
 		$damagestart = $session['user']['hitpoints'];
 		break;
 	case "endofround":
-		$damagetaken = $damagestart - $session['user']['hitpoints'];
+		/*$damagetaken = $damagestart - $session['user']['hitpoints'];
 		if (httpget("stam")=="fight" || httpget("op")=="fight"){
 			$return = process_action("Fighting - Standard");
 			if ($return['lvlinfo']['levelledup']==true){
@@ -192,7 +220,7 @@ function staminacorecombat_dohook($hookname,$args){
 			if ($return['lvlinfo']['levelledup']==true){
 				output("`n`c`b`0You gained a level in Running Away!  You are now level %s!  This action will cost fewer Stamina points now, so you can run away like a cowardly dog more often!`b`c`n",$return['lvlinfo']['newlvl']);
 			}
-		}
+		}//*/
 		$reps = ($damagetaken / $session['user']['maxhitpoints']) * 9;
 		if ($reps >= 1){
 			$staminalost = 0;
@@ -204,7 +232,7 @@ function staminacorecombat_dohook($hookname,$args){
 				}
 			}
 			output("The force of the blow sends you reeling, and knocks %s Stamina points out of you!`n",$staminalost);
-		}
+		}//*/
 		break;
 	}
 	return $args;
@@ -232,8 +260,8 @@ function staminacorecombat_applystaminabuff(){
 		}
 		apply_buff('stamina-corecombat-exhaustion', array(
 			"name"=>"Exhaustion",
-			"atkmod"=>$buffvalue,
-			"defmod"=>$buffvalue,
+			"atkmod"=>-$buffvalue,
+			"defmod"=>-$buffvalue,
 			"rounds"=>-1,
 			"roundmsg"=>$buffmsg,
 			"schema"=>"module-staminacorecombat"

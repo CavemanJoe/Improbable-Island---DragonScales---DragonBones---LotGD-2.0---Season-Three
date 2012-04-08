@@ -3,6 +3,8 @@
 // addnews ready
 // mail ready
 function fightnav($allowspecial=true, $allowflee=true,$script=false){
+	require_once("lib/stamina/stamina.php");
+
 	global $PHP_SELF,$session,$newenemies,$companions;
 	tlschema("fightnav");
 	if ($script===false){
@@ -15,12 +17,17 @@ function fightnav($allowspecial=true, $allowflee=true,$script=false){
 			$script.="&";
 		}
 	}
-	$fight = "Fight";
-	$run = "Run";
+	$fighttext = "Fight";
+	$runtext = "Run";
 	if (!$session['user']['alive']) {
-		$fight = "F?Torment";
-		$run = "R?Flee";
+		$fighttext = "F?Torment";
+		$runtext = "R?Flee";
 	}
+	$fightcost=stamina_getdisplaycost("Fighting - Standard");
+	$runcost=stamina_getdisplaycost("Running Away");
+	$fight=array($fighttext . "(`Q%s%%`0)",$fightcost);
+	$run=array($runtext . "(`Q%s%%`0)",$runcost);
+	//addnav(array("T?Look for Trouble (`Q%s%%`0)", $normalcost),"forest.php?op=search&stam=search");
 	addnav($fight,$script."op=fight");
 	if ($allowflee) {
 		addnav($run,$script."op=run");
@@ -31,8 +38,10 @@ function fightnav($allowspecial=true, $allowflee=true,$script=false){
 
 	if (getsetting("autofight",0)) {
 		addnav("Automatic Fighting");
-		addnav("5?For 5 Rounds", $script."op=fight&auto=five");
-		addnav("1?For 10 Rounds", $script."op=fight&auto=ten");
+		addnav(array("5?For 5 Rounds" . ($fightcost*5)),$script."op=fight&auto=five");
+		//addnav("5?For 5 Rounds", $script."op=fight&auto=five");
+		addnav(array("1?For 10 Rounds" . ($fightcost*10)),$script."op=fight&auto=ten");
+		//addnav("1?For 10 Rounds", $script."op=fight&auto=ten");
 		$auto = getsetting("autofightfull",0);
 		if (($auto == 1 || ($auto == 2 && !$allowflee)) && count($newenemies)==1) {
 			addnav("U?Until End", $script."op=fight&auto=full");

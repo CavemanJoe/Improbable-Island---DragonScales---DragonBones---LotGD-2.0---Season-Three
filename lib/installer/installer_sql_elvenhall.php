@@ -19,9 +19,7 @@ function elvenhall_sql($version){
 
 		$result = db_query($sql);
 		return;
-	}
-	//transfers stamina settings over
-	if ($version=="2.1.0 Elvenhall Edition"){
+	} else 	if ($version=="2.1.0 Elvenhall Edition"){//transfers stamina settings over
 		output("`nUpdating Stamina actionsarray settings...");
 		$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='staminasystem' AND setting='actionsarray'";
 		$result=db_query($sql);
@@ -46,9 +44,7 @@ function elvenhall_sql($version){
 		$sql="INSERT INTO ".db_prefix("settings")." VALUES ('stamina_turns_ceilin', '$array')";
 		$result=db_query($sql);
 		return;
-	}
-	//transfers stamina userprefs over
-	if ($version=="2.1.3 Elvenhall Edition"){
+	} else 	if ($version=="2.1.3 Elvenhall Edition"){	//transfers stamina userprefs over
 		//stamina actions
 		output("`nUpdating stamina actions userprefs...");
 		$sql="SELECT `userid`, `value` FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='actions'";
@@ -156,7 +152,34 @@ function elvenhall_sql($version){
 			}
 		}
 		$result = db_query($sql);
-	}//*/
+	} else if ($version=="2.2.0 Elvenhall Edition"){
+		require_once("lib/stamina/stamina.php");
+		install_action("Fighting - Standard",array(
+			"maxcost"=>2000,
+			"mincost"=>500,
+			"firstlvlexp"=>2000,
+			"expincrement"=>1.1,
+				"costreduction"=>15,
+		"class"=>"Combat"
+		));
+		install_action("Running Away",array(
+			"maxcost"=>1000,
+			"mincost"=>200,
+			"firstlvlexp"=>500,
+			"expincrement"=>1.05,
+			"costreduction"=>8,
+			"class"=>"Combat"
+		));
+		//triggers when a player loses more than 10% of his total hitpoints in a single round
+		install_action("Taking It on the Chin",array(
+			"maxcost"=>2000,
+				"mincost"=>200,
+		"firstlvlexp"=>5000,
+			"expincrement"=>1.1,
+			"costreduction"=>15,
+			"class"=>"Combat"
+		));
+	}
 	
 	return true;
 }

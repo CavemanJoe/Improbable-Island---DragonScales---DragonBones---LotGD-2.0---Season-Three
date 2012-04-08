@@ -9,6 +9,7 @@ require_once("lib/battle-buffs.php");
 require_once("lib/battle-skills.php");
 require_once("lib/buffs.php");
 require_once("lib/extended-battle.php");
+require_once("lib/stamina/stamina.php");
 
 //just in case we're called from within a function.Yuck is this ugly.
 global $badguy,$enemies,$newenemies,$session,$creatureattack,$creatureatkmod, $beta;
@@ -282,7 +283,9 @@ if ($op != "newtarget") {
 									} else {
 									}
 								}
-							}else if($op=="run" && !$surprised){
+							}else if($op=="run" && !$surprised){//going to add process run here. This whole battle system needs rewriting to be clearer.
+								require_once("lib/stamina/stamina.php");//can't remember if its already been included, put it in again anyway.
+								process_action("Running Away");
 								output("`4You are too busy trying to run away like a cowardly dog to try to fight `^%s`4.`n",$badguy['creaturename']);
 							}
 
@@ -544,6 +547,15 @@ function battle_player_attacks() {
 		$badguy['creaturehealth']-=$creaturedmg;
 		process_dmgshield($buffset['dmgshield'],-$creaturedmg);
 		process_lifetaps($buffset['lifetap'],$creaturedmg);
+	}
+	if ($roll['stamret']['lvlinfo']['levelledup']==true){
+		output("`n`c`b`0You gained a level in Standard Fighting!  You are now level %s!  This action will cost fewer Stamina points now.`b`c`n",$roll['stamret']['lvlinfo']['newlvl']);
+	}
+	if ($roll['chinreturn']['acted']==true){
+		output("The force of the blow sends you reeling, and knocks %s Stamina points out of you!`n",$roll['chinreturn']['points_lost']);
+	}
+	if ($roll['chinreturn']['lvlinfo']['levelledup']==true){
+		output("`n`c`b`0You gained a level in Taking It On The Chin!  You are now level %s!  This action will cost fewer Stamina points now, so getting beaten up will tire you out a little less.  Good thing, really!`b`c`n",$return['lvlinfo']['newlvl']);
 	}
 	if ($badguy['creaturehealth'] <= 0) {
 		$badguy['dead'] = true;
