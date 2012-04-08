@@ -3,8 +3,7 @@
 global $charstat_info, $badguy, $actions_used;
 require_once("lib/stamina/stamina.php");
 require_once("lib/userprefs.php");
-$version=getsetting("installer_version","1.1.1");
-if ($version<"2.0.0") {$ismodule=true;}
+if ($logd_version<"2.0.0") {$ismodule=true;}
 //Look at the number of Turns we're missing.  Default is ten, and we'll add or remove some Stamina depending, as long as we're not in a fight.
 if ($ismodule==true){
 	$turnsemulationbase=get_module_setting("turns_emulation_base","staminasystem");
@@ -54,14 +53,14 @@ if (isset($actions_used)){
 				stamina_minihof($action);
 				$en = microtime(true);
 				$to = $en - $st;
-				debug("Minihof: ".$to);
+				//debug("Minihof: ".$to);
 			} else {
 				if (get_userpref("stamina_minihof")){
 				$st = microtime(true);
 				stamina_minihof($action);
 				$en = microtime(true);
 				$to = $en - $st;
-				debug("Minihof: ".$to);
+				//debug("Minihof: ".$to);
 				}
 		}	}
 	}
@@ -85,6 +84,7 @@ if ($ismodule==true){
 	$redpoint = get_userpref("stamina_red",200000);
 	$amberpoint = get_userpref("stamina_amber",400000);
 }
+$stamina=get_stamina(3,1);
 $daystamina = 1000000;
 $redpct = get_stamina(0);
 $amberpct = get_stamina(1);

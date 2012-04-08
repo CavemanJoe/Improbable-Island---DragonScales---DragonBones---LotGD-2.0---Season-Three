@@ -1,5 +1,5 @@
 <?php
-
+require_once("modules/iitems/lib/lib.php");
 function get_building_pref($pref,$hid){
 	$sql = "SELECT value FROM ".db_prefix("building_prefs")." WHERE pref='$pref' AND hid='$hid'";
 	$result = db_query($sql);
@@ -168,7 +168,8 @@ addnav("M?Back to the Island Map","runmodule.php?module=improbablehousing&op=exi
 //Is a particular location stakeable?  That is, are there fewer than four houses already here, and is the terrain suitable?
 function improbablehousing_stakeable($loc){
 	global $session;
-	if (has_item('housing_stake')){
+
+	if (iitems_has_item('housing_stake')){
 		//debug("Has Stake");
 		list($worldmapX, $worldmapY, $worldmapZ) = explode(",", $loc);
 		require_once "modules/worldmapen/lib.php";
@@ -483,7 +484,7 @@ function improbablehousing_show_decorating_jobs($house){
 	//This shows links to help decorate a room
 	require_once "modules/staminasystem/lib/lib.php";
 	
-	if (has_item('toolbox_decorating')){
+	if (iitems_has_item('toolbox_decorating')){
 		$hasitem = 1;
 	}
 	if (get_stamina()==100){
@@ -588,7 +589,7 @@ function improbablehousing_show_build_jobs($house){
 					$player = array();
 					foreach($svals['iitems'] AS $ikey=>$iitem){
 						$store[$ikey] = $house['data']['store'][$ikey];
-						if (has_item($ikey)){
+						if (iitems_has_item($ikey)){
 							$player[$ikey] = 1;
 						}
 					}
