@@ -38,9 +38,11 @@ function fightnav($allowspecial=true, $allowflee=true,$script=false){
 
 	if (getsetting("autofight",0)) {
 		addnav("Automatic Fighting");
-		addnav(array("5?For 5 Rounds" . ($fightcost*5)),$script."op=fight&auto=five");
+		$fivefight=$fightcost*5;
+		$tenfight=$fightcost*10;
+		addnav(array("5?For 5 Rounds (`Q%s%%`0)",$fivefight),$script."op=fight&auto=five");
 		//addnav("5?For 5 Rounds", $script."op=fight&auto=five");
-		addnav(array("1?For 10 Rounds" . ($fightcost*10)),$script."op=fight&auto=ten");
+		addnav(array("1?For 10 Rounds (`Q%s%%`0)",$tenfight),$script."op=fight&auto=ten");
 		//addnav("1?For 10 Rounds", $script."op=fight&auto=ten");
 		$auto = getsetting("autofightfull",0);
 		if (($auto == 1 || ($auto == 2 && !$allowflee)) && count($newenemies)==1) {
