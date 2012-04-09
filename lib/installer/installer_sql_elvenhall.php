@@ -179,6 +179,38 @@ function elvenhall_sql($version){
 			"costreduction"=>15,
 			"class"=>"Combat"
 		));
+			install_action("Hunting - Normal",array(
+			"maxcost"=>25000,
+			"mincost"=>10000,
+			"firstlvlexp"=>1000,
+			"expincrement"=>1.08,
+			"costreduction"=>150,
+			"class"=>"Hunting"
+		));
+		install_action("Hunting - Big Trouble",array(
+			"maxcost"=>30000,
+			"mincost"=>10000,
+			"firstlvlexp"=>1000,
+			"expincrement"=>1.08,
+			"costreduction"=>200,
+			"class"=>"Hunting"
+		));
+		install_action("Hunting - Easy Fights",array(
+			"maxcost"=>20000,
+			"mincost"=>10000,
+				"firstlvlexp"=>1000,
+			"expincrement"=>1.08,
+			"costreduction"=>100,
+			"class"=>"Hunting"
+		));
+		install_action("Hunting - Suicidal",array(
+			"maxcost"=>35000,
+			"mincost"=>10000,
+			"firstlvlexp"=>1000,
+			"expincrement"=>1.08,
+			"costreduction"=>250,
+			"class"=>"Hunting"
+		));
 	}
 	
 	return true;

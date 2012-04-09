@@ -58,7 +58,9 @@ if ($op=="dragon"){
 
 if ($op=="search"){
 	checkday();
-	if ($session['user']['turns']<=0){
+	require_once("lib/stamina/stamina.php");
+	$currstam=get_stamina(3,1);
+	if ($session['user']['turns']<=0||$currstam<=0){
 		output("`\$`bYou are too tired to search the forest any longer today.  Perhaps tomorrow you will have more energy.`b`0");
 		$op="";
 		httpset('op', "");
@@ -82,7 +84,7 @@ if ($op=="search"){
 				page_footer();
 			}
 		}else{
-			$session['user']['turns']--;
+			//$session['user']['turns']--;
 			$battle=true;
 			if (e_rand(0,2)==1){
 				$plev = (e_rand(1,5)==1?1:0);
@@ -92,16 +94,22 @@ if ($op=="search"){
 				$nlev=0;
 			}
 			$type = httpget('type');
+			$extrabuff = 0;
 			if ($type=="slum"){
 				$nlev++;
 				output("`\$You head for the section of forest you know to contain foes that you're a bit more comfortable with.`0`n");
-			}
-			if ($type=="thrill"){
+				$stamreturn=process_action("Hunting - Easy Fights");
+				if ($stamreturn['lvlinfo']['levelledup']==true){
+					output("`c`b`0You gained a level in Looking for Easy Fights! You are now level %s! This action costs fewer Stamina points now, so you can pick on more small creatures!`b`c`n`n",$stamreturn['lvlinfo']['newlvl']);
+				}
+			}else if ($type=="thrill"){
 				$plev++;
 				output("`\$You head for the section of forest which contains creatures of your nightmares, hoping to find one of them injured.`0`n");
-			}
-			$extrabuff = 0;
-			if ($type=="suicide"){
+				$stamreturn = process_action("Hunting - Big Trouble");
+				if ($stamreturn['lvlinfo']['levelledup']==true){
+					output("`c`b`0You gained a level in Looking for Big Trouble! You are now level %s! This action costs fewer Stamina points now, so you can throw yourself on the mercy of large creatures more often!`b`c`n`n",$stamreturn['lvlinfo']['newlvl']);
+				}
+			} else if ($type=="suicide"){
 				if ($session['user']['level'] <= 7) {
 					$plev += 1;
 					$extrabuf = .25;
@@ -113,6 +121,15 @@ if ($op=="search"){
 					$extrabuff = .4;
 				}
 				output("`\$You head for the section of forest which contains creatures of your nightmares, looking for the biggest and baddest ones there.`0`n");
+				$stamreturn = process_action("Hunting - Suicidal");
+				if ($stamreturn['lvlinfo']['levelledup']==true){
+					output("`c`b`0You gained a level in Looking for Really Big Trouble! You are now level %s! This action costs fewer Stamina points now, so you can put yourself in mortal danger more often!`b`c`n`n",$stamreturn['lvlinfo']['newlvl']);
+					}
+			} else {
+				$stamreturn = process_action("Hunting - Normal");
+				if ($stamreturn['lvlinfo']['levelledup']==true){
+					output("`c`b`0You gained a level in Looking for Trouble! You are now level %s! This action costs fewer Stamina points now, so you can find more beasties to aggress!`b`c`n`n",$stamreturn['lvlinfo']['newlvl']);
+				}
 			}
 			$multi = 1;
 			$targetlevel = ($session['user']['level'] + $plev - $nlev );
@@ -183,8 +200,7 @@ if ($op=="search"){
 				$badguy['creatureweapon']=$session['user']['weapon'];
 				$badguy['creaturelevel']=$session['user']['level'];
 				$badguy['creaturegold']=0;
-				$badguy['creatureexp'] =
-				round($session['user']['experience']/10, 0);
+				$badguy['creatureexp'] =round($session['user']['experience']/10, 0);
 				$badguy['creaturehealth']=$session['user']['maxhitpoints'];
 				$badguy['creatureattack']=$session['user']['attack'];
 				$badguy['creaturedefense']=$session['user']['defense'];

@@ -30,11 +30,11 @@ function staminacorecombat_getmoduleinfo(){
 }
 function staminacorecombat_install(){
 	module_addhook_priority("forest",0);
-	module_addhook("startofround-prebuffs");
-	module_addhook("endofround");
-	module_addhook("fightnav");
-	module_addhook("fightnav-graveyard");
-	install_action("Hunting - Normal",array(
+	//module_addhook("startofround-prebuffs");
+	////module_addhook("endofround");
+	//module_addhook("fightnav");
+	//module_addhook("fightnav-graveyard");
+	/*install_action("Hunting - Normal",array(
 		"maxcost"=>25000,
 		"mincost"=>10000,
 		"firstlvlexp"=>1000,
@@ -90,14 +90,14 @@ function staminacorecombat_install(){
 		"expincrement"=>1.1,
 		"costreduction"=>15,
 		"class"=>"Combat"
-	));
+	));*/
 	return true;
 }
 function staminacorecombat_uninstall(){
-	uninstall_action("Hunting - Normal");
-	uninstall_action("Hunting - Big Trouble");
-	uninstall_action("Hunting - Easy Fights");
-	uninstall_action("Hunting - Suicidal");
+	//uninstall_action("Hunting - Normal");
+	//uninstall_action("Hunting - Big Trouble");
+	//uninstall_action("Hunting - Easy Fights");
+	//uninstall_action("Hunting - Suicidal");
 	//uninstall_action("Fighting - Standard");
 	//uninstall_action("Running Away");
 	//uninstall_action("Taking It on the Chin");
@@ -109,7 +109,7 @@ function staminacorecombat_dohook($hookname,$args){
 	switch($hookname){
 	case "forest":
 		$op=httpget("op");
-		if ($op=="search"){
+		/*if ($op=="search"){
 			$type=httpget("type");
 			if ($type=="slum"){
 				$return = process_action("Hunting - Easy Fights");
@@ -154,7 +154,7 @@ function staminacorecombat_dohook($hookname,$args){
 			if (getsetting("suicidedk", 10) <= $session['user']['dragonkills']) {
 				addnav(array("*?Search `\$Suicidally`0 (`Q%s%%`0)",$suicidecost), "forest.php?op=search&type=suicide&stam=suicide");
 			}
-		}
+		}*/
 		break;
 	case "fightnav-graveyard":
 	case "fightnav":
@@ -220,7 +220,7 @@ function staminacorecombat_dohook($hookname,$args){
 			if ($return['lvlinfo']['levelledup']==true){
 				output("`n`c`b`0You gained a level in Running Away!  You are now level %s!  This action will cost fewer Stamina points now, so you can run away like a cowardly dog more often!`b`c`n",$return['lvlinfo']['newlvl']);
 			}
-		}//*/
+		}
 		$reps = ($damagetaken / $session['user']['maxhitpoints']) * 9;
 		if ($reps >= 1){
 			$staminalost = 0;

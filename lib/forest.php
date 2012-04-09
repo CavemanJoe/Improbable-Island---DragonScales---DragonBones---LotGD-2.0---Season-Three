@@ -3,6 +3,7 @@
 // translator ready
 // mail ready
 require_once("lib/villagenav.php");
+require_once("lib/stamina/stamina.php");
 
 function forest($noshowmessage=false) {
 	global $session,$playermount;
@@ -11,13 +12,17 @@ function forest($noshowmessage=false) {
 	addnav("Heal");
 	addnav("H?Healer's Hut","healer.php");
 	addnav("Fight");
-	addnav("L?Look for Something to Kill","forest.php?op=search");
+	$normalcost = stamina_getdisplaycost("Hunting - Normal");
+	$slumcost = stamina_getdisplaycost("Hunting - Easy Fights");
+	$thrillcost = stamina_getdisplaycost("Hunting - Big Trouble");
+	$suicidecost = stamina_getdisplaycost("Hunting - Suicidal");
+	addnav(array("T?Look for Trouble (`Q%s%%`0)", $normalcost),"forest.php?op=search");
 	if ($session['user']['level']>1)
-		addnav("S?Go Slumming","forest.php?op=search&type=slum");
-	addnav("T?Go Thrillseeking","forest.php?op=search&type=thrill");
+		addnav(array("E?Look for an Easy Fight (`Q%s%%`0)", $slumcost),"forest.php?op=search&type=slum");
+	addnav(array("B?Look for Big Trouble (`Q%s%%`0)", $thrillcost),"forest.php?op=search&type=thrill");
 	if (getsetting("suicide", 0)) {
 		if (getsetting("suicidedk", 10) <= $session['user']['dragonkills']) {
-			addnav("*?Search `\$Suicidally`0", "forest.php?op=search&type=suicide");
+			addnav(array("*?Search `\$Suicidally`0 (`Q%s%%`0)",$suicidecost), "forest.php?op=search&type=suicide");
 		}
 	}
 	if ($session['user']['level']>=15  && $session['user']['seendragon']==0){
