@@ -122,7 +122,7 @@ function goldmine_runevent($type)
 		output("`2You found an old abandoned mine in the depths of the forest.");
 		output("There is some old mining equipment nearby.`n`n");
 		output("`^As you look around you realize that this is going to be a lot of work.");
-		output("So much so in fact that you will lose a forest fight for the day if you attempt it.`n`n");
+		output("So much so in fact that you will lose some stamina for the day if you attempt it.`n`n");
 		output("`^Looking around a bit more, you do notice what looks like evidence of occasional cave-ins in the mine.`n`n");
 		addnav("Mine for gold and gems", $from . "op=mine");
 		addnav("Return to the forest", $from . "op=no");
@@ -150,11 +150,12 @@ function goldmine_runevent($type)
 			}
 			output("`2You pick up the mining equipment and start mining for gold and gems...`n`n");
 			$rand = e_rand(1,20);
+			require_once("lib/stamina/stamina.php");
 			switch ($rand){
 			case 1:case 2:case 3:case 4: case 5:
 				output("`2After a few hours of hard work you have only found worthless stones and one skull...`n`n");
-				output("`^You lose one forest fight while digging.`n`n");
-				if ($session['user']['turns']>0) $session['user']['turns']--;
+				output("`^You lose some stamina while digging.`n`n");
+				removestamina(2500);
 				$session['user']['specialinc']="";
 				break;
 			case 6: case 7: case 8:case 9: case 10:
@@ -162,8 +163,8 @@ function goldmine_runevent($type)
 				output("`^After a few hours of hard work, you find %s gold!`n`n", $gold);
 				$session['user']['gold'] += $gold;
 				debuglog("found $gold gold in the goldmine");
-				output("`^You lose one forest fight while digging.`n`n");
-				if ($session['user']['turns']>0) $session['user']['turns']--;
+				output("`^You lose some stamina while digging.`n`n");
+				removestamina(2500);
 				$session['user']['specialinc']="";
 				break;
 			case 11: case 12: case 13: case 14: case 15:
@@ -171,8 +172,8 @@ function goldmine_runevent($type)
 				output("`^After a few hours of hard work, you find `%%s %s`^!`n`n", $gems, translate_inline($gems == 1 ? "gem" : "gems"));
 				$session['user']['gems'] += $gems;
 				debuglog("found $gems gems in the goldmine");
-				output("`^You lose one forest fight while digging.`n`n");
-				if ($session['user']['turns']>0) $session['user']['turns']--;
+				output("`^You lose some stamina while digging.`n`n");
+				removestamina(2500);
 				$session['user']['specialinc']="";
 				break;
 			case 16: case 17: case 18:
@@ -183,8 +184,8 @@ function goldmine_runevent($type)
 				$session['user']['gems'] += $gems;
 				$session['user']['gold'] += $gold;
 				debuglog("found $gold gold and $gems gems in the goldmine");
-				output("`^You lose one forest fight while digging.`n`n");
-				if ($session['user']['turns']>0) $session['user']['turns']--;
+				output("`^You lose some stamina while digging.`n`n");
+				removestamina(2500);
 				$session['user']['specialinc']="";
 				break;
 			case 19: case 20:
@@ -268,8 +269,9 @@ function goldmine_runevent($type)
 						}
 					}
 					output("`n`&Your close call scared you so badly that you cannot face any more opponents today.`n");
-					debuglog("`&has lost all turns for the day due to a close call in the mine.");
-					$session['user']['turns']=0;
+					output("`n`&Your close call scared you so badly you lose a whole load of stamina.`n");
+					debuglog("`&has lost a load of stamina.");
+					removestamina(10000);
 				}
 				break;
 			}

@@ -139,7 +139,8 @@ function pinata_hit(){
 			output("`&The pain in your twisted, swollen ankle quickly subsides, to your immense relief.");
 		}
 
-		if ($session['user']['turns']>0) $session['user']['turns']--;
+		require_once("lib/stamina/stamina.php");
+		removestamina(2500);
 		if ($curhp > $newhp) {
 			$session['user']['hitpoints'] = $newhp;
 		}
@@ -153,7 +154,7 @@ function pinata_hit(){
 		output("`^Your hitpoints have been restored to full, and you gain some Stamina.");
 		if ($session['user']['hitpoints'] < $session['user']['maxhitpoints'])
 			$session['user']['hitpoints'] = $session['user']['maxhitpoints'];
-		$session['user']['turns']++;
+		addstamina(2500);
 		break;
 	case 4:
 		output("`#The branch hits the `@pinata `#with a resounding thud.");
@@ -194,23 +195,13 @@ function pinata_hit(){
 		}
 		break;
 	case 7:
-	// If (is_module_active("cities")){ 
-		// output("`#The branch hits the `@pinata `#with a resounding thud.");
-		// output("There is an explosion of `@green `#paper as the `@pinata  `#disintegrates causing sweet candies to fall to the ground.`n`n");
-		// output("You pick up a very large piece of candy and put it in your mouth.`n`n");
-		// output("`#You feel `&BOLD!`0`n`n");
-		// output("`^You receive an extra `&Travel `^today!`0`n`n");	
-		// set_module_pref("traveltoday",
-				// get_module_pref("traveltoday","cities")-1,"cities");
-		// break;
-		// }
 	case 8:	case 9:
 		output("`#The branch hits the `@pinata `#with a resounding thud.");
 		output("There is an explosion of `@green `#paper as the `@pinata  `#disintegrates causing sweet candies to fall to the ground.`n`n");
 		output("You pick up a small piece of candy and put it in your mouth.`n`n");
 		output("You feel `&ENERGETIC!`0`n`n");
 		output("`^You gain some Stamina!");
-		$session['user']['turns']++;
+		addstamina(2500);
 		break;
 	}
 	output("`0");

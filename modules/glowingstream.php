@@ -84,12 +84,13 @@ function glowingstream_runevent($type,$link)
 			break;
 		case 3:
 			output("You feel INVIGORATED!`n`n");
-			output("`^Your hitpoints have been restored to full, and you feel the energy for another turn in the forest.");
+			output("`^Your hitpoints have been restored to full, and you feel more energetic.");
 			if ($session['user']['hitpoints'] <
 					$session['user']['maxhitpoints'])
 				$session['user']['hitpoints'] =
 					$session['user']['maxhitpoints'];
-			$session['user']['turns']++;
+			require_once("lib/stamina/stamina.php");
+			addstamina(2500);
 			break;
 		case 4:
 			output("You feel PERCEPTIVE!`n`n");
@@ -102,8 +103,9 @@ function glowingstream_runevent($type,$link)
 		case 6:
 		case 7:
 			output("You feel ENERGETIC!`n`n");
-			output("`^You receive an extra forest fight!");
-			$session['user']['turns']++;
+			output("`^You gain some stamina!");
+			require_once("lib/stamina/stamina.php");
+			addstamina(2500);
 			break;
 		default:
 			output("You feel HEALTHY!`n`n");

@@ -173,11 +173,7 @@ function stonehenge_runevent($type)
 			break;
 		case 21:
 		case 22:
-			$prev = $session['user']['turns'];
-			if ($prev >= 5) $session['user']['turns']-=5;
-			else if ($prev < 5) $session['user']['turns']=0;
-			$current = $session['user']['turns'];
-			$lost = $prev - $current;
+			removestamina(12500);
 
 			output("When the light clears, the day has passed by.");
 			output("It seems that Stonehenge has frozen you in time for most of the day.`n`n");
