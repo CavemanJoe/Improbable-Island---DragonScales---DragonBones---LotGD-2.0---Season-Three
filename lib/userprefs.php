@@ -18,31 +18,33 @@ function get_all_userprefs($name){
 
 function get_userpref($name,$user=false){
 	global $session;
+	global $userprefs;
 	if ($user===false) {
 		if(isset($session['user']['loggedin']) && $session['user']['loggedin']) $user = $session['user']['acctid'];
 		else $user = 0;
 	}
-	//if ($session['user']['userprefs'][$name]){
-	//	return $session['user']['userprefs'][$name];
-	//}
+	if ($userprefs[$user][$name]){
+		return $userprefs[$user][$name];
+	}
 	$sql="SELECT value FROM ".db_prefix("userprefs")." WHERE userid='$user' AND setting='$name'";
 	$r=db_query($sql);
 	$row=db_fetch_assoc($r);
 	$return=$row['value'];
-	//$session['user']['userprefs'][$name]=$return;
+	$userprefs[$user][$name]=$row['value'];
 	//debug("$name is $return where user is $user");
 	return $return;
 }
 
 function set_userpref($name,$value,$user=false){
-	global $session;
+	global $session, $userprefs;
 	if ($user === false) $uid=$session['user']['acctid'];
 	else $uid = $user;
 
 	$sql="UPDATE ".db_prefix("userprefs")." SET value='".addslashes($value)."' WHERE setting='$name' AND userid='$uid'";
 	$r=db_query($sql);
+	$userprefs[$user][$name]=$value;	
 	/*load_module_prefs($module, $uid);
-
+	
 	//don't write to the DB if the user isn't logged in.
 	if (!$session['user']['loggedin'] && !$user) {
 		// We do need to save to the loaded copy here however
@@ -61,9 +63,8 @@ function set_userpref($name,$value,$user=false){
 }
 
 function increment_userpref($name,$value=1,$user=false){
-	global $module_prefs,$session;
+	global $userprefs,$session;
 	$value = (float)$value;
-	if ($module === false) $module = $mostrecentmodule;
 	if ($user === false) $uid=$session['user']['acctid'];
 	else $uid = $user;
 	
@@ -79,7 +80,7 @@ function increment_userpref($name,$value=1,$user=false){
 	
 	$sql = "UPDATE " . db_prefix("module_userprefs") . " SET value=value+$value WHERE modulename='$module' AND setting='$name' AND userid='$uid'";
 	db_query($sql);
-	
+	$userprefs[$user][$name]+=$value;
 	/*$module_prefs[$uid][$module][$name] += $value;
 	}else{
 		$sql = "INSERT INTO " . db_prefix("module_userprefs"). " (modulename,setting,userid,value) VALUES ('$module','$name','$uid','".addslashes($value)."')";
@@ -90,7 +91,7 @@ function increment_userpref($name,$value=1,$user=false){
 }
 
 function clear_userpref($name,$user=false){
- 	global $prefs,$session;
+ 	global $userprefs,$session;
 	if ($user === false) $uid=$session['user']['acctid'];
 	else $uid = $user;
 	/*
@@ -104,15 +105,14 @@ function clear_userpref($name,$user=false){
 	
 	$sql = "DELETE FROM " . db_prefix("userprefs") . " WHERE setting='$name' AND userid='$uid'";
 	db_query($sql);
-	
+	unset($userprefs[$uid]);
 	return;
 }
 
 function load_userprefs($user=false){
-	global $session;
+	global $session,$userprefs;
 	if ($user===false) $user = $session['user']['acctid'];
-
-
+		
 		$module_prefs[$user][$module] = array();
 		$sql = "SELECT setting,value FROM " . db_prefix("userprefs") . " WHERE userid='$user'";
 		$result = db_query($sql);
@@ -121,6 +121,7 @@ function load_userprefs($user=false){
 			$values[$row['setting']]=$row['value'];
 			//$module_prefs[$user][$module][$row['setting']] = $row['value'];
 		}//end while
+		$userprefs[$user]=$values;
 		return $values;
 		
 }//end function

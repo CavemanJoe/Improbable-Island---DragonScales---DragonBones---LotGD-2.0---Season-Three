@@ -100,7 +100,7 @@ function rolldamage(){
 					$chinreturn['lvlinfo']['levelledup2']=true;
 				}
 			}
-			output("The force of the blow sends you reeling, and knocks %s Stamina points out of you!`n",$staminalost);
+			//output("The force of the blow sends you reeling, and knocks %s Stamina points out of you!`n",$staminalost);
 		} else {
 		$chinreturn=array("lvlinfo"=>array("levelledup"=>false,"levelledup2"=>false),
 				"points_used"=>0,

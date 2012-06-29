@@ -66,6 +66,7 @@ function iitems_meatsystem_uninstall(){
 
 function iitems_meatsystem_dohook($hookname,$args){
 	global $session;
+	require_once("modules/iitems/lib/lib.php");
 	if (get_module_pref("meatsmith")==1){
 		switch($hookname){
 			case "creatureencounter":
@@ -157,9 +158,9 @@ function iitems_meatsystem_dohook($hookname,$args){
 					}
 					if ($session['user']['race']=="Zombie" && get_module_pref("fullness","staminafood") < 100) addnav("Devour Carcasses","runmodule.php?module=iitems_meatsystem&op=devour&from=forest");
 				}
-				$pmeat1 = has_item("meat_low");
-				$pmeat2 = has_item("meat_medium");
-				$pmeat3 = has_item("meat_high");
+				$pmeat1 = iitems_has_item("meat_low");
+				$pmeat2 = iitems_has_item("meat_medium");
+				$pmeat3 = iitems_has_item("meat_high");
 				if ($pmeat1 || $pmeat2 || $pmeat3){
 					if (get_module_pref("fullness","staminafood") < 100){
 						$cookcost = stamina_getdisplaycost("Cooking");

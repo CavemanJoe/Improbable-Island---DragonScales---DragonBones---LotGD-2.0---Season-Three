@@ -29,7 +29,7 @@ function staminacorecombat_getmoduleinfo(){
 	return $info;
 }
 function staminacorecombat_install(){
-	module_addhook_priority("forest",0);
+	//module_addhook_priority("forest",0);
 	//module_addhook("startofround-prebuffs");
 	////module_addhook("endofround");
 	//module_addhook("fightnav");
@@ -169,7 +169,7 @@ function staminacorecombat_dohook($hookname,$args){
 		addnav(array("R?Run (`Q%s%%`0)", $runcost),$script."op=run&stam=run");*/
 		break;
 	case "startofround-prebuffs":
-		$process = httpget("stam");
+		/*$process = httpget("stam");
 		
 		switch($process){
 			case "search":
