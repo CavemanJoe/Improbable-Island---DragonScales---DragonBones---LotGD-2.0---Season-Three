@@ -152,7 +152,11 @@ function table_create_from_descriptor($tablename,$descriptor){
 		$sql .= descriptor_createsql($val);
 		$i++;
 	}
+	if (db_get_server_version() > "5.1.0") {
+				$sql .= ") Engine=$type";
+	} else {
 	$sql .= ") Type=$type";
+	}
 	return $sql;
 }
 

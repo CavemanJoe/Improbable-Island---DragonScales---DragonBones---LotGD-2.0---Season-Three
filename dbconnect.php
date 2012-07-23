@@ -3,7 +3,7 @@
 $DB_HOST = 'localhost';
 $DB_USER = 'root';
 $DB_PASS = 'password';
-$DB_NAME = 'kintian';
+$DB_NAME = 'elvenhall';
 $DB_PREFIX = 'free_';
 $DB_USEDATACACHE = 0;
 $DB_DATACACHEPATH = 'datacache';
