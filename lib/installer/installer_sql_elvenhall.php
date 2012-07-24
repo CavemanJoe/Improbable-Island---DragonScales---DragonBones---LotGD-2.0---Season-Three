@@ -243,6 +243,7 @@ function elvenhall_sql($version){
 
 		output("Settings for turns emulation has been set, if they weren't already.");
 	return $return;
+	}
 }
 
 ?>
