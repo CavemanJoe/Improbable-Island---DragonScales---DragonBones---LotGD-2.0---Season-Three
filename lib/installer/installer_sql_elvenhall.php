@@ -232,16 +232,16 @@ function elvenhall_sql($version){
 		//require_once("lib/stamina/defaultactions.php")
 
 		$value=20000
-		$sql="INSERT INTO ".db_prefix("settings")." VALUES ('stamina_turns_base', '$value'");
+		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_base', '$value'");
 		$result=db_query($sql);
 		$return[0]=$result;
 
 		$value=30000
-		$sql="INSERT INTO ".db_prefix("settings")." VALUES ('stamina_turns_ceiline', '$value'");
+		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_ceiline', '$value'");
 		$result=db_query($sql);
 		$return[1]=$result;
 
-		output("Settings for turns emulation has been reset to default.If you had changed them, you must go back and change them.");
+		output("Settings for turns emulation has been set, if they weren't already.");
 	return $return;
 }
 
