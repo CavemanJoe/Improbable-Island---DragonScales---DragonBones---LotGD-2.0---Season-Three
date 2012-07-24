@@ -18,8 +18,10 @@ function elvenhall_sql($version){
 		}
 
 		$result = db_query($sql);
-		return;
-	} else 	if ($version=="2.1.0 Elvenhall Edition"){//transfers stamina settings over
+		$return[0]=$result;
+		return $return;
+	} else 	if ($version=="2.1.0 Elvenhall Edition" && is_module_installed("staminasystem")==true){//transfers stamina settings over
+		
 		output("`nUpdating Stamina actionsarray settings...");
 		$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='staminasystem' AND setting='actionsarray'";
 		$result=db_query($sql);
@@ -27,6 +29,7 @@ function elvenhall_sql($version){
 		$array=serialize(unserialize($array['value']));
 		$sql="INSERT INTO ".db_prefix("settings")." VALUES ('stamina_actionsarray', '$array')";
 		$result=db_query($sql);
+		$return[0]=$result;
 
 		output("Updating Stamina turns_emulation_base settings...");
 		$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='staminasystem' AND setting='turns_emulation_base'";
@@ -35,6 +38,7 @@ function elvenhall_sql($version){
 		$array=$array['value'];
 		$sql="INSERT INTO ".db_prefix("settings")." VALUES ('stamina_turns_base', '$array')";
 		$result=db_query($sql);
+		$return[1]=$result;
 
 		output("Updating Stamina turns_emulation_ceiling settings...");
 		$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='staminasystem' AND setting='turns_emulation_ceiling'";
@@ -43,8 +47,10 @@ function elvenhall_sql($version){
 		$array=$array['value'];
 		$sql="INSERT INTO ".db_prefix("settings")." VALUES ('stamina_turns_ceilin', '$array')";
 		$result=db_query($sql);
-		return;
-	} else 	if ($version=="2.1.3 Elvenhall Edition"){	//transfers stamina userprefs over
+		$return[2]=$result;
+		return $return;
+		
+	} else if ($version=="2.1.3 Elvenhall Edition"){//){	//transfers stamina userprefs over
 		//stamina actions
 		output("`nUpdating stamina actions userprefs...");
 		$sql="SELECT `userid`, `value` FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='actions'";
@@ -62,6 +68,7 @@ function elvenhall_sql($version){
 			}
 		}
 		$result = db_query($sql);
+		$return[0]=$result;
 
 		//stamina amber
 		output("`nUpdating stamina amber userprefs...");
@@ -80,6 +87,7 @@ function elvenhall_sql($version){
 			}
 		}
 		$result = db_query($sql);
+		$return[1]=$result;
 
 		//stamina buffs
 		output("`nUpdating stamina amber userprefs...");
@@ -98,6 +106,7 @@ function elvenhall_sql($version){
 			}
 		}
 		$result = db_query($sql);
+		$return[2]=$result;
 
 		//stamina red
 		output("`nUpdating stamina red userprefs...");
@@ -116,6 +125,7 @@ function elvenhall_sql($version){
 			}
 		}
 		$result = db_query($sql);
+		$return[3]=$result;
 
 		//stamina amount
 		output("`nUpdating stamina amount userprefs...");
@@ -134,6 +144,7 @@ function elvenhall_sql($version){
 			}
 		}
 		$result = db_query($sql);
+		$return[4]=$result;
 
 		//stamina minihof
 		output("`nUpdating stamina minihof userprefs...");
@@ -152,6 +163,10 @@ function elvenhall_sql($version){
 			}
 		}
 		$result = db_query($sql);
+		$return[5]=$result;
+
+		return $return;
+
 	} else if ($version=="2.2.0 Elvenhall Edition"){
 		require_once("lib/stamina/stamina.php");
 		install_action("Fighting - Standard",array(
@@ -211,9 +226,23 @@ function elvenhall_sql($version){
 			"costreduction"=>250,
 			"class"=>"Hunting"
 		));
-	}
-	
-	return true;
+		return true;
+	} else if ($version=="2.2.1 Elvenhall Edition"){//set default stamina settings, if staminasystem wasn't already installed
+		//require_once("lib/stamina/stamina.php");
+		//require_once("lib/stamina/defaultactions.php")
+
+		$value=20000
+		$sql="INSERT INTO ".db_prefix("settings")." VALUES ('stamina_turns_base', '$value'");
+		$result=db_query($sql);
+		$return[0]=$result;
+
+		$value=30000
+		$sql="INSERT INTO ".db_prefix("settings")." VALUES ('stamina_turns_ceiline', '$value'");
+		$result=db_query($sql);
+		$return[1]=$result;
+
+		output("Settings for turns emulation has been reset to default.If you had changed them, you must go back and change them.");
+	return $return;
 }
 
 ?>

@@ -12,7 +12,7 @@
 // 		name at the end indicating which parts are copyright by you.
 // Eg:
 // Copyright 2002-2004, Game: Eric Stevens & JT Traub, modified by Your Name
-$copyright = "Game Design and Code: Copyright &copy; 2002-2005, Eric Stevens & JT Traub, &copy; 2006-2007, Dragonprime Development Team";
+$copyright = "Game Design and Code: Copyright &copy; 2002-2005, Eric Stevens & JT Traub, &copy; 2006-2007, Dragonprime Development Team, &copy; 2008-2011 Dan Hall/Caveman Joe, &Copy: 2012 Cousjava";
 // **** NOTICE ****
 // This series of scripts (collectively known as Legend of the Green Dragon
 // or LotGD) is copyright as per above.   Read the above paragraph for
@@ -36,7 +36,7 @@ $license = "\n<!-- Creative Commons License -->\n<a rel='license' href='http://c
 // work.  This license text may not be removed nor altered in any way.
 // Please see the file LICENSE for a full textual description of the license.
 
-$logd_version = "2.2.0 Elvenhall Edition";
+$logd_version = "2.2.1 Elvenhall Edition";
 
 //start the gzip compression
 //ob_start('ob_gzhandler');

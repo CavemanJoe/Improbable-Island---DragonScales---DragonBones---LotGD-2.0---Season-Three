@@ -1,5 +1,9 @@
 <?php
 require_once("lib/userprefs.php");
+
+$version=getsetting("installer_version","1.1.1 Dragonprime Edition");
+if ($version<"2.0.0") {$ismodule=true;}
+
 /*
 Altered core files to make the Stamina system work,based on 1.1.1:
 
@@ -17,8 +21,6 @@ GET DEFAULT ACTION LIST
 Returns arrays for every Action default.
 =======================================================
 */
-$version=getsetting("installer_version","1.1.1 Dragonprime Edition");
-if ($version<"2.0.0") {$ismodule=true;}
 function get_default_action_list() {
 	if ($ismodule==true){
 	$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
@@ -585,18 +587,18 @@ function get_stamina($type = 1, $realvalue = false, $userid = false) {
 	
 	if ($userid === false) $userid = $session['user']['acctid'];
 	if ($ismodule==true){
-	$totalstamina = get_module_pref("stamina", "staminasystem", $userid);
-	$maxstamina = 1000000;
-	$totalpct = ($totalstamina/$maxstamina)*100;
-	$redpoint = get_module_pref("red", "staminasystem", $userid);
-	$amberpoint = get_module_pref("amber", "staminasystem", $userid);
+		$totalstamina = get_module_pref("stamina", "staminasystem", $userid);
+		$maxstamina = 1000000;
+		$totalpct = ($totalstamina/$maxstamina)*100;
+		$redpoint = get_module_pref("red", "staminasystem", $userid);
+		$amberpoint = get_module_pref("amber", "staminasystem", $userid);
 	} else {
-	$totalstamina = get_userpref("stamina_amount", $userid);
-	debug($totalstamina);
-	$maxstamina = 1000000;
-	$totalpct = ($totalstamina/$maxstamina)*100;
-	$redpoint = get_userpref("stamina_red", $userid);
-	$amberpoint = get_userpref("stamina_amber", $userid);
+		$totalstamina = get_userpref("stamina_amount", $userid);
+		debug($totalstamina);
+		$maxstamina = 1000000;
+		$totalpct = ($totalstamina/$maxstamina)*100;
+		$redpoint = get_userpref("stamina_red", $userid);
+		$amberpoint = get_userpref("stamina_amber", $userid);
 	}
 	$greenmax = $maxstamina - $redpoint - $amberpoint;
 	$greenvalue = $totalstamina - $redpoint - $amberpoint;
