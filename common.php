@@ -36,7 +36,7 @@ $license = "\n<!-- Creative Commons License -->\n<a rel='license' href='http://c
 // work.  This license text may not be removed nor altered in any way.
 // Please see the file LICENSE for a full textual description of the license.
 
-$logd_version = "2.2.1 Elvenhall Edition";
+$logd_version = "2.2.2 Elvenhall Edition";
 
 //start the gzip compression
 //ob_start('ob_gzhandler');

@@ -890,5 +890,6 @@ $sql_upgrade_statements = array(
 "2.1.3 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina userprefs
 "2.2.0 Elvenhall Edition"=>array(),//stamina battle actions install
 "2.2.1 Elvenhall Edition"=>array(),//default elvenhall settings upgraded
+"2.2.2 Elvenhall Edition"=>array(),//default elvenhall settings upgraded
 );
 ?>

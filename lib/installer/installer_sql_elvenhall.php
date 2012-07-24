@@ -228,21 +228,71 @@ function elvenhall_sql($version){
 		));
 		return true;
 	} else if ($version=="2.2.1 Elvenhall Edition"){//set default stamina settings, if staminasystem wasn't already installed
+		$return=false;	
 		//require_once("lib/stamina/stamina.php");
 		//require_once("lib/stamina/defaultactions.php")
-
-		$value=20000
-		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_base', '$value'");
+//There is an error somewhere in this block, can't tell what but I'm going to bed.
+		$value=20000;
+		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_base', '$value')");
 		$result=db_query($sql);
 		$return[0]=$result;
-
-		$value=30000
-		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_ceiline', '$value'");
+/*
+		$value=30000;
+		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_ceilin', '$value')");
 		$result=db_query($sql);
 		$return[1]=$result;
-
+*/
 		output("Settings for turns emulation has been set, if they weren't already.");
 	return $return;
+
+	} else if ($version=="2.2.2 Elvenhall Edition"){//set default stamina userprefs, if staminasystem wasn't already installed
+		$return=false;		
+		/*
+		$sql="SELECT COUNT(*) AS cnt FROM ".db_prefix("accounts");
+		$result=db_query($sql);
+		$return[0]=$result;
+		
+		$row=db_fetch_assoc($result);
+		$accounts=$row['CNT'];
+		if ($accounts>2){
+		output("Too many accounts!")		
+		return;} else {output("Enough accounts.")}
+		$stamina=0;
+		$red=200000;
+		$amber=400000;
+		$array=array();
+		$actions=serialize($array);
+		$buffs=serialize($array);
+		$user_minhof=true;
+
+		for ($i=1; $i<=$accounts; $i++){
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina', $i, '$stamina')";
+			$result=db_query($sql);
+			$return[1][0]=$result;
+
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('red', $i, '$red')";
+			$result=db_query($sql);
+			$return[1][1]=$result;
+
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('amber', $i, '$amber')";
+			$result=db_query($sql);
+			$return[1][2]=$result;
+
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('actions', $i, '$actions')";
+			$result=db_query($sql);
+			$return[1][3]=$result;
+
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('buffs', $i, '$buffs')";
+			$result=db_query($sql);
+			$return[1][4]=$result;
+
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('user_minihof', $i, '$user_minihof')";
+			$result=db_query($sql);
+			$return[1][5]=$result;
+
+		}
+*/
+		return $return;
 	}
 }
 
