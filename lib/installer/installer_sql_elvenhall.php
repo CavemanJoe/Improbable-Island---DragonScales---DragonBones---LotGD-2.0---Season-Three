@@ -253,7 +253,7 @@ function elvenhall_sql($version){
 		$return[0]=$result;
 		
 		$row=db_fetch_assoc($result);
-		$accounts=$row['CNT'];
+		$accounts=$row['cnt'];
 		
 		$stamina=0;
 		$red=200000;
