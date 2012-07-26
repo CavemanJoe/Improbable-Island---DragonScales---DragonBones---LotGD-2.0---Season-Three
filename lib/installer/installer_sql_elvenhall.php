@@ -264,27 +264,27 @@ function elvenhall_sql($version){
 		$user_minhof=true;
 
 		for ($i=1; $i<=$accounts; $i++){
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina', $i, '$stamina')";
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_amount', $i, '$stamina')";
 			$result=db_query($sql);
 			$return[1][0]=$result;
 
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('red', $i, '$red')";
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_red', $i, '$red')";
 			$result=db_query($sql);
 			$return[1][1]=$result;
 
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('amber', $i, '$amber')";
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_amber', $i, '$amber')";
 			$result=db_query($sql);
 			$return[1][2]=$result;
 
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('actions', $i, '$actions')";
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_actions', $i, '$actions')";
 			$result=db_query($sql);
 			$return[1][3]=$result;
 
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('buffs', $i, '$buffs')";
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_buffs', $i, '$buffs')";
 			$result=db_query($sql);
 			$return[1][4]=$result;
 
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('user_minihof', $i, '$user_minihof')";
+			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_minihof', $i, '$user_minihof')";
 			$result=db_query($sql);
 			$return[1][5]=$result;
 

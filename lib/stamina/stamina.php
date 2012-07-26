@@ -756,14 +756,15 @@ function stamina_process_newday($userid = false) {
 	modulehook("stamina-newday-intercept");
 	// remove buffs
 	stamina_strip_all_buffs($userid);
-
-	$startingstamina = 1000000;
+	output("Stripped stamina buffs");
 	if ($ismodule==true){
+	//output("setting module prefs");
 	set_module_pref("stamina",$startingstamina,"staminasystem",$userid);
 	set_module_pref("amber",400000,"staminasystem",$userid);
 	set_module_pref("red",200000,"staminasystem",$userid);
 	} else {
-	debug("Setting stamina to $startingstamina");
+	//output("setting userprefs, with starting stamina of %s",$startingstamina);
+	//debug("Setting stamina to $startingstamina");
 	set_userpref("stamina_amount",$startingstamina,$userid);
 	set_userpref("stamina_amber",400000, $userid);
 	set_userpref("stamina_red",200000,$userid);

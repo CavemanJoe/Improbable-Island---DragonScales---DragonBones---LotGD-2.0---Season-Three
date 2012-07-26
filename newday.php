@@ -208,7 +208,7 @@ if ($dp < $dkills) {
 			(0)=>"Normal", 1=>"High", 2=>"Very High");
 	$sp = translate_inline($sp);
 	output("`n`2You are in `^%s`2 spirits today!`n",$sp[$spirits]);
-	if (abs($spirits)>0){
+	/*if (abs($spirits)>0){
 		if($resurrectionturns>0){
 			$gain=translate_inline("gain");
 		}else{
@@ -217,7 +217,12 @@ if ($dp < $dkills) {
 		$sff = abs($resurrectionturns);
 		output("`2As a result, you `^%s %s forest %s`2 for today!`n",
 				$gain, $sff, translate_inline($sff==1?"fight":"fights"));
-	}
+	}*/
+
+	require_once("lib/stamina/stamina.php");
+	//output("`nGetting ready for stamina processing");
+	stamina_process_newday();
+
 	$rp = $session['user']['restorepage'];
 	$x = max(strrpos("&",$rp),strrpos("?",$rp));
 	if ($x>0) $rp = substr($rp,0,$x);
@@ -285,6 +290,8 @@ if ($dp < $dkills) {
 		$turnstoday.=", Haunted: -1";
 	}
 
+	
+
 	require_once("lib/extended-battle.php");
 	unsuspend_companions("allowinshades");
 
@@ -315,12 +322,13 @@ if ($dp < $dkills) {
 
 	}
 	
+	
+
 	$args = modulehook("newday",
 			array("resurrection"=>$resurrection, "turnstoday"=>$turnstoday));
 	
 	$turnstoday = $args['turnstoday'];
-	require_once("lib/stamina/stamina.php");
-	stamina_process_newday();
+	
 	debuglog("New Day Turns: $turnstoday");
 
 }

@@ -205,6 +205,10 @@ if (getsetting("allowcreation",1)==0){
 						$sql_output = "INSERT INTO " . db_prefix("accounts_output") . " VALUES ({$row['acctid']},'');";
 						db_query($sql_output);
 						//end
+						//creating userprefs
+						require_once("lib/userprefs.php");
+						createchar_userprefsid($args['acctid']);
+
 						modulehook("process-create", $args);
 						if ($emailverification!=""){
 							$subj = translate_mail("LoGD Account Verification",0);
