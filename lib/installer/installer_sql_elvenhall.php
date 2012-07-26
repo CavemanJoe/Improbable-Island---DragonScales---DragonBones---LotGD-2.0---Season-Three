@@ -20,8 +20,8 @@ function elvenhall_sql($version){
 		$result = db_query($sql);
 		$return[0]=$result;
 		return $return;
-	} else 	if ($version=="2.1.0 Elvenhall Edition" && is_module_installed("staminasystem")==true){//transfers stamina settings over
-		
+	} else 	if ($version=="2.1.0 Elvenhall Edition"){//transfers stamina settings over
+		if (is_module_installed("staminasystem")==true){
 		output("`nUpdating Stamina actionsarray settings...");
 		$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='staminasystem' AND setting='actionsarray'";
 		$result=db_query($sql);
@@ -49,7 +49,7 @@ function elvenhall_sql($version){
 		$result=db_query($sql);
 		$return[2]=$result;
 		return $return;
-		
+		}
 	} else if ($version=="2.1.3 Elvenhall Edition"){//){	//transfers stamina userprefs over
 		//stamina actions
 		output("`nUpdating stamina actions userprefs...");
@@ -233,30 +233,28 @@ function elvenhall_sql($version){
 		//require_once("lib/stamina/defaultactions.php")
 //There is an error somewhere in this block, can't tell what but I'm going to bed.
 		$value=20000;
-		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_base', '$value')");
+		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_base', '$value')";
 		$result=db_query($sql);
 		$return[0]=$result;
-/*
+
 		$value=30000;
-		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_ceilin', '$value')");
+		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_ceilin', '$value')";
 		$result=db_query($sql);
 		$return[1]=$result;
-*/
+
 		output("Settings for turns emulation has been set, if they weren't already.");
 	return $return;
 
 	} else if ($version=="2.2.2 Elvenhall Edition"){//set default stamina userprefs, if staminasystem wasn't already installed
 		$return=false;		
-		/*
+		
 		$sql="SELECT COUNT(*) AS cnt FROM ".db_prefix("accounts");
 		$result=db_query($sql);
 		$return[0]=$result;
 		
 		$row=db_fetch_assoc($result);
 		$accounts=$row['CNT'];
-		if ($accounts>2){
-		output("Too many accounts!")		
-		return;} else {output("Enough accounts.")}
+		
 		$stamina=0;
 		$red=200000;
 		$amber=400000;
@@ -291,7 +289,7 @@ function elvenhall_sql($version){
 			$return[1][5]=$result;
 
 		}
-*/
+		output("Userprefs installed");
 		return $return;
 	}
 }
