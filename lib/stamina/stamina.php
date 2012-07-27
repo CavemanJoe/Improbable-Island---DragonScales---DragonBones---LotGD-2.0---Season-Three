@@ -752,7 +752,7 @@ function stamina_process_newday($userid = false) {
 	global $session;
 	
 	if ($userid === false) $userid = $session['user']['acctid'];
-	
+	$startingstamina=1000000;
 	modulehook("stamina-newday-intercept");
 	// remove buffs
 	stamina_strip_all_buffs($userid);
@@ -763,7 +763,7 @@ function stamina_process_newday($userid = false) {
 	set_module_pref("amber",400000,"staminasystem",$userid);
 	set_module_pref("red",200000,"staminasystem",$userid);
 	} else {
-	//output("setting userprefs, with starting stamina of %s",$startingstamina);
+	output("setting userprefs, with starting stamina of %s",$startingstamina);
 	//debug("Setting stamina to $startingstamina");
 	set_userpref("stamina_amount",$startingstamina,$userid);
 	set_userpref("stamina_amber",400000, $userid);
