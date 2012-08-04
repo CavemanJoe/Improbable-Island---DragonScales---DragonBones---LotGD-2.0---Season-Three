@@ -307,7 +307,7 @@ return array(
 			'name'=>'stamina_buffs', 'type'=>'text', 'default'=>'0', 'null'=>'1'
 			),
 		'stamina_minihof'=>array(
-			'name'=>'stamina_minihof', 'type'=>'text', 'default'=>'0', 'null'=>'1'
+			'name'=>'stamina_minihof', 'type'=>'bool', 'default'=>'0', 'null'=>'1'
 			),
 		'stamina_actions'=>array(
 			'name'=>'stamina_minihof', 'type'=>'text', 'default'=>'0', 'null'=>'1'

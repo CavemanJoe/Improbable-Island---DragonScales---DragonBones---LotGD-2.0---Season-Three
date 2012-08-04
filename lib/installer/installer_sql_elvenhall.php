@@ -51,122 +51,7 @@ function elvenhall_sql($version){
 		return $return;
 		}
 	} else if ($version=="2.1.3 Elvenhall Edition"){//){	//transfers stamina userprefs over
-		//stamina actions
-		output("`nUpdating stamina actions userprefs...");
-		$sql="SELECT `userid`, `value` FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='actions'";
-		$result = db_query($sql);
-
-		$rownums=db_num_rows($result);
-
-		$sql="INSERT INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ";
-		$currentrow=0;
-		while($row=db_fetch_assoc($result)){
-			$currentrow++;
-			$sql.="('stamina_actions', {$row['userid']}, '{$row['value']}')";
-			if ($currentrow!=$rownums){
-				$sql.=",";	
-			}
-		}
-		$result = db_query($sql);
-		$return[0]=$result;
-
-		//stamina amber
-		output("`nUpdating stamina amber userprefs...");
-		$sql="SELECT `userid`, `value` FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='amber'";
-		$result = db_query($sql);
-
-		$rownums=db_num_rows($result);
-
-		$sql="INSERT INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ";
-		$currentrow=0;
-		while($row=db_fetch_assoc($result)){
-			$currentrow++;
-			$sql.="('stamina_amber', {$row['userid']}, '{$row['value']}')";
-			if ($currentrow!=$rownums){
-				$sql.=",";	
-			}
-		}
-		$result = db_query($sql);
-		$return[1]=$result;
-
-		//stamina buffs
-		output("`nUpdating stamina amber userprefs...");
-		$sql="SELECT `userid`, `value` FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='buffs'";
-		$result = db_query($sql);
-
-		$rownums=db_num_rows($result);
-
-		$sql="INSERT INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ";
-		$currentrow=0;
-		while($row=db_fetch_assoc($result)){
-			$currentrow++;
-			$sql.="('stamina_buffs', {$row['userid']}, '{$row['value']}')";
-			if ($currentrow!=$rownums){
-				$sql.=",";	
-			}
-		}
-		$result = db_query($sql);
-		$return[2]=$result;
-
-		//stamina red
-		output("`nUpdating stamina red userprefs...");
-		$sql="SELECT `userid`, `value` FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='red'";
-		$result = db_query($sql);
-
-		$rownums=db_num_rows($result);
-
-		$sql="INSERT INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ";
-		$currentrow=0;
-		while($row=db_fetch_assoc($result)){
-			$currentrow++;
-			$sql.="('stamina_red', {$row['userid']}, '{$row['value']}')";
-			if ($currentrow!=$rownums){
-				$sql.=",";	
-			}
-		}
-		$result = db_query($sql);
-		$return[3]=$result;
-
-		//stamina amount
-		output("`nUpdating stamina amount userprefs...");
-		$sql="SELECT `userid`, `value` FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='stamina'";
-		$result = db_query($sql);
-
-		$rownums=db_num_rows($result);
-
-		$sql="INSERT INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ";
-		$currentrow=0;
-		while($row=db_fetch_assoc($result)){
-			$currentrow++;
-			$sql.="('stamina_amount', {$row['userid']}, '{$row['value']}')";
-			if ($currentrow!=$rownums){
-				$sql.=",";	
-			}
-		}
-		$result = db_query($sql);
-		$return[4]=$result;
-
-		//stamina minihof
-		output("`nUpdating stamina minihof userprefs...");
-		$sql="SELECT `userid`, `value` FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem' AND setting='user_minihof'";
-		$result = db_query($sql);
-
-		$rownums=db_num_rows($result);
-
-		$sql="INSERT INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ";
-		$currentrow=0;
-		while($row=db_fetch_assoc($result)){
-			$currentrow++;
-			$sql.="('stamina_minihof', {$row['userid']}, '{$row['value']}')";
-			if ($currentrow!=$rownums){
-				$sql.=",";	
-			}
-		}
-		$result = db_query($sql);
-		$return[5]=$result;
-
-		return $return;
-
+		return;
 	} else if ($version=="2.2.0 Elvenhall Edition"){
 		require_once("lib/stamina/stamina.php");
 		install_action("Fighting - Standard",array(
@@ -293,9 +178,76 @@ function elvenhall_sql($version){
 		return $return;
 	} else if ($version=="2.3.0 Elvenhall Edition"){
 		
-		/*if ($session['dbinfo']['upgrade']==true && is_module_installed("staminasystem"==true)){
-			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem";
-		}*/
+		if ($session['dbinfo']['upgrade']==true && is_module_installed("staminasystem"==true)){
+			//takes values from old module userprefs
+			output("Selecting userprefs...");
+			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='stamina'";
+			$result=db_query($sql)
+			while ($row=db_fetch_assoc($result)){
+				$uid=$row['userid'];
+				$stamuserprefs[$uid]['stamina']=$row['value'];
+			}
+			
+			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='red'";
+			$result=db_query($sql)
+			while ($row=db_fetch_assoc($result)){
+				$uid=$row['userid'];
+				$stamuserprefs[$uid]['red']=$row['value'];
+			}
+
+			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='amber'";
+			$result=db_query($sql)
+			while ($row=db_fetch_assoc($result)){
+				$uid=$row['userid'];
+				$stamuserprefs[$uid]['amber']=$row['value'];
+			}
+
+			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='actions'";
+			$result=db_query($sql)
+			while ($row=db_fetch_assoc($result)){
+				$uid=$row['userid'];
+				$stamuserprefs[$uid]['actions']=$row['value'];
+			}
+
+			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='buffs'";
+			$result=db_query($sql)
+			while ($row=db_fetch_assoc($result)){
+				$uid=$row['userid'];
+				$stamuserprefs[$uid]['buffs']=$row['value'];
+			}
+
+			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='user_minihof'";
+			$result=db_query($sql)
+			while ($row=db_fetch_assoc($result)){
+				$uid=$row['userid'];
+				$stamuserprefs[$uid]['minihof']=$row['value'];
+			}
+			$noofusers=count($stamuserprefs);
+			output("Inserting %s userprefs...",$noofusers);
+			foreach ($stamuserprefs as $userid=>$userprefs){
+				$sql="UPDATE ".db_prefix("accounts")." SET stamina_amount='{$userprefs['stamina']}, stamina_red='{$userprefs['red']}', stamina_amber='{$userprefs['amber']}', stamina_actions={$userprefs['actions']}, stamina_buffs={$userprefs['buffs']}, stamina_minihof={$userprefs['minihof']} WHERE acctid=$userid";
+				db_query($sql);
+			}//finished with userprefs
+
+			//start settings
+
+			//end settings
+
+		} else {//if the staminasystem was not already present
+			//count no. of accounts
+			$sql="SELECT COUNT(*) AS cnt FROM ".db_prefix("accounts");
+			$result=db_query($sql);		
+			$row=db_fetch_assoc($result);
+			$accounts=$row['cnt'];
+			
+			$array=array();
+			$sarray=serialize($array);
+
+			for ($i=1; $i<=$accounts;$i++){
+				$sql="UPDATE ".db_prefix("accounts")." SET stamina_amount='0', stamina_red='200000', stamina_amber='400000', stamina_actions=$sarray, stamina_buffs=$sarray, stamina_minihof='0' WHERE acctid=$i";
+				db_query($sql);
+			}
+		}
 
 	}
 }
