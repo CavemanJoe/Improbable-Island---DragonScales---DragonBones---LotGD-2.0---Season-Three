@@ -26,7 +26,7 @@ function get_default_action_list() {
 		$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
 	} else {
 		$sql="SELECT actions FROM ".db_prefix("staminaactionsarray");
-		$result=db_query;
+		$result=db_query($sql);
 		$row=db_fetch_assoc($result);
 		$actions=unserialize($row['actions']);
 	}
@@ -97,7 +97,7 @@ function get_player_action($action, $userid=false) {
 	if ($ismodule==true){
 	$playeractions=unserialize(get_module_pref("actions","staminasystem",$userid));
 	} else {
-	$playeractions=unserialize($session['user']['stamina_actions']));
+	$playeractions=unserialize($session['user']['stamina_actions']);
 	}
 	//Check to see if this action is set for this player, and if not, set it
 	if (!isset($playeractions[$action])){
@@ -176,7 +176,7 @@ function uninstall_action($actionname) {
 		$results = db_query($sql);
 		for ($i=0; $i<db_num_rows($results);$i++){
 			$row = db_fetch_assoc($results);		
-			$playeractions = unserialize($srow['stamina_actions']));
+			$playeractions = unserialize($srow['stamina_actions']);
 			unset($playeractions[$actionname]);
 			$sarray=serialize($playeractions);	
 			$sql="UPDATE ".db_prefix("accounts")." SET stamina_actions=$sarray WHERE acctid=$i";

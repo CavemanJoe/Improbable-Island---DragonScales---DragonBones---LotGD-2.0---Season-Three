@@ -295,10 +295,10 @@ return array(
 			'default'=>'0000-00-00 00:00:00'
 			),
 		'stamina_red'=>array(
-			'name'='stamina_red', 'type'=>'int(10) unsigned', 'default'=>'200000'
+			'name'=>'stamina_red', 'type'=>'int(10) unsigned', 'default'=>'200000'
 			),
 		'stamina_amber'=>array(
-			'name'='stamina_amber', 'type'=>'int(10) unsigned', 'default'=>'400000'
+			'name'=>'stamina_amber', 'type'=>'int(10) unsigned', 'default'=>'400000'
 			),
 		'stamina_amount'=>array(
 			'name'=>'stamina_amount', 'type'=>'int(10) unsigned', 'default'=>'0', 'null'=>'1'

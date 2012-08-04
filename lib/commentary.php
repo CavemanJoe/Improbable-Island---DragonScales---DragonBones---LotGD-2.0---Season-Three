@@ -48,17 +48,9 @@ function addcommentary() {
 		$return = '/' . httpget('returnpath');
 		$section = httpget('section');
 		$accountprefix=db_prefix("accounts");
-		$clanprefix=db_prefix("clans")
+		$clanprefix=db_prefix("clans");
 		$commentryprefix=db_prefix("commentary");
-        	$sql = "SELECT " .
-                	$commentryprefix.".*,".$accountprefix".name,".
-                	$accountprefix.".acctid, "$accountprefix.".clanrank,".
-                	$clanprefix.".clanshort FROM ".$commentryprefix.
-               		 " INNER JOIN "$accountprefix" ON ".
-                	$accountprefix".acctid = " .$commentryprefix.
-                	".author LEFT JOIN ".$clanprefix." ON ".
-                	$clanprefix.".clanid=".$accountprefix.
-                	".clanid WHERE commentid=$remove";
+        	$sql =  "SELECT " .$commentryprefix.".*,".$accountprefix.".name,".$accountprefix.".acctid, ".$accountprefix.".clanrank,". $clanprefix.".clanshort FROM ".$commentryprefix." INNER JOIN ".$accountprefix." ON ".$accountprefix.".acctid = " . $commentryprefix.".author LEFT JOIN ".$clanprefix." ON ".$clanprefix.".clanid=".$accountprefix.".clanid WHERE commentid=$remove";
 		$row = db_fetch_assoc(db_query($sql));
 		$sql = "INSERT LOW_PRIORITY INTO ".db_prefix("moderatedcomments").
 			" (moderator,moddate,comment) VALUES ('{$session['user']['acctid']}','".date("Y-m-d H:i:s")."','".addslashes(serialize($row))."')";

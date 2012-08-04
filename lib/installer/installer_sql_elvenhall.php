@@ -137,42 +137,42 @@ function elvenhall_sql($version){
 			//takes values from old module userprefs
 			output("`nSelecting userprefs...");
 			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='stamina'";
-			$result=db_query($sql)
+			$result=db_query($sql);
 			while ($row=db_fetch_assoc($result)){
 				$uid=$row['userid'];
 				$stamuserprefs[$uid]['stamina']=$row['value'];
 			}
 			
 			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='red'";
-			$result=db_query($sql)
+			$result=db_query($sql);
 			while ($row=db_fetch_assoc($result)){
 				$uid=$row['userid'];
 				$stamuserprefs[$uid]['red']=$row['value'];
 			}
 
 			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='amber'";
-			$result=db_query($sql)
+			$result=db_query($sql);
 			while ($row=db_fetch_assoc($result)){
 				$uid=$row['userid'];
 				$stamuserprefs[$uid]['amber']=$row['value'];
 			}
 
 			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='actions'";
-			$result=db_query($sql)
+			$result=db_query($sql);
 			while ($row=db_fetch_assoc($result)){
 				$uid=$row['userid'];
 				$stamuserprefs[$uid]['actions']=$row['value'];
 			}
 
 			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='buffs'";
-			$result=db_query($sql)
+			$result=db_query($sql);
 			while ($row=db_fetch_assoc($result)){
 				$uid=$row['userid'];
 				$stamuserprefs[$uid]['buffs']=$row['value'];
 			}
 
 			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='user_minihof'";
-			$result=db_query($sql)
+			$result=db_query($sql);
 			while ($row=db_fetch_assoc($result)){
 				$uid=$row['userid'];
 				$stamuserprefs[$uid]['minihof']=$row['value'];
