@@ -47,20 +47,23 @@ function addcommentary() {
 	if ($remove>0) {
 		$return = '/' . httpget('returnpath');
 		$section = httpget('section');
-        $sql = "SELECT " .
-                db_prefix("commentary").".*,".db_prefix("accounts").".name,".
-                db_prefix("accounts").".acctid, ".db_prefix("accounts").".clanrank,".
-                db_prefix("clans").".clanshort FROM ".db_prefix("commentary").
-                " INNER JOIN ".db_prefix("accounts")." ON ".
-                db_prefix("accounts").".acctid = " . db_prefix("commentary").
-                ".author LEFT JOIN ".db_prefix("clans")." ON ".
-                db_prefix("clans").".clanid=".db_prefix("accounts").
-                ".clanid WHERE commentid=$remove";
+		$accountprefix=db_prefix("accounts");
+		$clanprefix=db_prefix("clans")
+		$commentryprefix=db_prefix("commentary");
+        	$sql = "SELECT " .
+                	$commentryprefix.".*,".$accountprefix".name,".
+                	$accountprefix.".acctid, "$accountprefix.".clanrank,".
+                	$clanprefix.".clanshort FROM ".$commentryprefix.
+               		 " INNER JOIN "$accountprefix" ON ".
+                	$accountprefix".acctid = " .$commentryprefix.
+                	".author LEFT JOIN ".$clanprefix." ON ".
+                	$clanprefix.".clanid=".$accountprefix.
+                	".clanid WHERE commentid=$remove";
 		$row = db_fetch_assoc(db_query($sql));
 		$sql = "INSERT LOW_PRIORITY INTO ".db_prefix("moderatedcomments").
 			" (moderator,moddate,comment) VALUES ('{$session['user']['acctid']}','".date("Y-m-d H:i:s")."','".addslashes(serialize($row))."')";
 		db_query($sql);
-		$sql = "DELETE FROM ".db_prefix("commentary")." WHERE commentid='$remove';";
+		$sql = "DELETE FROM $commentryprefix WHERE commentid='$remove';";
 		db_query($sql);
 		invalidatedatacache("comments-$section");
 		invalidatedatacache("comments-or11");
