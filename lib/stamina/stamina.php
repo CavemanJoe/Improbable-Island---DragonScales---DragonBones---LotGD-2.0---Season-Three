@@ -626,6 +626,17 @@ function get_stamina($type = 1, $realvalue = false, $userid = false) {
 		$redpoint = $session['user']['stamina_red'];
 		$amberpoint = $session['user']['stamina_amber'];
 	}
+	//just to stop those peky division by 0 errors. Why I didn't do this earleier I don't know.
+	if ($totalstamina==0){
+		$totalstamina=1;
+	}
+	if ($redpoint==0){
+		$redpoint=1;
+	}
+	if ($amberpoint==0){
+		$amberpoint=1;
+	}
+
 	$greenmax = $maxstamina - $redpoint - $amberpoint;
 	$greenvalue = $totalstamina - $redpoint - $amberpoint;
 	$greenpct = ($greenvalue/$greenmax)*100;

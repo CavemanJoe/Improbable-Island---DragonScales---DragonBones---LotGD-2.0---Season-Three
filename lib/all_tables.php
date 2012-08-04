@@ -254,6 +254,24 @@ return array(
 		'buffbackup'=>array(
 			'name'=>'buffbackup', 'type'=>'text', 'null'=>'1'
 			),
+		'stamina_red'=>array(
+			'name'=>'stamina_red', 'type'=>'int(10) unsigned', 'default'=>'200000'
+			),
+		'stamina_amber'=>array(
+			'name'=>'stamina_amber', 'type'=>'int(10) unsigned', 'default'=>'400000'
+			),
+		'stamina_amount'=>array(
+			'name'=>'stamina_amount', 'type'=>'int(10) unsigned', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_buffs'=>array(
+			'name'=>'stamina_buffs', 'type'=>'text', 'default'=>'array()', 'null'=>'1'
+			),
+		'stamina_minihof'=>array(
+			'name'=>'stamina_minihof', 'type'=>'bool', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_actions'=>array(
+			'name'=>'stamina_minihof', 'type'=>'text', 'default'=>'array()', 'null'=>'1'
+			),
 		'amountouttoday'=>array(
 			'name'=>'amountouttoday', 'type'=>'int(11) unsigned', 'default'=>'0'
 			),
@@ -293,24 +311,6 @@ return array(
 			'name'=>'clanjoindate',
 			'type'=>'datetime',
 			'default'=>'0000-00-00 00:00:00'
-			),
-		'stamina_red'=>array(
-			'name'=>'stamina_red', 'type'=>'int(10) unsigned', 'default'=>'200000'
-			),
-		'stamina_amber'=>array(
-			'name'=>'stamina_amber', 'type'=>'int(10) unsigned', 'default'=>'400000'
-			),
-		'stamina_amount'=>array(
-			'name'=>'stamina_amount', 'type'=>'int(10) unsigned', 'default'=>'0', 'null'=>'1'
-			),
-		'stamina_buffs'=>array(
-			'name'=>'stamina_buffs', 'type'=>'text', 'default'=>'0', 'null'=>'1'
-			),
-		'stamina_minihof'=>array(
-			'name'=>'stamina_minihof', 'type'=>'bool', 'default'=>'0', 'null'=>'1'
-			),
-		'stamina_actions'=>array(
-			'name'=>'stamina_minihof', 'type'=>'text', 'default'=>'0', 'null'=>'1'
 			),
 		'key-PRIMARY'=>array(
 			'name'=>'PRIMARY',

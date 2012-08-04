@@ -886,10 +886,11 @@ $sql_upgrade_statements = array(
 ),
 "2.1.1 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for cities
 "2.1.2 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina settings, if module preinstalled
-"2.1.3 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina userprefs
-"2.2.0 Elvenhall Edition"=>array(),//stamina battle actions install
-"2.2.1 Elvenhall Edition"=>array(),//default elvenhall settings upgraded
+"2.1.3 Elvenhall Edition"=>array(),
 "2.2.2 Elvenhall Edition"=>array(),//default elvenhall settings upgraded
-"2.3.0 Elvenhall Edition"=>array(),//rewrite of stamina, after previous versions discovered to have a massive bug
+"2.2.0 Elvenhall Edition"=>array(	//rewrite of stamina, after previous versions discovered to have a massive bug
+//"ALTER TABLE ".db_prefix("accounts"),
+),
+"2.2.1 Elvenhall Edition"=>array(),
 );
 ?>
