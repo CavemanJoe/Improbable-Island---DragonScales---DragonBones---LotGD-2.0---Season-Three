@@ -166,7 +166,7 @@ function createchar_userprefsid($uid){
 			$red=200000;
 			$amber=400000;
 			$array=array();
-			$actions=serialize($array);
+			$actions=serialize(unserialize(getsetting("stamina_actionsarray", "")));
 			$buffs=serialize($array);
 			$user_minhof=true;
 			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_amount', $uid, '$stamina')";

@@ -294,6 +294,24 @@ return array(
 			'type'=>'datetime',
 			'default'=>'0000-00-00 00:00:00'
 			),
+		'stamina_red'=>array(
+			'name'='stamina_red', 'type'=>'int(10) unsigned', 'default'=>'200000'
+			),
+		'stamina_amber'=>array(
+			'name'='stamina_amber', 'type'=>'int(10) unsigned', 'default'=>'400000'
+			),
+		'stamina_amount'=>array(
+			'name'=>'stamina_amount', 'type'=>'int(10) unsigned', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_buffs'=>array(
+			'name'=>'stamina_buffs', 'type'=>'text', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_minihof'=>array(
+			'name'=>'stamina_minihof', 'type'=>'text', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_actions'=>array(
+			'name'=>'stamina_minihof', 'type'=>'text', 'default'=>'0', 'null'=>'1'
+			),
 		'key-PRIMARY'=>array(
 			'name'=>'PRIMARY',
 			'type'=>'primary key',
@@ -1543,10 +1561,33 @@ return array(
 			),
 		),
 
+	'staminadefault'=>array(
+		'actionid'=array(
+			'name'=>'actionid', 'type'=>'int(10) unsigned', 'extra'=>'auto_increment'
+			),
+		'maxcost'=array(
+			'name'=>'maxcost', 'type'=>'int(10)', 'null'=>'1', 'default'=>""
+			),
+		'mincost'=array(
+			'name'=>'mincost', 'type'=>'int(10)', 'null'=>'1', 'default'=>""
+			),
+		'firstlvlexp'=array(
+			'name'=>'firstlvlexp', 'type'=>'int(10) unsigned', 'null'=>'1', 'default'=>""
+			),
+		'firstlvlexp'=array(
+			'name'=>'firstlvlexp', 'type'=>'int(10) unsigned', 'null'=>'1', 'default'=>""
+			),
+		'expincrement'=array(
+			'name'=>'expincrement', 'type'=>'float(6,4)', 'null'=>'1', 'default'=>""
+			),
+		'costreduction'=array(
+			'name'=>'costreduction', 'type'=>'int(10) unsigned', 'null'=>'1', 'default'=>""
+			),
+		'class'=array(
+			'name'=>'class', 'type'=>'varchar(50)', 'null'=>'1', 'default'=>""
+			),
+		),
 
-/*"1.2.1.0 Elvenhall Edition"=>array(
-//will siphon off userinfo into here that's not part of a module or login info. Create table in this version.
-"CREATE TABLE ".db_prefix("userprefs")." ('userid' int(10) unsigned NOT NULL, 'setting' varchar(100), `value`  text NOT NULL, PRIMARY KEY ('setting`,`userid'), KEY 'userid' ('userid')",*/
 );
 }
 ?>

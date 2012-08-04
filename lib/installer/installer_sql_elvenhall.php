@@ -291,6 +291,12 @@ function elvenhall_sql($version){
 		}
 		output("Userprefs installed");
 		return $return;
+	} else if ($version=="2.3.0 Elvenhall Edition"){
+		
+		/*if ($session['dbinfo']['upgrade']==true && is_module_installed("staminasystem"==true)){
+			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem";
+		}*/
+
 	}
 }
 

@@ -54,14 +54,14 @@ function get_player_action_list($userid=false) {
 	if ($ismodule==true){
 		$actions = unserialize(get_module_pref("actions", "staminasystem", $userid));
 	} else {
-		$actions = unserialize(get_userpref("stamina_actions",$userid));
+		$actions = unserialize($session['user']['stamina_actions']);
 	}
 	if (!is_array($actions)) {
 		$actions = array();
 		if ($ismodule==true){
 			set_module_pref("actions", serialize($actions), "staminasystem", $userid);
 		} else {
-			set_userpref("stamina_actions", serialize($actions),$userid);
+			$session['user']['stamina_actions']=serialize($actions);
 		}
 	}
 	/*if ($ismodule==true){
@@ -87,7 +87,7 @@ function get_player_action($action, $userid=false) {
 	if ($ismodule==true){
 	$playeractions=unserialize(get_module_pref("actions","staminasystem",$userid));
 	} else {
-	$playeractions=unserialize(get_userpref("stamina_actions",$userid));
+	$playeractions=unserialize($session['user']['stamina_actions']));
 	}
 	//Check to see if this action is set for this player, and if not, set it
 	if (!isset($playeractions[$action])){
@@ -755,6 +755,8 @@ function stamina_process_newday($userid = false) {
 	
 	if ($userid === false) $userid = $session['user']['acctid'];
 	$startingstamina=1000000;
+	$amber=400000;
+	$red=200000;
 	modulehook("stamina-newday-intercept");
 	// remove buffs
 	stamina_strip_all_buffs($userid);
@@ -762,14 +764,12 @@ function stamina_process_newday($userid = false) {
 	if ($ismodule==true){
 	//output("setting module prefs");
 	set_module_pref("stamina",$startingstamina,"staminasystem",$userid);
-	set_module_pref("amber",400000,"staminasystem",$userid);
-	set_module_pref("red",200000,"staminasystem",$userid);
+	set_module_pref("amber",$amber,"staminasystem",$userid);
+	set_module_pref("red",$red,"staminasystem",$userid);
 	} else {
-	output("setting userprefs, with starting stamina of %s",$startingstamina);
-	//debug("Setting stamina to $startingstamina");
-	set_userpref("stamina_amount",$startingstamina,$userid);
-	set_userpref("stamina_amber",400000, $userid);
-	set_userpref("stamina_red",200000,$userid);
+	$session['user']['stamina_amount']=$startingstamina;
+	$session['user']['amber']=$amber;
+	$session['user']['red']=$red;
 	}
 	
 	modulehook("stamina-newday");
@@ -816,8 +816,7 @@ function addstamina($amount, $userid = false){
 		$newstamina = get_module_pref("stamina", "staminasystem", $userid) + $amount;
 		set_module_pref("stamina",$newstamina,"staminasystem",$userid);
 	} else {
-		$newstamina = get_userpref("stamina_amount", $userid) + $amount;
-		set_userpref("stamina_amount",$newstamina, $userid);
+		$session['user']['stamina_amount'] += $amount;
 	}
 	return $newstamina;
 }
@@ -834,11 +833,11 @@ function removestamina($amount, $userid = false){
 		}
 		set_module_pref("stamina",$newstamina,"staminasystem",$userid);
 	} else {
-		$newstamina = get_userpref("stamina_amount",$userid) - $amount;
+		$newstamina = $session['user']['stamina_amount'] - $amount;
 		if ($newstamina < 0){
 			$newstamina = 0;
 		}
-		set_userpref("stamina_amount",$newstamina,$userid);
+		$session['user']['stamina_amount']=$newstamina;
 	}
 	return $newstamina;
 }
@@ -855,9 +854,10 @@ function stamina_minihof($action,$userid=false){
 	
 	if (!is_array($boardinfo)){
 		$board = array();
-		$staminasql = "SELECT value,userid FROM ".db_prefix("userprefs")." WHERE setting='stamina_actions'";
+		if ($ismodule!=true){
+		$staminasql = "SELECT stamina_actions,userid FROM ".db_prefix("accouts");
 		$staminaresult = db_query($staminasql);
-		
+		}
 		$scount = db_num_rows($staminaresult);
 		for ($i=0;$i<$scount;$i++){
 			$row = db_fetch_assoc($staminaresult);
