@@ -23,8 +23,9 @@ Returns arrays for every Action default.
 */
 function get_default_action_list() {
 	if ($ismodule==true){
-	$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
+		$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
 	} else {$actions=unserialize(getsetting("stamina_actionsarray", ""));}
+
 	if (!is_array($actions)) {
 		$actions = array();
 		if ($ismodule==true){
@@ -49,6 +50,7 @@ Returns arrays for every action for the given player.
 function get_player_action_list($userid=false) {
 	global $session;
 	if ($userid === false) $userid = $session['user']['acctid'];
+
 	if ($ismodule==true){
 		$actions = unserialize(get_module_pref("actions", "staminasystem", $userid));
 	} else {
@@ -62,11 +64,11 @@ function get_player_action_list($userid=false) {
 			set_userpref("stamina_actions", serialize($actions),$userid);
 		}
 	}
-	if ($ismodule==true){
+	/*if ($ismodule==true){
 		$actions = unserialize(get_module_pref("actions", "staminasystem", $userid));
 	} else {
 		$actions = unserialize(get_userpref("stamina_actions", $userid));
-	}
+	}*/
 	return $actions;
 }
 
