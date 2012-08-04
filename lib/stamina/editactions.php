@@ -14,7 +14,15 @@ if($op2 == "del"){
 	
 	set_module_setting("actionsarray",serialize($act),"staminasystem");
 	actions_list();
-	$actiondebug = get_module_setting("actionsarray","staminasystem");
+	$version=getsetting("installer_version","1.1.1 Dragonprime Edition");
+	if ($version<"2.0.0"){
+		$actiondebug = get_module_setting("actionsarray","staminasystem");
+	} else {
+		$sql="SELECT actions FROM ".db_prefix("staminaactionsarray");
+		$result=db_query;
+		$row=db_fetch_assoc($result);
+		$actiondebug=unserialize($row['actions']);
+	}
 	debug($actiondebug);
 	addnav("Continue");
 	addnav("Continue","stamina.php?op=superuser");
@@ -24,7 +32,16 @@ if($op2 == "new"){
 	output("The action \"$new\" has been added.");
 	$act = actions_list();
 	$act[] = $new;
-	set_module_setting("actionsarray",serialize($act),"staminasystem");
+	$version=getsetting("installer_version","1.1.1 Dragonprime Edition");
+
+	if ($version<"2.0.0"){
+		set_module_setting("actionsarray",serialize($act),"staminasystem");
+	} else {
+		$sarray=serialize($act);
+		$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ($sarray)";
+		db_query($sql);
+	}
+
 	$act = actions_list();
 	addnav("Continue");
 	addnav("Continue","stamina.php?op=superuser");

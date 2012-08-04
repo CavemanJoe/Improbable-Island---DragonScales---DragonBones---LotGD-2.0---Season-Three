@@ -84,9 +84,15 @@ switch ($op2){
 		debug("Is this a full, reconstructed Actions array for this player?");
 		debug($actionsarray);
 		debug($actionsarray);
+
+		if ($ismodule==true){
 		set_module_pref("actions",serialize($actionsarray),"staminasystem",$userid);
-		output("Actions have been saved.");
-	
+		output("Actions have been saved.");} else {
+		output("Sorry, actions cannot be edited. Changes are needed to the core first.");
+		//$session['user']['stamina_actions']=serialize($actionsarray);
+		//output("Actions have been saved.");
+		}
+
 		addnav("Return");
 		addnav("Search again","stamina.php?op=superuser&stam=editplayer");
 		addnav("Return","stamina.php?op=superuser");
@@ -95,8 +101,9 @@ switch ($op2){
 	case "defaults":
 		$userid = httpget('id');
 	
+		if ($ismodule==true){
 		set_module_pref("actions",array(0),"staminasystem",$userid);
-		output("Actions have been saved.");
+		output("Actions have been saved.");}else{output("Sorry, actions cannot be edited. Changes are needed to the core first.");}
 	
 		addnav("Return");
 		addnav("Search again","stamina.php?op=superuser&stam=editplayerop2=search");

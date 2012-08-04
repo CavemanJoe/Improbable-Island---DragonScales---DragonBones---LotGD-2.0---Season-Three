@@ -1538,7 +1538,7 @@ return array(
 			),
 		),
 	
-	'userprefs'=>array(
+	/*'userprefs'=>array(
 		'userid'=>array(
 			'name'=>'userid', 'type'=>'int(10) unsigned', 'null'=>'1', 'default'=>""
 			),
@@ -1559,7 +1559,7 @@ return array(
 			'type'=>'key',
 			'columns'=>'userid'
 			),
-		),
+		),*/
 
 	/*'staminadefault'=>array(
 		'actionid'=array(

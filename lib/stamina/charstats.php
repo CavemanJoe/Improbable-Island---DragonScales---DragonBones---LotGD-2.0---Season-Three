@@ -1,6 +1,6 @@
 <?php
 
-global $charstat_info, $badguy, $actions_used;
+global $charstat_info, $badguy, $actions_used, $session;
 require_once("lib/stamina/stamina.php");
 require_once("lib/userprefs.php");
 if ($logd_version<"2.0.0") {$ismodule=true;}
@@ -55,7 +55,7 @@ if (isset($actions_used)){
 				$to = $en - $st;
 				//debug("Minihof: ".$to);
 			} else {
-				if (get_userpref("stamina_minihof")){
+				if ($session['user']['stamina_minihof']){
 				$st = microtime(true);
 				stamina_minihof($action);
 				$en = microtime(true);
@@ -81,8 +81,8 @@ if ($ismodule==true){
 	$redpoint = get_module_pref("red","staminasystem");
 	$amberpoint = get_module_pref("amber","staminasystem");
 }else {
-	$redpoint = get_userpref("stamina_red",200000);
-	$amberpoint = get_userpref("stamina_amber",400000);
+	$redpoint = $session['user']['stamina_red'];
+	$amberpoint = $session['user']['stamina_amber'];
 }
 $stamina=get_stamina(3,1);
 $daystamina = 1000000;

@@ -14,9 +14,9 @@ if ($ismodule==true){
 	$amberpoint = get_module_pref("amber","staminasystem");
 	$stamina=get_module_pref("amount","staminasystem");
 }else {
-	$redpoint = get_userpref("stamina_red");
-	$amberpoint = get_userpref("stamina_amber");
-	$stamina=get_userpref("stamina_amount");
+	$redpoint = $session['user']['stamina_red'];
+	$amberpoint = $session['user']['stamina_amber'];
+	$stamina=$session['user']['stamina_amount'];
 }
 $daystamina = 1000000;
 $redpct = get_stamina(0);
@@ -116,9 +116,11 @@ foreach($act AS $key => $values){
 	rawoutput("</td></tr>");
 }
 rawoutput("</table>");
-
+if ($ismodule==true){
 $bufflist = unserialize(get_module_pref("buffs", "staminasystem"));
-
+} else {
+	$bufflist=$session['user']['stamina_buffs']
+}
 output("`n`n`bAction Buffs`b:`n");
 
 if (is_array($bufflist) && count($bufflist) > 0 && isset($bufflist)){

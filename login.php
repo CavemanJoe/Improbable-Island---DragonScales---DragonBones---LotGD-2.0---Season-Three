@@ -92,6 +92,7 @@ if ($name!=""){
 				if ($session['user']['location']==$iname)
 					$session['user']['location']=$vname;
 
+				modulehook("login-redirect");
 				if ($session['user']['restorepage']>""){
 					redirect($session['user']['restorepage']);
 				}else{

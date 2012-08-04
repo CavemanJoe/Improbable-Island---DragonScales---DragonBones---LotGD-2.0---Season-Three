@@ -146,6 +146,6 @@ $default_settings = array(
 	"villagechance"=>0,
 	"enablecompanions"=>true,
 	"stamina_turns_base"=>20000,
-	"stamina_turns_ceilin"=>30000
+	"stamina_turns_ceilin"=>30000,
 );
 ?>
