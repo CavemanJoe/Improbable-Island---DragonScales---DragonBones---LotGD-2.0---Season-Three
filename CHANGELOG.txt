@@ -1,5 +1,8 @@
 Changelog
 
+Changes from 2.2.3 to 2.3.0
+[UPDATE] Rearranged how the stamina system is integrated in the core, in order to resolve an issue with the actions array being to big for the database.
+
 Changes from 2.2.1 to 2.2.3
 [FIX] Installer now works for fresh install, as well as upgrades where staminasystem was not already present
 [FIX] When creating new characters, the deafult stamina array is created
@@ -14,8 +17,11 @@ Changes from 2.1.3 to 2.2.0
 Changes from 2.0.0 to 2.1.3
 [FEATURE] - Stamina system now in core
 
-Changes from 1.1.2 to 2.1.3
+Changes from 2.0.0 to 2.0.1
 [FEATURE] - Multiple Cities and cityprefs now in core
+
+Changes from 1.1.2 to 2.0.0
+[STUFF] - All those lovely change Caveman Joe made, but I don't know what they all are so they're not all listed.
 
 Changes from 1.1.1 to 1.1.2
 [FIX] - Moved gardener away from foot-gardens hook so it doesn't appear in events

@@ -20,16 +20,16 @@ function elvenhall_sql($version){
 		$result = db_query($sql);
 		$return[0]=$result;
 		return $return;
-	} else 	if ($version=="2.1.0 Elvenhall Edition"){//transfers stamina settings over
+	} else if ($version=="2.1.0 Elvenhall Edition"){//transfers stamina settings over
 		if (is_module_installed("staminasystem")==true){
-		output("`nUpdating Stamina actionsarray settings...");
+		/*output("`nUpdating Stamina actionsarray settings...");
 		$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='staminasystem' AND setting='actionsarray'";
 		$result=db_query($sql);
 		$array=db_fetch_assoc($result);
 		$array=serialize(unserialize($array['value']));
 		$sql="INSERT INTO ".db_prefix("settings")." VALUES ('stamina_actionsarray', '$array')";
 		$result=db_query($sql);
-		$return[0]=$result;
+		$return[0]=$result;*/
 
 		output("Updating Stamina turns_emulation_base settings...");
 		$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='staminasystem' AND setting='turns_emulation_base'";
@@ -117,7 +117,7 @@ function elvenhall_sql($version){
 		//require_once("lib/stamina/stamina.php");
 		//require_once("lib/stamina/defaultactions.php")
 //There is an error somewhere in this block, can't tell what but I'm going to bed.
-		$value=20000;
+		/*$value=20000;
 		$sql="INSERT IGNORE INTO ".db_prefix("settings")." VALUES ('stamina_turns_base', '$value')";
 		$result=db_query($sql);
 		$return[0]=$result;
@@ -127,60 +127,15 @@ function elvenhall_sql($version){
 		$result=db_query($sql);
 		$return[1]=$result;
 
-		output("Settings for turns emulation has been set, if they weren't already.");
-	return $return;
-
+		output("Settings for turns emulation has been set, if they weren't already.");*/
+		return;
 	} else if ($version=="2.2.2 Elvenhall Edition"){//set default stamina userprefs, if staminasystem wasn't already installed
-		$return=false;		
-		
-		$sql="SELECT COUNT(*) AS cnt FROM ".db_prefix("accounts");
-		$result=db_query($sql);
-		$return[0]=$result;
-		
-		$row=db_fetch_assoc($result);
-		$accounts=$row['cnt'];
-		
-		$stamina=0;
-		$red=200000;
-		$amber=400000;
-		$array=array();
-		$actions=serialize($array);
-		$buffs=serialize($array);
-		$user_minhof=true;
-
-		for ($i=1; $i<=$accounts; $i++){
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_amount', $i, '$stamina')";
-			$result=db_query($sql);
-			$return[1][0]=$result;
-
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_red', $i, '$red')";
-			$result=db_query($sql);
-			$return[1][1]=$result;
-
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_amber', $i, '$amber')";
-			$result=db_query($sql);
-			$return[1][2]=$result;
-
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_actions', $i, '$actions')";
-			$result=db_query($sql);
-			$return[1][3]=$result;
-
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_buffs', $i, '$buffs')";
-			$result=db_query($sql);
-			$return[1][4]=$result;
-
-			$sql="INSERT IGNORE INTO ".db_prefix("userprefs")." (`setting`, `userid`, `value`) VALUES ('stamina_minihof', $i, '$user_minihof')";
-			$result=db_query($sql);
-			$return[1][5]=$result;
-
-		}
-		output("Userprefs installed");
-		return $return;
+		return;
 	} else if ($version=="2.3.0 Elvenhall Edition"){
 		
 		if ($session['dbinfo']['upgrade']==true && is_module_installed("staminasystem"==true)){
 			//takes values from old module userprefs
-			output("Selecting userprefs...");
+			output("`nSelecting userprefs...");
 			$sql="SELECT userid, value FROM ".db_prefix("module_userprefs")." WHERE modulename='staminasystem AND setting='stamina'";
 			$result=db_query($sql)
 			while ($row=db_fetch_assoc($result)){
@@ -223,14 +178,20 @@ function elvenhall_sql($version){
 				$stamuserprefs[$uid]['minihof']=$row['value'];
 			}
 			$noofusers=count($stamuserprefs);
-			output("Inserting %s userprefs...",$noofusers);
+			output("`nInserting %s userprefs...",$noofusers);
 			foreach ($stamuserprefs as $userid=>$userprefs){
 				$sql="UPDATE ".db_prefix("accounts")." SET stamina_amount='{$userprefs['stamina']}, stamina_red='{$userprefs['red']}', stamina_amber='{$userprefs['amber']}', stamina_actions={$userprefs['actions']}, stamina_buffs={$userprefs['buffs']}, stamina_minihof={$userprefs['minihof']} WHERE acctid=$userid";
 				db_query($sql);
 			}//finished with userprefs
 
-			//start settings
-
+			//start putting stamina actions across
+			output("`nUpdating Stamina actionsarray settings...");
+			$sql="SELECT value FROM ".db_prefix("module_settings")." WHERE modulename='staminasystem' AND setting='actionsarray'";
+			$result=db_query($sql);
+			$array=db_fetch_assoc($result);
+			$array=serialize(unserialize($array['value']));
+			$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ('$array')";
+			$result=db_query($sql);
 			//end settings
 
 		} else {//if the staminasystem was not already present

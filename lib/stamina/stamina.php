@@ -24,19 +24,29 @@ Returns arrays for every Action default.
 function get_default_action_list() {
 	if ($ismodule==true){
 		$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
-	} else {$actions=unserialize(getsetting("stamina_actionsarray", ""));}
+	} else {
+		$sql="SELECT actions FROM ".db_prefix("staminaactionsarray");
+		$result=db_query;
+		$row=db_fetch_assoc($result);
+		$actions=unserialize($row['actions']);
+	}
 
 	if (!is_array($actions)) {
 		$actions = array();
 		if ($ismodule==true){
 		set_module_setting("actionsarray", serialize($actions), "staminasystem");
 		}else{
-		setsetting("staminasystem_actionsarray", serialize($actions));
+		$sarray=serialize($actions);
+		$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ($sarray)";
+		db_query($sql);
 		}
 	}
-	if ($ismodule==true){
+	/*if ($ismodule==true){
 	$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
-	} else {$actions=unserialize(getsetting("stamina_actionsarray", ""));}
+	} else {$sql="SELECT actions FROM ".db_prefix("staminaactionsarray");
+		$result=db_query;
+		$row=db_fetch_assoc($result);
+		$actions=unserialize($row['actions']);}*/
 	return $actions;
 }
 
@@ -126,7 +136,9 @@ function install_action($actionname, $action){
 	if ($ismodule==true){
 		set_module_setting("actionsarray",serialize($defaultactions),"staminasystem");
 	} else {
-		setsetting("stamina_actionsarray",serialize($defaultactions));}
+		$sarray=serialize($defaultactions);
+		$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ($sarray)";
+		db_query($sql);}
 	return true;
 }
 
@@ -138,27 +150,37 @@ Cleans up all data pertaining to an action.  Use this in your module's Uninstall
 */
 
 function uninstall_action($actionname) {
+	global $session;
 	//Remove information from the actions array
 	$defaultactions = get_default_action_list();
 	unset($defaultactions[$actionname]);
 	if ($ismodule==true){
 	set_module_setting("actionsarray",serialize($defaultactions),"staminasystem");
 	} else {
-	setsetting("actionsarray",serialize($defaultactions),"stamina");
+	$sarray=serialize($defaultactions);
+	$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ($sarray)";
+	db_query($sql);
 	}
 	//Now remove the action from each user's modulepref
+	if ($ismodule==true){
 	$sql = "SELECT acctid FROM ".db_prefix("accounts")."";
 	$results = db_query($sql);
 	for ($i=0; $i<db_num_rows($results);$i++){
-		$row = db_fetch_assoc($results);
-		if ($ismodule==true){
+		$row = db_fetch_assoc($results);		
 		$playeractions = unserialize(get_module_pref("actions","staminasystem",$row['acctid']));
 		unset($playeractions[$actionname]);
-		set_module_pref("actions",serialize($playeractions),"staminasystem",$row['acctid']);
-		} else {
-		$playeractions = unserialize(get_userpref("stamina_actions",$row['acctid']));
-		unset($playeractions[$actionname]);
-		set_userpref("stamina_actions",serialize($playeractions),$row['acctid']);
+		set_module_pref("actions",serialize($playeractions),"staminasystem",$row['acctid']);		
+	}
+	} else {
+		$sql = "SELECT acctid, stamina_actions FROM ".db_prefix("accounts")."";
+		$results = db_query($sql);
+		for ($i=0; $i<db_num_rows($results);$i++){
+			$row = db_fetch_assoc($results);		
+			$playeractions = unserialize($srow['stamina_actions']));
+			unset($playeractions[$actionname]);
+			$sarray=serialize($playeractions);	
+			$sql="UPDATE ".db_prefix("accounts")." SET stamina_actions=$sarray WHERE acctid=$i";
+			db_query($sql);
 		}
 	}
 	return true;
@@ -179,9 +201,9 @@ function apply_stamina_buff($referencename, $buff, $userid=false){
 	$bufflist[$referencename] = $buff;
 	set_module_pref("staminasystem_buffs", serialize($bufflist),$userid);
 	} else {
-	$bufflist = unserialize(get_userpref("stamina_buffs", $userid));
-	$bufflist[$referencename] = $buff;
-	set_userpref("stamina_buffs", serialize($bufflist),$userid);
+		$bufflist = unserialize($session['user']['stamina_actions']);
+		$bufflist[$referencename] = $buff;
+		set_userpref("stamina_buffs", serialize($bufflist),$userid);
 	}
 }
 

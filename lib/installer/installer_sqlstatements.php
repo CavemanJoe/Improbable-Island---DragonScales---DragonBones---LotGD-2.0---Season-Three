@@ -873,7 +873,8 @@ $sql_upgrade_statements = array(
 ),
 "1.1.2 Dragonprime Edition"=>array(
 ),
-"2.0.0 Elvenhall Edition"=>array(
+"2.0.0 Elvenhall Edition"=>array(),
+"2.0.1 Elvenhall Edition"=>array(
 "INSERT IGNORE INTO " . db_prefix("cityprefs") . " VALUES (1, 'none', '".getsetting("villagename", LOCATION_FIELDS)."')",
 ),
 "2.1.0 Elvenhall Edition"=>array(

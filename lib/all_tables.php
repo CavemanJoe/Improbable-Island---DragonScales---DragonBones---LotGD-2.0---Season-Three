@@ -1561,7 +1561,7 @@ return array(
 			),
 		),
 
-	'staminadefault'=>array(
+	/*'staminadefault'=>array(
 		'actionid'=array(
 			'name'=>'actionid', 'type'=>'int(10) unsigned', 'extra'=>'auto_increment'
 			),
@@ -1585,6 +1585,12 @@ return array(
 			),
 		'class'=array(
 			'name'=>'class', 'type'=>'varchar(50)', 'null'=>'1', 'default'=>""
+			),
+		),*/
+
+	'staminaactionsarray'=>array(
+		'actions'=>array(
+			'name'=>'actions', 'type'=>'text', 'null'=>'1',
 			),
 		),
 
