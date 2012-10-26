@@ -109,8 +109,8 @@ $origtexts['schemas'] = $schemas;
 //$city = getsetting("villagename", LOCATION_
 //$city=$vname;
 
-require_once("lib/cities.php");
-cities_villagetext();
+//require_once("lib/cities.php");
+//cities_villagetext();
 $texts = modulehook("villagetext",$origtexts);
 //and now a special hook for the village
 $texts = modulehook("villagetext-{$session['user']['location']}",$texts);

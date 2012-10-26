@@ -12,6 +12,7 @@ require_once("lib/names.php");
 
 tlschema("dragon");
 $battle = false;
+$bossname=get_setting("bossname",BOSS_NAME)
 page_header("The Green Dragon!");
 $op = httpget('op');
 if ($op==""){

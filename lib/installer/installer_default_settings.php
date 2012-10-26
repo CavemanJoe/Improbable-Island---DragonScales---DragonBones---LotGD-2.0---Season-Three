@@ -147,5 +147,6 @@ $default_settings = array(
 	"enablecompanions"=>true,
 	"stamina_turns_base"=>20000,
 	"stamina_turns_ceilin"=>30000,
+	"bossname"=>BOSS_NAME
 );
 ?>

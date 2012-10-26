@@ -1,5 +1,4 @@
 <?php
-require_once("lib/userprefs.php");
 
 $version=getsetting("installer_version","1.1.1 Dragonprime Edition");
 if ($version<"2.0.0") {$ismodule=true;}
@@ -610,7 +609,7 @@ Returns the player's total Stamina points.
 
 function get_stamina($type = 1, $realvalue = false, $userid = false) {
 	global $session;
-	
+	debug("`nGetting stamina info");
 	if ($userid === false) $userid = $session['user']['acctid'];
 	if ($ismodule==true){
 		$totalstamina = get_module_pref("stamina", "staminasystem", $userid);
@@ -620,13 +619,14 @@ function get_stamina($type = 1, $realvalue = false, $userid = false) {
 		$amberpoint = get_module_pref("amber", "staminasystem", $userid);
 	} else {
 		$totalstamina = $session['user']['stamina_amount'];
-		debug($totalstamina);
+		//debug($totalstamina);
 		$maxstamina = 1000000;
 		$totalpct = ($totalstamina/$maxstamina)*100;
 		$redpoint = $session['user']['stamina_red'];
 		$amberpoint = $session['user']['stamina_amber'];
 	}
 	//just to stop those peky division by 0 errors. Why I didn't do this earleier I don't know.
+	debug($totalstamina);
 	if ($totalstamina==0){
 		$totalstamina=1;
 	}
@@ -802,9 +802,11 @@ function stamina_process_newday($userid = false) {
 	set_module_pref("amber",$amber,"staminasystem",$userid);
 	set_module_pref("red",$red,"staminasystem",$userid);
 	} else {
+	output("Setting stamina for non-module");
+	debug("Testing debug as well, starting stamina=$startingstamina`n");
 	$session['user']['stamina_amount']=$startingstamina;
-	$session['user']['amber']=$amber;
-	$session['user']['red']=$red;
+	$session['user']['stamina_amber']=$amber;
+	$session['user']['stamina_red']=$red;
 	}
 	
 	modulehook("stamina-newday");

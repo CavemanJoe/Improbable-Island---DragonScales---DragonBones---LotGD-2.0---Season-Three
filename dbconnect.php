@@ -5,6 +5,6 @@ $DB_USER = 'root';
 $DB_PASS = 'password';
 $DB_NAME = 'elvenhall';
 $DB_PREFIX = 'free_';
-$DB_USEDATACACHE = 0;
-$DB_DATACACHEPATH = 'datacache';
+$DB_USEDATACACHE = 1;
+$DB_DATACACHEPATH = '/var/www/Improbable-Island/cache';
 ?>

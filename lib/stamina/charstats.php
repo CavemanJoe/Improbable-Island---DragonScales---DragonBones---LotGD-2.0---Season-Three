@@ -2,7 +2,6 @@
 
 global $charstat_info, $badguy, $actions_used, $session;
 require_once("lib/stamina/stamina.php");
-require_once("lib/userprefs.php");
 if ($logd_version<"2.0.0") {$ismodule=true;}
 //Look at the number of Turns we're missing.  Default is ten, and we'll add or remove some Stamina depending, as long as we're not in a fight.
 if ($ismodule==true){

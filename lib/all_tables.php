@@ -254,24 +254,6 @@ return array(
 		'buffbackup'=>array(
 			'name'=>'buffbackup', 'type'=>'text', 'null'=>'1'
 			),
-		'stamina_red'=>array(
-			'name'=>'stamina_red', 'type'=>'int(10) unsigned', 'default'=>'200000'
-			),
-		'stamina_amber'=>array(
-			'name'=>'stamina_amber', 'type'=>'int(10) unsigned', 'default'=>'400000'
-			),
-		'stamina_amount'=>array(
-			'name'=>'stamina_amount', 'type'=>'int(10) unsigned', 'default'=>'0', 'null'=>'1'
-			),
-		'stamina_buffs'=>array(
-			'name'=>'stamina_buffs', 'type'=>'text', 'default'=>'array()', 'null'=>'1'
-			),
-		'stamina_minihof'=>array(
-			'name'=>'stamina_minihof', 'type'=>'bool', 'default'=>'0', 'null'=>'1'
-			),
-		'stamina_actions'=>array(
-			'name'=>'stamina_minihof', 'type'=>'text', 'default'=>'array()', 'null'=>'1'
-			),
 		'amountouttoday'=>array(
 			'name'=>'amountouttoday', 'type'=>'int(11) unsigned', 'default'=>'0'
 			),
@@ -306,6 +288,27 @@ return array(
 			),
 		'clanrank'=>array(
 			'name'=>'clanrank', 'type'=>'tinyint(4) unsigned', 'default'=>'0'
+			),
+		'stamina_red'=>array(
+			'name'=>'stamina_red', 'type'=>'int(10) unsigned', 'default'=>'200000'
+			),
+		'stamina_amber'=>array(
+			'name'=>'stamina_amber', 'type'=>'int(10) unsigned', 'default'=>'400000'
+			),
+		'stamina_amount'=>array(
+			'name'=>'stamina_amount', 'type'=>'int(10) unsigned', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_buffs'=>array(
+			'name'=>'stamina_buffs', 'type'=>'text', 'null'=>'1'
+			),
+		'stamina_minihof'=>array(
+			'name'=>'stamina_minihof', 'type'=>'bool', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_actions'=>array(
+			'name'=>'stamina_actions', 'type'=>'text', 'null'=>'1'
+			),
+		'homecity'=>array(
+			'name'=>'homecity', 'type'=>'varchar(25)', 'default'=>'Degolburg'
 			),
 		'clanjoindate'=>array(
 			'name'=>'clanjoindate',

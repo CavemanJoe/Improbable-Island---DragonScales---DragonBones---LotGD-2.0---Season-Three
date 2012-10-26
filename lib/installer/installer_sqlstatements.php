@@ -877,20 +877,35 @@ $sql_upgrade_statements = array(
 "2.0.1 Elvenhall Edition"=>array(
 "INSERT IGNORE INTO " . db_prefix("cityprefs") . " VALUES (1, 'none', '".getsetting("villagename", LOCATION_FIELDS)."')",
 ),
-"2.1.0 Elvenhall Edition"=>array(
-//will siphon off userinfo into here that's not part of a module or login info. Create table in this version.
-//"CREATE TABLE ".db_prefix("userprefs")." ('userid' int(10) unsigned NOT NULL, 'setting' varchar(100), 'value'  text NOT NULL, PRIMARY KEY ('setting','userid'), KEY 'userid' ('userid') ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12",
-//"CREATE TABLE ".db_prefix("accounts_info")." (`accid` int(11) UNSIGNED NOT NULL, `login` varchar(50) NOT NULL,`password` varchar(32) NOT NULL, `emailaddress` varchar(128) NOT NULL, `emailvalidation` varchar(32) NOT NULL, PRIMARY KEY (accid))",
-//this is to spilt off login info from everything else, making it easier to have othere things use the same info.
-
-),
+"2.1.0 Elvenhall Edition"=>array(),
 "2.1.1 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for cities
 "2.1.2 Elvenhall Edition"=>array(),//this is where elvenhall statements are executed for stamina settings, if module preinstalled
 "2.1.3 Elvenhall Edition"=>array(),
-"2.2.2 Elvenhall Edition"=>array(),//default elvenhall settings upgraded
-"2.2.0 Elvenhall Edition"=>array(	//rewrite of stamina, after previous versions discovered to have a massive bug
-//"ALTER TABLE ".db_prefix("accounts"),
+"2.2.0 Elvenhall Edition"=>array(//rewrite of stamina, after previous versions discovered to have a massive bug
+/*'stamina_red'=>array(
+			'name'=>'stamina_red', 'type'=>'int(10) unsigned', 'default'=>'200000'
+			),
+		'stamina_amber'=>array(
+			'name'=>'stamina_amber', 'type'=>'int(10) unsigned', 'default'=>'400000'
+			),
+		'stamina_amount'=>array(
+			'name'=>'stamina_amount', 'type'=>'int(10) unsigned', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_buffs'=>array(
+			'name'=>'stamina_buffs', 'type'=>'text', 'default'=>'array()', 'null'=>'1'
+			),
+		'stamina_minihof'=>array(
+			'name'=>'stamina_minihof', 'type'=>'bool', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_actions'=>array(
+			'name'=>'stamina_minihof', 'type'=>'text', 'default'=>'array()', 'null'=>'1'
+			),*/
+/*"ALTER TABLE ".db_prefix("accounts")." ADD `stamina_red` INT(10) UNSIGNED NOT NULL DEFAULT 200000 AFTER `clanjoindate`",
+"ALTER TABLE ".db_prefix("accounts")." ADD `stamina_amber` INT(10) UNSIGNED NOT NULL DEFAULT 400000 AFTER `clanjoindate`",
+"ALTER TABLE ".db_prefix("accounts")." ADD `stamina_amount` INT(10) UNSIGNED NOT NULL DEFAULT 1000000 AFTER `clanjoindate`",
+"ALTER TABLE ".db_prefix("accounts")." ADD `stamina_buffs` TEXT AFTER `clanjoindate`",
+"ALTER TABLE ".db_prefix("accounts")." ADD `stamina_minihof` BOOLEAN DEFAULT 1 AFTER `clanjoindate`",
+"ALTER TABLE ".db_prefix("accounts")." ADD `stamina_actions` TEXT AFTER `clanjoindate`",*/
 ),
-"2.2.1 Elvenhall Edition"=>array(),
 );
 ?>
