@@ -118,7 +118,7 @@ rawoutput("</table>");
 if ($ismodule==true){
 $bufflist = unserialize(get_module_pref("buffs", "staminasystem"));
 } else {
-	$bufflist=$session['user']['stamina_buffs']
+	$bufflist=$session['user']['stamina_buffs'];
 }
 output("`n`n`bAction Buffs`b:`n");
 

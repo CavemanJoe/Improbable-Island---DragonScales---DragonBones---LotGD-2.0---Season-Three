@@ -73,11 +73,11 @@ function get_player_action_list($userid=false) {
 			$session['user']['stamina_actions']=serialize($actions);
 		}
 	}
-	/*if ($ismodule==true){
+	if ($ismodule==true){
 		$actions = unserialize(get_module_pref("actions", "staminasystem", $userid));
 	} else {
-		$actions = unserialize(get_userpref("stamina_actions", $userid));
-	}*/
+		//$actions = unserialize(get_userpref("stamina_actions", $userid));
+	}
 	return $actions;
 }
 
