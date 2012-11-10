@@ -62,6 +62,9 @@ function onslaught_dohook($hookname,$args){
 			set_module_pref('justresurrected',1);
 		break;
 		case "counciloffices":
+			if (httpget('councilop')!="enter"){
+				break;
+			}
 			output("A mechanical readout mounted on the wall gives the threat levels for the various Outposts on the Island:`n`n");
 			$sql = "select * from ".db_prefix("cityprefs");
 			$result=db_query_cached($sql,"allcityprefs");

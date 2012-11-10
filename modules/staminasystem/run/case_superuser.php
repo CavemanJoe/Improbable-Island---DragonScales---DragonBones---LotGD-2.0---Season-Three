@@ -1,7 +1,7 @@
 <?php
 
 require_once "lib/superusernav.php";
-
+require_once("modules/staminasystem/lib/lib.php");
 page_header("Actions Management");
 
 output("`c`bActions Management`b`c`n`n");

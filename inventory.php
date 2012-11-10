@@ -77,9 +77,7 @@ if ($items_discarditem){
 	delete_item($items_discarditem);
 }
 
-require_once("modules/iitems/lib/lib.php");
-iitems_get_player_inventory();
-//load_inventory();
+load_inventory();
 //debug($inventory);
 
 $hook = array(
@@ -97,7 +95,7 @@ addnav("Alphabetical","inventory.php?items_sort=alpha&items_context=$context");
 addnav("Quantity","inventory.php?items_sort=qty&items_context=$context");
 
 $sort = httpget("items_sort");
-//$gr = group_items($inventory,$sort);//NOTE: THIS MAY NEED TO BE UNDONE
+$gr = group_items($inventory,$sort);
 //debug($gr);
 
 // switch ($sort){
@@ -130,7 +128,7 @@ $dinv = array();
 $carriers = array();
 
 //arrange display inventory
-foreach ($inventory as $itemid => $vals){
+foreach ($inventory AS $itemid => $vals){
 	if (!$vals['carrieritem']){
 		$dinv[$vals['inventorylocation']]['items'][$itemid] = $vals;
 	} else {
@@ -140,11 +138,11 @@ foreach ($inventory as $itemid => $vals){
 }
 
 output("Jump to: ");
-foreach($carriers as $carrier => $vals){
+foreach($carriers AS $carrier => $vals){
 	rawoutput("<a href=\"#".$carrier."\">".$vals['verbosename']."</a> | ");
 }
 
-foreach($dinv as $carrier => $cvals){
+foreach($dinv AS $carrier => $cvals){
 	//debug($cvals);
 	rawoutput("<a name=\"$carrier\"></a><table width=100% style='border: dotted 1px #000000'><tr><td>");
 	if ($cvals['carrier']['image']) rawoutput("<table width=100% cellpadding=0 cellspacing=0><tr><td>");
@@ -251,5 +249,7 @@ foreach($dinv as $carrier => $cvals){
 addnav("Return");
 //addnav("Back to where you came from",iitems_return_link($context)"village.php");
 //addnav("Back to where you came from",iitems_return_link($context)"village.php");*/
+
 page_footer();
 ?>
+
