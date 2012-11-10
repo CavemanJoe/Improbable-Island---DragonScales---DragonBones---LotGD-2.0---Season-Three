@@ -4,7 +4,7 @@ popup_header("Your Stamina statistics");
 require_once("lib/stamina/stamina.php");
 //require_once;
 //$version=getsetting("installer_version","1.1.1");
-if ($logd_version<"2.1.0") $ismodule=true;
+if (getsetting("installer_version","1.1.1 Dragonprime Edition")<"2.1.0") $ismodule=true;
 //debug($logd_version);
 //debug($ismodule);
 if ($ismodule==true){

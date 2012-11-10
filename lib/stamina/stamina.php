@@ -21,6 +21,7 @@ Returns arrays for every Action default.
 =======================================================
 */
 function get_default_action_list() {
+	debug("getting default action list");
 	if ($ismodule==true){
 		$actions = unserialize(get_module_setting("actionsarray", "staminasystem"));
 	} else {
@@ -29,15 +30,14 @@ function get_default_action_list() {
 		$row=db_fetch_assoc($result);
 		$actions=unserialize($row['actions']);
 	}
-
 	if (!is_array($actions)) {
 		$actions = array();
 		if ($ismodule==true){
-		set_module_setting("actionsarray", serialize($actions), "staminasystem");
+			set_module_setting("actionsarray", serialize($actions), "staminasystem");
 		}else{
-		$sarray=serialize($actions);
-		$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ($sarray)";
-		db_query($sql);
+			$sarray=serialize($actions);
+			$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ($sarray)";
+			db_query($sql);
 		}
 	}
 	/*if ($ismodule==true){
@@ -130,14 +130,20 @@ Used in modules' Install fields, this sets the default values for this Action.
 
 function install_action($actionname, $action){
 	global $session;
+	debug("Installing action $actionname");
 	$defaultactions = get_default_action_list();
 	$defaultactions[$actionname] = $action;
+	debug($defaultactions);
 	if ($ismodule==true){
 		set_module_setting("actionsarray",serialize($defaultactions),"staminasystem");
 	} else {
 		$sarray=serialize($defaultactions);
-		$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ($sarray)";
-		db_query($sql);}
+		debug($sarray);
+		$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ('$sarray')";						
+		debug($sql);
+		$result=db_query($sql);
+		debug($result);
+	}
 	return true;
 }
 
