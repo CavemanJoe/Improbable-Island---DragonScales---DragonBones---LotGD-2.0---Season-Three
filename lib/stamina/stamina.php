@@ -36,7 +36,7 @@ function get_default_action_list() {
 			set_module_setting("actionsarray", serialize($actions), "staminasystem");
 		}else{
 			$sarray=serialize($actions);
-			$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ($sarray)";
+			$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ('$sarray')";
 			db_query($sql);
 		}
 	}
@@ -139,7 +139,7 @@ function install_action($actionname, $action){
 	} else {
 		$sarray=serialize($defaultactions);
 		debug($sarray);
-		$sql="INSERT INTO ".db_prefix("staminaactionsarray")." VALUES ('$sarray')";						
+		$sql="UPDATE ".db_prefix("staminaactionsarray")." SET actions='$sarray'";						
 		debug($sql);
 		$result=db_query($sql);
 		debug($result);

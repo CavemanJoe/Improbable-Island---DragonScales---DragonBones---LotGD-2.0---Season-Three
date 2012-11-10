@@ -126,7 +126,7 @@ function worldmapen_getmoduleinfo(){
 function worldmapen_install(){
 	$version=getsetting("installer_version","1.1.1 Dragonprime Edition");
 	if ((!is_module_installed("cities"))&& $version<"2.0.0") {
-		output("`b`^***** This module requires the Multiple Cities module to be installed, or for you to use 2.x Elvenhall. *****`b`7");
+		output("`b`^***** This module requires the Multiple Cities module to be installed, or for you to use 2.x Elvenhall Edition. *****`b`7");
 		return false;
 	} else {
 		module_addhook("village");
