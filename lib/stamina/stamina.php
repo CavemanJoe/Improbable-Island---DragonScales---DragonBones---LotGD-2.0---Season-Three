@@ -1,5 +1,4 @@
 <?php
-require_once("lib/userprefs.php");
 
 $version=getsetting("installer_version","1.1.1 Dragonprime Edition");
 if ($version<"2.0.0") {$ismodule=true;}
@@ -803,8 +802,8 @@ function stamina_process_newday($userid = false) {
 	set_module_pref("red",$red,"staminasystem",$userid);
 	} else {
 	$session['user']['stamina_amount']=$startingstamina;
-	$session['user']['amber']=$amber;
-	$session['user']['red']=$red;
+	$session['user']['stamina_amber']=$amber;
+	$session['user']['stamina_red']=$red;
 	}
 	
 	modulehook("stamina-newday");

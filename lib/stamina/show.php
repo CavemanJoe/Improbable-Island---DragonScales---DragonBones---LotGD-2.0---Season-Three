@@ -2,7 +2,6 @@
 global $session;
 popup_header("Your Stamina statistics");
 require_once("lib/stamina/stamina.php");
-require_once("lib/userprefs.php");
 //require_once;
 //$version=getsetting("installer_version","1.1.1");
 if ($logd_version<"2.1.0") $ismodule=true;
