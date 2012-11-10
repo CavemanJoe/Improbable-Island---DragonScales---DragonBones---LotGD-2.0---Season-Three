@@ -1,10 +1,10 @@
 <?php
-//This file automatically created by installer.php on Apr 25, 2008 04:30 pm
+//This file automatically created by installer.php on Nov 10, 2012 08:37 pm
 $DB_HOST = 'localhost';
 $DB_USER = 'root';
 $DB_PASS = 'password';
-$DB_NAME = 'elvenhall';
-$DB_PREFIX = 'free_';
-$DB_USEDATACACHE = 0;
-$DB_DATACACHEPATH = 'datacache';
+$DB_NAME = 'CMJ';
+$DB_PREFIX = 'new_';
+$DB_USEDATACACHE = 1;
+$DB_DATACACHEPATH = '/var/www/CMJ/cache';
 ?>
