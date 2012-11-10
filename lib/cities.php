@@ -3,12 +3,11 @@
 function cities_villagetext(){
 	global $session;
 	$city = getsetting("villagename", LOCATION_FIELDS);
-	require_once("lib/userprefs.php");
 	$version=getsetting("installer_version","1.1.1");
-	if ($version<"1.2.0"){
+	if ($version<"2.0.0"){
 		if ($session['user']['location']==get_userpref("homecity","cities")){$home = true;}
 	} else {
-		if ($session['user']['location']==get_userpref("homecity")){$home = true;}
+		if ($session['user']['location']==$session['user']['homecity']){$home = true;}
 	}
 	if ($session['user']['location']==$city){$capital = true;}
 	if ($session['user']['location'] == $city){
