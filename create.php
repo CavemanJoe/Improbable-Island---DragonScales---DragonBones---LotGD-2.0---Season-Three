@@ -206,8 +206,8 @@ if (getsetting("allowcreation",1)==0){
 						db_query($sql_output);
 						//end
 						//creating userprefs
-						require_once("lib/userprefs.php");
-						createchar_userprefsid($args['acctid']);
+						//require_once("lib/userprefs.php");
+						//createchar_userprefsid($args['acctid']);
 
 						modulehook("process-create", $args);
 						if ($emailverification!=""){

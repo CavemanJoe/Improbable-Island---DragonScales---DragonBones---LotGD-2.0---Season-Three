@@ -29,7 +29,6 @@ if (db_num_rows($result)==0){
 			db_query($sql);
 			$sql = "INSERT INTO " .db_prefix("accounts") ." (login,password,superuser,name,ctitle,regdate) VALUES('$name','$pass',$su,'`%Admin `&$name`0','`%Admin', NOW())";
 			db_query($sql);			
-
 			output("`^Your superuser account has been created as `%Admin `&$name`^!");
 			savesetting("installer_version",$logd_version);
 		}

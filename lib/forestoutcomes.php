@@ -122,6 +122,7 @@ function forestvictory($enemies,$denyflawless=false){
 		output("Even raw they have some restorative properties.`n");
 		$session['user']['hitpoints'] = 1;
 	}
+	$session['user']['badguy']=null;
 }
 
 function forestdefeat($enemies,$where="in the forest"){

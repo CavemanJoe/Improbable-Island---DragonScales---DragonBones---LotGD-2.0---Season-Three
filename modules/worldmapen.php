@@ -19,7 +19,6 @@ function worldmapen_getmoduleinfo(){
 	"category"=>"Map",
 	"download"=>"http://www.paladins-inn.de/download/worldmapen09.zip",
 	"vertxtloc"=>"http://www.dragonprime.net/users/klenkes/",
-	"requires"=>array("cities"=>"1.0|This module requires the Multiple Cities module to be installed"),
 	"settings"=>array(
 		"World Map Settings,title",
 		"worldmapsizeX"=>"How wide is the world? (X),int|5",
@@ -125,8 +124,9 @@ function worldmapen_getmoduleinfo(){
 }
 
 function worldmapen_install(){
-	if (!is_module_installed("cities")) {
-		output("`b`^***** This module requires the Multiple Cities module to be installed. *****`b`7");
+	$version=getsetting("installer_version","1.1.1 Dragonprime Edition");
+	if ((!is_module_installed("cities"))&& $version<"2.0.0") {
+		output("`b`^***** This module requires the Multiple Cities module to be installed, or for you to use 2.x Elvenhall Edition. *****`b`7");
 		return false;
 	} else {
 		module_addhook("village");
@@ -141,7 +141,7 @@ function worldmapen_install(){
 		module_addhook("newday");
 		module_addhook("items-returnlinks");
 	}
-	if (is_module_installed("staminasystem")) {
+	if (is_module_installed("staminasystem")||$version>"2.0.0") {
 		require_once('modules/staminasystem/lib/lib.php');
 		install_action("Travelling - Plains",array(
 			"maxcost"=>5000,

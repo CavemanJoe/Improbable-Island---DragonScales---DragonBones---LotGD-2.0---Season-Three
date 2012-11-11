@@ -1,12 +1,10 @@
 Changelog
 
-Changes from 2.1.3 to 2.2.0
-[UPDATE] Rearranged how the stamina system is integrated in the core, in order to resolve an issue with the actions array being to big for the database.
-
+Changes from 2.2.0 to 2.2.1
 [FIX] Installer now works for fresh install, as well as upgrades where staminasystem was not already present
 [FIX] When creating new characters, the deafult stamina array is created
 [OPTIMIZATION] lib/commentary.php now uses less calls to db_prefix
-
+[UPDATE] Rearranged how the stamina system is integrated in the core, in order to resolve an issue with the actions array being to big for the database.
 [FEATURE] - Forest now also uses stamina system.
 [FEATURE] - Battle now uses stamina system
 

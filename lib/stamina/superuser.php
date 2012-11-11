@@ -9,7 +9,11 @@ switch ($stamop)
 		break;
 	default:
 		page_header("Actions Management");
-
+		$reinstall=httpget('reinstall');
+		if ($reinstall==1){
+			output("Installing default actions...");
+			require_once("lib/stamina/defaultactions.php");
+		}
 		output("`c`bActions Management`b`c`n`n");
 		output("Here you can see all the Actions that have been installed, along with their default values.`n`n");
 		rawoutput("<table border='0' cellpadding='2' cellspacing='0' border='1 px solid #000000'>");
@@ -21,9 +25,13 @@ switch ($stamop)
 		rawoutput("<tr><td>".$action."</td><td>".$values['maxcost']."</td><td>".$values['mincost']."</td><td>".$values['expperrep']."</td><td>".$values['expforlvl']."</td><td>".$values['costreduction']."</td><td>".$values['dkpct']."</td></tr>");
 		}
 		rawoutput("</table>");
+		
+		
+		
 		addnav("Edit Player","stamina.php?op=superuser&stam=editplayer");
 		addnav("Edit Abilities","stamina.php?op=superuser&stam=editabis");
 		addnav("Edit Actions","stamina.php?op=superuser&stam=editactions");
+		addnav("Reinstall default actions","superuser.php?op=stamina&reinstall=1");
 		superusernav();
 	
 		debug($actions);

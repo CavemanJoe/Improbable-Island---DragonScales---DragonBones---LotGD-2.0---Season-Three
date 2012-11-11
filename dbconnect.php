@@ -1,5 +1,5 @@
 <?php
-//This file automatically created by installer.php on Apr 25, 2008 04:30 pm
+//This file automatically created by installer.php on Nov 10, 2012 10:02 pm
 $DB_HOST = 'localhost';
 $DB_USER = 'root';
 $DB_PASS = 'password';

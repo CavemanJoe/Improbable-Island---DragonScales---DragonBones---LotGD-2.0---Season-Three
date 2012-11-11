@@ -1592,6 +1592,9 @@ return array(
 		),*/
 
 	'staminaactionsarray'=>array(
+		//'did'=>array(
+		//	'name'=>'actionid', 'type'=>'int(10) unsigned', 'extra'=>'auto_increment'
+		//	),
 		'actions'=>array(
 			'name'=>'actions', 'type'=>'text', 'null'=>'1',
 			),

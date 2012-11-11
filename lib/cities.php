@@ -4,8 +4,8 @@ function cities_villagetext(){
 	global $session;
 	$city = getsetting("villagename", LOCATION_FIELDS);
 	$version=getsetting("installer_version","1.1.1");
-	if ($version<"2.1.0"){
-		if ($session['user']['location']==get_user_modulepref("homecity","cities")){$home = true;}
+	if ($version<"2.0.0"){
+		if ($session['user']['location']==get_userpref("homecity","cities")){$home = true;}
 	} else {
 		if ($session['user']['location']==$session['user']['homecity']){$home = true;}
 	}

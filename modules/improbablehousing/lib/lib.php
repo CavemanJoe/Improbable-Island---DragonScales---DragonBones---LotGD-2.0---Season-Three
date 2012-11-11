@@ -169,6 +169,8 @@ addnav("M?Back to the Island Map","runmodule.php?module=improbablehousing&op=exi
 function improbablehousing_stakeable($loc){
 	global $session;
 
+	//require_once("modules/iitems/lib/lib.php");
+
 	if (iitems_has_item('housing_stake')){
 		//debug("Has Stake");
 		list($worldmapX, $worldmapY, $worldmapZ) = explode(",", $loc);
