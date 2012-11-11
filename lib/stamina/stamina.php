@@ -89,14 +89,14 @@ Also sets default values if the player has not yet performed that action.
 Returns False if the action is not installed.
 =======================================================
 */
-
+//TODO: allow it to change the actionsarray of players other than the user.
 function get_player_action($action, $userid=false) {
 	global $session;
 	if ($userid === false) $userid = $session['user']['acctid'];
 	if ($ismodule==true){
-	$playeractions=unserialize(get_module_pref("actions","staminasystem",$userid));
+		$playeractions=unserialize(get_module_pref("actions","staminasystem",$userid));
 	} else {
-	$playeractions=unserialize($session['user']['stamina_actions']);
+		$playeractions=unserialize($session['user']['stamina_actions']);
 	}
 	//Check to see if this action is set for this player, and if not, set it
 	if (!isset($playeractions[$action])){
@@ -108,9 +108,9 @@ function get_player_action($action, $userid=false) {
 			$playeractions[$action]['lvl'] = 0;
 			$playeractions[$action]['naturalcost'] = $defaultactions[$action]['maxcost'];
 			if ($ismodule==true){
-			set_module_pref("actions", serialize($playeractions), "staminasystem", $userid);
+				set_module_pref("actions", serialize($playeractions), "staminasystem", $userid);
 			} else {
-				set_userpref("stamina_actions", serialize($playeractions),$userid);
+				$session['user']['stamina_actions']=serialize($playeractions);
 			}
 			return($playeractions[$action]);
 		} else {
