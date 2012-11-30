@@ -1,5 +1,7 @@
 <?php
 
+//GIT NOTE: Large changes when merged baranches. If there are problems, revert to earlir commit (commit 34935c523b).
+
 require_once("common.php");
 require_once("lib/commentary.php");
 require_once("lib/sanitize.php");
@@ -347,3 +349,4 @@ function moderate_getlogin($acctid){
 
 page_footer();
 ?>
+

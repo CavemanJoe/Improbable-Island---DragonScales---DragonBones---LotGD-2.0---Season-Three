@@ -85,13 +85,13 @@ function racerobot_dohook($hookname,$args){
 				" SET location='" . addslashes($args['new']) .
 				"' WHERE location='" . addslashes($args['old']) . "'";
 			db_query($sql);
-			if (is_module_active("cities")) {
-				$sql = "UPDATE " . db_prefix("module_userprefs") .
-					" SET value='" . addslashes($args['new']) .
-					"' WHERE modulename='cities' AND setting='homecity'" .
-					"AND value='" . addslashes($args['old']) . "'";
-				db_query($sql);
-			}
+			
+			$sql = "UPDATE " . db_prefix("module_userprefs") .
+				" SET value='" . addslashes($args['new']) .
+				"' WHERE modulename='cities' AND setting='homecity'" .
+				"AND value='" . addslashes($args['old']) . "'";
+			db_query($sql);
+			
 		}
 		break;
 	case "chooserace":
@@ -108,11 +108,11 @@ function racerobot_dohook($hookname,$args){
 		break;
 	case "setrace":
 		if ($session['user']['race']==$race){
-				output("\"`6Oh, I see, right,`0\" says the gatekeeper, and takes out his ledger.  \"`6Are, oh, double-you, bee, oh, tee, tee.  Robot.  I must say, it's nice to see some straightforward logic in this place.`0\"`n`nYou nod.  \"`#Yes,`0\" you reply, \"`#it is.`0\"`n`nThe gatekeeper looks up and says, with a mischievous grin, \"`6So - would you like to play a game of chess?`0\"`n`nYou scowl.  \"`#Do not play games with me, human.  Just because you know how to press my buttons does not mean I will allow you to press them.`0\"`n`n\"`6Sorry,`0\" says the gatekeeper with an even wider smile, \"`6I meant - SUDO play a game of chess.`0\"`n`n\"`#I'd love to,`0\" you reply.`n`nAfter you checkmate the gatekeeper in three moves, he sits back, obviously miffed.`n`n\"`#As I won,`0\" you say, \"`#you must answer my question: what is this \"love\" of which you humans speak?`0\"`n`nThe gatekeeper looks up at you, pouting, arms folded.  \"`6This statement is false.`0\"`n`nYou twitch a little, let out a quiet, sad \"`#beep,`0\" and fall over onto your back.`n`nWhen you regain consciousness, you draw yourself up to your full height and stare the grinning gatekeeper in the face.  \"`#I have processed all the relevant data,`0\" you say, in a low, mechanical growl, \"`#and have come to the conclusion that you, fleshbag, are a bastard.`0\"`n`nThe gatekeeper winks and smiles.  \"`6Don't tell the others.`0\"`n`nYou turn and head towards the gate, muttering under your breath.`n`n\"`6Pi is exactly three, by the way!`0\" he calls after you.  But you're too wily for him, oh yes indeed.  Just two minutes later, you reboot successfully and place him on your \"ignore\" list.");
-				if (is_module_active("cities")) {
-				set_module_pref("homecity",$city,"cities");
-				if ($session['user']['age'] == 0) $session['user']['location']=$city;
-			}
+			output("\"`6Oh, I see, right,`0\" says the gatekeeper, and takes out his ledger.  \"`6Are, oh, double-you, bee, oh, tee, tee.  Robot.  I must say, it's nice to see some straightforward logic in this place.`0\"`n`nYou nod.  \"`#Yes,`0\" you reply, \"`#it is.`0\"`n`nThe gatekeeper looks up and says, with a mischievous grin, \"`6So - would you like to play a game of chess?`0\"`n`nYou scowl.  \"`#Do not play games with me, human.  Just because you know how to press my buttons does not mean I will allow you to press them.`0\"`n`n\"`6Sorry,`0\" says the gatekeeper with an even wider smile, \"`6I meant - SUDO play a game of chess.`0\"`n`n\"`#I'd love to,`0\" you reply.`n`nAfter you checkmate the gatekeeper in three moves, he sits back, obviously miffed.`n`n\"`#As I won,`0\" you say, \"`#you must answer my question: what is this \"love\" of which you humans speak?`0\"`n`nThe gatekeeper looks up at you, pouting, arms folded.  \"`6This statement is false.`0\"`n`nYou twitch a little, let out a quiet, sad \"`#beep,`0\" and fall over onto your back.`n`nWhen you regain consciousness, you draw yourself up to your full height and stare the grinning gatekeeper in the face.  \"`#I have processed all the relevant data,`0\" you say, in a low, mechanical growl, \"`#and have come to the conclusion that you, fleshbag, are a bastard.`0\"`n`nThe gatekeeper winks and smiles.  \"`6Don't tell the others.`0\"`n`nYou turn and head towards the gate, muttering under your breath.`n`n\"`6Pi is exactly three, by the way!`0\" he calls after you.  But you're too wily for him, oh yes indeed.  Just two minutes later, you reboot successfully and place him on your \"ignore\" list.");
+				
+			set_module_pref("homecity",$city,"cities");
+			if ($session['user']['age'] == 0) $session['user']['location']=$city;
+			
 		}
 		break;
 	case "alternativeresurrect":
@@ -205,6 +205,7 @@ function racerobot_dohook($hookname,$args){
 				"action"=>"Global",
 				"costmod"=>0.7,
 				"expmod"=>1.2,
+
 				"rounds"=>-1,
 				"roundmsg"=>"",
 				"wearoffmsg"=>"",
@@ -282,15 +283,13 @@ function racerobot_dohook($hookname,$args){
 		break;
 	case "validforestloc":
 	case "validlocation":
-		if (is_module_active("cities"))
+		
 			$args[$city]="village-$race";
 		break;
-	case "moderate":
-		if (is_module_active("cities")) {
+	case "moderate":		
 			tlschema("commentary");
 			$args["village-$race"]=sprintf_translate("City of %s", $city);
-			tlschema();
-		}
+			tlschema();		
 		break;
 	case "villagetext":
 		racerobot_checkcity();
@@ -520,7 +519,7 @@ function racerobot_checkcity(){
 	$race="Robot";
 	$city=get_module_setting("villagename");
 
-	if ($session['user']['race']==$race && is_module_active("cities")){
+	if ($session['user']['race']==$race){
 		//if they're this race and their home city isn't right, set it up.
 		if (get_module_pref("homecity","cities")!=$city){ //home city is wrong
 			set_module_pref("homecity",$city,"cities");

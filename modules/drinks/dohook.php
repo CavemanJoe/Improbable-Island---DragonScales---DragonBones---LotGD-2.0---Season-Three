@@ -59,7 +59,7 @@ function drinks_dohook_private($hookname,$args) {
 		set_module_pref("harddrinks", 0);
 		$drunk = get_module_pref("drunkeness");
 		if ($drunk > 66) {
-			output("`0Waking up in the gutter after last night's adventures, you `\$lose some Stamina`0 clutching your head and moaning.`n`n");
+			output("`n`&Waking up in the gutter after your last little 'adventure with alcohol', you `\$lose 1`& turn crawling back to your normal lodging.`n");
 			$args['turnstoday'] .= ", Hangover: -1";
 			$session['user']['turns']--;
 			// Sanity check

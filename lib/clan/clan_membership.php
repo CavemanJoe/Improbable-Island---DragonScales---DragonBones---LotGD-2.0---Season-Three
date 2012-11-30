@@ -73,7 +73,7 @@
 			rawoutput("</td><td>");
 			output_notl("`3%s`0",$row['clanjoindate']);
 			rawoutput("</td><td>");
-			output_notl("`3%s`0",reltime(strtotime($row['laston'])));
+			output_notl("`#%s`0",reltime(strtotime($row['laston'])));
 			rawoutput("</td>");
 			if ($session['user']['clanrank']>CLAN_MEMBER){
 				rawoutput("<td>");

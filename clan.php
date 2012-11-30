@@ -20,7 +20,7 @@ addnav("C?List Clans","clan.php?op=list");
 addcommentary();
 $gold = getsetting("goldtostartclan",10000);
 $gems = getsetting("gemstostartclan",15);
-$ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`3Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
+$ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`#Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
 $args = modulehook("clanranks", array("ranks"=>$ranks, "clanid"=>$session['user']['clanid']));
 $ranks = translate_inline($args['ranks']);
 

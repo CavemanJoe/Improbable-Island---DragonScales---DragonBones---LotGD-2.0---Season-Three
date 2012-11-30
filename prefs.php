@@ -27,13 +27,11 @@ $op = httpget('op');
 if ($op=="suicide" && getsetting("selfdelete",0)!=0) {
 	$userid = httpget('userid');
 	require_once("lib/charcleanup.php");
-	$acctids = array();
-	$acctids[]=$userid;
-	char_cleanup($acctids, CHAR_DELETE_SUICIDE);
+	char_cleanup($userid, CHAR_DELETE_SUICIDE);
 	$sql = "DELETE FROM " . db_prefix("accounts") . " WHERE acctid='$userid'";
 	db_query($sql);
 	output("Your character has been deleted!");
-	addnews("`3%s quietly passed from this world.",$session['user']['name']);
+	addnews("`#%s quietly passed from this world.",$session['user']['name']);
 	addnav("Login Page", "index.php");
 	$session=array();
 	$session['user'] = array();
@@ -62,7 +60,7 @@ if ($op=="suicide" && getsetting("selfdelete",0)!=0) {
 		$pass1 = httppost('pass1');
 		$pass2 = httppost('pass2');
 		if ($pass1!=$pass2){
-			output("`3Your passwords do not match.`n");
+			output("`#Your passwords do not match.`n");
 		}else{
 			if ($pass1!=""){
 				if (strlen($pass1)>3){
@@ -72,9 +70,9 @@ if ($op=="suicide" && getsetting("selfdelete",0)!=0) {
 						$pass1 = md5(substr($pass1,5));
 					}
 					$session['user']['password']=$pass1;
-					output("`3Your password has been changed.`n");
+					output("`#Your password has been changed.`n");
 				}else{
-					output("`3Your password is too short.");
+					output("`#Your password is too short.");
 					output("It must be at least 4 characters.`n");
 				}
 			}
@@ -123,18 +121,18 @@ if ($op=="suicide" && getsetting("selfdelete",0)!=0) {
 		if ($email!=$session['user']['emailaddress']){
 			if (is_email($email)){
 				if (getsetting("requirevalidemail",0)==1){
-					output("`3Your email cannot be changed, system settings prohibit it.");
+					output("`#Your email cannot be changed, system settings prohibit it.");
 					output("(Emails may only be changed if the server allows more than one account per email.)");
 					output("Use the Petition link to ask the  server administrator to change your email address if this one is no longer valid.`n");
 				}else{
-					output("`3Your email address has been changed.`n");
+					output("`#Your email address has been changed.`n");
 					$session['user']['emailaddress']=$email;
 				}
 			}else{
 				if (getsetting("requireemail",0)==1){
-					output("`3That is not a valid email address.`n");
+					output("`#That is not a valid email address.`n");
 				}else{
-					output("`3Your email address has been changed.`n");
+					output("`#Your email address has been changed.`n");
 					$session['user']['emailaddress']=$email;
 				}
 			}
@@ -153,13 +151,10 @@ if ($op=="suicide" && getsetting("selfdelete",0)!=0) {
 		"template"=>"Skin,theme",
 		"language"=>"Language,enum,".getsetting("serverlanguages","en,English,de,Deutsch,fr,Français,dk,Danish,es,Español,it,Italian"),
 		"tabconfig"=>"Show config sections in tabs,bool",
-		"blindoutput"=>"Enable reflowed textual output and descriptions for blind or visually-impaired players using an audible screen reader (BETA option),bool",
 		"Game Behavior Preferences,title",
-		// "emailonmail"=>"Send email when you get new Ye Olde Mail?,bool",
-		// "systemmail"=>"Send email for system generated messages?,bool",
-		"mailpref"=>"When a player sends me a message:,enum,0,E-Mail Me and put it in my in-game Distractions inbox,1,Just E-Mail me,2,Just put it in my Distractions inbox",
-		// "dirtyemail"=>"Allow profanity in received Ye Olde Poste messages?,bool",
-		"Commentary Preferences,title",
+		"emailonmail"=>"Send email when you get new Ye Olde Mail?,bool",
+		"systemmail"=>"Send email for system generated messages?,bool",
+		"dirtyemail"=>"Allow profanity in received Ye Olde Poste messages?,bool",
 		"timestamp"=>"Show timestamps in commentary?,enum,0,None,1,Real Time [12/25 1:27pm],2,Relative Time (1h35m)",
 		"timeformat"=>array("Timestamp format (currently displaying time as %s whereas default format is \"[m/d h:ia]\"),string,20",
 			date($session['user']['prefs']['timeformat'],
@@ -168,16 +163,9 @@ if ($op=="suicide" && getsetting("selfdelete",0)!=0) {
 			date($session['user']['prefs']['timeformat']),
 			date($session['user']['prefs']['timeformat'],
 				strtotime("now") + ($session['user']['prefs']['timeoffset'] * 60 * 60))),
-		"commentary_autocomplete"=>"Enable autocomplete in commentary input boxes,bool",
-		//"ihavenocheer"=>"`0Always disable all holiday related text replacements (such as a`1`0l`1`0e => e`1`0g`1`0g n`1`0o`1`0g for December),bool",
-		"nojump"=>"Don't jump to comment areas after refreshing or posting a comment?,bool",
-		"commentary_reverse"=>"Commentary sorting,enum,0,Oldest First,1,Newest First",
-		"commentary_multichat"=>"Show commentary in dual-chat enabled areas:,enum,1,Both sides,2,Left-side Only,3,Right-side Only",
-		"commentary_multichat_stack"=>"Arrange commentary in dual-chat enabled areas:,enum,0,Side by side,1,Stacked,2,Separated",
-		"commentary_recentline"=>"Show a horizontal line to indicate comments that are recent since your last page load?,bool",
-		"Biography,title",
+		"ihavenocheer"=>"`0Always disable all holiday related text replacements (such as a`1`0l`1`0e => e`1`0g`1`0g n`1`0o`1`0g for December),bool",
 		"bio"=>"Short Character Biography (255 chars max),string,255",
-		//"physdesc"=>"Brief physical description of your character shown in commentary mouseovers (100 chars max),string,100",
+		"nojump"=>"Don't jump to comment areas after refreshing or posting a comment?,bool",
 	);
 	rawoutput("<script language='JavaScript' src='lib/md5.js'></script>");
 	$warn = translate_inline("Your password is too short.  It must be at least 4 characters long.");
@@ -298,7 +286,7 @@ if ($op=="suicide" && getsetting("selfdelete",0)!=0) {
 		$sql = "SELECT * FROM " . db_prefix("module_userprefs") . " WHERE modulename IN ('".implode("','",$foundmodules)."') AND (setting LIKE 'user_%' OR setting LIKE 'check_%') AND userid='".$session['user']['acctid']."'";
 		$result1 = db_query($sql);
 		while($row1 = db_fetch_assoc($result1)) {
-			$mdata[$row1['modulename']."___".$row1['setting']] = stripslashes($row1['value']);
+			$mdata[$row1['modulename']."___".$row1['setting']] = $row1['value'];
 		}
 	}
 	

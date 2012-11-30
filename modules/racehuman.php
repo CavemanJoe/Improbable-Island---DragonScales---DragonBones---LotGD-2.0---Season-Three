@@ -58,13 +58,13 @@ function racehuman_dohook($hookname,$args){
 				" SET location='" . addslashes($args['new']) .
 				"' WHERE location='" . addslashes($args['old']) . "'";
 			db_query($sql);
-			if (is_module_active("cities")) {
-				$sql = "UPDATE " . db_prefix("module_userprefs") .
-					" SET value='" . addslashes($args['new']) .
-					"' WHERE modulename='cities' AND setting='homecity'" .
-					"AND value='" . addslashes($args['old']) . "'";
-				db_query($sql);
-			}
+			
+			$sql = "UPDATE " . db_prefix("module_userprefs") .
+				" SET value='" . addslashes($args['new']) .
+				"' WHERE modulename='cities' AND setting='homecity'" .
+				"AND value='" . addslashes($args['old']) . "'";
+			db_query($sql);
+			
 		}
 		break;
 	case "chooserace":
@@ -81,15 +81,13 @@ function racehuman_dohook($hookname,$args){
 		break;
 	case "validforestloc":
 	case "validlocation":
-		if (is_module_active("cities"))
 			$args[$city]="village-$race";
 		break;
 	case "moderate":
-		if (is_module_active("cities")) {
 			tlschema("commentary");
 			$args["village-$race"]=sprintf_translate("City of %s", $city);
 			tlschema();
-		}
+		
 		break;
 	case "villagetext":
 		racehuman_checkcity();
@@ -177,7 +175,7 @@ function racehuman_checkcity(){
 	$race="Human";
 	$city="NewHome";
 
-	if ($session['user']['race']==$race && is_module_active("cities")){
+	if ($session['user']['race']==$race){
 		//if they're this race and their home city isn't right, set it up.
 		if (get_module_pref("homecity","cities")!=$city){ //home city is wrong
 			set_module_pref("homecity",$city,"cities");
@@ -190,3 +188,4 @@ function racehuman_run(){
 
 }
 ?>
+

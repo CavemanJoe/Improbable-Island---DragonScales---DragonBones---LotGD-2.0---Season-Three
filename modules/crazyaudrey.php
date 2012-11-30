@@ -10,7 +10,7 @@ function crazyaudrey_getmoduleinfo(){
 	$info = array(
 		"name"=>"Crazy Audrey's Petting Zoo",
 		"version"=>"1.1",
-		"author"=>"Eric Stevens",
+		"author"=>"Eric Stevens, modified for stamina by Cousjava",
 		"category"=>"Forest Specials",
 		"download"=>"core_module",
 		"settings"=>array(
@@ -188,7 +188,9 @@ function crazyaudrey_baskets($type)
 				output("\"`%Hedgehogs?  HEDGEHOGS??  Hahahahaha, HEDGEHOGS!!!!`5\" shouts Crazy Audrey as she snatches them up in glee and runs cheering into the %s.", $where);
 				output("You notice that she has dropped a full BAG of those wonderful salves.`n`n");
 				output("`^You gain a whole LOAD of Stamina!");
-				$session['user']['turns']+=5;
+				require_once("lib/stamina/stamina.php");
+				addstamina(5000);
+				//$session['user']['turns']+=5;
 				if (is_module_active("medals")){
 					require_once "modules/medals.php";
 					medals_award_medal("audrey-hedgehogs","Friend of the Hedgehogs","This player was fortunate enough to find hedgehogs in Crazy Audrey's baskets!","medal_audreyhedgie.png");
@@ -198,7 +200,9 @@ function crazyaudrey_baskets($type)
 				output("\"`%Because my %s`% all were alike, I grant you TWO salves.`5\"`n`n", $lcplural);
 				output("You rub the salves on your toes.`n`n");
 				output("`^You gain LOTS of Stamina!");
-				$session['user']['turns']+=2;
+				require_once("lib/stamina/stamina.php");
+				addstamina(2000);
+				//$session['user']['turns']+=2;
 				if (is_module_active("medals")){
 					require_once "modules/medals.php";
 					medals_award_medal("audrey-kittens","Pervy Kitten Fancier","This player was fortunate enough to find five kittens of the same colour!","medal_audreykitty.png");
@@ -208,14 +212,18 @@ function crazyaudrey_baskets($type)
 			output("\"`%Garr, you crazy %s`%, what do you know?  Why I ought to paint you all different colors!`5\"", $lcplural);
 			output("Despite her threatening words, Crazy Audrey pets the %s`5 on her shoulder and places it back in the basket, before giving you your salve, which you rub all over your toes.`n`n", $lcanimal);
 			output("`^You gain some Stamina!");
-			$session['user']['turns']++;
+			require_once("lib/stamina/stamina.php");
+			addstamina(1000);
+			//$session['user']['turns']++;
 		}else{
 			output("\"`%Well done my pretties!`5\" shouts Crazy Audrey.");
 			output("Just then her shoulder-mounted %s`5 leaps at you.", $lcanimal);
 			if ($session['user']['turns'] > 0) {
 				output("In fending it off, you lose some energy.");
 				$msg = "`^You lose some Stamina!";
-				$session['user']['turns']--;
+				require_once("lib/stamina/stamina.php");
+				removestamina(1000);
+				//$session['user']['turns']--;
 			} else {
 				output("In fending it off, you get a nasty scratch along one side of your face.");
 				$msg = "`^You lose a charm point!";
@@ -279,3 +287,4 @@ function crazyaudrey_run(){
 	page_footer();
 }
 ?>
+

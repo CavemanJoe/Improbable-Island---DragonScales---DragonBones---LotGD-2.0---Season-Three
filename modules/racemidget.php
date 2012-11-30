@@ -7,6 +7,9 @@ function racemidget_getmoduleinfo(){
 		"author"=>"Dan Hall, based on the Humans race by Eric Stevens",
 		"category"=>"Races",
 		"download"=>"fix this",
+		"settings"=>array(
+			"villagename"=>"name of village,text|Squat Hole"
+		),
 		"prefs" => array(
 			"Specialty - Midget Rage user prefs,title",
 			"midgetrage"=>"Midget Rage points,int|0",
@@ -55,7 +58,7 @@ function racemidget_uninstall(){
 
 function racemidget_dohook($hookname,$args){
 	global $session,$resline;
-	$city = "Squat Hole";
+	$city = get_module_setting("villagename");
 	$race = "Midget";
 	static $damagestart = 0;
 	switch($hookname){
@@ -71,13 +74,13 @@ function racemidget_dohook($hookname,$args){
 				" SET location='" . addslashes($args['new']) .
 				"' WHERE location='" . addslashes($args['old']) . "'";
 			db_query($sql);
-			if (is_module_active("cities")) {
+			
 				$sql = "UPDATE " . db_prefix("module_userprefs") .
 					" SET value='" . addslashes($args['new']) .
 					"' WHERE modulename='cities' AND setting='homecity'" .
 					"AND value='" . addslashes($args['old']) . "'";
 				db_query($sql);
-			}
+			
 		}
 		break;
 	case "chooserace":
@@ -90,11 +93,11 @@ function racemidget_dohook($hookname,$args){
 		if ($session['user']['race']==$race){
 			set_module_pref("midgetrage",0);
 			output("`0\"`6All right, all right, you don't have to shout,`0\" says the gatekeeper.  He pulls out his ledger.  \"`6Right, then.  Em, eye, jay, eye, tee.  Midget.`0\"`n`n\"`#That's right,`0\" you say, hoping that he doesn't cotton on to the fact that you can't read or write.  \"`#And don't forget it, innit?`0\"`n`n\"`6Have you been like this all your life?`0\"`n`n\"`#What's it to you, pal?!`0\"`n`nThe gatekeeper sighs.  \"`6Nothing, just making conversation.  Off you go, then.`0\"`n`nIncensed, you scream up at the gatekeeper.  \"`#Don't tell ME to fook off!  I'll go where I fookin' well like!`0\"`n`n\"`6If I remember rightly,`0\" says the gatekeeper, \"`6you came here so that you could enter the outpost, right?  Well, there's nothing stopping you now.`0\"`n`n\"`#Don'tchu fookin' get clever with me, mate!  I'll fookin' deck yer!  Come on then, right here, right now!  I'll fookin' FLOOR yer, dick'ead!`0\"`n`nThe gatekeeper sighs again, steps out through a door in the back of his hut, walks around to the front and kicks you, very hard, in the crotch.  You sail over the wall like a football.`n`n\"`6Have a pleasant stay,`0\" calls the gatekeeper.");
-			if (is_module_active("cities")) {
+			
 				set_module_pref("homecity",$city,"cities");
 				if ($session['user']['age'] == 0)
 					$session['user']['location']=$city;
-			}
+			
 		}
 		break;
 	case "stamina-newday":
@@ -309,15 +312,14 @@ function racemidget_dohook($hookname,$args){
 
 	case "validforestloc":
 	case "validlocation":
-		if (is_module_active("cities"))
-			$args[$city]="village-$race";
+		
+		$args[$city]="village-$race";
 		break;
 	case "moderate":
-		if (is_module_active("cities")) {
 			tlschema("commentary");
 			$args["village-$race"]=sprintf_translate("City of %s", $city);
 			tlschema();
-		}
+		
 		break;
 	case "villagetext":
 		racemidget_checkcity();
@@ -408,7 +410,7 @@ function racemidget_checkcity(){
 	$race="Midget";
 	$city="Squat Hole";
 
-	if ($session['user']['race']==$race && is_module_active("cities")){
+	if ($session['user']['race']==$race){
 		//if they're this race and their home city isn't right, set it up.
 		if (get_module_pref("homecity","cities")!=$city){ //home city is wrong
 			set_module_pref("homecity",$city,"cities");

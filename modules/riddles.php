@@ -268,8 +268,8 @@ function riddles_runevent($type)
 				case 5:
 				case 6:
 					output("You suddenly feel drowsy!  You lose some Stamina!");
-					$session['user']['turns']--;
-					$session['user']['turns']--;
+					require_once("lib/stamina/stamina.php");
+					removestamina(5000);
 					break;
 				case 7:
 					output("Your muscles begin to decay inside your skin as you live and breathe!");

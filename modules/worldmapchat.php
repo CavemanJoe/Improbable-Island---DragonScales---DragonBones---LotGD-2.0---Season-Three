@@ -12,8 +12,10 @@ function worldmapchat_getmoduleinfo(){
 }
 
 function worldmapchat_install(){
+
 	//module_addhook_priority("worldnav",20);
 	module_addhook("worldmap_belowmap");
+
 	return true;
 }
 
@@ -24,6 +26,7 @@ function worldmapchat_uninstall(){
 function worldmapchat_dohook($hookname,$args){
 	global $session;
 	switch($hookname){
+
 		case "worldmap_belowmap":
 			if (httpget('op')=="move" || httpget('op')=="beginjourney" || httpget){
 				// addnav("Lonely?");

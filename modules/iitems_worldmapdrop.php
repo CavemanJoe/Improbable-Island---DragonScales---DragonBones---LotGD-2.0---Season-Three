@@ -38,6 +38,14 @@ function iitems_worldmapdrop_dohook($hookname,$args){
 				if (httpget('dropmapall')){
 					$qty = iitems_discard_all_items(httpget('discard'));
 					output("`0You drop the items to your feet.  Maybe someone else will find a use for them.`n");
+				} else if (httpget('dropmaphalf')) {
+					$q = iitems_discard_all_items(httpget('discard'));
+					$half = round($q / 2);
+					$qty = $q - $half;
+					for ($i=0; $i<$half; $i++){
+						iitems_give_item(httpget('discard'));
+					}
+					output("`0You drop the items to your feet.  Maybe someone else will find a use for it.`n");
 				} else {
 					iitems_discard_item(httpget('discard'));
 					$qty = 1;
@@ -52,6 +60,10 @@ function iitems_worldmapdrop_dohook($hookname,$args){
 			if ($args['master']['dropworldmap'] && httpget('from')=="worldnav"){
 				rawoutput("<a href=\"runmodule.php?module=iitems&op=inventory&from=".httpget('from')."&dropworldmap=".$args['player']['itemid']."&discard=".$args['inventorykey']."\">Drop this item on the Map for someone else to pick up</a><br />");
 				addnav("","runmodule.php?module=iitems&op=inventory&from=".httpget('from')."&dropworldmap=".$args['player']['itemid']."&discard=".$args['inventorykey']);
+				if ($args['player']['quantity']>2){
+					rawoutput("<a href=\"runmodule.php?module=iitems&op=inventory&from=".httpget('from')."&dropworldmap=".$args['player']['itemid']."&discard=".$args['inventorykey']."&dropmaphalf=true\">Drop half of these items on the Map for someone else to pick up</a><br />");
+					addnav("","runmodule.php?module=iitems&op=inventory&from=".httpget('from')."&dropworldmap=".$args['player']['itemid']."&discard=".$args['inventorykey']."&dropmaphalf=true");
+				}
 				if ($args['player']['quantity']>1){
 					rawoutput("<a href=\"runmodule.php?module=iitems&op=inventory&from=".httpget('from')."&dropworldmap=".$args['player']['itemid']."&discard=".$args['inventorykey']."&dropmapall=true\">Drop all of these items on the Map for someone else to pick up</a><br />");
 					addnav("","runmodule.php?module=iitems&op=inventory&from=".httpget('from')."&dropworldmap=".$args['player']['itemid']."&discard=".$args['inventorykey']."&dropmapall=true");
@@ -73,6 +85,18 @@ function iitems_worldmapdrop_dohook($hookname,$args){
 						iitems_give_item($itemid);
 					};
 					unset ($squares[$ploc][$itemid]);
+				} else if (httpget('halfiitems')) {
+					//Pick up half. Yay, moderation! -HgB
+					$count = $squares[$ploc][$itemid];
+					$quantity = round($count / 2);
+					output("`0You pick up %s of the %s and put them in your backpack.`n",$quantity,$itemdetails['plural']);
+					for ($i=0; $i<$quantity; $i++){
+						iitems_give_item($itemid);
+					};
+					$squares[$ploc][$itemid] -= $quantity;
+					if ($squares[$ploc][$itemid]===0){
+						unset($squares[$ploc][$itemid]);
+					}
 				} else {
 					//Pick up single iitem
 					if ($squares[$ploc][$itemid]){
@@ -110,6 +134,10 @@ function iitems_worldmapdrop_dohook($hookname,$args){
 						addnav(array("Pick up %s",$item['verbosename']),"runmodule.php?module=worldmapen&op=continue&iitem-pickup=".$id);
 						if ($qty>1){
 							output("`0There are %s %s here.`n`n",$qty,$item['plural']);
+							if ($qty > 2)
+							{
+								addnav(array("Pick up half of %s",$item['plural']),"runmodule.php?module=worldmapen&op=continue&iitem-pickup=".$id."&halfiitems=1");
+							}
 							addnav(array("Pick up all %s",$item['plural']),"runmodule.php?module=worldmapen&op=continue&iitem-pickup=".$id."&alliitems=1");
 						} else if ($qty==1){
 							output("`0There is a %s here.`n`n",$item['verbosename']);

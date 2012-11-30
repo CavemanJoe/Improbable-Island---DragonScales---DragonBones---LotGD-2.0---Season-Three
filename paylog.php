@@ -47,7 +47,7 @@ if ($op==""){
 	if ($month=="") $month = date("Y-m");
 	$startdate = $month."-01 00:00:00";
 	$enddate = date("Y-m-d H:i:s",strtotime("+1 month",strtotime($startdate)));
-	$sql = "SELECT " . db_prefix("paylog") . ".*," . db_prefix("accounts") . ".name," . db_prefix("accounts") . ".donation," . db_prefix("accounts") . ".donationspent FROM " . db_prefix("paylog") . " LEFT JOIN " . db_prefix("accounts") . " ON " . db_prefix("paylog") . ".acctid = " . db_prefix("accounts") . ".acctid WHERE processdate>='$startdate' AND processdate < '$enddate' ORDER BY processdate DESC";
+	$sql = "SELECT " . db_prefix("paylog") . ".*," . db_prefix("accounts") . ".name," . db_prefix("accounts") . ".donation," . db_prefix("accounts") . ".donationspent FROM " . db_prefix("paylog") . " LEFT JOIN " . db_prefix("accounts") . " ON " . db_prefix("paylog") . ".acctid = " . db_prefix("accounts") . ".acctid WHERE processdate>='$startdate' AND processdate < '$enddate' ORDER BY payid DESC";
 	$result = db_query($sql);
 	rawoutput("<table border='0' cellpadding='2' cellspacing='1' bgcolor='#999999'>");
 	$type = translate_inline("Type");
@@ -59,28 +59,11 @@ if ($op==""){
 	$who = translate_inline("Who");
 	rawoutput("<tr class='trhead'><td>Date</td><td>$id</td><td>$type</td><td>$gross</td><td>$fee</td><td>$net</td><td>$processed</td><td>$who</td></tr>");
 	$number=db_num_rows($result);
-	// $rightnow = getdate();
-	// $today = $rightnow['mday'];
-	// $prevday = $today;
-	// $dayofmonth = $today;
-	$daysheet = array();
 	for ($i=0;$i<$number;$i++){
 		$row = db_fetch_assoc($result);
 		$info = unserialize($row['info']);
-		
-		$etime = getdate(strtotime($row['processdate']));
-		$dayofmonth = $etime['mday']." (".$etime['weekday'].")";
-
-		$daysheet[$dayofmonth]['profit']+=((float)$info['mc_gross'] - (float)$info['mc_fee']);
-		$daysheet[$dayofmonth]['number']+=1;
-		if ($dayofmonth!=$prevday && ($prevday)){
-			rawoutput("<tr><td colspan=8>Day: $".$dailyprofit." over ".$daysheet[$prevday]['number']." donations</td></tr>");
-			$dailyprofit=0;
-		}
-		$prevday=$dayofmonth;
-
 		rawoutput("<tr class='".($i%2?"trlight":"trdark")."'><td nowrap>");
-		output_notl(date("D d/m H:i",strtotime($info['payment_date'])));
+		output_notl(date("m/d H:i",strtotime($info['payment_date'])));
 		rawoutput("</td><td>");
 		output_notl("%s",$row['txnid']);
 		rawoutput("</td><td>");
@@ -111,18 +94,6 @@ if ($op==""){
 			addnav("",$link);
 		}
 		rawoutput("</td></tr>");
-		$dailyprofit+=((float)$info['mc_gross'] - (float)$info['mc_fee']);
-	}
-	rawoutput("<tr><td colspan=8>Day: $".$dailyprofit." over ".$daysheet[$dayofmonth]['number']." donations</td></tr>");
-	rawoutput("</table>");
-	output("`n`n");
-	rawoutput("<table border='0' cellpadding='2' cellspacing='1' bgcolor='#999999'>");
-	rawoutput("<tr class='trhead'><td>Day</td><td>Profit</td><td>Donations</td><td>Average Donation</td></tr>");
-	$i=0;
-	foreach($daysheet AS $key=>$vals){
-		rawoutput("<tr class='".($i%2?"trlight":"trdark")."'>");
-		$i++;
-		rawoutput("<td>".$key."</td><td>".$vals['profit']."</td><td>".$vals['number']."</td><td>".round($vals['profit']/$vals['number'], 2)."<tr>");
 	}
 	rawoutput("</table>");
 	addnav("Refresh","paylog.php");

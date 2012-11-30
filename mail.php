@@ -15,7 +15,7 @@ $id = (int)httpget('id');
 if($op=="del"){
 	$sql = "DELETE FROM " . db_prefix("mail") . " WHERE msgto='".$session['user']['acctid']."' AND messageid='$id'";
 	db_query($sql);
-	invalidatedatacache("mail/mail-{$session['user']['acctid']}");
+	invalidatedatacache("mail-{$session['user']['acctid']}");
 	header("Location: mail.php");
 	exit();
 }elseif($op=="process"){
@@ -27,14 +27,14 @@ if($op=="del"){
 	}else{
 		$sql = "DELETE FROM " . db_prefix("mail") . " WHERE msgto='".$session['user']['acctid']."' AND messageid IN ('".join("','",$msg)."')";
 		db_query($sql);
-		invalidatedatacache("mail/mail-{$session['user']['acctid']}");
+		invalidatedatacache("mail-{$session['user']['acctid']}");
 		header("Location: mail.php");
 		exit();
 	}
 }elseif ($op=="unread"){
 	$sql = "UPDATE " . db_prefix("mail") . " SET seen=0 WHERE msgto='".$session['user']['acctid']."' AND messageid='$id'";
 	db_query($sql);
-	invalidatedatacache("mail/mail-{$session['user']['acctid']}");
+	invalidatedatacache("mail-{$session['user']['acctid']}");
 	header("Location: mail.php");
 	exit();
 }

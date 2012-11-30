@@ -122,7 +122,7 @@ function lovers_seth(){
 						apply_buff('lover',lovers_getbuff());
 					}else{
 						output("%s`0 says, \"`^I'm sorry, apparently I've given you the wrong impression, I think we should just be friends.`0\"", $partner);
-						output("Depressed, you feel very disinclined to do much for the rest of today.");
+						output("Depressed, you have no more desire to fight in the forest today.");
 						$session['user']['turns']=0;
 						debuglog("lost all turns after being rejected for marriage.");
 					}

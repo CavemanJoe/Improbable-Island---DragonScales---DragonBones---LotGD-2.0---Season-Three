@@ -50,24 +50,18 @@ function forestvictory($enemies,$denyflawless=false){
 	$exp = round($totalexp / $count);
 	$gold = e_rand(round($gold/$count),round($gold/$count)*round(($count+1)*pow(1.2, $count-1),0));
 	$expbonus = round ($expbonus/$count,0);
+
 	if ($gold) {
-		$hook = array();
-		$hook['gold'] = $gold;
-		$hook['overridemsg'] = false;
-		$hook = modulehook("battle-gold",$hook);
-		$gold = $hook['gold'];
-		if (!$hook['overridemsg']){
-			output("`^%s`3 shiny Requisition tokens are dispensed from the nearest camera!`n",$gold);
-		}
-		//debuglog("received gold for slaying a monster.",false,false,"forestwin",$badguy['creaturegold']);
+		output("`#You receive `^%s`# gold!`n",$gold);
+		debuglog("received gold for slaying a monster.",false,false,"forestwin",$badguy['creaturegold']);
 	}
 	// No gem hunters allowed!
 	$args = modulehook("alter-gemchance", array("chance"=>getsetting("forestgemchance", 25)));
 	$gemchances = $args['chance'];
 	if ($session['user']['level'] < 15 && e_rand(1,$gemchances) == 1) {
-		output("`&You find a `5cigarette!`n`3");
+		output("`&You find A GEM!`n`#");
 		$session['user']['gems']++;
-		//debuglog("found gem when slaying a monster.",false,false,"forestwingem",1);
+		debuglog("found gem when slaying a monster.",false,false,"forestwingem",1);
 	}
 	if (getsetting("instantexp",false) == true) {
 		$expgained = 0;
@@ -82,12 +76,12 @@ function forestvictory($enemies,$denyflawless=false){
 		}
 		if ($expbonus>0){
 			$expbonus = round($expbonus * pow(1+(getsetting("addexp", 5)/100), $count-1),0);
-			output("`3***Because of the difficult nature of this fight, you are awarded an additional `^%s`3 experience! `n",$expbonus);
+			output("`#***Because of the difficult nature of this fight, you are awarded an additional `^%s`# experience! `n",$expbonus);
 		} elseif ($expbonus<0){
-			output("`3***Because of the simplistic nature of this fight, you are penalized `^%s`3 experience! `n",abs($expbonus));
+			output("`#***Because of the simplistic nature of this fight, you are penalized `^%s`# experience! `n",abs($expbonus));
 		}
 		if (count($enemies) > 1) {
-			output("During this fight you received `^%s`3 total experience!`n`0",$exp+$expbonus);
+			output("During this fight you received `^%s`# total experience!`n`0",$exp+$expbonus);
 		}
 		$session['user']['experience']+=$expbonus;
 	} else {
@@ -96,11 +90,11 @@ function forestvictory($enemies,$denyflawless=false){
 		}
 		if ($expbonus>0){
 			$expbonus = round($expbonus * pow(1+(getsetting("addexp", 5)/100), $count-1),0);
-			output("`3***Because of the difficult nature of this fight, you are awarded an additional `^%s`3 experience! `n(%s + %s = %s) ",$expbonus,$exp,abs($expbonus),$exp+$expbonus);
+			output("`#***Because of the difficult nature of this fight, you are awarded an additional `^%s`# experience! `n(%s + %s = %s) ",$expbonus,$exp,abs($expbonus),$exp+$expbonus);
 		} elseif ($expbonus<0){
-			output("`3***Because of the simplistic nature of this fight, you are penalized `^%s`3 experience! `n(%s - %s = %s) ",abs($expbonus),$exp,abs($expbonus),$exp+$expbonus);
+			output("`#***Because of the simplistic nature of this fight, you are penalized `^%s`# experience! `n(%s - %s = %s) ",abs($expbonus),$exp,abs($expbonus),$exp+$expbonus);
 		}
-		output("You receive `^%s`3 total experience!`n`0",$exp+$expbonus);
+		output("You receive `^%s`# total experience!`n`0",$exp+$expbonus);
 		$session['user']['experience']+=($exp+$expbonus);
 	}
 	$session['user']['gold']+=$gold;
@@ -111,29 +105,28 @@ function forestvictory($enemies,$denyflawless=false){
 	else
 		$creaturelevel+=(0.5*($count-1));
 
-	// CMJ: Removing Flawless Fights as they were a dumb idea in the first place.
-	// if (!$diddamage) {
-		// output("`c`b`&~~ Flawless Fight! ~~`0`b`c");
-		// if ($denyflawless){
-			// output("`c`\$%s`0`c", translate_inline($denyflawless));
-		// }elseif ($session['user']['level']<=$creaturelevel){
-			// output("`c`b`\$You receive an extra turn!`0`b`c`n");
-			// $session['user']['turns']++;
-		// }else{
-			// output("`c`\$A more difficult fight would have yielded an extra turn.`0`c`n");
-		// }
-	// }
+	if (!$diddamage) {
+		output("`c`b`&~~ Flawless Fight! ~~`0`b`c");
+		if ($denyflawless){
+			output("`c`\$%s`0`c", translate_inline($denyflawless));
+		}elseif ($session['user']['level']<=$creaturelevel){
+			output("`c`b`\$You receive an extra turn!`0`b`c`n");
+			$session['user']['turns']++;
+		}else{
+			output("`c`\$A more difficult fight would have yielded an extra turn.`0`c`n");
+		}
+	}
 	if ($session['user']['hitpoints'] <= 0) {
 		output("With your dying breath you spy a small stand of mushrooms off to the side.");
 		output("You recognize them as some of the ones that the healer had drying in the hut and taking a chance, cram a handful into your mouth.");
 		output("Even raw they have some restorative properties.`n");
 		$session['user']['hitpoints'] = 1;
 	}
+	$session['user']['badguy']=null;
 }
 
 function forestdefeat($enemies,$where="in the forest"){
-	global $session, $badguy;
-	$oldbadguy = $badguy;
+	global $session;
 	$percent=getsetting('forestexploss',10);
 	addnav("Daily news","news.php");
 	$names = array();
@@ -160,14 +153,13 @@ function forestdefeat($enemies,$where="in the forest"){
 	}
 	addnews("`%%s`5 has been slain %s by %s.`n%s",$session['user']['name'],$where,$badguy['creaturename'],$taunt);
 	$session['user']['alive']=false;
-	//debuglog("lost gold when they were slain $where",false,false,"forestlose",-$session['user']['gold']);
+	debuglog("lost gold when they were slain $where",false,false,"forestlose",-$session['user']['gold']);
 	$session['user']['gold']=0;
 	$session['user']['hitpoints']=0;
 	$session['user']['experience']=round($session['user']['experience']*(1-($percent/100)),0);
 	output("`4All gold on hand has been lost!`n");
 	output("`4%s %% of experience has been lost!`b`n",$percent);
 	output("You may begin fighting again tomorrow.");
-	$badguy = $oldbadguy;
 	page_footer();
 }
 
@@ -178,7 +170,7 @@ function buffbadguy($badguy){
 	if ($dk === false) {
 		//make badguys get harder as you advance in dragon kills.
 		$dk = 0;
-		foreach ($session['user']['dragonpoints'] as $key=>$val) {
+		while(list($key, $val)=each($session['user']['dragonpoints'])) {
 			if ($val=="at" || $val=="de") $dk++;
 		}
 		$dk += (int)(($session['user']['maxhitpoints']-($session['user']['level']*10))/5);
@@ -207,10 +199,10 @@ function buffbadguy($badguy){
 	}
 
 	$badguy = modulehook("creatureencounter",$badguy);
-	// debug("DEBUG: $dk modification points total.");
-	// debug("DEBUG: +$atkflux allocated to attack.");
-	// debug("DEBUG: +$defflux allocated to defense.");
-	// debug("DEBUG: +".($hpflux/5)."*5 to hitpoints.");
+	debug("DEBUG: $dk modification points total.");
+	debug("DEBUG: +$atkflux allocated to attack.");
+	debug("DEBUG: +$defflux allocated to defense.");
+	debug("DEBUG: +".($hpflux/5)."*5 to hitpoints.");
 	return modulehook("buffbadguy",$badguy);
 }
 ?>

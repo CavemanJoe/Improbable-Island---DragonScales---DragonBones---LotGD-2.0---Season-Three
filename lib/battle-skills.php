@@ -30,6 +30,8 @@ function rolldamage(){
 		debug("Adjusted creature attack: $creatureattack");
 		debug("Adjusted self defense: $adjustedselfdefense");
 		*/
+		require_once("lib/stamina/stamina.php");
+		$stamreturn=process_action("Fighting - Standard");
 
 		while(!isset($creaturedmg) || !isset($selfdmg) || $creaturedmg==0 && $selfdmg==0){
 			$atk = $session['user']['attack']*$atkmod;
@@ -37,8 +39,9 @@ function rolldamage(){
 			/*
 			debug("Attack score: $atk");
 			*/
-
+			
 			$patkroll = bell_rand(0,$atk);
+			
 			/*
 			debug("Player Attack roll: $patkroll");
 			*/
@@ -77,13 +80,39 @@ function rolldamage(){
 	}else{
 		$creaturedmg=0;
 		$selfdmg=0;
+		$stamreturn=array("lvlinfo"=>array("levelledup"=>false));
 	}
 	// Handle god mode's invulnerability
 	if ($buffset['invulnerable']) {
 		$creaturedmg = abs($creaturedmg);
 		$selfdmg = -abs($selfdmg);
 	}
-	return array("creaturedmg"=>(isset($creaturedmg)?$creaturedmg:0),"selfdmg"=>(isset($selfdmg)?$selfdmg:0));
+	
+	$reps = ($creaturedmg / $session['user']['maxhitpoints']) * 9;
+
+	if ($reps >= 1){
+			$staminalost = 0;
+			for ($i=0; $i<floor($reps); $i++){
+				$chinreturn = process_action("Taking It on the Chin");
+				//$staminalost += $return['points_used'];
+				$chinreturn["acted"]=true;
+				if ($chinreturn['lvlinfo']['levelledup']==true){
+					$chinreturn['lvlinfo']['levelledup2']=true;
+				}
+			}
+			//output("The force of the blow sends you reeling, and knocks %s Stamina points out of you!`n",$staminalost);
+		} else {
+		$chinreturn=array("lvlinfo"=>array("levelledup"=>false,"levelledup2"=>false),
+				"points_used"=>0,
+				"acted"=>false,
+			);
+	}
+
+	$returnarray=array("creaturedmg"=>(isset($creaturedmg)?$creaturedmg:0),
+			"selfdmg"=>(isset($selfdmg)?$selfdmg:0),
+			"stamret"=>$stamreturn,
+			"chinreturn"=>$chinreturn);
+	return $returnarray;
 }
 
 function report_power_move($crit, $dmg) {
@@ -107,7 +136,7 @@ function report_power_move($crit, $dmg) {
 		}
 		if ($power) {
 			tlschema("battle");
-			output_fight_special($msg);
+			output($msg);
 			tlschema();
 
 			$dmg += e_rand($crit/4, $crit/2);

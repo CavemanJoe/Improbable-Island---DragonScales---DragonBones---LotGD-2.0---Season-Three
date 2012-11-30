@@ -42,7 +42,7 @@ function bioextension_dohook($hookname,$args){
 				$link=get_module_pref("user_extlink","bioextension",$args['acctid']);
 				$bio=str_replace(chr(13),"`n",$bio);
 				$bio=stripslashes($bio);
-				output("`0%s`n`n",$bio);
+				output("`0%s`0`n`n",$bio);
 				if (substr($link,0,5)=="http:"){
 					rawoutput("<a href=\"".$link."\">Player's webpage</a><br /><br />");
 				}

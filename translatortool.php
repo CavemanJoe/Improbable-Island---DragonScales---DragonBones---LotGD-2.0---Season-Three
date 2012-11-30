@@ -53,7 +53,8 @@ if ($op==""){
 			AND (uri='$page' OR uri='$uri')";
 	if ($trans>""){
 		$result = db_query($sql);
-		invalidatedatacache("translations/translations-".$namespace."-".$language);
+		invalidatedatacache("translations-".$uri."-".$language);
+		//invalidatedatacache("translations-".$namespace."-".$language);
 		if (db_num_rows($result)==0){
 			$sql = "INSERT INTO ".db_prefix("translations")." (language,uri,intext,outtext,author,version) VALUES ('".LANGUAGE."','$uri','$text','$trans','{$session['user']['login']}','$logd_version ')";
 			$sql1 = "DELETE FROM " . db_prefix("untranslated") .

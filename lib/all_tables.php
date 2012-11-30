@@ -5,8 +5,8 @@
 /**
  * Contains information for all the tables
  * 
- * @copyright Copyright © 2002-2005, Eric Stevens & JT Traub, © 2006-2007, Dragonprime Development Team
- * @version Lotgd 1.1.1 DragonPrime Edition
+ * @copyright Copyright Â© 2002-2005, Eric Stevens & JT Traub, Â© 2006-2009, Dragonprime Development Team
+ * @version Lotgd 1.1.2 DragonPrime Edition
  * @package Core
  * @subpackage Library
  * @license http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode
@@ -234,7 +234,7 @@ return array(
 			'name'=>'referer', 'type'=>'int(11) unsigned', 'default'=>'0'
 			),
 		'refererawarded'=>array(
-			'name'=>'refererawarded', 'type'=>'int(11) unsigned', 'default'=>'0'
+			'name'=>'refererawarded', 'type'=>'tinyint(1)', 'default'=>'0'
 			),
 		'bio'=>array(
 			'name'=>'bio', 'type'=>'varchar(255)'
@@ -288,6 +288,27 @@ return array(
 			),
 		'clanrank'=>array(
 			'name'=>'clanrank', 'type'=>'tinyint(4) unsigned', 'default'=>'0'
+			),
+		'stamina_red'=>array(
+			'name'=>'stamina_red', 'type'=>'int(10) unsigned', 'default'=>'200000'
+			),
+		'stamina_amber'=>array(
+			'name'=>'stamina_amber', 'type'=>'int(10) unsigned', 'default'=>'400000'
+			),
+		'stamina_amount'=>array(
+			'name'=>'stamina_amount', 'type'=>'int(10) unsigned', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_buffs'=>array(
+			'name'=>'stamina_buffs', 'type'=>'text', 'null'=>'1'
+			),
+		'stamina_minihof'=>array(
+			'name'=>'stamina_minihof', 'type'=>'bool', 'default'=>'0', 'null'=>'1'
+			),
+		'stamina_actions'=>array(
+			'name'=>'stamina_actions', 'type'=>'text', 'null'=>'1'
+			),
+		'homecity'=>array(
+			'name'=>'homecity', 'type'=>'varchar(25)', 'default'=>'Degolburg'
 			),
 		'clanjoindate'=>array(
 			'name'=>'clanjoindate',
@@ -519,10 +540,14 @@ return array(
 		'lasthit'=>array(
 			'name'=>'lasthit', 'type'=>'datetime', 'default'=>'0000-00-00 00:00:00'
 			),
-		'key-PRIMARY'=>array(
-			'name'=>'PRIMARY',
-			'type'=>'primary key',
-			'columns'=>'banexpire'
+		'key-banexpire'=>array(
+			'name'=>'banexpire', 'type'=>'key', 'columns'=>'banexpire'
+			),
+		'key-uniqueid'=>array(
+			'name'=>'uniqueid', 'type'=>'key', 'columns'=>'uniqueid'
+			),
+		'key-ipfilter'=>array(
+			'name'=>'ipfilter', 'type'=>'key', 'columns'=>'ipfilter'
 			),
 		),
 	'clans'=>array(
@@ -1482,6 +1507,99 @@ return array(
 			'columns' => 'dk',
 			),
 		),
+	'cityprefs'=>array(
+		'cityid'=>array(
+			'name'=>'cityid', 'type'=>'int(10) unsigned',
+			'extra'=>'auto_increment'
+			),
+		'module'=>array(
+			'name'=>'module', 'type'=>'varchar(255)', 'default'=>""
+			),
+		'cityname'=>array(
+			'name'=>'cityname', 'type'=>'varchar(255)', 'null'=>'1', 'default'=>""
+			),
+		'key-PRIMARY'=>array(
+			'name'=>'PRIMARY',
+			'type'=>'primary key',
+			'unique'=>'1',
+			'columns'=>'cityid',
+			),
+		'key-cityid'=>array(
+			'name'=>'cityid',
+			'type'=>'key',
+			'columns'=>'cityid',
+			),
+		'key-module'=>array(
+			'name'=>'module',
+			'type'=>'key',
+			'columns'=>'module',
+			),
+		'key-cityname'=>array(
+			'name'=>'cityname',
+			'type'=>'key',
+			'columns'=>'cityname',
+			),
+		),
+	
+	/*'userprefs'=>array(
+		'userid'=>array(
+			'name'=>'userid', 'type'=>'int(10) unsigned', 'null'=>'1', 'default'=>""
+			),
+		'setting'=>array(
+			'name'=>'setting', 'type'=>'varchar(100)', 'null'=>'1', 'default'=>""
+			),
+		'value'=>array(
+			'name'=>'value', 'type'=>'text', 'null'=>'1', 'default'=>""
+			),
+		'key-PRIMARY'=>array(
+			'name'=>'PRIMARY',
+			'type'=>'primary key',
+			'unique'=>'1',
+			'columns'=>'setting,userid',
+			),
+		'key-userid'=>array(
+			'name'=>'userid',
+			'type'=>'key',
+			'columns'=>'userid'
+			),
+		),*/
+
+	/*'staminadefault'=>array(
+		'actionid'=array(
+			'name'=>'actionid', 'type'=>'int(10) unsigned', 'extra'=>'auto_increment'
+			),
+		'maxcost'=array(
+			'name'=>'maxcost', 'type'=>'int(10)', 'null'=>'1', 'default'=>""
+			),
+		'mincost'=array(
+			'name'=>'mincost', 'type'=>'int(10)', 'null'=>'1', 'default'=>""
+			),
+		'firstlvlexp'=array(
+			'name'=>'firstlvlexp', 'type'=>'int(10) unsigned', 'null'=>'1', 'default'=>""
+			),
+		'firstlvlexp'=array(
+			'name'=>'firstlvlexp', 'type'=>'int(10) unsigned', 'null'=>'1', 'default'=>""
+			),
+		'expincrement'=array(
+			'name'=>'expincrement', 'type'=>'float(6,4)', 'null'=>'1', 'default'=>""
+			),
+		'costreduction'=array(
+			'name'=>'costreduction', 'type'=>'int(10) unsigned', 'null'=>'1', 'default'=>""
+			),
+		'class'=array(
+			'name'=>'class', 'type'=>'varchar(50)', 'null'=>'1', 'default'=>""
+			),
+		),*/
+
+	'staminaactionsarray'=>array(
+		//'did'=>array(
+		//	'name'=>'actionid', 'type'=>'int(10) unsigned', 'extra'=>'auto_increment'
+		//	),
+		'actions'=>array(
+			'name'=>'actions', 'type'=>'text', 'null'=>'1',
+			),
+		),
+
 );
 }
 ?>

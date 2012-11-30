@@ -74,10 +74,8 @@ if ($op==""){
            // yes, "referer" is misspelt here, but the game setting was also misspelt
 	if (getsetting("refereraward", 25)) {
 		output("Well, there is another way that you can obtain points: by referring other people to our site!");
-		//CMJ alteration - need to put in some sort of text hook for this module that awards players with a dp every time a referred player gets a newday...
-		output("You'll get one Donator Point every time a referred player logs in and gets a New Day.  ");
-		output("You'll also get a bonus of %s points for each person whom you've referred who makes it to level %s.", getsetting("refereraward", 25), getsetting("referminlevel", 4));
-		output("Even referring one player will gain you access to the Hunter's Lodge!`n`n");
+		output("You'll get %s points for each person whom you've referred who makes it to level %s.", getsetting("refereraward", 25), getsetting("referminlevel", 4));
+		output("Even one person making it to level %s will gain you access to the Hunter's Lodge.`n`n", getsetting("referminlevel", 4));
 	}
 	output("You can also gain contributor points for contributing in other ways that the administration may specify.");
 	output("So, don't despair if you cannot send cash, there will always be non-cash ways of gaining contributor points.`n`n");

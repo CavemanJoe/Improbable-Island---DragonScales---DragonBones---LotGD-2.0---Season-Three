@@ -34,7 +34,6 @@ if ($session['user']['gravefights']<=0){
 		$badguy['creaturehealth'] = $level * 5 + 50;
 		$badguy['creatureexp'] = e_rand(10 + round($level/3),20 + round($level/3));
 		$badguy['creaturelevel'] = $level;
-		$badguy = modulehook("gravefight-start",$badguy);
 		$attackstack['enemies'][0] = $badguy;
 		$attackstack['options']['type'] = 'graveyard';
 		$session['user']['badguy']=createstring($attackstack);

@@ -9,7 +9,6 @@ $injected_modules = array(1=>array(),0=>array());
 
 function injectmodule($modulename,$force=false){
 	global $mostrecentmodule,$injected_modules;
-	
 	//try to circumvent the array_key_exists() problem we've been having.
 	if ($force) $force = 1; else $force = 0;
 
@@ -25,20 +24,20 @@ function injectmodule($modulename,$force=false){
 	if (file_exists($modulefilename)){
 		tlschema("module-{$modulename}");
 		$sql = "SELECT active,filemoddate,infokeys,version FROM " . db_prefix("modules") . " WHERE modulename='$modulename'";
-		$result = db_query_cached($sql, "injections/inject_$modulename", 3600);
+		$result = db_query_cached($sql, "inject-$modulename", 3600);
 		if (!$force) {
 			//our chance to abort if this module isn't currently installed
 			//or doesn't meet the prerequisites.
 			if (db_num_rows($result)==0) {
 				tlschema();
-			 	output_notl("`n`3Module `3%s`3 is not installed, but was attempted to be injected.`n",$modulename);
+			 	output_notl("`n`3Module `#%s`3 is not installed, but was attempted to be injected.`n",$modulename);
 				$injected_modules[$force][$modulename]=false;
 				return false;
 			}
 			$row = db_fetch_assoc($result);
 			if ($row['active']){ } else {
 				tlschema();
-			 	output("`n`3Module `3%s`3 is not active, but was attempted to be injected.`n",$modulename);
+			 	output("`n`3Module `#%s`3 is not active, but was attempted to be injected.`n",$modulename);
 				$injected_modules[$force][$modulename]=false;
 				return false;
 			}
@@ -57,7 +56,7 @@ function injectmodule($modulename,$force=false){
 			if (!module_check_requirements($info['requires'])) {
 				$injected_modules[$force][$modulename]=false;
 				tlschema();
-				output("`n`3Module `3%s`3 does not meet its prerequisites.`n",$modulename);
+				output("`n`3Module `#%s`3 does not meet its prerequisites.`n",$modulename);
 				return false;
 			}
 		}
@@ -112,7 +111,7 @@ function injectmodule($modulename,$force=false){
 					if ($fname() === false) {
 						return false;
 					}
-					invalidatedatacache("injections/inject_$modulename");
+					invalidatedatacache("inject-$modulename");
 
 				}else{
 					$sql = "UNLOCK TABLES";
@@ -145,7 +144,7 @@ function module_status($modulename, $version=false) {
 	$status = MODULE_NO_INFO;
 	if (file_exists($modulefilename)) {
 		$sql = "SELECT active,filemoddate,infokeys,version FROM " . db_prefix("modules") . " WHERE modulename='$modulename'";
-		$result = db_query_cached($sql, "injections/inject_$modulename", 3600);
+		$result = db_query_cached($sql, "inject-$modulename", 3600);
 		if (db_num_rows($result) > 0) {
 			// The module is installed
 			$status = MODULE_INSTALLED;
@@ -304,85 +303,85 @@ $module_preload = array();
  * @return bool Success
  */
 function mass_module_prepare($hooknames){
-	// sort($hooknames);
-	// $Pmodules = db_prefix("modules");
-	// $Pmodule_hooks = db_prefix("module_hooks");
-	// $Pmodule_settings = db_prefix("module_settings");
-	// $Pmodule_userprefs = db_prefix("module_userprefs");
+	sort($hooknames);
+	$Pmodules = db_prefix("modules");
+	$Pmodule_hooks = db_prefix("module_hooks");
+	$Pmodule_settings = db_prefix("module_settings");
+	$Pmodule_userprefs = db_prefix("module_userprefs");
 
-	// global $modulehook_queries;
-	// global $module_preload;
-	// global $module_settings;
-	// global $module_prefs;
-	// global $session;
+	global $modulehook_queries;
+	global $module_preload;
+	global $module_settings;
+	global $module_prefs;
+	global $session;
 
-	// //collect the modules who attach to these hooks.
-	// $sql =
-		// "SELECT
-			// $Pmodule_hooks.modulename,
-			// $Pmodule_hooks.location,
-			// $Pmodule_hooks.function,
-			// $Pmodule_hooks.whenactive
-		// FROM
-			// $Pmodule_hooks
-		// INNER JOIN
-			// $Pmodules
-		// ON	$Pmodules.modulename = $Pmodule_hooks.modulename
-		// WHERE
-			// active = 1
-		// AND	location IN ('".join("', '",$hooknames)."')
-		// ORDER BY
-			// $Pmodule_hooks.location,
-			// $Pmodule_hooks.priority,
-			// $Pmodule_hooks.modulename";
-	// $result = db_query_cached($sql,"moduleprepare-".md5(join($hooknames)));
-	// $modulenames = array();
-	// while ($row = db_fetch_assoc($result)){
-		// $modulenames[$row['modulename']] = $row['modulename'];
-		// if (!isset($module_preload[$row['location']])) {
-			// $module_preload[$row['location']] = array();
-			// $modulehook_queries[$row['location']] = array();
-		// }
-		// //a little black magic trickery: formatting entries in
-		// //$modulehook_queries the same way that db_query_cached
-		// //returns query results.
-		// array_push($modulehook_queries[$row['location']],$row);
-		// $module_preload[$row['location']][$row['modulename']] = $row['function'];
-	// }
-	// //SQL IN() syntax for the modules involved here.
-	// $modulelist = "'".join("', '",$modulenames)."'";
+	//collect the modules who attach to these hooks.
+	$sql =
+		"SELECT
+			$Pmodule_hooks.modulename,
+			$Pmodule_hooks.location,
+			$Pmodule_hooks.function,
+			$Pmodule_hooks.whenactive
+		FROM
+			$Pmodule_hooks
+		INNER JOIN
+			$Pmodules
+		ON	$Pmodules.modulename = $Pmodule_hooks.modulename
+		WHERE
+			active = 1
+		AND	location IN ('".join("', '",$hooknames)."')
+		ORDER BY
+			$Pmodule_hooks.location,
+			$Pmodule_hooks.priority,
+			$Pmodule_hooks.modulename";
+	$result = db_query_cached($sql,"moduleprepare-".md5(join($hooknames)));
+	$modulenames = array();
+	while ($row = db_fetch_assoc($result)){
+		$modulenames[$row['modulename']] = $row['modulename'];
+		if (!isset($module_preload[$row['location']])) {
+			$module_preload[$row['location']] = array();
+			$modulehook_queries[$row['location']] = array();
+		}
+		//a little black magic trickery: formatting entries in
+		//$modulehook_queries the same way that db_query_cached
+		//returns query results.
+		array_push($modulehook_queries[$row['location']],$row);
+		$module_preload[$row['location']][$row['modulename']] = $row['function'];
+	}
+	//SQL IN() syntax for the modules involved here.
+	$modulelist = "'".join("', '",$modulenames)."'";
 
-	// //Load the settings for the modules on these hooks.
-	// $sql =
-		// "SELECT
-			// modulename,
-			// setting,
-			// value
-		// FROM
-			// $Pmodule_settings
-		// WHERE
-			// modulename IN ($modulelist)";
-	// $result = db_query($sql);
-	// while ($row = db_fetch_assoc($result)){
-		// $module_settings[$row['modulename']][$row['setting']] = $row['value'];
-	// }
+	//Load the settings for the modules on these hooks.
+	$sql =
+		"SELECT
+			modulename,
+			setting,
+			value
+		FROM
+			$Pmodule_settings
+		WHERE
+			modulename IN ($modulelist)";
+	$result = db_query($sql);
+	while ($row = db_fetch_assoc($result)){
+		$module_settings[$row['modulename']][$row['setting']] = $row['value'];
+	}
 
-	// //Load the current user's prefs for the modules on these hooks.
-	// $sql =
-		// "SELECT
-			// modulename,
-			// setting,
-			// userid,
-			// value
-		// FROM
-			// $Pmodule_userprefs
-		// WHERE
-			// modulename IN ($modulelist)
-		// AND	userid = ".(int)$session['user']['acctid'];
-	// $result = db_query($sql);
-	// while ($row = db_fetch_assoc($result)){
-		// $module_prefs[$row['userid']][$row['modulename']][$row['setting']] = $row['value'];
-	// }
+	//Load the current user's prefs for the modules on these hooks.
+	$sql =
+		"SELECT
+			modulename,
+			setting,
+			userid,
+			value
+		FROM
+			$Pmodule_userprefs
+		WHERE
+			modulename IN ($modulelist)
+		AND	userid = ".(int)$session['user']['acctid'];
+	$result = db_query($sql);
+	while ($row = db_fetch_assoc($result)){
+		$module_prefs[$row['userid']][$row['modulename']][$row['setting']] = $row['value'];
+	}
 	return true;
 }
 
@@ -397,12 +396,10 @@ function mass_module_prepare($hooknames){
  */
 $currenthook = "";
 function modulehook($hookname, $args=false, $allowinactive=false, $only=false){
-	$thstart = microtime(true);
 	global $navsection, $mostrecentmodule;
 	global $blocked_modules, $block_all_modules, $unblocked_modules;
 	global $output, $session, $modulehook_queries;
 	global $currenthook;
-	global $moduleperformance;
 	$lasthook = $currenthook;
 	$currenthook = $hookname;
 	static $hookcomment = array();
@@ -461,7 +458,7 @@ function modulehook($hookname, $args=false, $allowinactive=false, $only=false){
 			ORDER BY
 				" . db_prefix("module_hooks") . ".priority,
 				" . db_prefix("module_hooks") . ".modulename";
-		$result = db_query_cached($sql,"hooks/hook_".$hookname);
+		$result = db_query_cached($sql,"hook-".$hookname);
 	}
 	// $args is an array passed by value and we take the output and pass it
 	// back through
@@ -508,8 +505,8 @@ function modulehook($hookname, $args=false, $allowinactive=false, $only=false){
 			$cond = trim($row['whenactive']);
 			if ($cond == "" || module_condition($cond) == true) {
 				// call the module's hook code
-				// $outputbeforehook = $output;
-				// $output="";
+				$outputbeforehook = $output;
+				$output="";
 /*******************************************************/
 				$starttime = getmicrotime();
 /*******************************************************/
@@ -520,23 +517,35 @@ function modulehook($hookname, $args=false, $allowinactive=false, $only=false){
 				}
 /*******************************************************/
 				$endtime = getmicrotime();
-				$moduleperformance[$hookname][$row['modulename']]=round($endtime-$starttime,4);
 				if (($endtime - $starttime >= 1.00 && ($session['user']['superuser'] & SU_DEBUG_OUTPUT))){
-					debug("Slow Hook (".round($endtime-$starttime,10)."s): $hookname - {$row['modulename']}`n");
-				} else {
-					//debug("Modulehook took (".round($endtime-$starttime,10)."s): $hookname - {$row['modulename']}`n");
+					debug("Slow Hook (".round($endtime-$starttime,2)."s): $hookname - {$row['modulename']}`n");
 				}
 /*******************************************************/
-				// $outputafterhook = $output;
-				// $output=$outputbeforehook;
+				$outputafterhook = $output;
+				$output=$outputbeforehook;
 				// test to see if we had any output and if the module allows
 				// us to collapse it
-				// $testout = trim(sanitize_html($outputafterhook));
+				$testout = trim(sanitize_html($outputafterhook));
 				if (!is_array($res)) {
 					trigger_error("<b>{$row['function']}</b> did not return an array in the module <b>{$row['modulename']}</b> for hook <b>$hookname</b>.",E_USER_WARNING);
 					$res = $args;
 				}
-				// $output .= $outputafterhook;
+				if ($testout >"" &&
+						$hookname!="collapse{" &&
+						$hookname!="}collapse" &&
+						$hookname!="collapse-nav{" &&
+						$hookname!="}collapse-nav" &&
+						!array_key_exists('nocollapse',$res)) {
+					//restore the original output's reference
+					modulehook("collapse{",
+						array("name"=>'a-'.$row['modulename']));
+					$output .= $outputafterhook;
+					modulehook("}collapse");
+				} else {
+					$output .= $outputafterhook;
+				}
+				// Clear the collapse flag
+				unset($res['nocollapse']);
 				//handle return arguments.
 				if (is_array($res)) $args = $res;
 			}
@@ -551,9 +560,6 @@ function modulehook($hookname, $args=false, $allowinactive=false, $only=false){
 	$mostrecentmodule=$mod;
 	$currenthook = $lasthook;
 
-	$thend = microtime(true);
-	$thtot = $thend-$thstart;
-	//debug($hookname.": ".$thtot);
 	// And hand them back so they can be used.
 	return $args;
 }
@@ -603,7 +609,7 @@ function set_module_setting($name,$value,$module=false){
 		$sql = "INSERT INTO " . db_prefix("module_settings") . " (modulename,setting,value) VALUES ('$module','".addslashes($name)."','".addslashes($value)."')";
 		db_query($sql);
 	}
-	invalidatedatacache("modulesettings/settings_$module");
+	invalidatedatacache("modulesettings-$module");
 	$module_settings[$module][$name] = $value;
 }
 
@@ -619,7 +625,7 @@ function increment_module_setting($name, $value=1, $module=false){
 		$sql = "INSERT INTO " . db_prefix("module_settings") . " (modulename,setting,value) VALUES ('$module','".addslashes($name)."','".addslashes($value)."')";
 		db_query($sql);
 	}
-	invalidatedatacache("modulesettings/settings_$module");
+	invalidatedatacache("modulesettings-$module");
 	$module_settings[$module][$name] += $value;
 }
 
@@ -629,7 +635,7 @@ function clear_module_settings($module=false){
 	if (isset($module_settings[$module])){
 		debug("Deleted module settings cache for $module.");
 		unset($module_settings[$module]);
-		invalidatedatacache("modulesettings/settings_$module");
+		invalidatedatacache("modulesettings-$module");
 	}
 }
 
@@ -638,7 +644,7 @@ function load_module_settings($module){
 	if (!isset($module_settings[$module])){
 		$module_settings[$module] = array();
 		$sql = "SELECT * FROM " . db_prefix("module_settings") . " WHERE modulename='$module'";
-		$result = db_query_cached($sql,"modulesettings/settings_$module");
+		$result = db_query_cached($sql,"modulesettings-$module");
 		while ($row = db_fetch_assoc($result)){
 			$module_settings[$module][$row['setting']] = $row['value'];
 		}//end while
@@ -650,14 +656,14 @@ function module_delete_objprefs($objtype, $objid)
 {
 	$sql = "DELETE FROM " . db_prefix("module_objprefs") . " WHERE objtype='$objtype' AND objid='$objid'";
 	db_query($sql);
-	massinvalidate("objprefs/objpref-$objtype-$objid");
+	massinvalidate("objpref-$objtype-$objid");
 }
 
 function get_module_objpref($type, $objid, $name, $module=false){
 	global $mostrecentmodule;
 	if ($module === false) $module = $mostrecentmodule;
 	$sql = "SELECT value FROM ".db_prefix("module_objprefs")." WHERE modulename='$module' AND objtype='$type' AND setting='".addslashes($name)."' AND objid='$objid' ";
-	$result = db_query_cached($sql, "objprefs/objpref-$type-$objid-$name-$module", 86400);
+	$result = db_query_cached($sql, "objpref-$type-$objid-$name-$module", 86400);
 	if (db_num_rows($result)>0){
 		$row = db_fetch_assoc($result);
 		return $row['value'];
@@ -685,7 +691,7 @@ function set_module_objpref($objtype,$objid,$name,$value,$module=false){
 	// Delete the old version and insert the new
 	$sql = "REPLACE INTO " . db_prefix("module_objprefs") . "(modulename,objtype,setting,objid,value) VALUES ('$module', '$objtype', '$name', '$objid', '".addslashes($value)."')";
 	db_query($sql);
-	invalidatedatacache("objprefs/objpref-$objtype-$objid-$name-$module");
+	invalidatedatacache("objpref-$objtype-$objid-$name-$module");
 }
 
 function increment_module_objpref($objtype,$objid,$name,$value=1,$module=false) {
@@ -699,7 +705,7 @@ function increment_module_objpref($objtype,$objid,$name,$value=1,$module=false) 
 		$sql = "INSERT INTO " . db_prefix("module_objprefs") . "(modulename,objtype,setting,objid,value) VALUES ('$module', '$objtype', '$name', '$objid', '".addslashes($value)."')";
 		db_query($sql);
 	}
-	invalidatedatacache("objprefs/objpref-$objtype-$objid-$name-$module");
+	invalidatedatacache("objpref-$objtype-$objid-$name-$module");
 }
 
 
@@ -709,8 +715,6 @@ function module_delete_userprefs($user){
 }
 
 $module_prefs=array();
-
-//gets every modulepref for one player
 function get_all_module_prefs($module=false,$user=false){
 	global $module_prefs,$mostrecentmodule,$session;
 	if ($module === false) $module = $mostrecentmodule;
@@ -720,52 +724,26 @@ function get_all_module_prefs($module=false,$user=false){
 	return $module_prefs[$user][$module];
 }
 
-//Preloads one particular modulepref for every user in one database hit.  Use this before doing things like running get_module_pref in a loop for different users.
-//todo - have this accept an array of users
-function batch_get_module_prefs($name,$module=false){
-	global $module_prefs,$mostrecentmodule;
-	if ($module === false) $module = $mostrecentmodule;
-
-	$sql = "SELECT userid,value FROM ".db_prefix("module_userprefs")." WHERE setting = '$name' AND modulename='$module'";
-	$result = db_query($sql);
-
-	while ($row=db_fetch_assoc($result)){
-		if (!isset($module_prefs[$row['userid']][$module][$name])){
-			$module_prefs[$row['userid']][$module][$name]=$row['value'];
-		}
-	}
-}
-
 function get_module_pref($name,$module=false,$user=false){
 	global $module_prefs,$mostrecentmodule,$session;
 	if ($module === false) $module = $mostrecentmodule;
-	//debug("Getting pref ".$name." from module ".$module);
 	if ($user===false) {
 		if(isset($session['user']['loggedin']) && $session['user']['loggedin']) $user = $session['user']['acctid'];
 		else $user = 0;
 	}
 
 	if (isset($module_prefs[$user][$module][$name])) {
-		//debug("Pref ".$name." from module ".$module." already loaded in RAM");
 		return $module_prefs[$user][$module][$name];
 	}
 
 	//load here, not before
-	if ($user==$session['user']['acctid']){
-		load_all_module_prefs($user);
-	} else {
-		load_module_prefs($module,$user);
-	}
+	load_module_prefs($module,$user);
 	//check if *now* it's loaded
 	if (isset($module_prefs[$user][$module][$name])) {
-		//debug("Pref ".$name." found to be ".$module_prefs[$user][$module][$name]);
 		return $module_prefs[$user][$module][$name];
 	}
 
-	if (!is_module_active($module)){
-		debug("Module ".$module." is not active!");
-		return NULL;
-	}
+	if (!is_module_active($module)) return NULL;
 
 	//we couldn't find this elsewhere, load the default value if it exists.
 	$info = get_module_info($module);
@@ -778,11 +756,9 @@ function get_module_pref($name,$module=false,$user=false){
 		}
 		if (isset($x[1])){
 			set_module_pref($name,$x[1],$module,$user);
-			//debug("Pref ".$name." not defined in db, setting to ".$x[1]);
 			return $x[1];
 		}
 	}
-	//debug("Pref ".$name." not defined in db or module config file, returning null.");
 	return NULL;
 }
 
@@ -791,8 +767,7 @@ function set_module_pref($name,$value,$module=false,$user=false){
 	if ($module === false) $module = $mostrecentmodule;
 	if ($user === false) $uid=$session['user']['acctid'];
 	else $uid = $user;
-	load_all_module_prefs($uid);
-	//load_module_prefs($module, $uid);
+	load_module_prefs($module, $uid);
 
 	//don't write to the DB if the user isn't logged in.
 	if (!$session['user']['loggedin'] && !$user) {
@@ -801,49 +776,23 @@ function set_module_pref($name,$value,$module=false,$user=false){
 		return;
 	}
 
-	//skip if the modulepref is already set to this value
-	if ($module_prefs[$uid][$module][$name] == $value) return;
-	
-	//CMJ Edit: Rather than write the modulepref back to the database immediately, we're going to save them all in a big array and write them back in another function.
-	global $updated_module_prefs;
-	$updated_module_prefs[$uid][$module][$name] = $value;
-	//end CMJ edit
-	
-	if (!isset($module_prefs[$uid][$module][$name])){
+	if (isset($module_prefs[$uid][$module][$name])){
+		$sql = "UPDATE " . db_prefix("module_userprefs") . " SET value='".addslashes($value)."' WHERE modulename='$module' AND setting='$name' AND userid='$uid'";
+		db_query($sql);
+	}else{
 		$sql = "INSERT INTO " . db_prefix("module_userprefs"). " (modulename,setting,userid,value) VALUES ('$module','$name','$uid','".addslashes($value)."')";
 		db_query($sql);
 	}
-	invalidatedatacache("moduleprefs/moduleprefs-$uid");
 	$module_prefs[$uid][$module][$name] = $value;
 }
 
-function write_module_prefs(){
-	//this function, added by CavemanJoe, writes back all of the data in the global $updated_module_prefs array, so that moduleprefs are only written once per page load (for example, in a "to the finish" fight, some modules might get and set data on every round of battle - this helps keep things moving quickly under those circumstances).
-	global $session,$updated_module_prefs,$module_prefs;
-	if (count($updated_module_prefs)){
-		$sql = "INSERT INTO " . db_prefix("module_userprefs") . " (modulename,setting,userid,value) VALUES "; 
-		foreach($updated_module_prefs AS $uid=>$prefs){
-			foreach ($prefs AS $module=>$vals){
-				foreach($vals AS $pref=>$value){
-					$sql .= "('$module','$pref','$uid','".addslashes($value)."'),";
-				}
-			}
-			invalidatedatacache("moduleprefs/moduleprefs-$uid");
-		}
-		$sql = substr_replace($sql,"",-1);
-		$sql .= " ON DUPLICATE KEY UPDATE value = VALUES(value)";
-		db_query($sql);
-	}
-}
-
 function increment_module_pref($name,$value=1,$module=false,$user=false){
-	global $module_prefs,$updated_module_prefs,$mostrecentmodule,$session;
+	global $module_prefs,$mostrecentmodule,$session;
 	$value = (float)$value;
 	if ($module === false) $module = $mostrecentmodule;
 	if ($user === false) $uid=$session['user']['acctid'];
 	else $uid = $user;
-	load_all_module_prefs($uid);
-	//debug($module_prefs);
+	load_module_prefs($module, $uid);
 
 	//don't write to the DB if the user isn't logged in.
 	if (!$session['user']['loggedin'] && !$user) {
@@ -851,21 +800,16 @@ function increment_module_pref($name,$value=1,$module=false,$user=false){
 		$module_prefs[$uid][$module][$name] += $value;
 		return;
 	}
+
 	if (isset($module_prefs[$uid][$module][$name])){
-		//debug("Is set");
-		// $sql = "UPDATE " . db_prefix("module_userprefs") . " SET value=value+$value WHERE modulename='$module' AND setting='$name' AND userid='$uid'";
-		// db_query($sql);
+		$sql = "UPDATE " . db_prefix("module_userprefs") . " SET value=value+$value WHERE modulename='$module' AND setting='$name' AND userid='$uid'";
+		db_query($sql);
 		$module_prefs[$uid][$module][$name] += $value;
-		//debug($module_prefs[$uid][$module][$name]);
-		//debug($updated_module_prefs[$uid][$module][$name]);
 	}else{
-		// $sql = "INSERT INTO " . db_prefix("module_userprefs"). " (modulename,setting,userid,value) VALUES ('$module','$name','$uid','".addslashes($value)."')";
-		// db_query($sql);
-		get_module_pref($name,$module,$uid);
+		$sql = "INSERT INTO " . db_prefix("module_userprefs"). " (modulename,setting,userid,value) VALUES ('$module','$name','$uid','".addslashes($value)."')";
+		db_query($sql);
 		$module_prefs[$uid][$module][$name] = $value;
 	}
-	$updated_module_prefs[$uid][$module][$name] = $module_prefs[$uid][$module][$name];
-	invalidatedatacache("moduleprefs/moduleprefs-$uid");
 }
 
 function clear_module_pref($name,$module=false,$user=false){
@@ -873,8 +817,8 @@ function clear_module_pref($name,$module=false,$user=false){
 	if ($module === false) $module = $mostrecentmodule;
 	if ($user === false) $uid=$session['user']['acctid'];
 	else $uid = $user;
-	load_all_module_prefs($uid);
-	
+	load_module_prefs($module, $uid);
+
 	//don't write to the DB if the user isn't logged in.
 	if (!$session['user']['loggedin'] && !$user) {
 		// We do need to trash the loaded copy here however
@@ -885,7 +829,6 @@ function clear_module_pref($name,$module=false,$user=false){
 	if (isset($module_prefs[$uid][$module][$name])){
 		$sql = "DELETE FROM " . db_prefix("module_userprefs") . " WHERE modulename='$module' AND setting='$name' AND userid='$uid'";
 		db_query($sql);
-		invalidatedatacache("moduleprefs/moduleprefs-$uid");
 	}
 	unset($module_prefs[$uid][$module][$name]);
 }
@@ -903,43 +846,6 @@ function load_module_prefs($module, $user=false){
 		}//end while
 	}//end if
 }//end function
-
-function load_all_module_prefs($user=false){
-	global $module_prefs,$session;
-	if ($user===false) $user = $session['user']['acctid'];
-	if (!isset($module_prefs[$user])){
-		$start = microtime(true);
-		$module_prefs[$user] = datacache("moduleprefs/moduleprefs-$user");
-		if (!is_array($module_prefs[$user])){
-			//debug("Getting from db");
-			$sql = "SELECT setting,value,modulename FROM " . db_prefix("module_userprefs") . " WHERE userid='$user'";
-			$result = db_query($sql);
-			$module_prefs[$user] = array();
-			while ($row = db_fetch_assoc($result)){
-				$module_prefs[$user][$row['modulename']][$row['setting']] = $row['value'];
-			}
-			db_free_result($result);
-			updatedatacache("moduleprefs/moduleprefs-$user",$module_prefs[$user]);
-		}
-		$end = microtime(true);
-		$tot = $end - $start;
-		//debug("Loaded module prefs in: ".$tot);
-		
-		// $module_prefs[$user] = array();
-		// $start = microtime(true);
-		// $sql = "SELECT setting,value,modulename FROM " . db_prefix("module_userprefs") . " WHERE userid='$user'";
-		// $result = db_query_cached($sql,"moduleprefs/moduleprefs-$user",86400);
-		// $end1 = microtime(true);
-		// while ($row = db_fetch_assoc($result)){
-			// $module_prefs[$user][$row['modulename']][$row['setting']] = $row['value'];
-		// }
-		// $end2 = microtime(true);
-		// $time1 = $end1-$start;
-		// $time2 = $end2-$start;
-		//debug("All prefs load time: ".$time2.", of which ".$time1." spent in db_query_cached");
-	}
-	//debug($module_prefs);
-}
 
 function get_module_info($shortname){
 	global $mostrecentmodule;
@@ -1005,7 +911,7 @@ function module_wipehooks() {
 	$sql = "SELECT location FROM ".db_prefix("module_hooks")." WHERE modulename='$mostrecentmodule'";
 	$result = db_query($sql);
 	while ($row = db_fetch_assoc($result)){
-		invalidatedatacache("hooks/hook_".$row['location']);
+		invalidatedatacache("hook-".$row['location']);
 	}
 	invalidatedatacache("moduleprepare");
 
@@ -1028,7 +934,7 @@ function module_addeventhook($type, $chance){
 	db_query($sql);
 	$sql = "INSERT INTO " . db_prefix("module_event_hooks") . " (event_type,modulename,event_chance) VALUES ('$type', '$mostrecentmodule','".addslashes($chance)."')";
 	db_query($sql);
-	invalidatedatacache("events/".$type);
+	invalidatedatacache("event-".$type);
 }
 
 function module_drophook($hookname,$functioncall=false){
@@ -1037,7 +943,7 @@ function module_drophook($hookname,$functioncall=false){
 		$functioncall=$mostrecentmodule."_dohook";
 	$sql = "DELETE FROM " . db_prefix("module_hooks") . " WHERE modulename='$mostrecentmodule' AND location='".addslashes($hookname)."' AND function='".addslashes($functioncall)."'";
 	db_query($sql);
-	invalidatedatacache("hooks/hook_".$hookname);
+	invalidatedatacache("hook-".$hookname);
 	invalidatedatacache("moduleprepare");
 }
 
@@ -1076,7 +982,7 @@ function module_addhook_priority($hookname,$priority=50,$functioncall=false,$whe
 	//normally that won't be the case, and so this doesn't have any performance implications.
 	$sql = "REPLACE INTO " . db_prefix("module_hooks") . " (modulename,location,function,whenactive,priority) VALUES ('$mostrecentmodule','".addslashes($hookname)."','".addslashes($functioncall)."','".addslashes($whenactive)."','".addslashes($priority)."')";
 	db_query($sql);
-	invalidatedatacache("hooks/hook_".$hookname);
+	invalidatedatacache("hook-".$hookname);
 	invalidatedatacache("moduleprepare");
 }
 
@@ -1115,7 +1021,7 @@ function module_collect_events($type, $allowinactive=false)
 	if (!$allowinactive) $active = " active=1 AND";
 
 	$sql = "SELECT " . db_prefix("module_event_hooks") . ".* FROM " . db_prefix("module_event_hooks") . " INNER JOIN " . db_prefix("modules") . " ON ". db_prefix("modules") . ".modulename = " . db_prefix("module_event_hooks") . ".modulename WHERE $active event_type='$type' ORDER BY RAND(".e_rand().")";
-	$result = db_query_cached($sql,"events/".$type);
+	$result = db_query_cached($sql,"event-".$type);
 	while ($row = db_fetch_assoc($result)){
 		// The event_chance bit needs to return a value, but it can do that
 		// in any way it wants, and can have if/then or other logical
@@ -1318,7 +1224,7 @@ function module_objpref_edit($type, $module, $id)
 		$sql = "SELECT setting, value FROM " . db_prefix("module_objprefs") . " WHERE modulename='$module' AND objtype='$type' AND objid='$id'";
 		$result = db_query($sql);
 		while($row = db_fetch_assoc($result)) {
-			$data[$row['setting']] = stripslashes($row['value']);
+			$data[$row['setting']] = $row['value'];
 		}
 		tlschema("module-$module");
 		showform($msettings, $data);
@@ -1344,7 +1250,7 @@ function activate_module($module){
 	}
 	$sql = "UPDATE " . db_prefix("modules") . " SET active=1 WHERE modulename='$module'";
 	db_query($sql);
-	invalidatedatacache("injections/inject_$module");
+	invalidatedatacache("inject-$module");
 	massinvalidate("moduleprepare");
 	if (db_affected_rows() <= 0){
 		return false;
@@ -1364,7 +1270,7 @@ function deactivate_module($module){
 	}
 	$sql = "UPDATE " . db_prefix("modules") . " SET active=0 WHERE modulename='$module'";
 	db_query($sql);
-	invalidatedatacache("injections/inject_$module");
+	invalidatedatacache("inject-$module");
 	massinvalidate("moduleprepare");
 	if (db_affected_rows() <= 0){
 		return false;
@@ -1393,7 +1299,7 @@ function uninstall_module($module){
 		$sql = "DELETE FROM " . db_prefix("module_settings") .
 			" WHERE modulename='$module'";
 		db_query($sql);
-		invalidatedatacache("modulesettings/$module");
+		invalidatedatacache("modulesettings-$module");
 
 		output("Deleting module user prefs`n");
 		$sql = "DELETE FROM " . db_prefix("module_userprefs") .
@@ -1404,7 +1310,7 @@ function uninstall_module($module){
 		$sql = "DELETE FROM " . db_prefix("module_objprefs") .
 			" WHERE modulename='$module'";
 		db_query($sql);
-		invalidatedatacache("injections/inject_$module");
+		invalidatedatacache("inject-$module");
 		massinvalidate("moduleprepare");
 		return true;
 	} else {
@@ -1460,7 +1366,7 @@ function install_module($module, $force=true){
 					return false;
 				}
 				output("`^Module installed.  It is not yet active.`n");
-				invalidatedatacache("injections/inject_$mostrecentmodule");
+				invalidatedatacache("inject-$mostrecentmodule");
 				massinvalidate("moduleprepare");
 				return true;
 			}

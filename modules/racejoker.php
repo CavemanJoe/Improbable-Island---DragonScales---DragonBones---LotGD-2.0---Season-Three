@@ -68,13 +68,13 @@ function racejoker_dohook($hookname,$args){
 				" SET location='" . addslashes($args['new']) .
 				"' WHERE location='" . addslashes($args['old']) . "'";
 			db_query($sql);
-			if (is_module_active("cities")) {
-				$sql = "UPDATE " . db_prefix("module_userprefs") .
-					" SET value='" . addslashes($args['new']) .
-					"' WHERE modulename='cities' AND setting='homecity'" .
-					"AND value='" . addslashes($args['old']) . "'";
-				db_query($sql);
-			}
+			
+			$sql = "UPDATE " . db_prefix("module_userprefs") .
+				" SET value='" . addslashes($args['new']) .
+				"' WHERE modulename='cities' AND setting='homecity'" .
+				"AND value='" . addslashes($args['old']) . "'";
+			db_query($sql);
+			
 		}
 		break;
 	case "chooserace":
@@ -87,11 +87,11 @@ function racejoker_dohook($hookname,$args){
 	case "setrace":
 		if ($session['user']['race']==$race){
 			output("The gatekeeper's smile doesn't go away.  Instead, it freezes, locks carefully into place - and the gatekeeper begins to pray that he can persuade it to stay there until you go away, or at least until your eyes stop doing that `@green glowy thing`0.  \"`6Yes,`0\" he says, carefully.  \"`6Yes, that would be fine.`0\"`n`nYou roll your die.  It skitters along, making a clattering sound like bone on wood.  The fact that it's still four feet above the ground doesn't seem to faze the gatekeeper, or if it does, he's very good at not letting it show.`n`nIt finally comes to rest, seven spots facing the sun.  You look up and grin, teeth white and gleaming and not entirely friendly.  \"`#It seems I am a Joker!`0\" you exclaim in a breathy growl.`n`nThe gatekeeper nods, and picks up his journal.  \"`6Very good.  As you say.  Jay.  Oh.  Kay.  Are.  Ee.  Joker.  All done.`0\"  He looks up, to see you preparing to roll your die again.  He opens his mouth to ask you what you're doing, and bites his tongue.  Never ask what a Joker is doing; they might tell you.`n`nYou roll your die.  It skitters along the invisible table, bounces against an invisible wall, and comes up at two.`n`n\"`#Shame,`0\" you say.  \"`#You would have been more interesting with some additional eyes.  Still, if the die says two are enough, then who am I to disagree?`0\"`n`nYou give the gatekeeper a grin and a wink, and head into the outpost.`n`nA minute later, he remembers to exhale.  He shudders and puts the kettle on, hoping that it isn't going to turn out to be one of `ithose`i days.");
-			if (is_module_active("cities")) {
-				set_module_pref("homecity",$city,"cities");
-				if ($session['user']['age'] == 0)
-					$session['user']['location']=$city;
-			}
+			
+			set_module_pref("homecity",$city,"cities");
+			if ($session['user']['age'] == 0)
+				$session['user']['location']=$city;
+			
 		}
 		break;
 
@@ -352,16 +352,12 @@ function racejoker_dohook($hookname,$args){
 
 	case "validforestloc":
 	case "validlocation":
-		if (is_module_active("cities"))
 			$args[$city]="village-$race";
-		break;
-	
-	case "moderate":
-		if (is_module_active("cities")) {
+		break;	
+	case "moderate":		
 			tlschema("commentary");
 			$args["village-$race"]=sprintf_translate("City of %s", $city);
 			tlschema();
-		}
 		break;
 		
 	case "villagetext":
@@ -416,7 +412,7 @@ function racejoker_checkcity(){
 	$race="Joker";
 	$city=get_module_setting("villagename");
 
-	if ($session['user']['race']==$race && is_module_active("cities")){
+	if ($session['user']['race']==$race){
 		//if they're this race and their home city isn't right, set it up.
 		if (get_module_pref("homecity","cities")!=$city){ //home city is wrong
 			set_module_pref("homecity",$city,"cities");

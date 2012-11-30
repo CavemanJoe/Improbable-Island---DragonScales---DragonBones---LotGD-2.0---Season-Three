@@ -98,7 +98,7 @@ if ($op == "list") {
 			db_query($sql);
 			$sql = "DELETE FROM " . db_prefix("untranslated") . " WHERE intext = '$intext' AND language = '$language' AND namespace = '$namespace'";
 			db_query($sql);
-			invalidatedatacache("translations/translations-".$namespace."-".$language);
+			invalidatedatacache("translations-".$namespace."-".$language);
 		}
 	}
 

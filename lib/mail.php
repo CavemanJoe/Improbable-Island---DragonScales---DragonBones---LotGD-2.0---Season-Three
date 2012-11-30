@@ -25,7 +25,7 @@ if($op=="del"){
 	$sql = "DELETE FROM " . db_prefix("mail") . " WHERE msgto='".$session['user']['acctid']."' AND messageid='$id'";
 	db_query($sql);
 	//<Edo>
-	invalidatedatacache("mail/mail-{$session['user']['acctid']}");
+	invalidatedatacache("mail-{$session['user']['acctid']}");
 	//</Edo>
 	header("Location: mail.php");
 	exit();
@@ -37,14 +37,14 @@ if($op=="del"){
 	}else{
 		$sql = "DELETE FROM " . db_prefix("mail") . " WHERE msgto='".$session['user']['acctid']."' AND messageid IN ('".join("','",$msg)."')";
 		db_query($sql);
-		invalidatedatacache("mail/mail-{$session['user']['acctid']}");
+		invalidatedatacache("mail-{$session['user']['acctid']}");
 		header("Location: mail.php");
 		exit();
 	}
 }elseif ($op=="unread"){
 	$sql = "UPDATE " . db_prefix("mail") . " SET seen=0 WHERE msgto='".$session['user']['acctid']."' AND messageid='$id'";
 	db_query($sql);
-	invalidatedatacache("mail/mail-{$session['user']['acctid']}");
+	invalidatedatacache("mail-{$session['user']['acctid']}");
 	header("Location: mail.php");
 	exit();
 }
@@ -186,7 +186,7 @@ if ($op==""){
 					call_user_func_array("sprintf_translate", $row['body']);
 			}
 		}
-		if (!$row['seen']) output("`b`3NEW`b`n");
+		if (!$row['seen']) output("`b`#NEW`b`n");
 		else output("`n");
 		output("`b`2From:`b `^%s`n",$row['name']);
 		output("`b`2Subject:`b `^%s`n",$row['subject']);
@@ -368,7 +368,7 @@ if ($op==""){
 	$send = translate_inline("Send");
 	rawoutput("<table border='0' cellpadding='0' cellspacing='0' width='100%'><tr><td><input type='submit' class='button' value='$send'></td><td align='right'><div id='sizemsg'></div></td></tr></table>");
 	output_notl("</form>",true);
-	$sizemsg = "`3Max message size is `@%s`3, you have `^XX`3 characters left.";
+	$sizemsg = "`#Max message size is `@%s`#, you have `^XX`# characters left.";
 	$sizemsg = translate_inline($sizemsg);
 	$sizemsg = sprintf($sizemsg,getsetting("mailsizelimit",1024));
 	$sizemsgover = "`\$Max message size is `@%s`\$, you are over by `^XX`\$ characters!";

@@ -8,17 +8,16 @@
  * modules on the server. Modules are sorted
  * by category, and are displayed in a table.
  * 
- * @copyright Copyright © 2002-2005, Eric Stevens & JT Traub, © 2006-2007, Dragonprime Development Team
- * @version Lotgd 1.1.1 DragonPrime Edition
+ * @copyright Copyright Â© 2002-2005, Eric Stevens & JT Traub, Â© 2006-2009, Dragonprime Development Team
+ * @version Lotgd 1.1.2 DragonPrime Edition
  * @package Core
  * @subpackage Library
  * @license http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode
  */
-$r=httpget('r');
 addnav("About LoGD");
-addnav("About LoGD","about.php?r=".$r);
-addnav("Game Setup Info","about.php?op=setup&r=".$r);
-addnav("License Info", "about.php?op=license&r=".$r);
+addnav("About LoGD","about.php");
+addnav("Game Setup Info","about.php?op=setup");
+addnav("License Info", "about.php?op=license");
 $sql = "SELECT * from " . db_prefix("modules") . " WHERE active=1 ORDER BY category,formalname";
 $result = db_query($sql);
 $mname = translate_inline("Module Name");

@@ -50,7 +50,7 @@ if ($target = db_fetch_assoc($result)) {
   output_notl("`n`n");
 
   if ($target['clanname']>"" && getsetting("allowclans",false)){
-	  $ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`3Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
+	  $ranks = array(CLAN_APPLICANT=>"`!Applicant`0",CLAN_MEMBER=>"`#Member`0",CLAN_OFFICER=>"`^Officer`0",CLAN_LEADER=>"`&Leader`0", CLAN_FOUNDER=>"`\$Founder");
 	  $ranks = modulehook("clanranks", array("ranks"=>$ranks, "clanid"=>$target['clanid']));
 	  tlschema("clans"); //just to be in the right schema
 	  array_push($ranks['ranks'],"`\$Founder");
@@ -67,7 +67,7 @@ if ($target = db_fetch_assoc($result)) {
 			getsetting("LOGINTIMEOUT", 900))) {
 	  $loggedin = true;
   }
-  $status = translate_inline($loggedin?"`3Online`0":"`\$Offline`0");
+  $status = translate_inline($loggedin?"`#Online`0":"`\$Offline`0");
   output("`^Status: %s`n",$status);
 
   output("`^Resurrections: `@%s`n",$target['resurrections']);
@@ -77,7 +77,7 @@ if ($target = db_fetch_assoc($result)) {
   tlschema("race");
   $race = translate_inline($race);
   tlschema();
-  // output("`^Race: `@%s`n",$race);
+  output("`^Race: `@%s`n",$race);
 
   $genders = array("Male","Female");
   $genders = translate_inline($genders);
@@ -139,26 +139,19 @@ if ($target = db_fetch_assoc($result)) {
   }
   tlschema();
 
-  debug($return);
-  
   if ($ret==""){
-	  if (strpos($return,"/")===0){
-		$return = substr($return,strrpos($return,"/")+1);
-	}
+	  $return = substr($return,strrpos($return,"/")+1);
 	  tlschema("nav");
 	  addnav("Return");
 	  addnav("Return to the warrior list",$return);
 	  tlschema();
   }else{
-	if (strpos($return,"/")===0){
 	  $return = substr($return,strrpos($return,"/")+1);
-	}
 	  tlschema("nav");
 	  addnav("Return");
 	  if ($return=="list.php") {
 		  addnav("Return to the warrior list",$return);
 	  } else {
-			debug($return);
 		  addnav("Return whence you came",$return);
 	  }
 	  tlschema();
@@ -168,19 +161,15 @@ if ($target = db_fetch_assoc($result)) {
   page_footer();
 } else {
 	page_header("Character has been deleted");
-	output("This character does not exist.");
+	output("This character is already deleted.");
   if ($ret==""){
-	  if (strpos($return,"/")===0){
 	  $return = substr($return,strrpos($return,"/")+1);
-	}
 	  tlschema("nav");
 	  addnav("Return");
 	  addnav("Return to the warrior list",$return);
 	  tlschema();
   }else{
-	 if (strpos($return,"/")===0){
 	  $return = substr($return,strrpos($return,"/")+1);
-	}
 	  tlschema("nav");
 	  addnav("Return");
 	  if ($return=="list.php") {

@@ -9,6 +9,6 @@
 // Of course, people shouldn't be doing that, but people seem to think
 // that more is better always, even when it's not.  Just blame it on the
 // 'supersize society' we live in.
-//ini_set("memory_limit","128M");
-//ini_set("max_execution_time", "90");
+ini_set("memory_limit","64M");
+ini_set("max_execution_time", "90");
 ?>

@@ -11,6 +11,13 @@ switch(httpget('sub')){
 		addnav("What's all this about?","runmodule.php?module=improbablehousing&op=landregistry&sub=explain");
 	break;
 	case "buystake":
+		output("Suzie shows you a big grin.`n`n\"`6Ready to mark yer territory?`0\" She asks. ");
+		if ($session['user']['race'] == "KittyMorph") {
+			output("`n`n\"`#Now hold on a minute there,\" you start, thinking she's making a comment about Kittymorphs.`n`n\"`6I didn't mean it `ithat`i way,`\" she interrupts. ",);
+		}
+		output("\"`6Bein' a 'ome-owner is a big step. You sure you're ready to make a claim on a plot of land?`0\"");
+	break;
+	case "confirmstake":
 		output("You hand over your payment.  Suzie reaches behind the counter and brings out a large metal stake.`n`n\"`6Right, jus' find yer dream location an' stick that in the ground.  I'll sort out the paperwork an' let the council know yer' buildin'.`0\"`n`nYou put the stake in your backpack.");
 		give_item('housing_stake');
 		$session['user']['gems']-=$stakecost;
@@ -37,8 +44,13 @@ switch(httpget('sub')){
 }
 addnav("Services");
 if ($session['user']['gems'] >= $stakecost && !has_item('housing_stake')){
-	//Ask the player if they'd like to buy a stake
-	addnav("Buy a land claim stake (100 cigarettes)","runmodule.php?module=improbablehousing&op=landregistry&sub=buystake");
+	if (httpget('sub') == "buystake"){
+		//Make sure they want to buy a stake
+		addnav("Really buy a stake (100 cigarettes)","runmodule.php?module=improbablehousing&op=landregistry&sub=confirmstake");
+	} else {
+		//Ask the player if they'd like to buy a stake
+		addnav("Buy a land claim stake (100 cigarettes)","runmodule.php?module=improbablehousing&op=landregistry&sub=buystake");
+	}
 } else if ($session['user']['gems']<$stakecost){
 	addnav("You don't have enough cigarettes to buy a stake","");
 } else {

@@ -131,7 +131,7 @@ function lovers_violet(){
 					}else{
 						output("It is a look of sadness.");
 						output("\"`%No`0,\" she says, \"`%I'm not yet ready to settle down`0.\"`n`n");
-						output("Disheartened, you no longer possess the will to do much of anything today.");
+						output("Disheartened, you no longer possess the will to pursue any more forest adventures today.");
 						$session['user']['turns']=0;
 						debuglog("lost all turns after being rejected for marriage.");
 					}

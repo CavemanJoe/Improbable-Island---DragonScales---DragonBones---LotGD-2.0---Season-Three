@@ -227,7 +227,7 @@ if ($op==""){
 		rawoutput("</td><td nowrap>");
 		$file = "mounts.php?op=xml&id=".$row['mountid'];
 		rawoutput("<div id='mountusers$i'><a href='$file' target='_blank' onClick=\"getUserInfo('".$row{'mountid'}."', $i); return false\">");
- 		output_notl("`3%s`0", $mounts[$row['mountid']]);
+ 		output_notl("`#%s`0", $mounts[$row['mountid']]);
 		addnav("", $file);
 		rawoutput("</a></div>");
 		rawoutput("</td></tr>");
@@ -347,6 +347,7 @@ function mountform($mount){
 	// Some later module can remove them however.
 	$vname = getsetting('villagename', LOCATION_FIELDS);
 	$locs = array($vname => sprintf_translate("The Village of %s", $vname));
+	$args[$city] = sprintf_translate("The City of %s", $city);
 	$locs = modulehook("stablelocs", $locs);
 	$locs['all'] = translate_inline("Everywhere");
 	ksort($locs);

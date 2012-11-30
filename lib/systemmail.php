@@ -37,12 +37,14 @@ function systemmail($to,$subject,$body,$from=0,$noemail=false){
 		}
 	}
 
-	if (!isset($prefs['mailpref']) || $prefs['mailpref']!=1){
-		$sql = "INSERT INTO " . db_prefix("mail") . " (msgfrom,msgto,subject,body,sent,originator) VALUES ('".$from."','".(int)$to."','$subject','$body','".date("Y-m-d H:i:s")."', ".($session['user']['acctid']).")";
-		db_query($sql);
-	}
+	$sql = "INSERT INTO " . db_prefix("mail") . " (msgfrom,msgto,subject,body,sent,originator) VALUES ('".$from."','".(int)$to."','$subject','$body','".date("Y-m-d H:i:s")."', ".($session['user']['acctid']).")";
+	db_query($sql);
+	invalidatedatacache("mail-$to");
 	$email=false;
-	if (!isset($prefs['mailpref']) || $prefs['mailpref']!=2){
+	if (isset($prefs['emailonmail']) && $prefs['emailonmail'] && $from>0){
+		$email=true;
+	}elseif(isset($prefs['emailonmail']) && $prefs['emailonmail'] &&
+			$from==0 && isset($prefs['systemmail']) && $prefs['systemmail']){
 		$email=true;
 	}
 	$emailadd = "";
@@ -60,7 +62,7 @@ function systemmail($to,$subject,$body,$from=0,$noemail=false){
 		}
 
 		$sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$from'";
-		$result = db_query_cached($sql,"playernames/playername_".$from);
+		$result = db_query($sql);
 		$row1=db_fetch_assoc($result);
 		db_free_result($result);
 		if ($row1['name']!="")
@@ -69,7 +71,7 @@ function systemmail($to,$subject,$body,$from=0,$noemail=false){
 			$fromline=translate_inline("The Green Dragon","mail");
 
 		$sql = "SELECT name FROM " . db_prefix("accounts") . " WHERE acctid='$to'";
-		$result = db_query_cached($sql,"playernames/playername_".$to);
+		$result = db_query($sql);
 		$row1=db_fetch_assoc($result);
 		db_free_result($result);
 		$toline = full_sanitize($row1['name']);
@@ -98,9 +100,9 @@ function systemmail($to,$subject,$body,$from=0,$noemail=false){
 			stripslashes($body),
 			$_SERVER['HTTP_HOST'].dirname($_SERVER['SCRIPT_NAME'])
 		),$to);
-		//mail($row['emailaddress'],$mailsubj,str_replace("`n","\n",$mailbody),"From: Improbable Island<".getsetting("gameadminemail","postmaster@localhost").">");
+		mail($row['emailaddress'],$mailsubj,str_replace("`n","\n",$mailbody),"From: ".getsetting("gameadminemail","postmaster@localhost"));
 	}
-	invalidatedatacache("mail/mail-$to");
+	invalidatedatacache("mail-$to");
 }
 
 ?>

@@ -14,11 +14,13 @@ require_once("lib/experience.php");
 
 tlschema("train");
 
-page_header("Joe's Dojo");
+page_header("Bluspring's Warrior Training");
 
 $battle = false;
 $victory = false;
 $defeat = false;
+
+output("`b`cBluspring's Warrior Training`c`b");
 
 $mid = httpget("master");
 if ($mid) {
@@ -55,13 +57,11 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 		output("The sound of conflict surrounds you.  The clang of weapons in grisly battle inspires your warrior heart. ");
 		output("`n`n`^%s stands ready to evaluate you.`0",
 				$master['creaturename']);
-		addnav("Master");
 		addnav("Question Master","train.php?op=question&master=$mid");
 		addnav("M?Challenge Master","train.php?op=challenge&master=$mid");
 		if ($session['user']['superuser'] & SU_DEVELOPER) {
 			addnav("Superuser Gain level","train.php?op=challenge&victory=1&master=$mid");
 		}
-		addnav("Leave");
 		villagenav();
 	}else if($op=="challenge"){
 		if (httpget('victory')) {
@@ -73,8 +73,7 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 		}
 		if ($session['user']['seenmaster']){
 			output("You think that, perhaps, you've seen enough of your master for today, the lessons you learned earlier prevent you from so willingly subjecting yourself to that sort of humiliation again.");
-			addnav("Leave");
-		villagenav();
+			villagenav();
 		}else{
 			/* OK, let's fix the multimaster thing */
 			$session['user']['seenmaster'] = 1;
@@ -122,8 +121,7 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 				output("You bow before `^%s`0, and execute a perfect spin-attack, only to realize that you are holding NOTHING!", $master['creaturename']);
 				output("`^%s`0 stands before you holding your weapon.",$master['creaturename']);
 				output("Meekly you retrieve your %s, and slink out of the training grounds to the sound of boisterous guffaws.",$session['user']['weapon']);
-				addnav("Leave");
-		villagenav();
+				villagenav();
 			}
 		}
 	}else if($op=="question"){
@@ -132,26 +130,24 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 		if($session['user']['experience']>=$exprequired){
 			output("`n`n`^%s`0 says, \"Gee, your muscles are getting bigger than mine...\"",$master['creaturename']);
 		}else{
-			output("`n`n`^%s`0 states that you will need `%%s`0 more experience before you're ready.",$master['creaturename'],($exprequired-$session['user']['experience']));
+			output("`n`n`^%s`0 states that you will need `%%s`0 more experience before you are ready to challenge him in battle.",$master['creaturename'],($exprequired-$session['user']['experience']));
 		}
-		addnav("Master");
 		addnav("Question Master","train.php?op=question&master=$mid");
 		addnav("M?Challenge Master","train.php?op=challenge&master=$mid");
 		if ($session['user']['superuser'] & SU_DEVELOPER) {
 			addnav("Superuser Gain level","train.php?op=challenge&victory=1&master=$mid");
 		}
-		addnav("Leave");
 		villagenav();
 	}else if($op=="autochallenge"){
-		addnav("Whoops.");
 		addnav("Fight Your Master","train.php?op=challenge&master=$mid");
-		output("`^%s`0 has heard of your prowess as a warrior, and heard of rumors that you think you are so much more powerful that you don't even need to prove anything.  ",$master['creaturename']);
-		output("Egos are understandably bruised, and now your master stands before you.  ");
+		output("`^%s`0 has heard of your prowess as a warrior, and heard of rumors that you think you are so much more powerful than he that you don't even need to fight him to prove anything. ",$master['creaturename']);
+		output("His ego is understandably bruised, and so he has come to find you.");
 		output("`^%s`0 demands an immediate battle from you, and your own pride prevents you from refusing the demand.",$master['creaturename']);
 		if ($session['user']['hitpoints']<$session['user']['maxhitpoints']){
 			output("`n`nBeing a fair person, your master gives you a healing potion before the fight begins.");
 			$session['user']['hitpoints']=$session['user']['maxhitpoints'];
 		}
+		
 		modulehook("master-autochallenge");
 		if (getsetting('displaymasternews',1)) addnews("`3%s`3 was hunted down by their master, `^%s`3, for being truant.",$session['user']['name'],$master['creaturename']);
 	}
@@ -189,8 +185,8 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 				$session['user']['seenmaster']=0;
 				debuglog("Defeated master, setting seenmaster to 0");
 			}
-			output("`3You advance to level `^%s`3!`n",$session['user']['level']);
-			output("Your maximum hitpoints are now `^%s`3!`n",$session['user']['maxhitpoints']);
+			output("`#You advance to level `^%s`#!`n",$session['user']['level']);
+			output("Your maximum hitpoints are now `^%s`#!`n",$session['user']['maxhitpoints']);
 			output("You gain an attack point!`n");
 			output("You gain a defense point!`n");
 			if ($session['user']['level']<15){
@@ -198,27 +194,14 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 			}else{
 				output("None in the land are mightier than you!`n");
 			}
-			// if ($session['user']['referer']>0 && ($session['user']['level']>=getsetting("referminlevel",4) || $session['user']['dragonkills'] > 0) && $session['user']['refererawarded']<1){
-				// $sql = "UPDATE " . db_prefix("accounts") . " SET donation=donation+".getsetting("refereraward",25)." WHERE acctid={$session['user']['referer']}";
-				// db_query($sql);
-				// $session['user']['refererawarded']=1;
-				// $subj=array("`%One of your referrals advanced!`0");
-				// $body=array("`&%s`3 has advanced to level `^%s`3, and so you have earned `^%s`3 points!", $session['user']['name'], $session['user']['level'], getsetting("refereraward", 25));
-				// systemmail($session['user']['referer'],$subj,$body);
-				// //Patch to handle second-hand referrers, added by Caveman Joe
-				// $sql = "SELECT acctid,name,referer FROM " . db_prefix("accounts") . " WHERE acctid={$session['user']['referer']}";
-				// $result = db_query($sql);
-				// $row=db_fetch_assoc($result);
-				// if ($row['referer']){
-					// $award = round(getsetting("refereraward",25) / 2);
-					// $subj=array("`%One of your second-hand referrals advanced!`0");
-					// $body=array("`&%s`3, referred by `&%s`3, has advanced to level `^%s`3 - and so you have earned `^%s`3 points!", $session['user']['name'], $row['name'], $session['user']['level'], $award);
-					// systemmail($row['referer'],$subj,$body);
-					// $sql = "UPDATE " . db_prefix("accounts") . " SET donation=donation+".$award." WHERE acctid={$row['referer']}";
-					// db_query($sql);
-				// }
-				// //end of CMJ patch
-			// }
+			if ($session['user']['referer']>0 && ($session['user']['level']>=getsetting("referminlevel",4) || $session['user']['dragonkills'] > 0) && $session['user']['refererawarded']<1){
+				$sql = "UPDATE " . db_prefix("accounts") . " SET donation=donation+".getsetting("refereraward",25)." WHERE acctid={$session['user']['referer']}";
+				db_query($sql);
+				$session['user']['refererawarded']=1;
+				$subj=array("`%One of your referrals advanced!`0");
+				$body=array("`&%s`# has advanced to level `^%s`#, and so you have earned `^%s`# points!", $session['user']['name'], $session['user']['level'], getsetting("refereraward", 25));
+				systemmail($session['user']['referer'],$subj,$body);
+			}
 			increment_specialty("`^");
 
 			// Level-Up companions
@@ -238,14 +221,12 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 
 			invalidatedatacache("list.php-warsonline");
 
-			addnav("Master");
 			addnav("Question Master","train.php?op=question");
 			addnav("M?Challenge Master","train.php?op=challenge");
 			if ($session['user']['superuser'] & SU_DEVELOPER) {
 				addnav("Superuser Gain level","train.php?op=challenge&victory=1");
 			}
-			addnav("Leave");
-		villagenav();
+			villagenav();
 			if ($session['user']['age'] == 1) {
  	 	 	 	if (getsetting('displaymasternews',1)) addnews("`%%s`3 has defeated ".($session['user']['sex']?"her":"his")." master, `%%s`3 to advance to level `^%s`3 after `^1`3 day!!", $session['user']['name'],$badguy['creaturename'],$session['user']['level']);
  	 	 	} else {
@@ -265,14 +246,12 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 			output_notl("`^`b");
 			output($badguy['creaturewin']);
 			output_notl("`b`0`n");
-			addnav("Master");
 			addnav("Question Master","train.php?op=question&master=$mid");
 			addnav("M?Challenge Master","train.php?op=challenge&master=$mid");
 			if ($session['user']['superuser'] & SU_DEVELOPER) {
 				addnav("Superuser Gain level","train.php?op=challenge&victory=1&master=$mid");
 			}
-			addnav("Leave");
-		villagenav();
+			villagenav();
 			modulehook("training-defeat", $badguy);
 		}else{
 		  fightnav(false,false, "train.php?master=$mid");
@@ -290,8 +269,7 @@ if (db_num_rows($result) > 0 && $session['user']['level'] <= 14){
 	output("Bluspring hails you, and you grasp her hand firmly.");
 	output("There is nothing left for you here but memories.");
 	output("You remain a moment longer, and look at the warriors in training before you turn to return to the village.");
-	addnav("Leave");
-		villagenav();
+	villagenav();
 }
 page_footer();
 ?>

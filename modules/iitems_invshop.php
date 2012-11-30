@@ -41,7 +41,9 @@ function iitems_invshop_run(){
 	$backpackprefs = array(
 		"carrieritem"=>"main",
 	);
-	$backpack = get_items_with_prefs($backpackprefs,true);
+	require_once("modules/iitems/lib/lib.php");
+	//$backpack = iitems_get_items_with_prefs($backpackprefs,true);
+	$backpack = iitems_has_property($backpackprefs,true);
 	// debug($backpack);
 	
 	foreach($backpack AS $key => $prefs){
@@ -52,7 +54,8 @@ function iitems_invshop_run(){
 	$bandolierprefs = array(
 		"carrieritem"=>"fight",
 	);
-	$bandolier = get_items_with_prefs($bandolierprefs,true);
+	//$bandolier = iitems_get_items_with_prefs($bandolierprefs,true);
+	$bandolier = iitems_has_property($bandolierprefs,true);
 	// debug($bandolier);
 	foreach($bandolier AS $key => $prefs){
 		$currentbandolier = $prefs;
@@ -78,7 +81,7 @@ function iitems_invshop_run(){
 				$invloc = "fight";
 				$tradein = $tradein_fight;
 			}
-			$price = get_item_setting("invshop_price",$item);
+			$price = iitems_get_item_setting("invshop_price",$item);
 			//debug($price);
 			
 			if ($price > ($session['user']['gems'] + $tradein)){

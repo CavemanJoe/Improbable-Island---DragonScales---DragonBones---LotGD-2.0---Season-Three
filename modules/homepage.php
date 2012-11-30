@@ -4,7 +4,7 @@ function homepage_getmoduleinfo(){
 	$info=array(
 		"name"=>"Improbable Island Home Page",
 		"version"=>"2009-07-08",
-		"author"=>"Dan Hall, aka Caveman Joe, improbableisland.com",
+		"author"=>"Dan Hall, text modifications by Cousjava",
 		"category"=>"Administrative",
 		"download"=>"",
 		"allowanonymous"=>"true",
@@ -219,7 +219,7 @@ function homepage_run(){
 				output("\"`6Oh, dear...`0\" says the gatekeeper.  \"`6I'm afraid that name's just too short.`0\"`n`nYou stare at him for a moment.  \"`#What in the hell difference does `ithat`i make?!`0\"`n`n\"`6Well, you see, the computer that handles these forms...`0\" he shrugs.  \"`6It's not particularly bright.`0\"`n`nYou nod.  Computers haven't been terribly bright since the EMP wars.`n`n\"`6Just put down any old thing,`0\" says the gatekeeper.  \"`6I doubt it'll matter much.`0\"`n`n");
 				$redoform=1;
 			} else if (strlen($name) >25){
-				output("\"`6Oh, dear...`0\" says the gatekeeper.  \"`6I'm afraid that name's just too long.`0\"`n`nYou stare at him for a moment.  \"`#What in the hell difference does `ithat`i make?!`0\"`n`n\"`6Well, you see, the computer that handles these forms...`0\" he shrugs.  \"`6It's not particularly bright.`0\"`n`nYou nod.  Computers haven't been terribly bright since the EMP wars.`n`n\"`6Just put down any old thing,`0\" says the gatekeeper.  \"`6I doubt it'll matter much.`0\"`n`n");
+				output("\"`6Oh, dear...`0\" says the old man.  \"`6I'm afraid that name's just too long.`0\"`n`nYou stare at him for a moment.  \"`#What in the hell difference does `ithat`i make?!`0\"`n`n\"`6Well, you see, the computer that handles these forms...`0\" he shrugs.  \"`6Ican't remember something like that.`0\"`n`nYou nod.  Computers haven't been terribly bright since the EMP wars.`n`n\"`6Just put down any old thing,`0\" says the gatekeeper.  \"`6I doubt it'll matter much.`0\"`n`n");
 				$redoform=1;
 			}
 			if ($redoform) {

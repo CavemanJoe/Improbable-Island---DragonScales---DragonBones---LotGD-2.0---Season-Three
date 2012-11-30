@@ -2,6 +2,7 @@
 require_once("lib/installer/installer_sqlstatements.php");
 require_once("lib/installer/installer_functions.php");
 require_once("lib/installer/installer_default_settings.php");
+require_once("lib/settings.php");
 output("`@`c`bBuilding the Tables`b`c");
 output("`2I'm now going to build the tables.");
 output("If this is an upgrade, your current tables will be brought in line with the current version.");
@@ -27,6 +28,11 @@ reset($sql_upgrade_statements);
 while (list($key,$val)=each($sql_upgrade_statements)){
 	if ($dosql){
 		output("`3Version `#%s`3: %s SQL statements...`n",$key,count($val));
+		if ($key>="2.0.0"){
+			output("Doing elvenhall statements...");
+			require_once("lib/installer/installer_sql_elvenhall.php");
+			elvenhall_sql($key);
+		}
 		if (count($val)>0){
 			output("`^Doing: `6");
 			reset($val);
@@ -42,6 +48,7 @@ while (list($key,$val)=each($sql_upgrade_statements)){
 				if (!$session['dbinfo']['upgrade'] && $onlyupgrade) {
 					continue;
 				}
+				
 				$count++;
 				if ($count%10==0 && $count!=count($val))
 				output_notl("`6$count...");

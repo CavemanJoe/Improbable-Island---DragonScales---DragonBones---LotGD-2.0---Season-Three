@@ -53,7 +53,7 @@ function commentarycommands_flavour_dohook($hookname,$args){
 				$args['processed']=1;
 			}
 			if (($args['section']=="village-Kittymorph_aux" || $args['section']=="village-Kittymorph") && (substr_count($args['command'],"MAIKO") || substr_count($args['command'],"COOKERY"))){
-				output("`c`2You look over towards Maiko's Cookery Academy.  After a few moments, Maiko herself appears at a window.  She catches your eye and waves to you, before closing the blinds.  Moments later, you hear a muffled iBOOM-ch-KA`i from within, followed by a heavy thump, and some low moans.  Clearly Maiko is in the middle of a class.`0`c`n");
+				output("`c`2You look over towards Maiko's Cookery Academy.  After a few moments, Maiko herself appears at a window.  She catches your eye and waves to you, before closing the blinds.  Moments later, you hear a muffled `iBOOM-ch-KA`i from within, followed by a heavy thump, and some low moans.  Clearly Maiko is in the middle of a class.`0`c`n");
 				$args['processed']=1;
 			}
 			if (($args['section']=="village_aux" || $args['section']=="village") && substr_count($args['command'],"ROCK")){

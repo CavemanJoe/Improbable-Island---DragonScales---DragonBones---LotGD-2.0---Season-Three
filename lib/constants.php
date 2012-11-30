@@ -84,4 +84,6 @@ myDefine("MODULE_VERSION_TOO_LOW",16);
 myDefine("MODULE_ACTIVE",32);
 myDefine("MODULE_INJECTED",64);
 
+//Boss Name, added in version 2.3.0
+myDefine("BOSS_NAME","The Green Dragon")
 ?>

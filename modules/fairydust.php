@@ -15,7 +15,7 @@ function fairydust_getmoduleinfo(){
 			"buff"=>"Does it give you a buff?,bool|1",
 			"carrydk"=>"Do max hitpoints gained carry across DKs?,bool|1",
 			"hptoaward"=>"How many HP are given by the fairy?,range,1,5,1|1",
-			"fftoaward"=>"How many FFs are given by the fairy?,range,1,5,1|1",
+			"stamtoaward"=>"How much stamina is given by the fairy in percent?,range,1,5,1|1",
 		),
 		"prefs"=>array(
 			"Fairy Dust User Preferences,title",
@@ -101,10 +101,10 @@ function fairydust_run(){
 		debuglog("used Fairy Dust");
 		switch(e_rand(1,7)){
 		case 1:
-			$extra = get_module_setting("fftoaward");
-			if ($extra == 1) output("You receive an extra forest fight!");
-			else output("You receive %s extra forest fights!", $extra);
-			$session['user']['turns'] += $extra;
+			$extra = get_module_setting("stamtoaward");
+			require_once("lib/stamina/stamina");
+			addstamina($extra*1000);
+			output("You gain %s%% stamina!",$extra);
 			break;
 		case 2:
 		case 3:

@@ -6,7 +6,7 @@ function iitemcrates_getmoduleinfo(){
 		"name"=>"IItems - Crates on World Map",
 		"author"=>"Dan Hall",
 		"version"=>"2009-09-27",
-		"category"=>"Iitems",
+		"category"=>"IItems",
 		"download"=>"",
 		"settings"=>array(
 			"crates"=>"IItem Crates available to find,viewonly|array()",

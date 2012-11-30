@@ -7,17 +7,16 @@
  * so that users know some details about
  * the server.
  * 
- * @copyright Copyright © 2002-2005, Eric Stevens & JT Traub, © 2006-2007, Dragonprime Development Team
- * @version Lotgd 1.1.1 DragonPrime Edition
+ * @copyright Copyright Â© 2002-2005, Eric Stevens & JT Traub, Â© 2006-2009, Dragonprime Development Team
+ * @version Lotgd 1.1.2 DragonPrime Edition
  * @package Core
  * @subpackage Library
  * @license http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode
  */
-$r=httpget('r');
 addnav("About LoGD");
-addnav("About LoGD","about.php?r=".$r);
-addnav("Module Info","about.php?op=listmodules&r=".$r);
-addnav("License Info", "about.php?op=license&r=".$r);
+addnav("About LoGD","about.php");
+addnav("Module Info","about.php?op=listmodules");
+addnav("License Info", "about.php?op=license");
 $setup = array(
 	"Game Setup,title",
 	"pvp"=>"Enable Slay Other Players,viewonly",

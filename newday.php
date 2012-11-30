@@ -8,6 +8,7 @@ require_once("lib/sanitize.php");
 require_once("lib/buffs.php");
 
 tlschema("newday");
+//mass_module_prepare(array("newday-intercept", "newday"));
 modulehook("newday-intercept",array());
 
 /***************
@@ -41,14 +42,14 @@ if ((count($session['user']['dragonpoints']) <
 
 $labels = array(
 		"hp"=>"Max Hitpoints + 5",
-		// "ff"=>"Forest Fights + 1",
+		"ff"=>"Forest Fights + 1",
 		"at"=>"Attack + 1",
 		"de"=>"Defense + 1",
 		"unknown"=>"Unknown Spends (contact an admin to investigate!)",
 );
 $canbuy = array(
 		"hp"=>1,
-		// "ff"=>1,
+		"ff"=>1,
 		"at"=>1,
 		"de"=>1,
 		"unknown"=>0,
@@ -104,7 +105,7 @@ if ($dp < $dkills) {
 }else{
 	page_header("It is a new day!");
 	rawoutput("<font size='+1'>");
-	output("`c`b`3It is a New Day!`0`b`c");
+	output("`c`b`#It is a New Day!`0`b`c");
 	rawoutput("</font>");
 	$resurrection = httpget('resurrection');
 
@@ -115,17 +116,10 @@ if ($dp < $dkills) {
 		invalidatedatacache("list.php-warsonline");
 	}
 	$session['user']['age']++;
-	if ($session['user']['age']==1 && !$session['user']['dragonkills']){
-		$subj = "Welcome to the Island!";
-		$body = "If you have any questions that aren't answered in Basic Training, feel free to ask folks in the Banter channel for help - everybody's really friendly here.`n`nTo keep the Island running fast, characters are deleted automatically if they're left to gather dust - so please, remember to sign into your character every now and then.`n`nCharacters who have never earned any experience points will be erased if they haven't logged in for seven days.`nCharacters who have not reached level two will be erased if they don't log in for thirty days.`nCharacters who have reached level two at least once will expire after ninety days of inactivity.`n`nIf you anticipate not being around a computer for three months (it happens - extended holidays, military service, and so on), have a look in the Hunter's Lodge for a permanent account option.`n`nThanks for reading, and good luck!";
-		require_once "lib/systemmail.php";
-		systemmail($session['user']['acctid'],$subj,$body);
-	}
-	
 	$session['user']['seenmaster']=0;
 	output("You open your eyes to discover that a new day has been bestowed upon you. It is day number `^%s.`0",$session['user']['age']);
 	output("You feel refreshed enough to take on the world!`n");
-	// output("`2Turns for today set to `^%s`2.`n",$turnsperday);
+	output("`2Turns for today set to `^%s`2.`n",$turnsperday);
 
 	$turnstoday = "Base: $turnsperday";
 	$args = modulehook("pre-newday",
@@ -186,10 +180,10 @@ if ($dp < $dkills) {
 			$buff['schema']="mounts";
 		apply_buff('mount',$buff);
 	}
-	// if ($dkff>0) {
-		// output("`n`2You gain `^%s`2 forest %s from spent dragon points!",
-				// $dkff, translate_inline($dkff == 1?"fight":"fights"));
-	// }
+	if ($dkff>0) {
+		output("`n`2You gain `^%s`2 forest %s from spent dragon points!",
+				$dkff, translate_inline($dkff == 1?"fight":"fights"));
+	}
 	$r1 = e_rand(-1,1);
 	$r2 = e_rand(-1,1);
 	$spirits = $r1+$r2;
@@ -213,21 +207,26 @@ if ($dp < $dkills) {
 	$sp = array((-6)=>"Resurrected", (-2)=>"Very Low", (-1)=>"Low",
 			(0)=>"Normal", 1=>"High", 2=>"Very High");
 	$sp = translate_inline($sp);
-	// output("`n`2You are in `^%s`2 spirits today!`n",$sp[$spirits]);
-	if (abs($spirits)>0){
+	output("`n`2You are in `^%s`2 spirits today!`n",$sp[$spirits]);
+	/*if (abs($spirits)>0){
 		if($resurrectionturns>0){
 			$gain=translate_inline("gain");
 		}else{
 			$gain=translate_inline("lose");
 		}
 		$sff = abs($resurrectionturns);
-		// output("`2As a result, you `^%s %s forest %s`2 for today!`n",
-				// $gain, $sff, translate_inline($sff==1?"fight":"fights"));
-	}
+		output("`2As a result, you `^%s %s forest %s`2 for today!`n",
+				$gain, $sff, translate_inline($sff==1?"fight":"fights"));
+	}*/
+
+	require_once("lib/stamina/stamina.php");
+	output("`nGetting ready for stamina processing");
+	stamina_process_newday();
+	output($session['user']['stamina_amount']);
+
 	$rp = $session['user']['restorepage'];
 	$x = max(strrpos("&",$rp),strrpos("?",$rp));
 	if ($x>0) $rp = substr($rp,0,$x);
-	addnav("Carry On");
 	if (substr($rp,0,10)=="badnav.php"){
 		addnav("Continue","news.php");
 	}else{
@@ -243,7 +242,7 @@ if ($dp < $dkills) {
 		debuglog(($nbgold >= 0 ? "earned " : "paid ") . abs($nbgold) . " gold in interest");
 	}
 	$turnstoday .= ", Spirits: $resurrectionturns, DK: $dkff";
-	$session['user']['turns']=$turnsperday;
+	$session['user']['turns']=$turnsperday+$resurrectionturns+$dkff;
 	$session['user']['hitpoints'] = $session['user']['maxhitpoints'];
 	$session['user']['spirits'] = $spirits;
 	if ($resurrection != "true")
@@ -292,6 +291,8 @@ if ($dp < $dkills) {
 		$turnstoday.=", Haunted: -1";
 	}
 
+	
+
 	require_once("lib/extended-battle.php");
 	unsuspend_companions("allowinshades");
 
@@ -319,16 +320,18 @@ if ($dp < $dkills) {
                 db_query($sql);
 			}
 		}
+
 	}
 	
+	
+
 	$args = modulehook("newday",
 			array("resurrection"=>$resurrection, "turnstoday"=>$turnstoday));
+	
 	$turnstoday = $args['turnstoday'];
+	
 	debuglog("New Day Turns: $turnstoday");
 
 }
-
-$session['user']['sentnotice']=0;
-
 page_footer();
 ?>

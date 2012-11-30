@@ -12,7 +12,7 @@
 // 		name at the end indicating which parts are copyright by you.
 // Eg:
 // Copyright 2002-2004, Game: Eric Stevens & JT Traub, modified by Your Name
-$copyright = "Game Design and Code: Copyright &copy; 2002-2005, Eric Stevens & JT Traub, &copy; 2006-2007, Dragonprime Development Team";
+$copyright = "Game Design and Code: Copyright &copy; 2002-2005, Eric Stevens & JT Traub, &copy; 2006-2007, Dragonprime Development Team, &copy; 2008-2011 Dan Hall/Caveman Joe, &copy; 2012 Cousjava";
 // **** NOTICE ****
 // This series of scripts (collectively known as Legend of the Green Dragon
 // or LotGD) is copyright as per above.   Read the above paragraph for
@@ -36,7 +36,7 @@ $license = "\n<!-- Creative Commons License -->\n<a rel='license' href='http://c
 // work.  This license text may not be removed nor altered in any way.
 // Please see the file LICENSE for a full textual description of the license.
 
-$logd_version = "1.1.1 Dragonprime Edition";
+$logd_version = "2.2.0 Elvenhall Edition";
 
 //start the gzip compression
 //ob_start('ob_gzhandler');
@@ -44,7 +44,7 @@ $logd_version = "1.1.1 Dragonprime Edition";
 // Include some commonly needed and useful routines
 require_once("lib/local_config.php");
 require_once("lib/dbwrapper.php");
-//require_once("lib/holiday_texts.php");
+require_once("lib/holiday_texts.php");
 require_once("lib/sanitize.php");
 require_once("lib/constants.php");
 require_once("lib/datacache.php");
@@ -58,7 +58,6 @@ require_once("lib/tempstat.php");
 require_once("lib/su_access.php");
 require_once("lib/datetime.php");
 require_once("lib/translator.php");
-require_once("lib/items.php");
 
 if(!function_exists("file_get_contents")) {
      function file_get_contents($file) {
@@ -132,10 +131,10 @@ if ($link===false){
  	if (!defined("IS_INSTALLER")){
 		echo $out;
 		// Ignore this bit.  It's only really for Eric's server
-		// if (file_exists("lib/smsnotify.php")) {
-			// $smsmessage = "No DB Server: " . db_error();
-			// require_once("lib/smsnotify.php");
-		// }
+		if (file_exists("lib/smsnotify.php")) {
+			$smsmessage = "No DB Server: " . db_error();
+			require_once("lib/smsnotify.php");
+		}
 		// And tell the user it died.  No translation here, we need the DB for
 		// translation.
 	 	if (!defined("DB_NODB")) define("DB_NODB",true);
@@ -192,12 +191,11 @@ php_generic_environment();
 do_forced_nav(ALLOW_ANONYMOUS,OVERRIDE_FORCED_NAV);
 
 $script = substr($SCRIPT_NAME,0,strrpos($SCRIPT_NAME,"."));
-// Commented out because we now cache moduleprefs, and this saves us a db query
-// mass_module_prepare(array(
-	// 'template-header','template-footer','template-statstart','template-stathead','template-statrow','template-statbuff','template-statend',
-	// 'template-navhead','template-navitem','template-petitioncount','template-adwrapper','template-login','template-loginfull','everyhit',
-	// "header-$script","footer-$script",'holiday','collapse{','collapse-nav{','}collapse-nav','}collapse','charstats'
-	// ));
+mass_module_prepare(array(
+	'template-header','template-footer','template-statstart','template-stathead','template-statrow','template-statbuff','template-statend',
+	'template-navhead','template-navitem','template-petitioncount','template-adwrapper','template-login','template-loginfull','everyhit',
+	"header-$script","footer-$script",'holiday','collapse{','collapse-nav{','}collapse-nav','}collapse','charstats'
+	));
 
 // In the event of redirects, we want to have a version of their session we
 // can revert to:
@@ -207,7 +205,7 @@ if (!$session['user']['loggedin']) $session['loggedin'] = false;
 else $session['loggedin'] = true;
 
 if ($session['user']['loggedin']!=true && !ALLOW_ANONYMOUS){
-	redirect("login.php?op=logout","Redirected in common.php back to the logout screen because the player is not logged in.");
+	redirect("login.php?op=logout");
 }
 
 if (!isset($session['user']['gentime'])) $session['user']['gentime'] = 0;
@@ -259,47 +257,45 @@ if (strlen($_COOKIE['lgi'])<32){
 }else{
 	$session['user']['uniqueid']=$_COOKIE['lgi'];
 }
+$url = "http://".$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']);
+$url = substr($url,0,strlen($url)-1);
+$urlport = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].dirname($_SERVER['REQUEST_URI']);
+$urlport = substr($urlport,0,strlen($urlport)-1);
 
-// Commented out because hell, there are services out there that do a much better job of sorting referers
-// $url = "http://".$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']);
-// $url = substr($url,0,strlen($url)-1);
-// $urlport = "http://".$_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].dirname($_SERVER['REQUEST_URI']);
-// $urlport = substr($urlport,0,strlen($urlport)-1);
+if (!isset($_SERVER['HTTP_REFERER'])) $_SERVER['HTTP_REFERER'] = "";
 
-// if (!isset($_SERVER['HTTP_REFERER'])) $_SERVER['HTTP_REFERER'] = "";
+if (
+	substr($_SERVER['HTTP_REFERER'],0,strlen($url))==$url ||
+	substr($_SERVER['HTTP_REFERER'],0,strlen($urlport))==$urlport ||
+	$_SERVER['HTTP_REFERER']=="" ||
+	strtolower(substr($_SERVER['HTTP_REFERER'],0,7))!="http://"
+	){
 
-// if (
-	// substr($_SERVER['HTTP_REFERER'],0,strlen($url))==$url ||
-	// substr($_SERVER['HTTP_REFERER'],0,strlen($urlport))==$urlport ||
-	// $_SERVER['HTTP_REFERER']=="" ||
-	// strtolower(substr($_SERVER['HTTP_REFERER'],0,7))!="http://"
-	// ){
+}else{
+	$site = str_replace("http://","",$_SERVER['HTTP_REFERER']);
+	if (strpos($site,"/"))
+		$site = substr($site,0,strpos($site,"/"));
+	$host = str_replace(":80","",$_SERVER['HTTP_HOST']);
 
-// }else{
-	// $site = str_replace("http://","",$_SERVER['HTTP_REFERER']);
-	// if (strpos($site,"/"))
-		// $site = substr($site,0,strpos($site,"/"));
-	// $host = str_replace(":80","",$_SERVER['HTTP_HOST']);
-
-	// if ($site != $host){
-		// $sql = "SELECT * FROM " . db_prefix("referers") . " WHERE uri='{$_SERVER['HTTP_REFERER']}'";
-		// $result = db_query($sql);
-		// $row = db_fetch_assoc($result);
-		// db_free_result($result);
-		// if ($row['refererid']>""){
-			// $sql = "UPDATE " . db_prefix("referers") . " SET count=count+1,last='".date("Y-m-d H:i:s")."',site='".addslashes($site)."',dest='".addslashes($host)."/".addslashes($REQUEST_URI)."',ip='{$_SERVER['REMOTE_ADDR']}' WHERE refererid='{$row['refererid']}'";
-		// }else{
-			// $sql = "INSERT INTO " . db_prefix("referers") . " (uri,count,last,site,dest,ip) VALUES ('{$_SERVER['HTTP_REFERER']}',1,'".date("Y-m-d H:i:s")."','".addslashes($site)."','".addslashes($host)."/".addslashes($REQUEST_URI)."','{$_SERVER['REMOTE_ADDR']}')";
-			// if (e_rand(1,100)==2){
-				// $timestamp = date("Y-m-d H:i:s",strtotime("-1 month"));
-				// db_query("DELETE FROM ".db_prefix("referers")." WHERE last < '$timestamp' LIMIT 300");
-				// require_once("lib/gamelog.php");
-				// gamelog("Deleted ".db_affected_rows()." records from ".db_prefix("referers")." older than $timestamp.","maintenance");
-			// }
-		// }
-		// db_query($sql);
-	// }
-// }
+	if ($site != $host){
+		$sql = "SELECT * FROM " . db_prefix("referers") . " WHERE uri='{$_SERVER['HTTP_REFERER']}'";
+		$result = db_query($sql);
+		$row = db_fetch_assoc($result);
+		db_free_result($result);
+		if ($row['refererid']>""){
+			$sql = "UPDATE " . db_prefix("referers") . " SET count=count+1,last='".date("Y-m-d H:i:s")."',site='".addslashes($site)."',dest='".addslashes($host)."/".addslashes($REQUEST_URI)."',ip='{$_SERVER['REMOTE_ADDR']}' WHERE refererid='{$row['refererid']}'";
+		}else{
+			$sql = "INSERT INTO " . db_prefix("referers") . " (uri,count,last,site,dest,ip) VALUES ('{$_SERVER['HTTP_REFERER']}',1,'".date("Y-m-d H:i:s")."','".addslashes($site)."','".addslashes($host)."/".addslashes($REQUEST_URI)."','{$_SERVER['REMOTE_ADDR']}')";
+			if (e_rand(1,100)==2){
+				$timestamp = date("Y-m-d H:i:s",strtotime("-1 month"));
+				db_query("DELETE FROM ".db_prefix("referers")." WHERE last < '$timestamp' LIMIT 300");
+				require_once("lib/gamelog.php");
+				gamelog("Deleted ".db_affected_rows()." records from ".db_prefix("referers")." older than $timestamp.","maintenance");
+			}
+		}
+		db_query($sql);
+	}
+}
 
 if (!isset($session['user']['superuser'])) $session['user']['superuser']=0;
 
@@ -345,10 +341,9 @@ if(is_array($temp_comp)) {
 }
 unset($temp_comp);
 
-// Commented out 'cause we're not using this...
-// $beta = getsetting("beta", 0);
-// if (!$beta && getsetting("betaperplayer", 1) == 1)
-	// $beta = $session['user']['beta'];
+$beta = getsetting("beta", 0);
+if (!$beta && getsetting("betaperplayer", 1) == 1)
+	$beta = $session['user']['beta'];
 
 $sql = "SELECT * FROM " . db_prefix("clans") . " WHERE clanid='{$session['user']['clanid']}'";
 $result = db_query_cached($sql, "clandata-{$session['user']['clanid']}", 3600);
@@ -378,20 +373,6 @@ require_once("lib/errorhandler.php");
 modulehook("everyhit");
 if ($session['user']['loggedin']) {
 	modulehook("everyhit-loggedin");
-}
-
-// This bit of code checks the current system load, so that high-intensity operations can be disabled or postponed during times of exceptionally high load.  Since checking system load can in itself be resource intensive, we'll only check system load once per thirty seconds, checking it against time retrieved from the database at the first load of getsetting().
-global $fiveminuteload;
-$lastcheck = getsetting("systemload_lastcheck",0);
-$fiveminuteload = getsetting("systemload_lastload",0);
-$currenttime = time();
-if ($currenttime - $lastcheck > 30){
-	$load = exec("uptime");
-	$load = split("load average:", $load);
-	$load = split(", ", $load[1]);
-	$fiveminuteload = $load[1];
-	savesetting("systemload_lastload",$fiveminuteload);
-	savesetting("systemload_lastcheck",$currenttime);
 }
 
 ?>

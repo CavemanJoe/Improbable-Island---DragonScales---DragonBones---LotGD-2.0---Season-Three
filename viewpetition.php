@@ -20,7 +20,7 @@ $statuses=array(
 	0=>"`bUnhandled`b",
 	1=>"In-Progress",
 	6=>"`%Bug`0",
-	7=>"`3Awaiting Points`0",
+	7=>"`#Awaiting Points`0",
 	3=>"`!Informational`0",
 	2=>"`iClosed`i",
 	);
@@ -98,7 +98,7 @@ if ($op==""){
 		addnav("Page");
 		for ($x=1; $x <= $totalpages; $x++){
 			if ($page == $x){
-				addnav(array("`b`3Page %s`0`b", $x),"viewpetition.php?page=$x");
+				addnav(array("`b`#Page %s`0`b", $x),"viewpetition.php?page=$x");
 			}else{
 				addnav(array("Page %s", $x),"viewpetition.php?page=$x");
 			}
@@ -176,7 +176,7 @@ if ($op==""){
 		output_notl("<a href='viewpetition.php?setstat=4&id={$row['petitionid']}'>`^E`0</a>",true);
 		//output_notl("<a href='viewpetition.php?setstat=5&id={$row['petitionid']}'>`\$T`0</a>/",true);
 		//output_notl("<a href='viewpetition.php?setstat=6&id={$row['petitionid']}'>`%B`0</a>/",true);
-		//output_notl("<a href='viewpetition.php?setstat=7&id={$row['petitionid']}'>`3A`0</a>",true);
+		//output_notl("<a href='viewpetition.php?setstat=7&id={$row['petitionid']}'>`#A`0</a>",true);
 		rawoutput(" ]</td>");
 		addnav("","viewpetition.php?op=view&id={$row['petitionid']}");
 		addnav("","viewpetition.php?setstat=2&id={$row['petitionid']}");
@@ -203,7 +203,7 @@ if ($op==""){
 		output_notl("`7%s`0", reltime(strtotime($row['date'])));
 		rawoutput("</td>");
 		rawoutput("<td>");
-		output_notl("`3%s`0", $counter['c']);
+		output_notl("`#%s`0", $counter['c']);
 		rawoutput("</td>");
 		rawoutput("<td>");
 		output_notl("`^%s`0", $row['closer']);
@@ -228,7 +228,7 @@ if ($op==""){
 	rawoutput("</li><li>");
 	output("`%B = Bug/Suggestion`0 petitions are petitions that detail mistakes, bugs, misspellings, or suggestions for the game.");
 	rawoutput("</li><li>");
-	output("`3A = Awaiting Points`0 stuff wot is dun and needz teh points added (this is mostly for lotgd.net).");
+	output("`#A = Awaiting Points`0 stuff wot is dun and needz teh points added (this is mostly for lotgd.net).");
 	rawoutput("</li><li>");
 	output("`!I = Informational`0 petitions are just around for others to view, either nothing needed to be done with them, or their issue has been dealt with, but you feel other admins could benefit from reading it.");
 	rawoutput("</li><li>");
@@ -288,7 +288,7 @@ if ($op==""){
 	output("`@Status: %s`n", $statuses[$row['status']]);
 	if($row['closedate']) output("`@Last Update: `^%s`@ on `^%s (%s)`n", $row['closer'], $row['closedate'],  reltime(strtotime($row['closedate'])));
 	output("`@Body:`^`n");
-	output("`\$[ipaddress] `^= `3%s`^`n", $row['ip']);
+	output("`\$[ipaddress] `^= `#%s`^`n", $row['ip']);
 	$body = htmlentities(stripslashes($row['body']), ENT_COMPAT, getsetting("charset", "ISO-8859-1"));
 	$body = preg_replace("'([[:alnum:]_.-]+[@][[:alnum:]_.-]{2,}([.][[:alnum:]_.-]{2,})+)'i","<a href='mailto:\\1?subject=RE: $peti&body=".str_replace("+"," ",URLEncode("\n\n----- $yourpeti -----\n".$row['body']))."'>\\1</a>",$body);
 	$body = preg_replace("'([\\[][[:alnum:]_.-]+[\\]])'i","<span class='colLtRed'>\\1</span>",$body);

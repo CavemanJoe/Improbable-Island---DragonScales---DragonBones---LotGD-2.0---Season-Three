@@ -37,8 +37,7 @@ function clanmembercap_uninstall(){
 function clanmembercap_dohook($hookname,$args){
     global $session;
     $to=httpget('to');
-    $op=httpget('op');
-	
+    $op=httpget('op');	
 	switch($hookname){
 		case "header-clan":
 			if($op=="apply" && $to>0){

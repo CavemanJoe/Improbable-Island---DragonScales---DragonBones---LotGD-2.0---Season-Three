@@ -3,7 +3,7 @@
 // translator ready
 // mail ready
 function reltime($date,$short=true){
-	$now = time();
+	$now = strtotime("now");
 	$x = abs($now - $date);
 	$d = (int)($x/86400);
 	$x = $x % 86400;
@@ -14,7 +14,7 @@ function reltime($date,$short=true){
 	$s = (int)($x);
 	if ($short){
 		$array=array("d"=>"d","h"=>"h","m"=>"m","s"=>"s");
-		//$array=translate_inline($array,"datetime");
+		$array=translate_inline($array,"datetime");
 		if ($d > 0)
 			$o = $d.$array['d'].($h>0?$h.$array['h']:"");
 		elseif ($h > 0)
@@ -24,35 +24,6 @@ function reltime($date,$short=true){
 		else
 			$o = $s.$array['s'];
 
-		$o = "";
-		if ($d<10 && $d>0){
-			$o.="`50$d"."`0d";
-		} else if ($d>0){
-			$o.="`5".$d."`0d";
-		}
-		$o.="`6";
-		if ($h<10 && $h>0){
-			$o.="`60$h"."`0h";
-		} else if ($h>0){
-			$o.="`6".$h."`0h";
-		}
-		if (!$d){
-			if ($m<10){
-				$o.="`30$m"."`0m";
-			} else if ($m>0){
-				$o.="`3".$m."`0m";
-			}
-		}
-		if (!$h){
-			if ($s<10){
-				$o.="`40$s"."`0s";
-			} else {
-				$o.="`4".$s."`0s";
-			}
-		}
-		$o.="`0";
-		
-			
 /*		if ($d > 0)
 			$o = sprintf("%3s%2s",$d.$array['d'],($h>0?$h.$array['h']:""));
 		elseif ($h > 0)
@@ -64,7 +35,7 @@ function reltime($date,$short=true){
 		$o = str_replace(" ", "&nbsp;", $o);*/
 	}else{
 		$array=array("day"=>"day","days"=>"days","hour"=>"hour","hours"=>"hours","minute"=>"minute","minutes"=>"minutes","second"=>"second","seconds"=>"second");
-		//$array=translate_inline($array,"datetime"); //translate it... tl-ready now
+		$array=translate_inline($array,"datetime"); //translate it... tl-ready now
 		if ($d > 0)
 			$o = "$d ".($d>1?$array['days']:$array['day']).($h>0?", $h ".($h>1?$array['hours']:$array['hour']):"");
 		elseif ($h > 0)
@@ -105,8 +76,7 @@ function checkday() {
 			$session['user']['restorepage']=$REQUEST_URI;
 			$session['allowednavs']=array();
 			addnav("","newday.php");
-			$trace = debug_backtrace();
-			redirect("newday.php","New Day, checkday called from ".$trace[0]['file'].", line ".$trace[0]['line']);
+			redirect("newday.php");
 		}
 	}
 }

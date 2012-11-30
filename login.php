@@ -17,7 +17,7 @@ $vname = getsetting("villagename", LOCATION_FIELDS);
 
 if ($name!=""){
 	if ($session['loggedin']){
-		redirect("badnav.php","Redirected to badnav from login page");
+		redirect("badnav.php");
 	}else{
 		$password = httppost('password');
 		$password = stripslashes($password);
@@ -92,13 +92,14 @@ if ($name!=""){
 				if ($session['user']['location']==$iname)
 					$session['user']['location']=$vname;
 
+				modulehook("login-redirect");
 				if ($session['user']['restorepage']>""){
-					redirect($session['user']['restorepage'],"Redirected to session-user-restorepage (restorepage is ".$session['user']['restorepage']." from login");
+					redirect($session['user']['restorepage']);
 				}else{
 					if ($location == $iname) {
-						redirect("inn.php?op=strolldown","redirected to Inn from Login");
+						redirect("inn.php?op=strolldown");
 					}else{
-						redirect("news.php","Redirected to News from Login");
+						redirect("news.php");
 					}
 				}
 			}
@@ -153,7 +154,7 @@ if ($name!=""){
 					}//end if($c>=10)
 				}//end while
 			}//end if (db_num_rows)
-			redirect("index.php","Redirected to index.php from login");
+			redirect("index.php");
 		}
 	}
 }else if ($op=="logout"){
@@ -179,10 +180,10 @@ if ($name!=""){
 		saveuser();
 	}
 	$session=array();
-	redirect("index.php","Logged out");
+	redirect("index.php");
 }
 // If you enter an empty username, don't just say oops.. do something useful.
 $session=array();
 $session['message']=translate_inline("`4Error, your login was incorrect`0");
-redirect("index.php","Empty username");
+redirect("index.php");
 ?>

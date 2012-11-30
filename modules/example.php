@@ -41,7 +41,7 @@ function example_getmoduleinfo(){
 
 function example_install(){
 	module_addhook("newday");
-	module_addhook("labs-nh");
+	module_addhook("labs-ic");
     return true;
 }
 
@@ -65,7 +65,7 @@ function example_dohook($hookname,$args){
 		//It's the start of a new day, so the player hasn't played today.  So, we'll set that modulepref (the first argument) to zero (the second argument).  It's pretty straightforward!
 		break;
 		//We're not talking about what to do at a new day any more!
-	case "labs-nh":
+	case "labs-ic":
 		//Now we're talking about what to do in the Player-Created Modules section!
 		//The player's in the right place for this module to run, so let's add a link to run our module.  The first argument is the text to show, the second argument is the link.
 		addnav("Three-Door Shuffle","runmodule.php?module=example");
@@ -92,7 +92,12 @@ function example_run() {
 	switch (httpget('op')){
 		default:
 			//We're talking now about an instance where there is no 'op' in the page's URL.  This must mean that the player's on the first page of the module.  let's set the scene!
-			//Our first output statement!  This is like echo, but it's actually a special function built into Legend of the Green Dragon which will put in our colour codes and make sure we're not doing anything silly.  
+			//Our first output statement!  This is like echo, but it's actually a special function built into Legend of the Green Dragon which will put in our colour codes and make sure we're not doing anything silly. 
+			
+			//testing gender prefs
+			$gendertest=get_module_pref("user_Gender","gender");
+			output("You are `N. Are you `o because you should be %s`n`n",$gendertest);
+ 
 			output("`0Some old Joker geezer shows you three doors, and says that there's something nice or nasty behind each one.  Whatever, we'll put some proper flavour text in here later.  This module would `inever`i have gotten past CavemanJoe with flavour text this lame.  God, he's such an asshole.  Good thing he won't be reading this.`n`nAnyway, we're using tilde-n for new lines.  Just testin' that.  And when we want to output something in quotation marks, we have to escape it with a slash, like this:`n`n\"`3Come and look in my doors!`0\" shouts the old geezer.  Traditionally characters' colour codes will change only inside their quotation marks, descriptive text will usually be black, and the player's text will usually have colourcode #.  So, you've got three doors in front of you; now whatcha gonna do about it?  HUH?`n`n");
 			//Now, let's see how to add in a variable in an output statement... Damn, I'm making this sound a lot more complicated than it actually is.  Just read it, it'll be quicker than me trying to explain it.  We use %s as placeholders for our variables.
 			output("You've played a total of %s times.`n`n",$playedtotal);

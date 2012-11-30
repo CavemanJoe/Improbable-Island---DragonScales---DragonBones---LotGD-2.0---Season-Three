@@ -13,7 +13,7 @@ function show_enemies($enemies) {
 	global $enemycounter, $session;
 	foreach ($enemies as $index => $badguy) {
 		if ((isset($badguy['istarget']) && $badguy['istarget'] == true) && $enemycounter > 1)
-			$ccode = "`3";
+			$ccode = "`#";
 		else
 			$ccode = "`2";
 		if (isset($badguy['hidehitpoints']) && $badguy['hidehitpoints'] == true) {
@@ -246,7 +246,7 @@ function report_companion_move($companion, $activate="fight") {
 				if ($mycompanion['hitpoints'] >= $mycompanion['maxhitpoints'] || $healed || (isset($companion['cannotbehealed']) && $companion['cannotbehealed'] == true)) {
 					continue;
 				} else {
-					$hptoheal = min($companion['abilities']['heal'], $mycompanion['maxhitpoints'] - $mycompanion['hitpoints]']);
+					$hptoheal = min($companion['abilities']['heal'], $mycompanion['maxhitpoints'] - $mycompanion['hitpoints']);
 					$mycompanion['hitpoints'] += $hptoheal;
 					$companion['used'] = true;
 					$msg = $companion['healcompanionmsg'];
@@ -275,7 +275,7 @@ function report_companion_move($companion, $activate="fight") {
 							if ($mycompanion['hitpoints'] >= $mycompanion['maxhitpoints'] || $healed) {
 								continue;
 							} else {
-								$hptoheal = min($companion['abilities']['heal'], $mycompanion['maxhitpoints'] - $mycompanion['hitpoints]']);
+								$hptoheal = min($companion['abilities']['heal'], $mycompanion['maxhitpoints'] - $mycompanion['hitpoints']);
 								$mycompanion['hitpoints'] += $hptoheal;
 								$companion['used'] = true;
 								$msg = $companion['healcompanionmsg'];

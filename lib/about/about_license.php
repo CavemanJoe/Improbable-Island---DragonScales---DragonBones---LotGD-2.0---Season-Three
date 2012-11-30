@@ -6,17 +6,16 @@
  * and is MightyE explaining the new license
  * in an easy to understand way.
  * 
- * @copyright Copyright © 2002-2005, Eric Stevens & JT Traub, © 2006-2007, Dragonprime Development Team
- * @version Lotgd 1.1.1 DragonPrime Edition
+ * @copyright Copyright Â© 2002-2005, Eric Stevens & JT Traub, Â© 2006-2009, Dragonprime Development Team
+ * @version Lotgd 1.1.2 DragonPrime Edition
  * @package Core
  * @subpackage Library
  * @license http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode
  */
-$r=httpget('r');
 addnav("About LoGD");
-addnav("About LoGD","about.php?r=".$r);
-addnav("Game Setup Info","about.php?op=setup&r=".$r);
-addnav("Module Info","about.php?op=listmodules&r=".$r);
+addnav("About LoGD","about.php");
+addnav("Game Setup Info","about.php?op=setup");
+addnav("Module Info","about.php?op=listmodules");
 output("`@MightyE tells you, \"`2We're going to take a few moments to try and explain this new license and the reasons behind it in plain English.");
 output("The legalese for the license can be found online at <a href='http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode' target='_blank'>http://creativecommons.org/licenses/by-nc-sa/2.0/legalcode</a> and should be read and understood in detail before you use this code.`@\"`n`n", true);
 output("`@\"`2This new license was chosen because of a failing with the GPL.");

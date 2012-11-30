@@ -61,13 +61,13 @@ function racezombie_dohook($hookname,$args){
 				" SET location='" . addslashes($args['new']) .
 				"' WHERE location='" . addslashes($args['old']) . "'";
 			db_query($sql);
-			if (is_module_active("cities")) {
-				$sql = "UPDATE " . db_prefix("module_userprefs") .
-					" SET value='" . addslashes($args['new']) .
-					"' WHERE modulename='cities' AND setting='homecity'" .
-					"AND value='" . addslashes($args['old']) . "'";
-				db_query($sql);
-			}
+			
+			$sql = "UPDATE " . db_prefix("module_userprefs") .
+				" SET value='" . addslashes($args['new']) .
+				"' WHERE modulename='cities' AND setting='homecity'" .
+				"AND value='" . addslashes($args['old']) . "'";
+			db_query($sql);
+			
 		}
 		break;
 	case "chooserace":
@@ -80,11 +80,11 @@ function racezombie_dohook($hookname,$args){
 	case "setrace":
 		if ($session['user']['race']==$race){
 			output("`0The hairy man nods.  \"`6All right, all right, a simple \"I'm a zombie\" would have done.`0\"  He looks down and writes in his ledger.  \"`6Zed, oh, em, bee, why.  Zombie.  There.`0\"`n`nYou give the man a sheepish look.  \"`#I didn't actually mean to say that.  It just slipped out.`0\"`n`nHe smiles.  \"`6That's okay, I know how it is.  So, how did you get here?`0\"`n`n\"`#As far as I know, it was on a jet PLAAAAAAAAINS oh God!`0\"  You clap your hands over your mouth.`n`nThe gatekeeper chuckles.  \"`6Works every time.`0\"`n`nYou scowl at him.  \"`#Get on with the form.`0\"`n`n\"`6So, have you been a zombie all your life?`0\"`n`nYou pause.  \"`#I think so.  I mean...  Growing up, I think I played with the other zombie kids in zombie school, but...  Hmm.  It's amazing that there would have `ibeen`i a zombie school in the first place.`0\"  You give the man a very serious look.  \"`#This really doesn't make much sense at all, does it?`0\"`n`n\"`6Few things do around here, sunshine.  Do yourself a favour and don't think about it too much.  Unless you want your head to explode.`0\"`n`nThe word rushes up your throat like vomit.  \"`#BRAAAAAAAAAINS!`0\"`n`n\"`6Yes, that's right, brains.  Lovely juicy brains, splattering around all over the shop.  Yum!`0\"`n`nYou scowl at the gatekeeper while convulsing again, your mouth operating of its own accord.  \"`#BRAAAAAAAAAINS you know, that's really not funny.`0\"`n`n\"`6I know.  I shouldn't make fun.  It's a tough life for zombies.  You have it very hard, don't you?  Bits falling off all the time?  Uncontrollable larynx and primeval, base reactions if something sets you off?`0\"`n`n\"`#That's not true.`0\"  You shoot the gatekeeper a withering glare.  \"`#You've just been perpetuating the tired old Zombie stereotype.  And I, for one, am sick of the constant prejudice that comes from people like you.`0\"`n`n\"`6All right, all right, I meant no offense.  I was just having a little joke.`0\"`n`nGrudgingly, you remember your manners.  \"`#Apology accepted.  I didn't mean to get angry.  It's just hard, you know?`0\"`n`n\"`6I know,`0\" says the gatekeeper with a twinkle in his eye.  \"`6You don't need to explain.`0\"`n`n\"`#EXPLAAAAAAAAAAAAAAAAAAINS!  Oh, `ifuck you`i.`0\"  You storm off towards the gate.`n`nBehind you, the gatekeeper cries \"`6You know what, I think it might rain!`0\"`n`n\"`#RAAAAAAAAAINS!`0\" says your mouth.  \"`3`iFuck you, old man,`i`0\" says your internal monologue.  \"`3`iFuck you and your tasty, tasty brains.`i`0\"");
-			if (is_module_active("cities")) {
-				set_module_pref("homecity",$city,"cities");
-				if ($session['user']['age'] == 0)
-					$session['user']['location']=$city;
-			}
+			
+			set_module_pref("homecity",$city,"cities");
+			if ($session['user']['age'] == 0)
+				$session['user']['location']=$city;
+			
 		}
 		break;
 	case "alternativeresurrect":
@@ -231,16 +231,13 @@ function racezombie_dohook($hookname,$args){
 	break;
 
 	case "validforestloc":
-	case "validlocation":
-		if (is_module_active("cities"))
+	case "validlocation":		
 			$args[$city]="village-$race";
 		break;
-	case "moderate":
-		if (is_module_active("cities")) {
+	case "moderate":		
 			tlschema("commentary");
 			$args["village-$race"]=sprintf_translate("City of %s", $city);
-			tlschema();
-		}
+			tlschema();		
 		break;
 	case "villagetext":
 		racezombie_checkcity();
@@ -331,7 +328,7 @@ function racezombie_checkcity(){
 	$race="Zombie";
 	$city=get_module_setting("villagename");
 
-	if ($session['user']['race']==$race && is_module_active("cities")){
+	if ($session['user']['race']==$race){
 		//if they're this race and their home city isn't right, set it up.
 		if (get_module_pref("homecity","cities")!=$city){ //home city is wrong
 			set_module_pref("homecity",$city,"cities");

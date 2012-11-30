@@ -18,7 +18,7 @@ if ($op=="pay"){
 	if ($session['user']['gold']>=$cost){ // Gunnar Kreitz
 		$session['user']['gold']-=$cost;
 		debuglog("spent $cost gold to speak to the dead");
-		redirect("gypsy.php?op=talk","Gypsy Redirect");
+		redirect("gypsy.php?op=talk");
 	}else{
 		page_header("Gypsy Seer's tent");
 		villagenav();

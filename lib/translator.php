@@ -50,11 +50,20 @@ function translate($indata,$namespace=FALSE){
 	}else{
 		if ($namespace != "notranslate") {
 			if (isset($translation_table[$namespace][$indata])) {
-				//tweak to keep track of most commonly-used translations, for removal and reassignment
-				// $sql = "UPDATE ".db_prefix("translations")." SET version = 'checked' WHERE uri = '$namespace' AND intext='$indata' AND intext != outtext AND version != 'checked'";
-				// db_query($sql);				
 				$outdata = $translation_table[$namespace][$indata];
 				$foundtranslation = true;
+				// Remove this from the untranslated texts table if it is
+				// in there and we are collecting texts
+				// This delete is horrible on very heavily translated games.
+				// It has been requested to be removed.
+				/*
+				if (getsetting("collecttexts", false)) {
+					$sql = "DELETE FROM " . db_prefix("untranslated") .
+						" WHERE intext='" . addslashes($indata) .
+						"' AND language='" . LANGUAGE . "'";
+					db_query($sql);
+				}
+				*/
 			} elseif (getsetting("collecttexts", false)) {
 				$sql = "INSERT IGNORE INTO " .  db_prefix("untranslated") .  " (intext,language,namespace) VALUES ('" .  addslashes($indata) . "', '" . LANGUAGE . "', " .  "'$namespace')";
 				db_query($sql,false);
@@ -144,31 +153,26 @@ function translate_loadnamespace($namespace,$language=false){
 	if ($language===false) $language = LANGUAGE;
 	$page = translator_page($namespace);
 	$uri = translator_uri($namespace);
-	
-	//new routine
-	$out = datacache("translations/translations-".$namespace."-".$language,1200);
-	
-	if (!is_array($out)){
-		if ($page==$uri)
-			$where = "uri = '$page'";
-		else
-			$where = "(uri='$page' OR uri='$uri')";
-		$sql = "
-			SELECT intext,outtext
-			FROM ".db_prefix("translations")."
-			WHERE language='$language'
-				AND $where";
-	/*	debug(nl2br(htmlentities($sql, ENT_COMPAT, getsetting("charset", "ISO-8859-1")))); */
-
+	if ($page==$uri)
+		$where = "uri = '$page'";
+	else
+		$where = "(uri='$page' OR uri='$uri')";
+	$sql = "
+		SELECT intext,outtext
+		FROM ".db_prefix("translations")."
+		WHERE language='$language'
+			AND $where";
+/*	debug(nl2br(htmlentities($sql, ENT_COMPAT, getsetting("charset", "ISO-8859-1")))); */
+	if (!getsetting("cachetranslations",0)) {
 		$result = db_query($sql);
-		$out = array();
-		while ($row = db_fetch_assoc($result)){
-			$out[$row['intext']] = $row['outtext'];
-		}
-		
-		updatedatacache("translations/translations-".$namespace."-".$language,$out);
+	} else {
+		$result = db_query_cached($sql,"translations-".$namespace."-".$language,600);
+		//store it for 10 Minutes, normally you don't need to refresh this often
 	}
-	
+	$out = array();
+	while ($row = db_fetch_assoc($result)){
+		$out[$row['intext']] = $row['outtext'];
+	}
 	return $out;
 }
 

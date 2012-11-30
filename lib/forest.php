@@ -3,21 +3,26 @@
 // translator ready
 // mail ready
 require_once("lib/villagenav.php");
+require_once("lib/stamina/stamina.php");
 
 function forest($noshowmessage=false) {
 	global $session,$playermount;
 	tlschema("forest");
 //	mass_module_prepare(array("forest", "validforestloc"));
 	addnav("Heal");
-	addnav("H?Hospital Tent","healer.php");
+	addnav("H?Healer's Hut","healer.php");
 	addnav("Fight");
-	addnav("L?Look for Something to Kill","forest.php?op=search");
+	$normalcost = stamina_getdisplaycost("Hunting - Normal");
+	$slumcost = stamina_getdisplaycost("Hunting - Easy Fights");
+	$thrillcost = stamina_getdisplaycost("Hunting - Big Trouble");
+	$suicidecost = stamina_getdisplaycost("Hunting - Suicidal");
+	addnav(array("T?Look for Trouble (`Q%s%%`0)", $normalcost),"forest.php?op=search");
 	if ($session['user']['level']>1)
-		addnav("S?Go Slumming","forest.php?op=search&type=slum");
-	addnav("T?Go Thrillseeking","forest.php?op=search&type=thrill");
+		addnav(array("E?Look for an Easy Fight (`Q%s%%`0)", $slumcost),"forest.php?op=search&type=slum");
+	addnav(array("B?Look for Big Trouble (`Q%s%%`0)", $thrillcost),"forest.php?op=search&type=thrill");
 	if (getsetting("suicide", 0)) {
 		if (getsetting("suicidedk", 10) <= $session['user']['dragonkills']) {
-			addnav("*?Search `\$Suicidally`0", "forest.php?op=search&type=suicide");
+			addnav(array("*?Search `\$Suicidally`0 (`Q%s%%`0)",$suicidecost), "forest.php?op=search&type=suicide");
 		}
 	}
 	if ($session['user']['level']>=15  && $session['user']['seendragon']==0){
@@ -40,18 +45,16 @@ function forest($noshowmessage=false) {
 	}
 	addnav("Other");
 	villagenav();
-	
 	if ($noshowmessage!=true){
-		$foresttext = array();
-		tlschema();
-		$foresttext[] = translate_inline("The Jungle, home to the vicious creatures of Doktor Improbable's obscene laboratories - and to various evildoers of all descriptions.`n`nThe thick foliage of the jungle restricts your view to only a few yards in most places.  The paths would be imperceptible except for your trained eye.  You move as silently as a soft breeze across the thick moss covering the ground, wary to avoid stepping on a twig or any of the numerous pieces of bleached bone that populate the jungle floor, lest you betray your presence to one of the vile beasts that wander this place.`n`nThen you think \"`#Sod it,`0\" and tear off looking for something to kill.`n`n");
-		$foresttext = modulehook("forest-desc",$foresttext);
-		output($foresttext);
+		output("`c`7`bThe Forest`b`0`c");
+		output("The Forest, home to evil creatures and evildoers of all sorts.`n`n");
+		output("The thick foliage of the forest restricts your view to only a few yards in most places.");
+		output("The paths would be imperceptible except for your trained eye.");
+		output("You move as silently as a soft breeze across the thick moss covering the ground, wary to avoid stepping on a twig or any of the numerous pieces of bleached bone that populate the forest floor, lest you betray your presence to one of the vile beasts that wander the forest.`n");
+		modulehook("forest-desc");
 	}
 	modulehook("forest", array());
 	module_display_events("forest", "forest.php");
-	addnav("Inventory");
-	addnav("View your Inventory","inventory.php?items_context=forest");
 	tlschema();
 }
 

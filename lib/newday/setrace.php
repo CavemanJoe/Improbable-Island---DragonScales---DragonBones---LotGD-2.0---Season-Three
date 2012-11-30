@@ -7,11 +7,9 @@ if ($setrace!=""){
 	// Set the person to the main village/capital by default
 	$session['user']['location'] = $vname;
 	modulehook("setrace");
-	addnav("Carry On");
 	addnav("Continue","newday.php?continue=1$resline");
 }else{
 	output("Where do you recall growing up?`n`n");
-	addnav("Identify Yourself");
 	modulehook("chooserace");
 }
 if (navcount()==0){
